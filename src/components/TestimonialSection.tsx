@@ -2,7 +2,7 @@ const TestimonialSection = () => {
   return (
     <section className="bg-primary py-20 md:py-28 px-6">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-5xl font-bold text-primary-foreground text-center mb-16">
+        <h2 className="font-heading text-3xl md:text-5xl font-bold text-primary-foreground text-center mb-16 leading-[1.1]">
           Brands Find Success With Realize
         </h2>
 

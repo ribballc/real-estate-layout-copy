@@ -27,7 +27,7 @@ const WhySection = () => {
   return (
     <section className="bg-background py-20 md:py-28 px-6">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-5xl font-bold text-foreground text-center mb-16">
+        <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground text-center mb-16 leading-[1.1]">
           Why Realize?
         </h2>
 
@@ -35,7 +35,7 @@ const WhySection = () => {
           {features.map((feature) => (
             <div key={feature.title} className="bg-card rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow">
               <feature.icon className="w-10 h-10 text-accent mb-5" />
-              <h3 className="text-xl font-bold text-card-foreground mb-3">{feature.title}</h3>
+              <h3 className="font-heading text-xl font-bold text-card-foreground mb-3">{feature.title}</h3>
               <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
             </div>
           ))}

@@ -28,7 +28,7 @@ const FunnelSection = () => {
   return (
     <section className="bg-background py-20 md:py-28 px-6">
       <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-4">
+        <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground mb-4 leading-[1.1]">
           Specialized Performance
         </h2>
         <p className="text-lg text-muted-foreground mb-16">
@@ -46,7 +46,7 @@ const FunnelSection = () => {
               }`}
             >
               <stage.icon className={`w-10 h-10 mx-auto mb-4 ${stage.active ? "text-accent" : "text-muted-foreground"}`} />
-              <h3 className="text-xl font-bold mb-2">{stage.title}</h3>
+              <h3 className="font-heading text-xl font-bold mb-2">{stage.title}</h3>
               <div className={`text-sm font-medium mb-3 ${stage.active ? "text-accent" : "text-muted-foreground"}`}>
                 {stage.subtitle}
               </div>

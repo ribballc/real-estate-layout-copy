@@ -12,7 +12,7 @@ const StatsSection = () => {
   return (
     <section className="bg-primary py-20 px-6">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl md:text-3xl font-bold text-primary-foreground text-center mb-14">
+        <h2 className="font-heading text-2xl md:text-3xl font-bold text-primary-foreground text-center mb-14 leading-[1.1]">
           Advertisers Winning with Realize
         </h2>
 

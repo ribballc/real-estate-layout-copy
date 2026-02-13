@@ -4,7 +4,7 @@ const PublishersSection = () => {
   return (
     <section className="bg-background py-16 px-6">
       <div className="max-w-5xl mx-auto text-center">
-        <h3 className="text-xl md:text-2xl font-bold text-foreground mb-10">
+        <h3 className="font-heading text-xl md:text-2xl font-bold text-foreground mb-10 leading-[1.1]">
           Run Ads on Premium Publisher Sites
         </h3>
         <div className="flex flex-wrap justify-center items-center gap-8 md:gap-14">
