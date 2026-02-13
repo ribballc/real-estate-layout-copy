@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { CalendarCheck, MessageSquareWarning, Smartphone } from "lucide-react";
+import phoneMockup from "@/assets/phone-mockup.png";
 
 const HeroSection = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [showStickyBtn, setShowStickyBtn] = useState(false);
+  const [parallaxY, setParallaxY] = useState(0);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const phoneRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -16,24 +18,31 @@ const HeroSection = () => {
     return () => observer.disconnect();
   }, []);
 
+  // Parallax effect for mobile only
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerWidth >= 768) return;
+      const scrollY = window.scrollY;
+      const offset = Math.min(scrollY * 0.3, 50);
+      setParallaxY(-offset);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
     const trimmed = email.trim();
-    if (!trimmed) {
-      setError("Please enter your email");
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setError("Please enter a valid email");
-      return;
-    }
-
+    if (!trimmed) { setError("Please enter your email"); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError("Please enter a valid email"); return; }
     const formSection = document.getElementById("form-funnel");
-    if (formSection) {
-      formSection.scrollIntoView({ behavior: "smooth" });
-    }
+    if (formSection) formSection.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToForm = () => {
+    const formSection = document.getElementById("form-funnel");
+    if (formSection) formSection.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -46,12 +55,10 @@ const HeroSection = () => {
           backgroundSize: '40px 40px',
         }}
       />
-      {/* Bottom fade to background */}
+      {/* Bottom fade */}
       <div
         className="absolute bottom-0 left-0 right-0 h-64"
-        style={{
-          background: `linear-gradient(to bottom, transparent, hsl(var(--background)))`,
-        }}
+        style={{ background: `linear-gradient(to bottom, transparent, hsl(var(--background)))` }}
       />
 
       <div className="relative z-10 px-6 pt-8 pb-32">
@@ -60,9 +67,9 @@ const HeroSection = () => {
           <h2 className="text-2xl font-heading font-bold text-primary-foreground tracking-tight">realize:</h2>
         </div>
 
-        {/* Hero Content */}
-        <div className="max-w-5xl mx-auto mt-8 md:mt-20">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+        {/* Hero Content - 2 col on desktop */}
+        <div className="max-w-6xl mx-auto mt-8 md:mt-20">
+          <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-16 items-center">
             {/* Left: Copy */}
             <div className="text-center md:text-left">
               <h1 className="font-heading text-3xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-[1.08]">
@@ -80,18 +87,13 @@ const HeroSection = () => {
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        if (error) setError("");
-                      }}
+                      onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
                       placeholder="Enter your email address"
                       maxLength={255}
                       className="w-full px-6 py-4 rounded-full bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/40 text-base focus:outline-none focus:border-primary-foreground/50 focus:ring-2 focus:ring-primary-foreground/20 transition-all"
                     />
                   </div>
-                  {error && (
-                    <p className="text-sm text-accent">{error}</p>
-                  )}
+                  {error && <p className="text-sm text-accent">{error}</p>}
                   <button
                     ref={btnRef}
                     type="submit"
@@ -101,13 +103,23 @@ const HeroSection = () => {
                   </button>
                 </form>
 
+                {/* Phone mockup - mobile only, between CTA and demo link */}
+                <div
+                  ref={phoneRef}
+                  className="md:hidden w-[85%] max-w-[360px] mx-auto mt-10 mb-8"
+                  style={{
+                    willChange: 'transform',
+                    transform: `translate3d(0, ${parallaxY}px, 0)`,
+                    transition: 'transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                  }}
+                >
+                  <img src={phoneMockup} alt="Phone showing booking schedule" className="w-full h-auto" />
+                </div>
+
                 {/* Secondary CTA */}
                 <button
                   type="button"
-                  onClick={() => {
-                    const formSection = document.getElementById("form-funnel");
-                    if (formSection) formSection.scrollIntoView({ behavior: "smooth" });
-                  }}
+                  onClick={scrollToForm}
                   className="text-primary-foreground/70 hover:text-primary-foreground text-sm font-medium transition-colors underline underline-offset-4"
                 >
                   See a demo site →
@@ -123,65 +135,20 @@ const HeroSection = () => {
               <p className="mt-2 text-xs text-primary-foreground/40 text-center md:text-left">
                 Built for mobile detailers, PPF shops, and tint specialists
               </p>
+
+              {/* Phone mockup - tablet only */}
+              <div className="hidden md:block lg:hidden mt-12 mb-8 mx-auto" style={{ width: '70%', maxWidth: '420px' }}>
+                <img src={phoneMockup} alt="Phone showing booking schedule" className="w-full h-auto" />
+              </div>
             </div>
 
-            {/* Right: Visual mockup */}
-            <div className="hidden md:flex flex-col gap-4">
-              {/* Split screen comparison */}
-              <div className="grid grid-cols-2 gap-3">
-                {/* Before - chaotic */}
-                <div className="bg-primary-foreground/5 border border-primary-foreground/10 rounded-2xl p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <MessageSquareWarning className="w-5 h-5 text-accent" />
-                    <span className="text-xs font-bold text-accent uppercase tracking-wide">Before</span>
-                  </div>
-                  <div className="space-y-2">
-                    {["Hey can I book tmrw?", "What time works?", "Nvm I'll txt later", "Still available??"].map((msg, i) => (
-                      <div key={i} className={`text-xs px-3 py-2 rounded-xl ${i % 2 === 0 ? 'bg-primary-foreground/10 text-primary-foreground/60 ml-auto max-w-[85%]' : 'bg-primary-foreground/5 text-primary-foreground/40 mr-auto max-w-[85%]'}`}>
-                        {msg}
-                      </div>
-                    ))}
-                    <div className="text-[10px] text-accent/80 font-medium mt-2 text-center">😩 3 no-shows this week</div>
-                  </div>
-                </div>
-
-                {/* After - clean calendar */}
-                <div className="bg-primary-foreground/5 border border-[hsl(72,80%,75%)]/30 rounded-2xl p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <CalendarCheck className="w-5 h-5 text-[hsl(72,80%,75%)]" />
-                    <span className="text-xs font-bold text-[hsl(72,80%,75%)] uppercase tracking-wide">After</span>
-                  </div>
-                  <div className="space-y-2">
-                    {[
-                      { time: "9:00 AM", name: "Full Detail", status: "Confirmed ✓" },
-                      { time: "12:00 PM", name: "Interior Clean", status: "Confirmed ✓" },
-                      { time: "3:00 PM", name: "PPF Install", status: "Confirmed ✓" },
-                    ].map((apt, i) => (
-                      <div key={i} className="bg-primary-foreground/10 rounded-lg px-3 py-2 flex items-center justify-between">
-                        <div>
-                          <div className="text-xs font-semibold text-primary-foreground/80">{apt.time}</div>
-                          <div className="text-[10px] text-primary-foreground/50">{apt.name}</div>
-                        </div>
-                        <span className="text-[10px] text-[hsl(72,80%,75%)] font-medium">{apt.status}</span>
-                      </div>
-                    ))}
-                    <div className="text-[10px] text-[hsl(72,80%,75%)] font-medium mt-2 text-center">🎉 0 no-shows this week</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Phone mockup */}
-              <div className="bg-primary-foreground/5 border border-primary-foreground/10 rounded-2xl p-5 flex items-center gap-5">
-                <div className="flex-shrink-0">
-                  <Smartphone className="w-10 h-10 text-primary-foreground/30" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-primary-foreground/80">3 taps to book</p>
-                  <p className="text-xs text-primary-foreground/50 mt-1">
-                    Customers pick a service, choose a time, and confirm — no calls, no texts, no chasing.
-                  </p>
-                </div>
-              </div>
+            {/* Right: Phone mockup - desktop only */}
+            <div className="hidden lg:flex justify-center items-center relative z-10">
+              <img
+                src={phoneMockup}
+                alt="Phone showing booking schedule"
+                className="w-full max-w-[400px] h-auto drop-shadow-2xl"
+              />
             </div>
           </div>
         </div>
@@ -192,10 +159,7 @@ const HeroSection = () => {
         <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:hidden">
           <button
             type="button"
-            onClick={() => {
-              const formSection = document.getElementById("form-funnel");
-              if (formSection) formSection.scrollIntoView({ behavior: "smooth" });
-            }}
+            onClick={scrollToForm}
             className="w-full inline-flex items-center justify-center gap-2 bg-[hsl(72,80%,75%)] text-primary px-10 py-4 rounded-full text-lg font-bold hover:bg-[hsl(72,80%,70%)] transition-colors duration-300 shadow-lg"
           >
             Create My Website Free
