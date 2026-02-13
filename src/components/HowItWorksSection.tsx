@@ -27,7 +27,7 @@ const HowItWorksSection = () => {
   return (
     <section className="bg-background py-20 md:py-28 px-6">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-5xl font-bold text-foreground text-center mb-16">
+        <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground text-center mb-16 leading-[1.1]">
           Start Advertising in Just a Few Clicks
         </h2>
 
@@ -40,7 +40,7 @@ const HowItWorksSection = () => {
               <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-lg font-bold mb-4">
                 {step.step}
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">{step.title}</h3>
+              <h3 className="font-heading text-xl font-bold text-foreground mb-3">{step.title}</h3>
               <p className="text-muted-foreground leading-relaxed">{step.description}</p>
             </div>
           ))}
