@@ -40,21 +40,21 @@ const HeroSection = () => {
     <section className="relative bg-primary overflow-hidden">
       {/* Grid pattern overlay */}
       <div
-        className="absolute inset-0 opacity-[0.07]"
+        className="absolute inset-0"
         style={{
-          backgroundImage: `linear-gradient(hsl(var(--accent)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--accent)) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(hsl(var(--accent) / 0.15) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--accent) / 0.15) 1px, transparent 1px)`,
           backgroundSize: '40px 40px',
         }}
       />
       {/* Bottom fade to background */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-64"
+        className="absolute bottom-0 left-0 right-0 h-48"
         style={{
           background: `linear-gradient(to bottom, transparent, hsl(var(--background)))`,
         }}
       />
 
-      <div className="relative z-10 px-6 pt-8 pb-32">
+      <div className="relative z-10 px-6 pt-8 pb-16">
         {/* Logo */}
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-heading font-bold text-primary-foreground tracking-tight">realize:</h2>
@@ -63,9 +63,9 @@ const HeroSection = () => {
         {/* Hero Content */}
         <div className="max-w-4xl mx-auto text-center mt-16 md:mt-24">
           <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground leading-[1.05]">
-            Performance Solutions to Promote Your{" "}
+            Your Perfect Website{" "}
             <span className="bg-accent text-accent-foreground px-4 py-1 inline-block mt-2">
-              Business Listing
+              Built In 5 Minutes
             </span>
           </h1>
           <p className="mt-8 text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto leading-snug">
