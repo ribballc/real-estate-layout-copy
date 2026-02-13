@@ -38,10 +38,23 @@ const HeroSection = () => {
 
   return (
     <section className="relative bg-primary overflow-hidden">
-      {/* Decorative curved bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-background" style={{ borderTopLeftRadius: "50% 100%", borderTopRightRadius: "50% 100%" }} />
+      {/* Grid pattern overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.07]"
+        style={{
+          backgroundImage: `linear-gradient(hsl(var(--accent)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--accent)) 1px, transparent 1px)`,
+          backgroundSize: '40px 40px',
+        }}
+      />
+      {/* Bottom fade to background */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-64"
+        style={{
+          background: `linear-gradient(to bottom, transparent, hsl(var(--background)))`,
+        }}
+      />
 
-      <div className="relative z-10 px-6 pt-8 pb-48">
+      <div className="relative z-10 px-6 pt-8 pb-32">
         {/* Logo */}
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl font-heading font-bold text-primary-foreground tracking-tight">realize:</h2>
