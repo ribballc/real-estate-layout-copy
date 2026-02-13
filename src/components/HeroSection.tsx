@@ -1,8 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const HeroSection = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [showStickyBtn, setShowStickyBtn] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStickyBtn(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    if (btnRef.current) observer.observe(btnRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +78,7 @@ const HeroSection = () => {
               <p className="text-sm text-accent">{error}</p>
             )}
             <button
+              ref={btnRef}
               type="submit"
               className="w-full inline-flex items-center justify-center gap-2 bg-[hsl(72,80%,75%)] text-primary px-10 py-4 rounded-full text-lg font-bold hover:bg-[hsl(72,80%,70%)] transition-colors duration-300 shadow-lg"
             >
@@ -75,6 +87,22 @@ const HeroSection = () => {
           </form>
         </div>
       </div>
+
+      {/* Sticky mobile button */}
+      {showStickyBtn && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:hidden">
+          <button
+            type="button"
+            onClick={() => {
+              const formSection = document.getElementById("form-funnel");
+              if (formSection) formSection.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="w-full inline-flex items-center justify-center gap-2 bg-[hsl(72,80%,75%)] text-primary px-10 py-4 rounded-full text-lg font-bold hover:bg-[hsl(72,80%,70%)] transition-colors duration-300 shadow-lg"
+          >
+            Create My Website Free
+          </button>
+        </div>
+      )}
     </section>
   );
 };

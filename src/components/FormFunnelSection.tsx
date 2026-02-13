@@ -4,7 +4,7 @@ import { Check, ChevronRight, ArrowLeft } from "lucide-react";
 const STEPS = [
   {
     id: 1,
-    title: "Tell Us About Your Business",
+    title: "Help Us Make Your Website",
     subtitle: "Help us understand your business so we can build the perfect website.",
     fields: [
       { name: "businessName", label: "Business Name", type: "text", placeholder: "e.g. Joe's Plumbing" },
@@ -112,7 +112,7 @@ const FormFunnelSection = () => {
         {/* Step content */}
         <div className="text-center mb-10">
           <p className="text-sm font-medium text-[hsl(72,80%,75%)] uppercase tracking-wider mb-3">
-            Step {step.id} of {STEPS.length}
+            {currentStep === 0 ? "est. takes <1 min" : `Step ${step.id} of ${STEPS.length}`}
           </p>
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground leading-[1.1] mb-3">
             {step.title}
