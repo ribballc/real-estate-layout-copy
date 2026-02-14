@@ -65,11 +65,6 @@ const HeroSection = () => {
           backgroundSize: '40px 40px',
         }}
       />
-      {/* Bottom fade */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-16 md:h-20"
-        style={{ background: `linear-gradient(to bottom, transparent, hsl(var(--background)))` }}
-      />
 
       <div className="relative z-10 px-5 md:px-8 pt-6 pb-12 md:pt-10 md:pb-20">
         {/* Logo */}
