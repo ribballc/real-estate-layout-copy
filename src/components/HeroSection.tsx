@@ -52,9 +52,9 @@ const HeroSection = () => {
           <div className="max-w-2xl mx-auto text-center lg:text-left lg:max-w-none lg:grid lg:grid-cols-[55%_45%] lg:gap-12 lg:items-center">
 
             {/* Copy block */}
-            <div className="text-center lg:text-left">
+            <div className="text-left">
               {/* Badge */}
-              <span className="bg-accent/15 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-block mb-3 border border-accent/20 text-left">
+              <span className="bg-accent/15 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-block mb-3 border border-accent/20">
                 For Mobile Detailers
               </span>
 
@@ -63,7 +63,7 @@ const HeroSection = () => {
                 <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold">
                   Book Jobs in Your Sleep.
                 </span>
-                <span className="block font-serif text-[42px] md:text-[64px] lg:text-[82px] font-normal">
+                <span className="block font-heading text-[42px] md:text-[64px] lg:text-[82px] font-extrabold text-accent">
                   Get Paid Before You Show Up.
                 </span>
               </h1>
