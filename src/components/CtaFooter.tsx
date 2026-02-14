@@ -1,14 +1,22 @@
 const CtaFooter = () => {
+  const scrollToForm = () => {
+    const el = document.getElementById("form-funnel");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <>
       {/* CTA */}
-      <section className="bg-primary py-20 px-6 text-center">
+      <section className="bg-primary py-14 md:py-20 px-6 text-center">
         <div className="max-w-3xl mx-auto">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground mb-8 leading-[1.1]">
-            Reach your best audience at the lowest cost!
+          <h2 className="font-heading text-2xl md:text-4xl font-bold text-primary-foreground mb-8 leading-[1.15]">
+            Your Competitors Already Have Online Booking. Do You?
           </h2>
-          <button className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-10 py-4 rounded-full text-lg font-bold hover:opacity-90 transition-opacity">
-            Create Account
+          <button
+            onClick={scrollToForm}
+            className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-10 py-4 rounded-full text-lg font-bold hover:brightness-110 hover:shadow-xl transition-all min-h-[48px]"
+          >
+            Start My Free Trial
           </button>
         </div>
       </section>
