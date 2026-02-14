@@ -14,9 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Space Grotesk", "Inter", "system-ui", "sans-serif"],
-        heading: ["Space Grotesk", "Inter", "sans-serif"],
-        serif: ["DM Serif Display", "Playfair Display", "serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        heading: ["Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "Courier New", "monospace"],
       },
       colors: {
@@ -45,10 +44,6 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
-        brass: {
-          DEFAULT: "hsl(var(--brass))",
-          foreground: "hsl(var(--brass-foreground))",
-        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
@@ -57,8 +52,8 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        chrome: "hsl(var(--chrome))",
-        charcoal: "hsl(var(--charcoal))",
+        slate: "hsl(var(--slate))",
+        sky: "hsl(var(--sky))",
       },
       borderRadius: {
         lg: "var(--radius)",

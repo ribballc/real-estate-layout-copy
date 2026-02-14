@@ -26,7 +26,6 @@ const ScrollProgress = () => {
         className="h-full bg-accent"
         style={{
           width: `${progress}%`,
-          boxShadow: '0 0 8px hsl(82 75% 55% / 0.6)',
           transition: 'width 80ms linear',
         }}
       />

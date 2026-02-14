@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,42 +6,39 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 220 10% 10%;
+    --background: 210 40% 98%;
+    --foreground: 215 25% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 10% 10%;
+    --card-foreground: 215 25% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 10% 10%;
+    --popover-foreground: 215 25% 12%;
 
-    --primary: 160 50% 8%;
+    --primary: 215 50% 10%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 6% 93%;
-    --secondary-foreground: 220 10% 10%;
+    --secondary: 214 20% 93%;
+    --secondary-foreground: 215 25% 12%;
 
-    --muted: 220 6% 96%;
-    --muted-foreground: 220 6% 40%;
+    --muted: 214 20% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 82 65% 55%;
-    --accent-foreground: 160 50% 8%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
 
-    --brass: 37 40% 60%;
-    --brass-foreground: 0 0% 100%;
-
-    --destructive: 12 80% 50%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 6% 90%;
-    --input: 220 6% 90%;
-    --ring: 82 65% 55%;
+    --border: 214 20% 90%;
+    --input: 214 20% 90%;
+    --ring: 217 91% 60%;
 
     --radius: 0.75rem;
 
-    --hero-dark: 160 50% 8%;
-    --charcoal: 225 10% 12%;
-    --chrome: 220 6% 92%;
+    --hero-dark: 215 50% 10%;
+    --slate: 217 33% 17%;
+    --sky: 213 94% 68%;
   }
 }
 
@@ -83,18 +80,12 @@
 }
 
 @keyframes heroFadeScale {
-  from { opacity: 0; transform: scale(0.95); }
+  from { opacity: 0; transform: scale(0.97); }
   to { opacity: 1; transform: scale(1); }
 }
 
-@keyframes heroBounceIn {
-  0% { opacity: 0; transform: translateY(24px) scale(0.92); }
-  60% { opacity: 1; transform: translateY(-4px) scale(1.02); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
 @keyframes heroBlurIn {
-  from { opacity: 0; filter: blur(8px); transform: translateY(12px); }
+  from { opacity: 0; filter: blur(6px); transform: translateY(10px); }
   to { opacity: 1; filter: blur(0); transform: translateY(0); }
 }
 
@@ -109,29 +100,13 @@
 }
 
 @keyframes heroPhoneIn {
-  0% { opacity: 0; transform: translateY(80px) scale(0.9); }
-  60% { opacity: 1; transform: translateY(-8px) scale(1.01); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes ctaGlow {
-  0%, 100% { box-shadow: 0 4px 16px rgba(164, 214, 94, 0.2); }
-  50% { box-shadow: 0 8px 32px rgba(164, 214, 94, 0.45); }
-}
-
-@keyframes gentlePulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.04); }
+  0% { opacity: 0; transform: translateY(60px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes heroFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-
-@keyframes badgePulse {
-  0%, 100% { opacity: 0.15; }
-  50% { opacity: 0.25; }
+  50% { transform: translateY(-10px); }
 }
 
 /* Ambient floating orbs */
