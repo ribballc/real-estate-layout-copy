@@ -1,60 +1,76 @@
-import { Eye, Search, MousePointerClick } from "lucide-react";
+import FadeIn from "@/components/FadeIn";
 
-const stages = [
-  {
-    icon: Eye,
-    title: "Awareness",
-    subtitle: "Viewable Impressions",
-    description: "Get your brand seen by the right people at scale",
-    active: false,
-  },
-  {
-    icon: Search,
-    title: "Consideration",
-    subtitle: "Intent Prospecting",
-    description: "Discover & qualify high intent audiences based on their interactions with your ads or site",
-    active: true,
-  },
-  {
-    icon: MousePointerClick,
-    title: "Action",
-    subtitle: "Conversion Targeting",
-    description: "Close the deal with qualified audiences",
-    active: true,
-  },
+const oldWay = [
+  "Paying $50-150/mo for a basic website",
+  "Booking through DMs and texts",
+  "Chasing confirmations manually",
+  "Losing $200+/week to no-shows",
+  "Looking amateur next to bigger shops",
+];
+
+const realizeWay = [
+  "Website + booking in one place",
+  "Built for detailers, PPF & tint",
+  "Auto reminders + deposit collection",
+  "47% fewer no-shows on average",
+  "Live in 48 hours, no tech skills",
 ];
 
 const FunnelSection = () => {
-  return (
-    <section className="bg-background py-20 md:py-28 px-6">
-      <div className="max-w-6xl mx-auto text-center">
-        <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground mb-4 leading-[1.1]">
-          Specialized Performance
-        </h2>
-        <p className="text-lg text-muted-foreground mb-16">
-          Successful Performance Advertisers Focus on Conversion and Action Stages
-        </p>
+  const scrollToForm = () => {
+    const el = document.getElementById("form-funnel");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {stages.map((stage) => (
-            <div
-              key={stage.title}
-              className={`rounded-2xl p-8 transition-all ${
-                stage.active
-                  ? "bg-primary text-primary-foreground shadow-lg scale-105"
-                  : "bg-card text-card-foreground border border-border"
-              }`}
-            >
-              <stage.icon className={`w-10 h-10 mx-auto mb-4 ${stage.active ? "text-accent" : "text-muted-foreground"}`} />
-              <h3 className="font-heading text-xl font-bold mb-2">{stage.title}</h3>
-              <div className={`text-sm font-medium mb-3 ${stage.active ? "text-accent" : "text-muted-foreground"}`}>
-                {stage.subtitle}
-              </div>
-              <p className={`text-sm leading-relaxed ${stage.active ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
-                {stage.description}
-              </p>
+  return (
+    <section className="bg-background py-16 md:py-24 px-6">
+      <div className="max-w-6xl mx-auto text-center">
+        <FadeIn>
+          <h2 className="font-heading text-2xl md:text-4xl font-bold text-foreground mb-3 leading-[1.15]">
+            Stop Overpaying for Tools That Don't Talk to Each Other
+          </h2>
+          <p className="text-base md:text-lg text-muted-foreground mb-10 md:mb-12">
+            Most detailers duct-tape together 3-4 apps. We replace all of them.
+          </p>
+        </FadeIn>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FadeIn delay={0}>
+            <div className="bg-card border border-destructive/20 rounded-2xl p-8 text-left h-full">
+              <h3 className="font-heading text-xl font-bold text-card-foreground mb-6">The Old Way</h3>
+              <ul className="space-y-0">
+                {oldWay.map((item) => (
+                  <li key={item} className="flex items-start gap-3 py-2 leading-relaxed text-card-foreground">
+                    <span className="text-destructive/70 font-bold shrink-0">✕</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-          ))}
+          </FadeIn>
+
+          <FadeIn delay={100}>
+            <div className="bg-primary text-primary-foreground rounded-2xl p-8 shadow-xl ring-2 ring-accent/30 text-left h-full">
+              <h3 className="font-heading text-xl font-bold mb-6">The Realize Way</h3>
+              <ul className="space-y-0">
+                {realizeWay.map((item) => (
+                  <li key={item} className="flex items-start gap-3 py-2 leading-relaxed">
+                    <span className="text-accent font-bold shrink-0">✓</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </FadeIn>
+        </div>
+
+        <div className="mt-10">
+          <button
+            onClick={scrollToForm}
+            className="inline-flex items-center gap-2 bg-accent text-accent-foreground px-8 py-3 rounded-full text-lg font-medium hover:brightness-110 hover:shadow-xl transition-all min-h-[48px]"
+          >
+            Start Free for 14 Days
+          </button>
         </div>
       </div>
     </section>
