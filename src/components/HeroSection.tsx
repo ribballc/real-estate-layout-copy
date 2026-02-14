@@ -63,7 +63,7 @@ const HeroSection = () => {
                 <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold">
                   Book Jobs in Your Sleep.
                 </span>
-                <span className="block font-heading text-[42px] md:text-[64px] lg:text-[82px] font-extrabold text-accent">
+                <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold text-accent">
                   Get Paid Before You Show Up.
                 </span>
               </h1>
