@@ -59,9 +59,11 @@ const HeroSection = () => {
               </span>
 
               {/* Headline */}
-              <h1 className="font-heading text-[28px] md:text-5xl lg:text-6xl font-extrabold text-primary-foreground leading-[1.1] tracking-tight">
-                Empowering Your{" "}
-                <span className="italic">
+              <h1 className="text-primary-foreground leading-[1.1] tracking-tight">
+                <span className="block font-heading text-[32px] md:text-5xl lg:text-[64px] font-extrabold">
+                  Empowering Your
+                </span>
+                <span className="block font-serif text-[32px] md:text-5xl lg:text-[64px] font-normal">
                   Booking Growth
                 </span>
               </h1>
