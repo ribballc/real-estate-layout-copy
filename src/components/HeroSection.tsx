@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Mail, Circle } from "lucide-react";
+import { Mail, Circle, ChevronRight } from "lucide-react";
 import heroDetail from "@/assets/hero-detail.png";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
@@ -91,9 +91,12 @@ const HeroSection = () => {
                 <button
                   ref={btnRef}
                   type="submit"
-                  className="h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
+                  className="h-14 px-6 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px] inline-flex items-center gap-3"
                 >
-                  Start My Free Trial →
+                  Start My Free Trial
+                  <span className="w-8 h-8 rounded-full bg-accent-foreground flex items-center justify-center flex-shrink-0">
+                    <ChevronRight className="w-4 h-4 text-accent" />
+                  </span>
                 </button>
               </form>
               {error && <p className="text-sm text-accent mt-2 text-center lg:text-left">{error}</p>}
