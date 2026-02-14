@@ -8,10 +8,10 @@ const CtaFooter = () => {
       {/* CTA */}
       <section className="bg-accent py-12 md:py-20 px-5 md:px-8 text-center">
         <div className="max-w-3xl mx-auto">
-          <h2 className="font-heading text-[22px] md:text-3xl font-extrabold text-accent-foreground text-center leading-[1.2] max-w-3xl mx-auto mb-8">
+          <h2 className="font-heading text-[22px] md:text-[32px] font-bold tracking-[-0.015em] text-accent-foreground text-center leading-[1.2] max-w-3xl mx-auto mb-8">
             Your Competitors Already Have Online Booking.
             <br />
-            You're Still Relying on Missed Calls and DMs.
+            <span className="font-serif italic text-[24px] md:text-[36px]">You're Still Relying on Missed Calls and DMs.</span>
           </h2>
           <button
             onClick={openFunnel}

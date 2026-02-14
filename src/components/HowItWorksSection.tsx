@@ -27,8 +27,8 @@ const HowItWorksSection = () => {
     <section className="bg-muted py-16 md:py-24 px-5 md:px-8">
       <div className="max-w-6xl mx-auto">
         <FadeIn>
-          <h2 className="font-heading text-[28px] md:text-4xl font-extrabold tracking-tight leading-[1.15] text-foreground text-center mb-3">
-            Live in 48 Hours. Not Kidding.
+          <h2 className="font-heading text-[28px] md:text-[42px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-3">
+            Live in 48 Hours. <span className="font-serif italic text-[32px] md:text-[48px] text-accent">Not Kidding.</span>
           </h2>
           <p className="text-base md:text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-10 md:mb-14">
             Three steps between you and a professional online presence that books jobs while you sleep.
