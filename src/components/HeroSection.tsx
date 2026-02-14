@@ -61,16 +61,16 @@ const HeroSection = () => {
               {/* Headline */}
               <h1 className="text-primary-foreground leading-[1.08] tracking-tight text-left">
                 <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold">
-                  Empowering Your
+                  Book Jobs in Your Sleep.
                 </span>
                 <span className="block font-serif text-[42px] md:text-[64px] lg:text-[82px] font-normal">
-                  Booking Growth
+                  Get Paid Before You Show Up.
                 </span>
               </h1>
 
               {/* Body */}
               <p className="mt-4 text-[15px] md:text-lg text-primary-foreground/70 leading-[1.6] max-w-lg text-left">
-                Smart booking tools built to help you capture every job, eliminate no-shows, and grow your detailing business on autopilot.
+                The booking system that runs itself: customers book 24/7, deposits hit your account automatically, and your calendar stays packed. Set up in 5 minutes. No tech skills needed.
               </p>
 
               {/* Email form + CTA */}
