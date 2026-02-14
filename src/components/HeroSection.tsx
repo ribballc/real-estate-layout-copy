@@ -112,7 +112,7 @@ const HeroSection = () => {
               {error && <p className="text-sm text-accent mt-2 text-center lg:text-left">{error}</p>}
 
               <p className="text-sm text-primary-foreground/60 mt-3 text-center lg:text-left">
-                ✓ Free 14-day trial · No credit card · Launch in 5 mins
+                ✓ Free 14-day trial · Launch in 5 mins
               </p>
 
               {/* Social proof */}
