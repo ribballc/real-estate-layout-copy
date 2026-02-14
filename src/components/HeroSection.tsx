@@ -62,15 +62,14 @@ const HeroSection = () => {
             <div className="text-left">
               {/* Badge */}
               <span
-                className="bg-accent/15 text-accent text-sm font-serif italic px-4 py-1.5 rounded-full inline-flex items-center gap-2 mb-3 border border-accent/20 shadow-[0_4px_12px_rgba(164,214,94,0.3)]"
+                className="text-brass text-sm font-serif italic tracking-wide px-4 py-1.5 rounded-full inline-flex items-center gap-2 mb-4 border border-brass/30"
                 style={{
-                  background: 'linear-gradient(135deg, hsl(82 75% 55% / 0.15), hsl(82 65% 45% / 0.2))',
+                  background: 'linear-gradient(135deg, hsl(37 40% 60% / 0.12), hsl(37 35% 50% / 0.18))',
                   opacity: 0,
                   animation: `fadeSlideDown 0.5s ease-out 0.2s forwards`,
                 }}
               >
-                <span className="w-2 h-2 rounded-full bg-accent inline-block" />
-                For Mobile Detailers
+                ✦ THE PROFESSIONAL'S SYSTEM
               </span>
 
               {/* Headline - word by word */}
