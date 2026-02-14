@@ -24,7 +24,8 @@ const HeroSection = () => {
     e.preventDefault();
     setError("");
     const trimmed = email.trim();
-    if (!trimmed) { setError("Please enter your business name"); return; }
+    if (!trimmed) { setError("Please enter your email"); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError("Please enter a valid email"); return; }
     window.dispatchEvent(new CustomEvent("hero-email", { detail: trimmed }));
     openFunnel();
   }, [email, openFunnel]);
@@ -61,40 +62,40 @@ const HeroSection = () => {
               </span>
 
               <h1 className="font-heading text-3xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-[1.12]">
-                Book Jobs in Your Sleep.
-                <span className="block text-[hsl(var(--accent))]">Get Paid Before You Show Up.</span>
+                Stop Losing $1,000s to
+                <span className="block">No-Shows and Missed Calls.</span>
+                <span className="block text-[hsl(var(--accent))]">Get Booked 24/7 on Autopilot.</span>
               </h1>
 
               <p className="mt-5 text-base md:text-lg text-primary-foreground/80 leading-[1.6] max-w-lg mx-auto lg:mx-0">
-                Activate your own AI booking assistant in 60 seconds: it books customers 24/7, collects deposits to your account automatically, and keeps your calendar packed—while you detail. See it work instantly.
+                Custom website + 24/7 smart booking calendar built for you in 48 hours. Automated reminders and deposit collection cut no-shows by 40% — so you stop losing $500-1,000/month in missed appointments.
               </p>
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="mt-8 flex flex-col md:flex-row gap-3 max-w-lg mx-auto lg:mx-0">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-primary-foreground/70 mb-1.5 text-left">Your Business Name</label>
-                  <input
-                    ref={emailRef}
-                    type="text"
-                    value={email}
-                    onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
-                    placeholder="Example: 'Elite Mobile Detailing'"
-                    maxLength={255}
-                    className="h-14 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 w-full min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
-                  />
-                </div>
+                <input
+                  ref={emailRef}
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
+                  placeholder="Enter your work email"
+                  maxLength={255}
+                  className="h-14 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 w-full md:flex-1 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
+                />
                 <button
                   ref={btnRef}
                   type="submit"
-                  className="h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px] md:self-end"
+                  className="h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
                 >
-                  See My AI Assistant Now →
+                  Start My Free Trial →
                 </button>
               </form>
               {error && <p className="text-sm text-accent mt-2 text-center lg:text-left">{error}</p>}
 
-              <div className="mt-4 text-sm text-primary-foreground/70 text-center lg:text-left">
-                <span>✓ See it live in 60 seconds • Free for 14 days • No credit card yet</span>
+              <div className="mt-4 flex flex-col gap-1 text-sm text-primary-foreground/70 text-center lg:text-left">
+                <span>✓ 14-day free trial — no credit card</span>
+                <span>✓ Done-for-you website live in 48 hours</span>
+                <span>✓ Cancel anytime, no contracts</span>
               </div>
 
               {/* See pricing link */}
@@ -110,8 +111,8 @@ const HeroSection = () => {
 
               {/* Social proof */}
               <div className="mt-6 flex items-center justify-center lg:justify-start gap-2 text-sm text-primary-foreground/60">
-                <span>⭐⭐⭐⭐⭐</span>
-                <span>Trusted by 200+ detailers, PPF shops, and tint specialists</span>
+                <span className="text-amber-400">★★★★★</span>
+                <span>Trusted by 200+ mobile detailers, PPF shops, and tint specialists</span>
               </div>
             </div>
 
