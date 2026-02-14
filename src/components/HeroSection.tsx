@@ -5,9 +5,8 @@ const HeroSection = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [showStickyBtn, setShowStickyBtn] = useState(false);
-  const [parallaxY, setParallaxY] = useState(0);
   const btnRef = useRef<HTMLButtonElement>(null);
-  const phoneRef = useRef<HTMLDivElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -16,18 +15,6 @@ const HeroSection = () => {
     );
     if (btnRef.current) observer.observe(btnRef.current);
     return () => observer.disconnect();
-  }, []);
-
-  // Parallax effect for mobile only
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.innerWidth >= 768) return;
-      const scrollY = window.scrollY;
-      const offset = Math.min(scrollY * 0.3, 50);
-      setParallaxY(-offset);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -43,6 +30,13 @@ const HeroSection = () => {
   const scrollToForm = () => {
     const formSection = document.getElementById("form-funnel");
     if (formSection) formSection.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToEmail = () => {
+    if (emailRef.current) {
+      emailRef.current.scrollIntoView({ behavior: "smooth" });
+      emailRef.current.focus({ preventScroll: true });
+    }
   };
 
   return (
@@ -73,11 +67,11 @@ const HeroSection = () => {
             {/* Left: Copy */}
             <div className="text-center md:text-left">
               <h1 className="font-heading text-3xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-[1.08]">
-                Stop Losing $1,000s to No-Shows.
+                Stop Losing Money to No-Shows.
                 <span className="block mt-2">Get More Bookings on Autopilot.</span>
               </h1>
               <p className="mt-4 text-base md:text-lg text-primary-foreground/80 leading-relaxed max-w-lg mx-auto md:mx-0">
-                Custom website + smart booking calendar built in 48 hours. Mobile detailers using our system book <strong className="text-primary-foreground">40% more jobs</strong> and cut no-shows in half.
+                We build you a custom website + smart booking calendar in 48 hours. Mobile detailers using our system book <strong className="text-primary-foreground">40% more jobs</strong> and cut no-shows in half.
               </p>
 
               {/* CTA area */}
@@ -85,6 +79,7 @@ const HeroSection = () => {
                 <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
                   <div className="w-full relative">
                     <input
+                      ref={emailRef}
                       type="email"
                       value={email}
                       onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
@@ -103,16 +98,8 @@ const HeroSection = () => {
                   </button>
                 </form>
 
-                {/* Phone mockup - mobile only, between CTA and demo link */}
-                <div
-                  ref={phoneRef}
-                  className="md:hidden w-[85%] max-w-[360px] mx-auto mt-10 mb-8"
-                  style={{
-                    willChange: 'transform',
-                    transform: `translate3d(0, ${parallaxY}px, 0)`,
-                    transition: 'transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-                  }}
-                >
+                {/* Phone mockup - mobile only */}
+                <div className="md:hidden w-[85%] max-w-[360px] mx-auto mt-10 mb-8">
                   <img src={phoneMockup} alt="Phone showing booking schedule" className="w-full h-auto" />
                 </div>
 
@@ -122,7 +109,7 @@ const HeroSection = () => {
                   onClick={scrollToForm}
                   className="text-primary-foreground/70 hover:text-primary-foreground text-sm font-medium transition-colors underline underline-offset-4"
                 >
-                  See a demo site →
+                  See a live demo site →
                 </button>
               </div>
 
@@ -130,10 +117,10 @@ const HeroSection = () => {
               <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-1 text-xs md:text-sm text-primary-foreground/60">
                 <span>✓ 14-day free trial</span>
                 <span>✓ No credit card required</span>
-                <span>✓ Setup in 48 hours</span>
+                <span>✓ Live in 48 hours</span>
               </div>
               <p className="mt-2 text-xs text-primary-foreground/40 text-center md:text-left">
-                Built for mobile detailers, PPF shops, and tint specialists
+                Join 200+ detailers, PPF, and tint shops already growing with us
               </p>
 
               {/* Phone mockup - tablet only */}
@@ -159,7 +146,7 @@ const HeroSection = () => {
         <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:hidden">
           <button
             type="button"
-            onClick={scrollToForm}
+            onClick={scrollToEmail}
             className="w-full inline-flex items-center justify-center gap-2 bg-[hsl(72,80%,75%)] text-primary px-10 py-4 rounded-full text-lg font-bold hover:bg-[hsl(72,80%,70%)] transition-colors duration-300 shadow-lg"
           >
             Create My Website Free
