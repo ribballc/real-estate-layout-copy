@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from "react";
-import phoneMockup from "@/assets/phone-mockup.png";
+import { useState, useEffect, useRef, useCallback } from "react";
+import heroDetail from "@/assets/hero-detail.png";
 
 const HeroSection = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [showStickyBtn, setShowStickyBtn] = useState(false);
+  const [parallaxY, setParallaxY] = useState(0);
   const btnRef = useRef<HTMLButtonElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
 
@@ -17,22 +18,36 @@ const HeroSection = () => {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Desktop-only parallax
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) return;
+    const isLg = window.matchMedia("(min-width: 1024px)");
+    if (!isLg.matches) return;
+
+    let raf: number;
+    const onScroll = () => {
+      raf = requestAnimationFrame(() => {
+        setParallaxY(Math.min(window.scrollY * 0.08, 40));
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     const trimmed = email.trim();
     if (!trimmed) { setError("Please enter your email"); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError("Please enter a valid email"); return; }
-    // Dispatch hero-email event for FormFunnelSection to pick up
     window.dispatchEvent(new CustomEvent("hero-email", { detail: trimmed }));
     const formSection = document.getElementById("form-funnel");
     if (formSection) formSection.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const scrollToForm = () => {
-    const formSection = document.getElementById("form-funnel");
-    if (formSection) formSection.scrollIntoView({ behavior: "smooth" });
-  };
+  }, [email]);
 
   const scrollToEmail = () => {
     if (emailRef.current) {
@@ -42,101 +57,88 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative bg-primary overflow-hidden">
-      {/* Grid pattern overlay */}
-      <div
-        className="absolute inset-0 opacity-[0.07]"
-        style={{
-          backgroundImage: `linear-gradient(hsl(var(--accent)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--accent)) 1px, transparent 1px)`,
-          backgroundSize: '40px 40px',
-        }}
-      />
-      {/* Bottom fade */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-64"
-        style={{ background: `linear-gradient(to bottom, transparent, hsl(var(--background)))` }}
-      />
-
-      <div className="relative z-10 px-6 pt-8 pb-20">
+    <section className="bg-background">
+      <div className="px-5 md:px-8 pt-6 pb-12 md:pt-10 md:pb-20">
         {/* Logo */}
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl font-heading font-bold text-primary-foreground tracking-tight">realize:</h2>
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-xl font-heading font-bold text-foreground tracking-tight">realize:</h2>
         </div>
 
-        {/* Hero Content - 2 col on desktop */}
-        <div className="max-w-6xl mx-auto mt-6 md:mt-16">
-          <div className="grid lg:grid-cols-[55%_45%] gap-10 lg:gap-16 items-center">
+        {/* Hero Content */}
+        <div className="max-w-6xl mx-auto mt-8 md:mt-14">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left: Copy */}
-            <div className="text-center md:text-left">
-              <h1 className="font-heading text-3xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-[1.12]">
-                Stop Losing Money to No-Shows.
-                <span className="block mt-2">Get More Bookings on Autopilot.</span>
+            <div className="text-center lg:text-left">
+              <span className="bg-accent/10 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-block mb-4">
+                For Mobile Detailers, PPF & Tint Shops
+              </span>
+
+              <h1 className="font-heading text-[32px] md:text-5xl lg:text-[54px] font-extrabold text-foreground leading-[1.15] tracking-tight">
+                Stop Losing Money
+                <span className="block">to No-Shows.</span>
               </h1>
-              <p className="mt-5 text-base md:text-lg text-primary-foreground/80 leading-[1.6] max-w-lg mx-auto md:mx-0">
-                We build you a custom website + smart booking calendar in 48 hours. Detailers using our system book <strong className="text-primary-foreground">40% more jobs</strong> and cut no-shows in half.
+
+              <p className="mt-5 text-lg md:text-xl text-muted-foreground leading-[1.6] max-w-xl mx-auto lg:mx-0">
+                We build you a custom website + booking system in 48 hours. Detailers on our platform book <strong className="text-foreground">40% more jobs</strong> and cut no-shows in half.
               </p>
 
-              {/* CTA area */}
-              <div className="mt-8 flex flex-col items-center md:items-start gap-3 max-w-md mx-auto md:mx-0">
-                <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3">
-                  <div className="w-full relative">
-                    <input
-                      ref={emailRef}
-                      type="email"
-                      value={email}
-                      onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
-                      placeholder="Enter your email address"
-                      maxLength={255}
-                      className="w-full px-6 py-4 rounded-full bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/40 text-base focus:outline-none focus:border-primary-foreground/50 focus:ring-2 focus:ring-primary-foreground/20 transition-all min-h-[52px]"
-                    />
-                  </div>
-                  {error && <p className="text-sm text-accent">{error}</p>}
-                  <button
-                    ref={btnRef}
-                    type="submit"
-                    className="w-full inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-10 py-4 rounded-full text-lg font-bold hover:brightness-110 hover:shadow-xl transition-all duration-300 shadow-lg min-h-[48px]"
-                  >
-                    Create My Website Free
-                  </button>
-                </form>
-
-                {/* Phone mockup - mobile only */}
-                <div className="md:hidden w-[85%] max-w-[360px] mx-auto mt-10 mb-8">
-                  <img src={phoneMockup} alt="Phone showing booking schedule" className="w-full h-auto" width={360} height={740} />
-                </div>
-
-                {/* Secondary CTA */}
+              {/* Form */}
+              <form onSubmit={handleSubmit} className="mt-8 flex flex-col md:flex-row gap-3 max-w-lg mx-auto lg:mx-0">
+                <input
+                  ref={emailRef}
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
+                  placeholder="Enter your work email"
+                  maxLength={255}
+                  className="h-14 rounded-full border border-border bg-background px-6 text-base placeholder:text-muted-foreground/60 w-full md:flex-1 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-ring transition-all"
+                />
                 <button
-                  type="button"
-                  onClick={scrollToForm}
-                  className="text-primary-foreground/70 hover:text-primary-foreground text-sm font-medium transition-colors underline underline-offset-4 min-h-[48px]"
+                  ref={btnRef}
+                  type="submit"
+                  className="h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
                 >
-                  See a live demo site →
+                  Get Started Free →
                 </button>
-              </div>
+              </form>
+              {error && <p className="text-sm text-destructive mt-2 text-center lg:text-left">{error}</p>}
 
-              {/* Trust signals */}
-              <div className="mt-6 flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2 text-xs md:text-sm text-primary-foreground/60">
-                <span>✓ 14-day free trial</span>
-                <span>✓ No credit card required</span>
-                <span>✓ Live in 48 hours</span>
-              </div>
-              <p className="mt-2 text-xs text-primary-foreground/40 text-center md:text-left">
-                Join 200+ detailers, PPF & tint shops already growing
+              <p className="text-sm text-muted-foreground mt-3 text-center lg:text-left">
+                ✓ Free 14-day trial · No credit card · Live in 48 hours
               </p>
 
-              {/* Phone mockup - tablet only */}
-              <div className="hidden md:block lg:hidden mt-12 mb-8 mx-auto" style={{ width: '70%', maxWidth: '420px' }}>
-                <img src={phoneMockup} alt="Phone showing booking schedule" className="w-full h-auto" width={360} height={740} />
+              {/* Social proof */}
+              <div className="mt-6 flex items-center justify-center lg:justify-start gap-2 text-sm text-muted-foreground">
+                <span className="text-amber-400">★★★★★</span>
+                <span>Trusted by 200+ auto detail shops</span>
+              </div>
+
+              {/* Mobile image */}
+              <div className="lg:hidden mt-8 w-full rounded-xl overflow-hidden shadow-xl">
+                <img
+                  src={heroDetail}
+                  alt="Detailing booking app showing today's schedule"
+                  className="w-full h-auto"
+                  loading="eager"
+                  width={360}
+                  height={740}
+                />
               </div>
             </div>
 
-            {/* Right: Phone mockup - desktop only */}
-            <div className="hidden lg:flex justify-center items-center relative z-10">
+            {/* Right: Desktop image with parallax */}
+            <div className="hidden lg:block rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src={phoneMockup}
-                alt="Phone showing booking schedule"
-                className="w-full max-w-[400px] h-auto drop-shadow-2xl"
+                src={heroDetail}
+                alt="Detailing booking app showing today's schedule"
+                className="w-full h-auto"
+                style={{
+                  transform: `translateY(${parallaxY}px)`,
+                  willChange: "transform",
+                  height: "110%",
+                  objectFit: "cover",
+                }}
+                loading="eager"
                 width={360}
                 height={740}
               />
@@ -145,15 +147,15 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Sticky mobile button */}
+      {/* Sticky mobile CTA */}
       {showStickyBtn && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:hidden backdrop-blur-lg bg-primary/95 border-t border-white/10 shadow-2xl">
+        <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-3 md:hidden bg-background/90 backdrop-blur-lg border-t border-border shadow-xl">
           <button
             type="button"
             onClick={scrollToEmail}
-            className="w-full inline-flex items-center justify-center gap-2 bg-accent text-accent-foreground px-10 py-4 rounded-full text-lg font-bold hover:brightness-110 hover:shadow-xl transition-all duration-300 shadow-lg min-h-[48px]"
+            className="w-full h-14 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
           >
-            Create My Website Free
+            Get Started Free →
           </button>
         </div>
       )}

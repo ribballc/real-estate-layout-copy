@@ -11,7 +11,6 @@ const FadeIn = ({ children, delay = 0, className = "" }: FadeInProps) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Skip animation if user prefers reduced motion
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mq.matches) {
       setVisible(true);
@@ -38,8 +37,8 @@ const FadeIn = ({ children, delay = 0, className = "" }: FadeInProps) => {
       className={className}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(20px)",
-        transition: `opacity 500ms ease-out ${delay}ms, transform 500ms ease-out ${delay}ms`,
+        transform: visible ? "translateY(0)" : "translateY(24px)",
+        transition: `opacity 600ms ease-out ${delay}ms, transform 600ms ease-out ${delay}ms`,
       }}
     >
       {children}

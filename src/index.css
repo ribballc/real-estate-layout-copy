@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,35 +6,35 @@
 
 @layer base {
   :root {
-    --background: 180 8% 95%;
-    --foreground: 180 40% 10%;
+    --background: 0 0% 100%;
+    --foreground: 220 20% 14%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 180 40% 10%;
+    --card: 210 20% 98%;
+    --card-foreground: 220 20% 14%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 180 40% 10%;
+    --popover-foreground: 220 20% 14%;
 
-    --primary: 172 55% 16%;
+    --primary: 220 20% 14%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 172 15% 90%;
-    --secondary-foreground: 172 55% 16%;
+    --secondary: 210 15% 96%;
+    --secondary-foreground: 220 20% 14%;
 
-    --muted: 172 10% 88%;
-    --muted-foreground: 172 15% 40%;
+    --muted: 210 10% 93%;
+    --muted-foreground: 220 10% 46%;
 
-    --accent: 82 75% 55%;
-    --accent-foreground: 172 55% 16%;
+    --accent: 152 65% 42%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 172 15% 85%;
-    --input: 172 15% 85%;
-    --ring: 172 55% 16%;
+    --border: 220 10% 90%;
+    --input: 220 10% 90%;
+    --ring: 152 65% 42%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
   }
 }
 
@@ -56,6 +56,10 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans leading-normal;
+    @apply bg-background text-foreground font-sans leading-normal text-base;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading;
   }
 }
