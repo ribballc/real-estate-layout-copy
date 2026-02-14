@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Mail, Circle, ChevronRight } from "lucide-react";
+import { Circle, ChevronRight } from "lucide-react";
 import heroDetail from "@/assets/hero-detail.png";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const HeroSection = () => {
-  const [email, setEmail] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [error, setError] = useState("");
   const [showStickyBtn, setShowStickyBtn] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -22,12 +22,11 @@ const HeroSection = () => {
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const trimmed = email.trim();
-    if (!trimmed) { setError("Please enter your email"); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError("Please enter a valid email"); return; }
-    window.dispatchEvent(new CustomEvent("hero-email", { detail: trimmed }));
+    const trimmed = businessName.trim();
+    if (!trimmed) { setError("Please enter your business name"); return; }
+    window.dispatchEvent(new CustomEvent("hero-business", { detail: trimmed }));
     openFunnel();
-  }, [email, openFunnel]);
+  }, [businessName, openFunnel]);
 
   return (
     <section className="relative overflow-hidden" style={{
@@ -63,68 +62,50 @@ const HeroSection = () => {
               {/* Headline */}
               <h1 className="text-primary-foreground leading-[1.08] tracking-tight text-left">
                 <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold">
-                  Book Jobs in Your Sleep.
+                  Stop Losing $1,200+/Month
                 </span>
                 <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold text-accent">
-                  Get Paid Before You Show Up.
+                  to Missed Calls
                 </span>
               </h1>
 
               {/* Body */}
               <p className="mt-4 text-[15px] md:text-lg text-primary-foreground/70 leading-[1.6] max-w-lg text-left">
-                The booking system that runs itself: customers book 24/7, deposits hit your account automatically, and your calendar stays packed. Set up in 5 minutes. No tech skills needed.
+                Get a professional website with 24/7 booking—so customers book themselves while you're in the field. Automated reminders, deposit collection, and a calendar that fills itself. Built in 5 minutes.
               </p>
 
-              {/* Email form + CTA */}
+              {/* Business name form + CTA */}
               <form onSubmit={handleSubmit} className="mt-7 flex flex-col sm:flex-row gap-3 max-w-lg mx-auto lg:mx-0">
                 <div className="relative w-full sm:flex-1">
-                  <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-foreground/40" />
                   <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
-                    placeholder="Enter your work email"
-                    maxLength={255}
-                    className="h-14 w-full rounded-full border border-primary-foreground/20 bg-primary-foreground/10 pl-12 pr-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
+                    type="text"
+                    value={businessName}
+                    onChange={(e) => { setBusinessName(e.target.value); if (error) setError(""); }}
+                    placeholder="Elite Mobile Detailing"
+                    maxLength={100}
+                    className="h-14 w-full rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
                   />
                 </div>
                 <button
                   ref={btnRef}
                   type="submit"
-                  className="h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px] inline-flex items-center justify-center gap-2"
+                  className="h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap"
                 >
-                  Start My Free Trial
+                  See My Website Now
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </form>
               {error && <p className="text-sm text-accent mt-2 text-center lg:text-left">{error}</p>}
 
+              {/* Trust line */}
+              <p className="mt-4 text-primary-foreground/50 text-sm text-center lg:text-left">
+                ✓ Built in 60 seconds • Free for 14 days • Cancel anytime
+              </p>
+
               {/* Social proof inline */}
-              <div className="mt-6 flex items-center gap-3 justify-center lg:justify-start">
-                {/* Avatar stack */}
-                <div className="flex -space-x-2">
-                  {['M', 'J', 'A', 'K'].map((letter, i) => (
-                    <div
-                      key={i}
-                      className="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center text-xs font-bold"
-                      style={{
-                        background: [
-                          'hsl(82, 75%, 55%)',
-                          'hsl(172, 55%, 30%)',
-                          'hsl(42, 85%, 55%)',
-                          'hsl(200, 60%, 50%)',
-                        ][i],
-                        color: i === 0 ? 'hsl(172, 55%, 16%)' : 'white',
-                      }}
-                    >
-                      {letter}
-                    </div>
-                  ))}
-                </div>
-                <div className="text-left">
-                  <span className="text-primary-foreground font-bold text-sm block leading-tight">1,200+</span>
-                  <span className="text-primary-foreground/50 text-xs leading-tight">Trusted by mobile detailers</span>
-                </div>
+              <div className="mt-5 flex items-center gap-3 justify-center lg:justify-start">
+                <span className="text-amber-400 text-sm tracking-wide">★★★★★</span>
+                <span className="text-primary-foreground/60 text-sm">Join 200+ mobile detailers capturing every job</span>
               </div>
             </div>
 
@@ -163,7 +144,7 @@ const HeroSection = () => {
             onClick={openFunnel}
             className="w-full h-14 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
           >
-            Start Free Trial →
+            See My Website Now →
           </button>
         </div>
       )}
