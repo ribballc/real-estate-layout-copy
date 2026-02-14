@@ -1,26 +1,26 @@
-import { Target, Sparkles, Brain, Settings } from "lucide-react";
+import { Target, Sparkles, Zap, CreditCard } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 
 const features = [
   {
     icon: Target,
     title: "24/7 Smart Booking Calendar",
-    description: "Customers book while you're detailing, eating dinner, or sleeping. No more missed calls, phone tag, or DMs you forget to answer. Capture the $500-1,000/month you're currently losing to missed inquiries.",
+    description: "Customers book while you're detailing. Capture the <strong>$500-1,000/month</strong> you're losing to missed calls.",
   },
   {
     icon: Sparkles,
     title: "No-Show Protection That Actually Works",
-    description: "Automatic SMS reminders 24 hours before every appointment. Require $50-100 deposits at booking — non-refundable if they cancel last minute. Tire-kickers filtered out. Serious clients only.",
+    description: "Automated reminders + <strong>$100</strong> deposits = <strong>40%</strong> fewer no-shows. Serious customers only.",
   },
   {
-    icon: Brain,
+    icon: Zap,
     title: "Professional Website in 48 Hours, Not 48 Days",
-    description: "Mobile-optimized, Google-friendly site with your branding, services, before/after gallery, and reviews. Looks like you paid $3,000 for it. Built for you — zero tech skills required.",
+    description: "Mobile-optimized website that looks like you paid <strong>$3,000</strong>. Built for you—zero tech skills required.",
   },
   {
-    icon: Settings,
-    title: "QR Code → Instant Booking",
-    description: "Put it on your van wrap, business cards, flyers, and Instagram bio. Customer scans, picks a service, chooses a time, pays deposit. You get a notification. That's it.",
+    icon: CreditCard,
+    title: "Payment Processing Built-In",
+    description: "Accept cards, collect deposits, get paid next day. <strong>2.9% + 30¢</strong> per transaction—no monthly fees.",
   },
 ];
 
@@ -34,31 +34,36 @@ const WhySection = () => {
     <section className="bg-background py-16 md:py-24 px-5 md:px-8">
       <div className="max-w-6xl mx-auto">
         <FadeIn>
-          <h2 className="font-heading text-[26px] md:text-4xl font-extrabold tracking-tight leading-[1.15] text-foreground text-center mb-10 md:mb-14">
+          <h2 className="font-heading text-[28px] md:text-4xl font-extrabold tracking-tight leading-[1.15] text-foreground text-center mb-10 md:mb-14">
             Built to Solve the Problems That Are Bleeding Your Revenue
           </h2>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {features.map((feature, i) => (
-            <FadeIn key={feature.title} delay={i * 80}>
-              <div className="bg-muted rounded-2xl p-6 md:p-8 border border-border">
-                <feature.icon className="w-10 h-10 text-accent mb-5" />
+            <FadeIn key={feature.title} delay={i * 120}>
+              <div className="group bg-muted rounded-2xl p-6 md:p-10 border border-border hover:-translate-y-1.5 hover:shadow-lg transition-all duration-300">
+                <feature.icon className="w-10 h-10 text-accent mb-5 group-hover:scale-110 group-hover:rotate-[5deg] transition-all duration-300" />
                 <h3 className="text-xl font-bold text-foreground mb-3">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                <p
+                  className="text-muted-foreground leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: feature.description }}
+                />
               </div>
             </FadeIn>
           ))}
         </div>
 
-        <div className="text-center mt-10">
-          <button
-            onClick={scrollToPricing}
-            className="inline-flex items-center gap-2 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 px-8 py-3 text-lg min-h-[48px]"
-          >
-            See Pricing Below →
-          </button>
-        </div>
+        <FadeIn delay={600}>
+          <div className="text-center mt-10">
+            <button
+              onClick={scrollToPricing}
+              className="group inline-flex items-center gap-2 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-xl hover:brightness-105 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 px-8 py-3 text-lg min-h-[48px]"
+            >
+              See Pricing Below →
+            </button>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );

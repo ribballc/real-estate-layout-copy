@@ -7,12 +7,15 @@ import TestimonialSection from "@/components/TestimonialSection";
 import FunnelSection from "@/components/FunnelSection";
 import CtaFooter from "@/components/CtaFooter";
 import SurveyFunnelModal from "@/components/SurveyFunnelModal";
+import ScrollProgress from "@/components/ScrollProgress";
+import SocialProofNotification from "@/components/SocialProofNotification";
 import { SurveyFunnelProvider } from "@/components/SurveyFunnelContext";
 
 const Index = () => {
   return (
     <SurveyFunnelProvider>
       <div className="min-h-screen">
+        <ScrollProgress />
         <HeroSection />
         <PublishersSection />
         <HowItWorksSection />
@@ -22,6 +25,7 @@ const Index = () => {
         <FunnelSection />
         <CtaFooter />
         <SurveyFunnelModal />
+        <SocialProofNotification />
       </div>
     </SurveyFunnelProvider>
   );

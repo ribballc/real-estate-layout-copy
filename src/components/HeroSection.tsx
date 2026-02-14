@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Circle, ChevronRight } from "lucide-react";
+import { ChevronRight, Store } from "lucide-react";
 import heroDetail from "@/assets/hero-detail.png";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
@@ -54,58 +54,62 @@ const HeroSection = () => {
             {/* Copy block */}
             <div className="text-left">
               {/* Badge */}
-              <span className="bg-accent/15 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-flex items-center gap-2 mb-3 border border-accent/20">
-                <Circle className="w-2 h-2 fill-accent text-accent" />
+              <span
+                className="bg-accent/15 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-flex items-center gap-2 mb-3 border border-accent/20 animate-[fadeSlideDown_0.5s_ease-out_0.3s_both]"
+              >
+                <span className="w-2 h-2 rounded-full bg-accent inline-block" />
                 For Mobile Detailers
               </span>
 
               {/* Headline */}
-              <h1 className="text-primary-foreground leading-[1.08] tracking-tight text-left">
-                <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold">
-                  Stop Losing $1,200+/Month
+              <h1 className="text-primary-foreground leading-[1.08] tracking-tight text-left animate-[fadeSlideUp_0.6s_ease-out_0.5s_both]">
+                <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.15)' }}>
+                  Stop Losing{" "}
+                  <span className="text-[110%] font-black">$1,200+/Month</span>
                 </span>
-                <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold text-accent">
+                <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold text-accent" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.1)' }}>
                   to Missed Calls
                 </span>
               </h1>
 
               {/* Body */}
-              <p className="mt-4 text-[15px] md:text-lg text-primary-foreground/70 leading-[1.6] max-w-lg text-left">
+              <p className="mt-4 text-[15px] md:text-lg text-primary-foreground/70 leading-[1.6] max-w-lg text-left animate-[fadeSlideUp_0.6s_ease-out_0.7s_both]">
                 Get a professional website with 24/7 booking—so customers book themselves while you're in the field. Automated reminders, deposit collection, and a calendar that fills itself. Built in 5 minutes.
               </p>
 
               {/* Business name form + CTA */}
-              <form onSubmit={handleSubmit} className="mt-7 flex flex-col sm:flex-row gap-3 max-w-lg mx-auto lg:mx-0">
+              <form onSubmit={handleSubmit} className="mt-7 flex flex-col sm:flex-row gap-3 max-w-lg mx-auto lg:mx-0 animate-[fadeSlideUp_0.6s_ease-out_0.8s_both]">
                 <div className="relative w-full sm:flex-1">
+                  <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-foreground/30" />
                   <input
                     type="text"
                     value={businessName}
                     onChange={(e) => { setBusinessName(e.target.value); if (error) setError(""); }}
                     placeholder="Enter Your Business Name"
                     maxLength={100}
-                    className="h-14 w-full rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-sm text-primary-foreground placeholder:text-primary-foreground/30 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
+                    className="h-14 w-full rounded-full border border-primary-foreground/20 bg-primary-foreground/10 pl-10 pr-6 text-sm text-primary-foreground placeholder:text-primary-foreground/30 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent/50 focus:scale-[1.02] transition-all duration-300"
                   />
                 </div>
                 <button
                   ref={btnRef}
                   type="submit"
-                  className="h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap"
+                  className="group h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-xl hover:brightness-105 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap animate-[gentlePulse_2.5s_ease-in-out_infinite]"
                 >
                   Build My Website Free
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
               </form>
               {error && <p className="text-sm text-accent mt-2 text-center lg:text-left">{error}</p>}
 
               {/* Trust line */}
-              <p className="mt-4 text-primary-foreground/50 text-sm text-center lg:text-left">
-                ✓ Built in 5 minutes • Free for 14 days • Cancel anytime
+              <p className="mt-4 text-primary-foreground/50 text-sm text-center lg:text-left animate-[fadeSlideUp_0.5s_ease-out_1s_both]">
+                <span className="text-accent">✓</span> Built in 5 minutes • Free for 14 days • Cancel anytime
               </p>
 
               {/* Social proof inline */}
-              <div className="mt-5 flex items-center gap-3 justify-center lg:justify-start">
-                <span className="text-amber-400 text-sm tracking-wide">★★★★★</span>
-                <span className="text-primary-foreground/60 text-sm">Join 200+ mobile detailers capturing every job</span>
+              <div className="mt-5 flex items-center gap-3 justify-center lg:justify-start animate-[fadeSlideUp_0.5s_ease-out_1.2s_both]">
+                <span className="text-accent text-sm tracking-wide">★★★★★</span>
+                <span className="text-primary-foreground/60 text-sm">Trusted by <strong>200+</strong> detailers · <strong>$2.4M</strong> in bookings captured</span>
               </div>
             </div>
 
@@ -114,10 +118,10 @@ const HeroSection = () => {
               <img
                 src={heroDetail}
                 alt="Detailing booking app showing today's schedule"
-                className="w-full max-w-[400px] h-auto drop-shadow-2xl"
+                className="w-full max-w-[480px] h-auto drop-shadow-2xl animate-[heroFloat_3s_ease-in-out_infinite]"
                 loading="eager"
-                width={360}
-                height={740}
+                width={480}
+                height={888}
               />
             </div>
           </div>
