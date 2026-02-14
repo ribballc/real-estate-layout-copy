@@ -6,10 +6,10 @@ const STEPS = [
   {
     id: 1,
     title: "Tell Us About Your Shop",
-    subtitle: "Quick details so we can build your perfect site.",
+    subtitle: "Quick details so we can build your site.",
     fields: [
       { name: "businessName", label: "Business Name", type: "text", placeholder: "e.g. Elite Mobile Detailing" },
-      { name: "industry", label: "What Do You Specialize In?", type: "select", placeholder: "Select your specialty", options: ["Mobile Detailing", "Paint Protection Film (PPF)", "Window Tinting", "Ceramic Coating", "Full Detail Shop", "Car Wash", "Other"] },
+      { name: "industry", label: "What do you specialize in?", type: "select", placeholder: "Select your specialty", options: ["Mobile Detailing", "Paint Protection Film (PPF)", "Window Tinting", "Ceramic Coating", "Full Detail Shop", "Car Wash", "Other"] },
     ],
   },
   {
@@ -17,17 +17,17 @@ const STEPS = [
     title: "What's Costing You Money?",
     subtitle: "Pick the problems you want solved.",
     fields: [
-      { name: "goals", label: "Select All That Apply", type: "multiselect", options: ["No-shows & last-minute cancellations", "No online booking system", "No professional website", "Losing jobs to competitors online", "Too much time on back-and-forth texts", "Can't collect deposits upfront"] },
+      { name: "goals", label: "Select All That Apply", type: "multiselect", options: ["No-shows & cancellations", "No online booking", "No professional website", "Losing jobs to competitors online", "Too much texting back and forth", "Can't collect deposits"] },
     ],
   },
   {
     id: 3,
-    title: "Last Step — Where Do We Send It?",
-    subtitle: "We'll have your site ready in 48 hours.",
+    title: "Where Should We Send Your Site?",
+    subtitle: "We'll have it ready in 48 hours.",
     fields: [
       { name: "fullName", label: "Your Name", type: "text", placeholder: "Jake Smith" },
-      { name: "phone", label: "Phone Number", type: "tel", placeholder: "(555) 123-4567" },
-      { name: "email", label: "Email", type: "email", placeholder: "you@yourbusiness.com" },
+      { name: "phone", label: "Phone", type: "tel", placeholder: "(555) 123-4567" },
+      { name: "email", label: "Email", type: "email", placeholder: "you@business.com" },
     ],
   },
 ];
@@ -37,7 +37,6 @@ const FormFunnelSection = () => {
   const [formData, setFormData] = useState<Record<string, string | string[]>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  // Listen for hero email pre-fill
   useEffect(() => {
     const handler = (e: Event) => {
       const detail = (e as CustomEvent<string>).detail;
@@ -88,16 +87,16 @@ const FormFunnelSection = () => {
 
   if (submitted) {
     return (
-      <section id="form-funnel" className="bg-primary py-16 md:py-24 px-6">
+      <section id="form-funnel" className="bg-secondary py-16 md:py-24 px-5 md:px-8">
         <div className="max-w-2xl mx-auto text-center">
           <div className="w-20 h-20 rounded-full bg-accent flex items-center justify-center mx-auto mb-8">
             <Check className="w-10 h-10 text-accent-foreground" />
           </div>
-          <h2 className="font-heading text-2xl md:text-4xl font-bold text-primary-foreground leading-[1.15] mb-4">
+          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-foreground mb-4">
             You're All Set!
           </h2>
-          <p className="text-lg text-primary-foreground/70 leading-normal">
-            We'll have your site ready to preview in 48 hours. Check your email at <span className="text-primary-foreground font-medium">{formData.email as string}</span> for next steps!
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            We'll have your site ready in 48 hours. Check your email at <span className="text-foreground font-medium">{formData.email as string}</span> for next steps.
           </p>
         </div>
       </section>
@@ -105,15 +104,15 @@ const FormFunnelSection = () => {
   }
 
   return (
-    <section id="form-funnel" className="bg-primary py-16 md:py-24 px-6">
+    <section id="form-funnel" className="bg-secondary py-16 md:py-24 px-5 md:px-8">
       <div className="max-w-2xl mx-auto">
         {/* Progress bar */}
         <div className="flex items-center gap-2 mb-12 max-w-xs mx-auto">
           {STEPS.map((s, i) => (
-            <div key={s.id} className="flex-1 flex items-center gap-2">
+            <div key={s.id} className="flex-1">
               <div
-                className={`h-2 rounded-full flex-1 transition-colors duration-300 ${
-                  i <= currentStep ? "bg-accent" : "bg-primary-foreground/15"
+                className={`h-2 rounded-full transition-colors duration-300 ${
+                  i <= currentStep ? "bg-accent" : "bg-border"
                 }`}
               />
             </div>
@@ -121,15 +120,14 @@ const FormFunnelSection = () => {
         </div>
 
         <FadeIn>
-          {/* Step content */}
           <div className="text-center mb-10">
             <p className="text-sm font-medium text-accent uppercase tracking-wider mb-3">
               {currentStep === 0 ? "est. takes <1 min" : `Step ${step.id} of ${STEPS.length}`}
             </p>
-            <h2 className="font-heading text-2xl md:text-4xl font-bold text-primary-foreground leading-[1.15] mb-3">
+            <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-foreground mb-3">
               {step.title}
             </h2>
-            <p className="text-primary-foreground/60 text-base">{step.subtitle}</p>
+            <p className="text-muted-foreground text-base">{step.subtitle}</p>
           </div>
         </FadeIn>
 
@@ -140,7 +138,7 @@ const FormFunnelSection = () => {
               const selected = (formData.goals as string[]) || [];
               return (
                 <div key={field.name}>
-                  <label className="block text-sm font-medium text-primary-foreground/70 mb-3">{field.label}</label>
+                  <label className="block text-sm font-medium text-foreground mb-3">{field.label}</label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {field.options!.map((option) => (
                       <button
@@ -150,7 +148,7 @@ const FormFunnelSection = () => {
                         className={`p-4 rounded-xl text-sm font-medium transition-all duration-200 text-left min-h-[48px] ${
                           selected.includes(option)
                             ? "bg-accent text-accent-foreground shadow-md"
-                            : "bg-primary-foreground/10 text-primary-foreground/80 border border-primary-foreground/15 hover:border-primary-foreground/30"
+                            : "bg-background text-foreground border border-border hover:border-foreground/20"
                         }`}
                       >
                         {selected.includes(option) && <Check className="w-4 h-4 inline mr-2" />}
@@ -165,15 +163,15 @@ const FormFunnelSection = () => {
             if (field.type === "select") {
               return (
                 <div key={field.name}>
-                  <label className="block text-sm font-medium text-primary-foreground/70 mb-2">{field.label}</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">{field.label}</label>
                   <select
                     value={(formData[field.name] as string) || ""}
                     onChange={(e) => updateField(field.name, e.target.value)}
-                    className="w-full px-5 py-4 rounded-xl bg-primary-foreground/10 border border-primary-foreground/15 text-primary-foreground text-base focus:outline-none focus:border-primary-foreground/40 focus:ring-2 focus:ring-primary-foreground/10 transition-all appearance-none min-h-[52px]"
+                    className="w-full px-5 py-4 rounded-xl bg-background border border-border text-foreground text-base focus:outline-none focus:ring-2 focus:ring-ring transition-all appearance-none min-h-[52px]"
                   >
-                    <option value="" className="text-foreground">{field.placeholder}</option>
+                    <option value="">{field.placeholder}</option>
                     {field.options!.map((opt) => (
-                      <option key={opt} value={opt} className="text-foreground">{opt}</option>
+                      <option key={opt} value={opt}>{opt}</option>
                     ))}
                   </select>
                 </div>
@@ -182,14 +180,14 @@ const FormFunnelSection = () => {
 
             return (
               <div key={field.name}>
-                <label className="block text-sm font-medium text-primary-foreground/70 mb-2">{field.label}</label>
+                <label className="block text-sm font-medium text-foreground mb-2">{field.label}</label>
                 <input
                   type={field.type}
                   value={(formData[field.name] as string) || ""}
                   onChange={(e) => updateField(field.name, e.target.value)}
                   placeholder={field.placeholder}
                   maxLength={150}
-                  className="w-full px-5 py-4 rounded-xl bg-primary-foreground/10 border border-primary-foreground/15 text-primary-foreground placeholder:text-primary-foreground/35 text-base focus:outline-none focus:border-primary-foreground/40 focus:ring-2 focus:ring-primary-foreground/10 transition-all min-h-[52px]"
+                  className="w-full px-5 py-4 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground/50 text-base focus:outline-none focus:ring-2 focus:ring-ring transition-all min-h-[52px]"
                 />
               </div>
             );
@@ -202,7 +200,7 @@ const FormFunnelSection = () => {
             <button
               type="button"
               onClick={handleBack}
-              className="flex items-center gap-2 text-primary-foreground/60 hover:text-primary-foreground transition-colors font-medium min-h-[48px]"
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-medium min-h-[48px]"
             >
               <ArrowLeft className="w-4 h-4" />
               Back
@@ -212,10 +210,10 @@ const FormFunnelSection = () => {
             type="button"
             onClick={handleNext}
             disabled={!canProceed()}
-            className={`ml-auto inline-flex items-center justify-center gap-2 px-10 py-4 rounded-full text-lg font-bold transition-all duration-300 shadow-lg min-h-[48px] ${
+            className={`ml-auto inline-flex items-center justify-center gap-2 px-10 py-4 rounded-full text-lg font-bold transition-all duration-200 shadow-md min-h-[48px] ${
               canProceed()
-                ? "bg-accent text-accent-foreground hover:brightness-110 hover:shadow-xl"
-                : "bg-primary-foreground/15 text-primary-foreground/30 cursor-not-allowed"
+                ? "bg-accent text-accent-foreground hover:shadow-lg hover:brightness-105 active:scale-[0.98]"
+                : "bg-border text-muted-foreground cursor-not-allowed"
             }`}
           >
             {currentStep < STEPS.length - 1 ? (
