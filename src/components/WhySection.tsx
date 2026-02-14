@@ -34,8 +34,9 @@ const WhySection = () => {
     <section className="bg-background py-16 md:py-24 px-5 md:px-8">
       <div className="max-w-6xl mx-auto">
         <FadeIn>
-          <h2 className="font-heading text-[28px] md:text-4xl font-extrabold tracking-tight leading-[1.15] text-foreground text-center mb-10 md:mb-14">
-            Built to Solve the Problems That Are Bleeding Your Revenue
+          <h2 className="font-heading text-[28px] md:text-[42px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-10 md:mb-14">
+            Built to Solve the Problems That Are{" "}
+            <span className="font-serif italic text-[32px] md:text-[48px] text-accent">Bleeding Your Revenue</span>
           </h2>
         </FadeIn>
 

@@ -59,8 +59,8 @@ const PricingSection = () => {
     <section id="pricing" className="bg-muted py-16 md:py-24 px-5 md:px-8">
       <div className="max-w-6xl mx-auto">
         <FadeIn>
-          <h2 className="font-heading text-[28px] md:text-4xl font-extrabold tracking-tight leading-[1.15] text-foreground text-center mb-3">
-            Simple Pricing. No Surprises. Cancel Anytime.
+          <h2 className="font-heading text-[28px] md:text-[42px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-3">
+            Simple Pricing. No Surprises. <span className="font-serif italic text-[32px] md:text-[48px] text-accent">Cancel Anytime.</span>
           </h2>
           <p className="text-base md:text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-10 md:mb-14">
             Every plan includes your done-for-you website + smart booking calendar. Start free for 14 days.
@@ -110,8 +110,8 @@ const PricingSection = () => {
                   }`}
                 >
                   {isPro && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-md">
-                      MOST POPULAR
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground text-xs font-serif italic font-semibold px-4 py-1.5 rounded-full tracking-wider shadow-md">
+                      ✦ MOST POPULAR ✦
                     </div>
                   )}
 

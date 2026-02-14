@@ -26,8 +26,8 @@ const FunnelSection = () => {
     <section className="bg-background py-16 md:py-24 px-5 md:px-8">
       <div className="max-w-6xl mx-auto text-center">
         <FadeIn>
-          <h2 className="font-heading text-[26px] md:text-4xl font-extrabold tracking-tight leading-[1.15] text-foreground text-center mb-3">
-            What You're Paying Now vs. What You Get
+          <h2 className="font-heading text-[26px] md:text-[42px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-3">
+            What You're Paying Now vs. <span className="font-serif italic text-[30px] md:text-[48px] text-accent">What You Get</span>
           </h2>
           <p className="text-base md:text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-10 md:mb-14">
             Most detailers cobble together 3-4 apps and still lose money to no-shows.

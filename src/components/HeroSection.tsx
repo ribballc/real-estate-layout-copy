@@ -55,19 +55,20 @@ const HeroSection = () => {
             <div className="text-left">
               {/* Badge */}
               <span
-                className="bg-accent/15 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-flex items-center gap-2 mb-3 border border-accent/20 animate-[fadeSlideDown_0.5s_ease-out_0.3s_both]"
+                className="bg-accent/15 text-accent text-sm font-serif italic px-4 py-1.5 rounded-full inline-flex items-center gap-2 mb-3 border border-accent/20 animate-[fadeSlideDown_0.5s_ease-out_0.3s_both] shadow-[0_4px_12px_rgba(164,214,94,0.3)]"
+                style={{ background: 'linear-gradient(135deg, hsl(82 75% 55% / 0.15), hsl(82 65% 45% / 0.2))' }}
               >
                 <span className="w-2 h-2 rounded-full bg-accent inline-block" />
                 For Mobile Detailers
               </span>
 
               {/* Headline */}
-              <h1 className="text-primary-foreground leading-[1.08] tracking-tight text-left animate-[fadeSlideUp_0.6s_ease-out_0.5s_both]">
+              <h1 className="text-primary-foreground leading-[1.08] tracking-[-0.02em] text-left animate-[fadeSlideUp_0.6s_ease-out_0.5s_both]">
                 <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.15)' }}>
                   Stop Losing{" "}
                   <span className="text-[110%] font-black">$1,200+/Month</span>
                 </span>
-                <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold text-accent" style={{ textShadow: '0 2px 20px rgba(0,0,0,0.1)' }}>
+                <span className="block font-serif italic text-[40px] md:text-[64px] lg:text-[80px] font-semibold text-accent" style={{ textShadow: '0 2px 8px rgba(164,214,94,0.15)' }}>
                   to Missed Calls
                 </span>
               </h1>
@@ -102,8 +103,12 @@ const HeroSection = () => {
               {error && <p className="text-sm text-accent mt-2 text-center lg:text-left">{error}</p>}
 
               {/* Trust line */}
-              <p className="mt-4 text-primary-foreground/50 text-sm text-center lg:text-left animate-[fadeSlideUp_0.5s_ease-out_1s_both]">
-                <span className="text-accent">✓</span> Built in 5 minutes • Free for 14 days • Cancel anytime
+              <p className="mt-4 text-primary-foreground/50 text-sm text-center lg:text-left animate-[fadeSlideUp_0.5s_ease-out_1s_both] flex items-center gap-2 justify-center lg:justify-start flex-wrap">
+                <span><span className="text-accent">✓</span> Built in 5 minutes</span>
+                <span className="text-primary-foreground/30">•</span>
+                <span className="font-serif italic text-accent text-[15px]">Free for 14 days</span>
+                <span className="text-primary-foreground/30">•</span>
+                <span><span className="text-accent">✓</span> Cancel anytime</span>
               </p>
 
               {/* Social proof inline */}
