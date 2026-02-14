@@ -26,7 +26,7 @@ const CtaFooter = () => {
       {/* Footer */}
       <footer className="bg-primary py-10 px-5 md:px-8 border-t border-primary-foreground/10">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">realize:</h2>
+          <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">velarrio:</h2>
           <div className="flex flex-wrap justify-center gap-6 text-sm text-primary-foreground/50">
             <a href="#" className="hover:text-primary-foreground transition-colors">Privacy Policy</a>
             <a href="#" className="hover:text-primary-foreground transition-colors">Cookie Policy</a>

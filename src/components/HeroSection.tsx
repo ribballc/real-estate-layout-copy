@@ -69,15 +69,15 @@ const HeroSection = () => {
       <div className="relative z-10 px-5 md:px-8 pt-6 pb-12 md:pt-10 md:pb-20">
         {/* Logo */}
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">realize:</h2>
+          <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">velarrio:</h2>
         </div>
 
         {/* Hero Content */}
-        <div className="max-w-6xl mx-auto mt-8 md:mt-14">
+        <div className="max-w-6xl mx-auto mt-4 md:mt-10">
           <div className="grid lg:grid-cols-[55%_45%] gap-12 items-center">
             {/* Left: Copy */}
             <div className="text-center lg:text-left">
-              <span className="bg-accent/10 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-block mb-4">
+              <span className="bg-accent/10 text-accent text-base md:text-lg font-semibold px-5 py-2 rounded-full inline-block mb-4">
                 For Mobile Detailers
               </span>
 
@@ -121,21 +121,6 @@ const HeroSection = () => {
                 <span>Trusted by 200+ auto detail shops</span>
               </div>
 
-              {/* Mobile image — no box, PNG transparency, parallax */}
-              <div className="lg:hidden mt-8 flex justify-center">
-                <img
-                  src={heroDetail}
-                  alt="Detailing booking app showing today's schedule"
-                  className="w-[85%] max-w-[360px] h-auto"
-                  style={{
-                    transform: `translate3d(0, -${parallaxY}px, 0)`,
-                    willChange: "transform",
-                  }}
-                  loading="eager"
-                  width={360}
-                  height={740}
-                />
-              </div>
             </div>
 
             {/* Right: Desktop image — no box, static PNG */}
