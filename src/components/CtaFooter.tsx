@@ -7,51 +7,39 @@ const CtaFooter = () => {
   return (
     <>
       {/* CTA */}
-      <section className="py-16 md:py-24 px-5 md:px-8 text-center" style={{
-        background: 'linear-gradient(135deg, hsl(82 65% 55%) 0%, hsl(82 55% 45%) 100%)',
+      <section className="py-20 md:py-28 px-5 md:px-8 text-center" style={{
+        background: 'linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)',
       }}>
         <div className="max-w-3xl mx-auto">
           <FadeIn>
-            <h2 className="font-heading text-[22px] md:text-[42px] font-bold tracking-[-0.02em] leading-[1.1] text-center max-w-3xl mx-auto mb-4" style={{ color: 'hsl(160 50% 8%)' }}>
-              Your Competitors Already Have Online Booking.
+            <h2 className="font-heading text-[24px] md:text-[42px] font-bold tracking-[-0.015em] leading-[1.2] text-primary-foreground text-center mb-4">
+              Ready to Stop Missing Jobs?
             </h2>
-            <p className="font-serif italic text-[24px] md:text-[48px] leading-[1.1] mb-8" style={{ color: 'hsl(160 50% 8%)' }}>
-              You're Still Relying on Missed Calls and DMs.
+            <p className="text-base md:text-lg leading-relaxed text-primary-foreground/70 max-w-[600px] mx-auto mb-8">
+              Your website can be live in 48 hours. Join 200+ detailers already using Velarrio.
             </p>
           </FadeIn>
           <button
             onClick={openFunnel}
-            className="inline-flex items-center gap-2 font-bold rounded-[14px] hover:-translate-y-0.5 hover:scale-[1.02] active:scale-[0.98] transition-all duration-400 px-10 py-4 text-lg min-h-[48px]"
+            className="inline-flex items-center gap-2 font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 px-12 py-5 text-lg min-h-[48px] text-accent-foreground"
             style={{
-              background: 'hsl(160 50% 8%)',
-              color: 'hsl(0 0% 100%)',
-              boxShadow: '0 8px 24px hsla(160, 50%, 8%, 0.4)',
+              background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
+              boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
             }}
           >
-            Start My 14-Day Free Trial →
+            Build My Website Free →
           </button>
-          <p className="text-sm mt-3" style={{ color: 'hsla(160, 50%, 8%, 0.6)' }}>
-            No credit card required · Cancel anytime
+          <p className="text-sm mt-4 text-primary-foreground/50">
+            Free for 14 days · Takes 60 seconds to start
           </p>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 md:py-16 px-5 md:px-8" style={{
-        background: 'hsl(160 50% 6%)',
-      }}>
+      <footer className="py-12 md:py-16 px-5 md:px-8" style={{ background: 'hsl(215 50% 8%)' }}>
         <div className="max-w-6xl mx-auto">
-          {/* Brand statement */}
-          <div className="text-center mb-10">
-            <p className="text-primary-foreground/40 text-sm leading-relaxed max-w-md mx-auto">
-              <span className="font-serif italic text-primary-foreground/60 text-base">Velarrio isn't just software.</span>
-              <br />
-              It's the system that turns your detailing craft into a thriving business.
-            </p>
-          </div>
-
           {/* Trust badges */}
-          <div className="flex items-center justify-center gap-6 mb-8 text-primary-foreground/20 text-xs">
+          <div className="flex items-center justify-center gap-6 mb-8 text-primary-foreground/25 text-xs">
             <span>🔒 Bank-level encryption</span>
             <span>·</span>
             <span>Secured by Stripe</span>
@@ -59,14 +47,11 @@ const CtaFooter = () => {
 
           <div className="border-t border-primary-foreground/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex flex-col items-center md:items-start gap-1">
-              <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">velarrio:</h2>
-              <p className="text-xs text-primary-foreground/25 font-serif italic">Built for professionals.</p>
+              <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">velarrio</h2>
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-sm text-primary-foreground/35">
               <a href="#" className="hover:text-primary-foreground transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-primary-foreground transition-colors">Cookie Policy</a>
               <a href="#" className="hover:text-primary-foreground transition-colors">Terms of Use</a>
-              <a href="#" className="hover:text-primary-foreground transition-colors">Opt Out</a>
             </div>
             <p className="text-xs text-primary-foreground/20">© 2026 Velarrio. All rights reserved.</p>
           </div>

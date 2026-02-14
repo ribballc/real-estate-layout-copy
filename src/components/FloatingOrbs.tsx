@@ -3,8 +3,8 @@ const FloatingOrbs = () => (
     <div
       className="absolute w-[600px] h-[600px] rounded-full"
       style={{
-        background: "radial-gradient(circle, hsla(82, 65%, 55%, 1), transparent 70%)",
-        opacity: 0.04,
+        background: "radial-gradient(circle, hsla(217, 91%, 60%, 1), transparent 70%)",
+        opacity: 0.03,
         top: "10%",
         left: "-10%",
         filter: "blur(120px)",
@@ -14,23 +14,12 @@ const FloatingOrbs = () => (
     <div
       className="absolute w-[500px] h-[500px] rounded-full"
       style={{
-        background: "radial-gradient(circle, hsla(160, 50%, 30%, 1), transparent 70%)",
-        opacity: 0.03,
+        background: "radial-gradient(circle, hsla(213, 94%, 68%, 1), transparent 70%)",
+        opacity: 0.025,
         bottom: "20%",
         right: "-5%",
         filter: "blur(100px)",
         animation: "orbFloat2 50s ease-in-out infinite",
-      }}
-    />
-    <div
-      className="absolute w-[400px] h-[400px] rounded-full"
-      style={{
-        background: "radial-gradient(circle, hsla(82, 65%, 55%, 1), transparent 70%)",
-        opacity: 0.025,
-        top: "60%",
-        left: "40%",
-        filter: "blur(100px)",
-        animation: "orbFloat1 70s ease-in-out infinite reverse",
       }}
     />
   </div>

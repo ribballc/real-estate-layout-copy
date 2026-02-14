@@ -14,34 +14,20 @@ const FadeIn = ({ children, delay = 0, className = "", direction = "up", rotateX
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) {
-      setVisible(true);
-      return;
-    }
+    if (mq.matches) { setVisible(true); return; }
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
       { threshold: 0.1 }
     );
-
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
 
   const getTransform = (isVisible: boolean) => {
-    if (isVisible) return "translateY(0) translateX(0) rotateX(0)";
-    const map = {
-      up: "translateY(40px)",
-      bottom: "translateY(-40px)",
-      left: "translateX(-40px)",
-      right: "translateX(40px)",
-    };
-    return `${map[direction]} rotateX(${rotateX}deg)`;
+    if (isVisible) return "translateY(0) translateX(0) scale(1)";
+    const map = { up: "translateY(40px)", bottom: "translateY(-40px)", left: "translateX(-40px)", right: "translateX(40px)" };
+    return `${map[direction]} scale(0.97)`;
   };
 
   return (
@@ -51,7 +37,7 @@ const FadeIn = ({ children, delay = 0, className = "", direction = "up", rotateX
       style={{
         opacity: visible ? 1 : 0,
         transform: getTransform(visible),
-        transition: `opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
+        transition: `opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
         willChange: visible ? "auto" : "opacity, transform",
       }}
     >

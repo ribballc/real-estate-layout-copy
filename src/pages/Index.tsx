@@ -1,11 +1,11 @@
 import HeroSection from "@/components/HeroSection";
 import PublishersSection from "@/components/PublishersSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
-import ManifestoSection from "@/components/ManifestoSection";
 import WhySection from "@/components/WhySection";
-import PricingSection from "@/components/PricingSection";
-import TestimonialSection from "@/components/TestimonialSection";
 import FunnelSection from "@/components/FunnelSection";
+import ManifestoSection from "@/components/ManifestoSection";
+import TestimonialSection from "@/components/TestimonialSection";
+import PricingSection from "@/components/PricingSection";
 import CtaFooter from "@/components/CtaFooter";
 import SurveyFunnelModal from "@/components/SurveyFunnelModal";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -24,9 +24,9 @@ const Index = () => {
         <HowItWorksSection />
         <ManifestoSection />
         <WhySection />
-        <PricingSection />
-        <TestimonialSection />
         <FunnelSection />
+        <TestimonialSection />
+        <PricingSection />
         <CtaFooter />
         <SurveyFunnelModal />
         <SocialProofNotification />
