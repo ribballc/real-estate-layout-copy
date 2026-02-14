@@ -4,7 +4,7 @@ const stats = [
   { value: "200+", label: "Active shops" },
   { value: "10,000+", label: "Bookings processed" },
   { value: "4.9 ★", label: "Average rating" },
-  { value: "48hrs", label: "Average setup" },
+  { value: "5min", label: "Average setup" },
 ];
 
 const PublishersSection = () => {

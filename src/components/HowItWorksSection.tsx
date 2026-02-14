@@ -32,7 +32,7 @@ const HowItWorksSection = () => {
             How It Works
           </h2>
           <p className="text-muted-foreground text-lg text-center mb-10 md:mb-12">
-            From signup to live site in 48 hours.
+            From signup to live site in 5 minutes.
           </p>
         </FadeIn>
 
