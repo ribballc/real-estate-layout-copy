@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { Mail, Circle } from "lucide-react";
 import heroDetail from "@/assets/hero-detail.png";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
@@ -54,7 +55,8 @@ const HeroSection = () => {
             {/* Copy block */}
             <div className="text-left">
               {/* Badge */}
-              <span className="bg-accent/15 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-block mb-3 border border-accent/20">
+              <span className="bg-accent/15 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-flex items-center gap-2 mb-3 border border-accent/20">
+                <Circle className="w-2 h-2 fill-accent text-accent" />
                 For Mobile Detailers
               </span>
 
@@ -75,14 +77,17 @@ const HeroSection = () => {
 
               {/* Email form + CTA */}
               <form onSubmit={handleSubmit} className="mt-7 flex flex-col sm:flex-row gap-3 max-w-lg mx-auto lg:mx-0">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
-                  placeholder="Enter your work email"
-                  maxLength={255}
-                  className="h-14 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 w-full sm:flex-1 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
-                />
+                <div className="relative w-full sm:flex-1">
+                  <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-foreground/40" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
+                    placeholder="Enter your work email"
+                    maxLength={255}
+                    className="h-14 w-full rounded-full border border-primary-foreground/20 bg-primary-foreground/10 pl-12 pr-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
+                  />
+                </div>
                 <button
                   ref={btnRef}
                   type="submit"
