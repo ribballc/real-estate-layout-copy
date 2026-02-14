@@ -14,9 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        heading: ["Plus Jakarta Sans", "sans-serif"],
-        serif: ["Playfair Display", "serif"],
+        sans: ["Space Grotesk", "Inter", "system-ui", "sans-serif"],
+        heading: ["Space Grotesk", "Inter", "sans-serif"],
+        serif: ["DM Serif Display", "Playfair Display", "serif"],
+        mono: ["JetBrains Mono", "Courier New", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -56,6 +57,8 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        chrome: "hsl(var(--chrome))",
+        charcoal: "hsl(var(--charcoal))",
       },
       borderRadius: {
         lg: "var(--radius)",
