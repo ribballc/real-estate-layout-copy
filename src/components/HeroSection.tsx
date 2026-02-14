@@ -81,7 +81,7 @@ const HeroSection = () => {
                     type="text"
                     value={businessName}
                     onChange={(e) => { setBusinessName(e.target.value); if (error) setError(""); }}
-                    placeholder="Elite Mobile Detailing"
+                    placeholder="Enter Your Business Name"
                     maxLength={100}
                     className="h-14 w-full rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
                   />
@@ -91,7 +91,7 @@ const HeroSection = () => {
                   type="submit"
                   className="h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap"
                 >
-                  See My Website Now
+                  Build My Website Free
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </form>
@@ -99,7 +99,7 @@ const HeroSection = () => {
 
               {/* Trust line */}
               <p className="mt-4 text-primary-foreground/50 text-sm text-center lg:text-left">
-                ✓ Built in 60 seconds • Free for 14 days • Cancel anytime
+                ✓ Built in 5 minutes • Free for 14 days • Cancel anytime
               </p>
 
               {/* Social proof inline */}
@@ -144,7 +144,7 @@ const HeroSection = () => {
             onClick={openFunnel}
             className="w-full h-14 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
           >
-            See My Website Now →
+            Build My Website Free →
           </button>
         </div>
       )}
