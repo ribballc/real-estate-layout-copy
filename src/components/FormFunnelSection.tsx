@@ -23,7 +23,7 @@ const STEPS = [
   {
     id: 3,
     title: "Where Should We Send Your Site?",
-    subtitle: "We'll have it ready in 48 hours.",
+    subtitle: "We'll have it ready in 5 minutes.",
     fields: [
       { name: "fullName", label: "Your Name", type: "text", placeholder: "Jake Smith" },
       { name: "phone", label: "Phone", type: "tel", placeholder: "(555) 123-4567" },
@@ -96,7 +96,7 @@ const FormFunnelSection = () => {
             You're All Set!
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            We'll have your site ready in 48 hours. Check your email at <span className="text-foreground font-medium">{formData.email as string}</span> for next steps.
+            Your site is almost ready! Check your email at <span className="text-foreground font-medium">{formData.email as string}</span> for next steps.
           </p>
         </div>
       </section>

@@ -13,7 +13,7 @@ const withRealize = [
   "Built for detailers, PPF & tint",
   "Auto reminders + deposit collection",
   "47% fewer no-shows on average",
-  "Live in 48 hours, no tech skills",
+  "Launch in 5 mins, no tech skills",
 ];
 
 const FunnelSection = () => {

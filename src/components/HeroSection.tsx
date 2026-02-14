@@ -9,6 +9,7 @@ const HeroSection = () => {
   const btnRef = useRef<HTMLButtonElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
 
+  // Sticky CTA observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setShowStickyBtn(!entry.isIntersecting),
@@ -18,17 +19,15 @@ const HeroSection = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Desktop-only parallax
+  // Mobile parallax on scroll
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (mq.matches) return;
-    const isLg = window.matchMedia("(min-width: 1024px)");
-    if (!isLg.matches) return;
 
     let raf: number;
     const onScroll = () => {
       raf = requestAnimationFrame(() => {
-        setParallaxY(Math.min(window.scrollY * 0.08, 40));
+        setParallaxY(Math.min(window.scrollY * 0.3, 50));
       });
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -57,29 +56,43 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="bg-background">
-      <div className="px-5 md:px-8 pt-6 pb-12 md:pt-10 md:pb-20">
+    <section className="relative bg-primary overflow-hidden">
+      {/* Grid pattern overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.07]"
+        style={{
+          backgroundImage: `linear-gradient(hsl(var(--accent)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--accent)) 1px, transparent 1px)`,
+          backgroundSize: '40px 40px',
+        }}
+      />
+      {/* Bottom fade */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-64"
+        style={{ background: `linear-gradient(to bottom, transparent, hsl(var(--background)))` }}
+      />
+
+      <div className="relative z-10 px-5 md:px-8 pt-6 pb-12 md:pt-10 md:pb-20">
         {/* Logo */}
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-xl font-heading font-bold text-foreground tracking-tight">realize:</h2>
+          <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">realize:</h2>
         </div>
 
         {/* Hero Content */}
         <div className="max-w-6xl mx-auto mt-8 md:mt-14">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-[55%_45%] gap-12 items-center">
             {/* Left: Copy */}
             <div className="text-center lg:text-left">
               <span className="bg-accent/10 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-block mb-4">
                 For Mobile Detailers, PPF & Tint Shops
               </span>
 
-              <h1 className="font-heading text-[32px] md:text-5xl lg:text-[54px] font-extrabold text-foreground leading-[1.15] tracking-tight">
+              <h1 className="font-heading text-[32px] md:text-5xl lg:text-[54px] font-extrabold text-primary-foreground leading-[1.15] tracking-tight">
                 Stop Losing Money
                 <span className="block">to No-Shows.</span>
               </h1>
 
-              <p className="mt-5 text-lg md:text-xl text-muted-foreground leading-[1.6] max-w-xl mx-auto lg:mx-0">
-                We build you a custom website + booking system in 48 hours. Detailers on our platform book <strong className="text-foreground">40% more jobs</strong> and cut no-shows in half.
+              <p className="mt-5 text-lg md:text-xl text-primary-foreground/80 leading-[1.6] max-w-xl mx-auto lg:mx-0">
+                We build you a custom website + booking system in minutes. Detailers on our platform book <strong className="text-primary-foreground">40% more jobs</strong> and cut no-shows in half.
               </p>
 
               {/* Form */}
@@ -91,7 +104,7 @@ const HeroSection = () => {
                   onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
                   placeholder="Enter your work email"
                   maxLength={255}
-                  className="h-14 rounded-full border border-border bg-background px-6 text-base placeholder:text-muted-foreground/60 w-full md:flex-1 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-ring transition-all"
+                  className="h-14 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 w-full md:flex-1 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
                 />
                 <button
                   ref={btnRef}
@@ -101,24 +114,28 @@ const HeroSection = () => {
                   Get Started Free →
                 </button>
               </form>
-              {error && <p className="text-sm text-destructive mt-2 text-center lg:text-left">{error}</p>}
+              {error && <p className="text-sm text-accent mt-2 text-center lg:text-left">{error}</p>}
 
-              <p className="text-sm text-muted-foreground mt-3 text-center lg:text-left">
-                ✓ Free 14-day trial · No credit card · Live in 48 hours
+              <p className="text-sm text-primary-foreground/60 mt-3 text-center lg:text-left">
+                ✓ Free 14-day trial · No credit card · Launch in 5 mins
               </p>
 
               {/* Social proof */}
-              <div className="mt-6 flex items-center justify-center lg:justify-start gap-2 text-sm text-muted-foreground">
+              <div className="mt-6 flex items-center justify-center lg:justify-start gap-2 text-sm text-primary-foreground/60">
                 <span className="text-amber-400">★★★★★</span>
                 <span>Trusted by 200+ auto detail shops</span>
               </div>
 
-              {/* Mobile image */}
-              <div className="lg:hidden mt-8 w-full rounded-xl overflow-hidden shadow-xl">
+              {/* Mobile image — no box, PNG transparency, parallax */}
+              <div className="lg:hidden mt-8 flex justify-center">
                 <img
                   src={heroDetail}
                   alt="Detailing booking app showing today's schedule"
-                  className="w-full h-auto"
+                  className="w-[85%] max-w-[360px] h-auto"
+                  style={{
+                    transform: `translate3d(0, -${parallaxY}px, 0)`,
+                    willChange: "transform",
+                  }}
                   loading="eager"
                   width={360}
                   height={740}
@@ -126,18 +143,12 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Right: Desktop image with parallax */}
-            <div className="hidden lg:block rounded-2xl overflow-hidden shadow-2xl">
+            {/* Right: Desktop image — no box, static PNG */}
+            <div className="hidden lg:flex justify-center items-center">
               <img
                 src={heroDetail}
                 alt="Detailing booking app showing today's schedule"
-                className="w-full h-auto"
-                style={{
-                  transform: `translateY(${parallaxY}px)`,
-                  willChange: "transform",
-                  height: "110%",
-                  objectFit: "cover",
-                }}
+                className="w-full max-w-[420px] h-auto drop-shadow-2xl"
                 loading="eager"
                 width={360}
                 height={740}
@@ -149,7 +160,7 @@ const HeroSection = () => {
 
       {/* Sticky mobile CTA */}
       {showStickyBtn && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-3 md:hidden bg-background/90 backdrop-blur-lg border-t border-border shadow-xl">
+        <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-3 md:hidden bg-primary/95 backdrop-blur-lg border-t border-primary-foreground/10 shadow-xl">
           <button
             type="button"
             onClick={scrollToEmail}
