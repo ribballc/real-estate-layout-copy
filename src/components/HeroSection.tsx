@@ -59,11 +59,11 @@ const HeroSection = () => {
               </span>
 
               {/* Headline */}
-              <h1 className="text-primary-foreground leading-[1.1] tracking-tight">
-                <span className="block font-heading text-[32px] md:text-5xl lg:text-[64px] font-extrabold">
+              <h1 className="text-primary-foreground leading-[1.08] tracking-tight text-left">
+                <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold">
                   Empowering Your
                 </span>
-                <span className="block font-serif text-[32px] md:text-5xl lg:text-[64px] font-normal">
+                <span className="block font-serif text-[42px] md:text-[64px] lg:text-[82px] font-normal">
                   Booking Growth
                 </span>
               </h1>
