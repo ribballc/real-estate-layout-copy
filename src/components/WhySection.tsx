@@ -1,3 +1,4 @@
+import { useRef, useCallback, useEffect } from "react";
 import { Target, Sparkles, Zap, CreditCard } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 
@@ -24,6 +25,55 @@ const features = [
   },
 ];
 
+const TiltCard = ({ feature, index }: { feature: typeof features[0]; index: number }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMove = useCallback((e: MouseEvent) => {
+    const el = cardRef.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transform = `perspective(800px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg) translateY(-12px)`;
+  }, []);
+
+  const handleLeave = useCallback(() => {
+    const el = cardRef.current;
+    if (el) el.style.transform = "perspective(800px) rotateX(0) rotateY(0) translateY(0)";
+  }, []);
+
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+    el.style.transition = "transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease";
+    el.style.transformStyle = "preserve-3d";
+    el.addEventListener("mousemove", handleMove);
+    el.addEventListener("mouseleave", handleLeave);
+    return () => {
+      el.removeEventListener("mousemove", handleMove);
+      el.removeEventListener("mouseleave", handleLeave);
+    };
+  }, [handleMove, handleLeave]);
+
+  const Icon = feature.icon;
+
+  return (
+    <FadeIn delay={index * 150} rotateX={10}>
+      <div
+        ref={cardRef}
+        className="group bg-muted rounded-2xl p-6 md:p-10 border border-border hover:shadow-[0_24px_48px_rgba(0,0,0,0.12)] hover:border-accent/30"
+      >
+        <Icon className="w-10 h-10 text-accent mb-5 group-hover:scale-110 group-hover:rotate-[360deg] transition-all duration-700" />
+        <h3 className="text-xl font-bold text-foreground mb-3">{feature.title}</h3>
+        <p
+          className="text-muted-foreground leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: feature.description }}
+        />
+      </div>
+    </FadeIn>
+  );
+};
+
 const WhySection = () => {
   const scrollToPricing = () => {
     const el = document.getElementById("pricing");
@@ -42,16 +92,7 @@ const WhySection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {features.map((feature, i) => (
-            <FadeIn key={feature.title} delay={i * 120}>
-              <div className="group bg-muted rounded-2xl p-6 md:p-10 border border-border hover:-translate-y-1.5 hover:shadow-lg transition-all duration-300">
-                <feature.icon className="w-10 h-10 text-accent mb-5 group-hover:scale-110 group-hover:rotate-[5deg] transition-all duration-300" />
-                <h3 className="text-xl font-bold text-foreground mb-3">{feature.title}</h3>
-                <p
-                  className="text-muted-foreground leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: feature.description }}
-                />
-              </div>
-            </FadeIn>
+            <TiltCard key={feature.title} feature={feature} index={i} />
           ))}
         </div>
 
@@ -59,7 +100,8 @@ const WhySection = () => {
           <div className="text-center mt-10">
             <button
               onClick={scrollToPricing}
-              className="group inline-flex items-center gap-2 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-xl hover:brightness-105 hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 px-8 py-3 text-lg min-h-[48px]"
+              className="group inline-flex items-center gap-2 font-bold rounded-full shadow-md hover:shadow-[0_12px_32px_rgba(164,214,94,0.35)] hover:brightness-105 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 px-8 py-3 text-lg min-h-[48px]"
+              style={{ background: 'linear-gradient(180deg, hsl(82 80% 60%) 0%, hsl(82 75% 55%) 100%)', color: 'hsl(var(--accent-foreground))' }}
             >
               See Pricing Below →
             </button>

@@ -4,9 +4,11 @@ interface FadeInProps {
   children: ReactNode;
   delay?: number;
   className?: string;
+  direction?: "up" | "left" | "right" | "bottom";
+  rotateX?: number;
 }
 
-const FadeIn = ({ children, delay = 0, className = "" }: FadeInProps) => {
+const FadeIn = ({ children, delay = 0, className = "", direction = "up", rotateX = 0 }: FadeInProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -31,14 +33,26 @@ const FadeIn = ({ children, delay = 0, className = "" }: FadeInProps) => {
     return () => observer.disconnect();
   }, []);
 
+  const getTransform = (isVisible: boolean) => {
+    if (isVisible) return "translateY(0) translateX(0) rotateX(0)";
+    const map = {
+      up: "translateY(40px)",
+      bottom: "translateY(-40px)",
+      left: "translateX(-40px)",
+      right: "translateX(40px)",
+    };
+    return `${map[direction]} rotateX(${rotateX}deg)`;
+  };
+
   return (
     <div
       ref={ref}
       className={className}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(24px)",
-        transition: `opacity 600ms ease-out ${delay}ms, transform 600ms ease-out ${delay}ms`,
+        transform: getTransform(visible),
+        transition: `opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
+        willChange: visible ? "auto" : "opacity, transform",
       }}
     >
       {children}
