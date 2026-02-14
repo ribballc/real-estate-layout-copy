@@ -6,6 +6,7 @@ import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 const plans = [
   {
     name: "Starter",
+    badge: "FOUNDATION",
     subtitle: "For solo detailers doing 10-20 jobs/week",
     monthlyPrice: 49,
     annualPrice: 35,
@@ -21,6 +22,7 @@ const plans = [
   },
   {
     name: "Pro",
+    badge: "THE STANDARD",
     subtitle: "For full-time detailers doing 15-30 jobs/week",
     monthlyPrice: 99,
     annualPrice: 75,
@@ -36,10 +38,11 @@ const plans = [
   },
   {
     name: "Elite",
+    badge: "EXCELLENCE",
     subtitle: "For teams of 2-4 doing $15k+/month",
     monthlyPrice: 149,
     annualPrice: 119,
-    popular: true,
+    popular: false,
     features: [
       "Everything in Pro, plus:",
       "Team management (3 technician accounts)",
@@ -50,9 +53,6 @@ const plans = [
     bottomFeature: "Payment processing: 2.9% + 30¢",
   },
 ];
-
-// Fix: Elite is not popular
-plans[2].popular = false;
 
 const TiltPricingCard = ({ children, isPro }: { children: React.ReactNode; isPro: boolean }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -150,11 +150,12 @@ const PricingSection = () => {
                     }`}
                   >
                     {isPro && (
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent text-accent-foreground text-xs font-serif italic font-semibold px-4 py-1.5 rounded-full tracking-wider shadow-md animate-[ctaGlow_3s_ease-in-out_infinite]">
-                        ✦ MOST POPULAR ✦
+                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-brass text-brass-foreground text-[10px] font-serif italic font-semibold px-4 py-1.5 rounded-full tracking-[0.15em] shadow-md">
+                        ✦ {plan.badge} ✦
                       </div>
                     )}
 
+                    <div className="text-xs text-brass font-serif italic tracking-[0.1em] uppercase mb-1">{plan.badge}</div>
                     <div className="text-xl font-bold">{plan.name}</div>
                     <div className={`text-sm mt-1 ${isPro ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                       {plan.subtitle}
