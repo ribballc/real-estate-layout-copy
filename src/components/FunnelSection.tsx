@@ -1,19 +1,21 @@
 import FadeIn from "@/components/FadeIn";
 
 const without = [
-  "$50-150/mo for a basic website",
-  "Booking through DMs and texts",
-  "Manually chasing confirmations",
-  "$200+/week lost to no-shows",
-  "Looking amateur next to bigger shops",
+  "$50-150/mo for a basic website that doesn't book anything",
+  "Booking through DMs, texts, and missed calls",
+  "Manually chasing confirmations and reminders",
+  "$200-600/week lost to no-shows and cancellations",
+  "No deposits = no protection from tire-kickers",
+  "Looking amateur while competitors look professional",
 ];
 
 const withRealize = [
-  "Website + booking in one place",
-  "Built for detailers, PPF & tint",
-  "Auto reminders + deposit collection",
-  "47% fewer no-shows on average",
-  "Launch in 5 mins, no tech skills",
+  "Done-for-you website + booking calendar in one",
+  "Customers book and pay deposits 24/7",
+  "Auto SMS reminders cut no-shows by 40%",
+  "Route optimization saves 45-90 min/day (Pro)",
+  "Auto review requests build your reputation",
+  "Live in 48 hours — zero tech skills needed",
 ];
 
 const FunnelSection = () => {
@@ -26,22 +28,22 @@ const FunnelSection = () => {
     <section className="bg-background py-16 md:py-24 px-5 md:px-8">
       <div className="max-w-6xl mx-auto text-center">
         <FadeIn>
-          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-foreground mb-3">
-            Stop Overpaying for Tools That Don't Work Together
+          <h2 className="font-heading text-[26px] md:text-4xl font-extrabold tracking-tight leading-[1.15] text-foreground text-center mb-3">
+            What You're Paying Now vs. What You Get
           </h2>
-          <p className="text-lg text-muted-foreground mb-10 md:mb-12">
-            Most detailers duct-tape 3-4 apps. We replace all of them.
+          <p className="text-base md:text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-10 md:mb-14">
+            Most detailers cobble together 3-4 apps and still lose money to no-shows.
           </p>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           <FadeIn delay={0}>
             <div className="bg-background border border-border rounded-2xl p-6 md:p-8 text-left h-full">
               <h3 className="text-lg font-bold text-foreground mb-6">Without Realize</h3>
               <ul className="space-y-0">
-                {without.map((item) => (
-                  <li key={item} className="flex items-start gap-3 py-2 leading-relaxed text-muted-foreground">
-                    <span className="text-destructive font-bold shrink-0">✕</span>
+                {without.map((item, i) => (
+                  <li key={i} className={`flex items-start gap-3 py-2.5 leading-relaxed text-muted-foreground ${i < without.length - 1 ? "border-b border-border" : ""}`}>
+                    <span className="text-destructive font-bold text-lg flex-shrink-0">✕</span>
                     <span>{item}</span>
                   </li>
                 ))}
@@ -49,14 +51,14 @@ const FunnelSection = () => {
             </div>
           </FadeIn>
 
-          <FadeIn delay={150}>
+          <FadeIn delay={120}>
             <div className="bg-primary text-primary-foreground rounded-2xl p-6 md:p-8 shadow-xl text-left h-full">
-              <h3 className="text-lg font-bold mb-6">With Realize</h3>
+              <h3 className="text-lg font-bold mb-6">With Realize — from $49/mo</h3>
               <ul className="space-y-0">
-                {withRealize.map((item) => (
-                  <li key={item} className="flex items-start gap-3 py-2 leading-relaxed">
-                    <span className="text-accent font-bold shrink-0">✓</span>
-                    <span>{item}</span>
+                {withRealize.map((item, i) => (
+                  <li key={i} className={`flex items-start gap-3 py-2.5 leading-relaxed ${i < withRealize.length - 1 ? "border-b border-primary-foreground/10" : ""}`}>
+                    <span className="text-accent font-bold text-lg flex-shrink-0">✓</span>
+                    <span className="text-primary-foreground/90">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -69,7 +71,7 @@ const FunnelSection = () => {
             onClick={scrollToForm}
             className="inline-flex items-center gap-2 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 px-8 py-3 text-lg min-h-[48px]"
           >
-            Try It Free for 14 Days
+            Start My Free Trial →
           </button>
         </div>
       </div>

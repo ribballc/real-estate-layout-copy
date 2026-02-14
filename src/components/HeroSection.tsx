@@ -5,7 +5,6 @@ const HeroSection = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [showStickyBtn, setShowStickyBtn] = useState(false);
-  const [parallaxY, setParallaxY] = useState(0);
   const btnRef = useRef<HTMLButtonElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
 
@@ -17,24 +16,6 @@ const HeroSection = () => {
     );
     if (btnRef.current) observer.observe(btnRef.current);
     return () => observer.disconnect();
-  }, []);
-
-  // Mobile parallax on scroll
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) return;
-
-    let raf: number;
-    const onScroll = () => {
-      raf = requestAnimationFrame(() => {
-        setParallaxY(Math.min(window.scrollY * 0.3, 50));
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(raf);
-    };
   }, []);
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
@@ -55,6 +36,11 @@ const HeroSection = () => {
     }
   };
 
+  const scrollToPricing = () => {
+    const el = document.getElementById("pricing");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="relative bg-primary overflow-hidden">
       {/* Grid pattern overlay */}
@@ -66,14 +52,14 @@ const HeroSection = () => {
         }}
       />
 
-      <div className="relative z-10 px-5 md:px-8 pt-6 pb-12 md:pt-10 md:pb-20">
+      <div className="relative z-10 px-5 md:px-8 pt-6 pb-20 md:pt-10 md:pb-20">
         {/* Logo */}
         <div className="max-w-6xl mx-auto">
           <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">velarrio:</h2>
         </div>
 
         {/* Hero Content */}
-        <div className="max-w-6xl mx-auto mt-4 md:mt-10">
+        <div className="max-w-6xl mx-auto mt-6 md:mt-16">
           <div className="grid lg:grid-cols-[55%_45%] gap-12 items-center">
             {/* Left: Copy */}
             <div className="text-center lg:text-left">
@@ -81,13 +67,14 @@ const HeroSection = () => {
                 For Mobile Detailers
               </span>
 
-              <h1 className="font-heading text-[32px] md:text-5xl lg:text-[54px] font-extrabold text-primary-foreground leading-[1.15] tracking-tight">
-                Stop Losing Money
-                <span className="block">to No-Shows.</span>
+              <h1 className="font-heading text-3xl md:text-5xl lg:text-6xl font-bold text-primary-foreground leading-[1.12]">
+                Stop Losing $1,000s to
+                <span className="block">No-Shows and Missed Calls.</span>
+                <span className="block text-[hsl(var(--accent))]">Get Booked 24/7 on Autopilot.</span>
               </h1>
 
-              <p className="mt-5 text-lg md:text-xl text-primary-foreground/80 leading-[1.6] max-w-xl mx-auto lg:mx-0">
-                We build you a custom website + booking system in minutes. Detailers on our platform book <strong className="text-primary-foreground">40% more jobs</strong> and cut no-shows in half.
+              <p className="mt-5 text-base md:text-lg text-primary-foreground/80 leading-[1.6] max-w-lg mx-auto lg:mx-0">
+                Custom website + 24/7 smart booking calendar built for you in 48 hours. Automated reminders and deposit collection cut no-shows by 40% — so you stop losing $500-1,000/month in missed appointments.
               </p>
 
               {/* Form */}
@@ -106,24 +93,36 @@ const HeroSection = () => {
                   type="submit"
                   className="h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
                 >
-                  Get Started Free →
+                  Start My Free Trial →
                 </button>
               </form>
               {error && <p className="text-sm text-accent mt-2 text-center lg:text-left">{error}</p>}
 
-              <p className="text-sm text-primary-foreground/60 mt-3 text-center lg:text-left">
-                ✓ Free 14-day trial · Launch in 5 mins
-              </p>
+              <div className="mt-4 flex flex-col gap-1 text-sm text-primary-foreground/70 text-center lg:text-left">
+                <span>✓ 14-day free trial — no credit card</span>
+                <span>✓ Done-for-you website live in 48 hours</span>
+                <span>✓ Cancel anytime, no contracts</span>
+              </div>
+
+              {/* See pricing link */}
+              <div className="mt-4 text-center lg:text-left">
+                <button
+                  type="button"
+                  onClick={scrollToPricing}
+                  className="text-sm text-accent underline underline-offset-2 hover:brightness-110 transition-all"
+                >
+                  See pricing →
+                </button>
+              </div>
 
               {/* Social proof */}
               <div className="mt-6 flex items-center justify-center lg:justify-start gap-2 text-sm text-primary-foreground/60">
                 <span className="text-amber-400">★★★★★</span>
-                <span>Trusted by 200+ auto detail shops</span>
+                <span>Trusted by 200+ mobile detailers, PPF shops, and tint specialists</span>
               </div>
-
             </div>
 
-            {/* Right: Desktop image — no box, static PNG */}
+            {/* Right: Desktop image — static PNG */}
             <div className="hidden lg:flex justify-center items-center">
               <img
                 src={heroDetail}
@@ -140,13 +139,13 @@ const HeroSection = () => {
 
       {/* Sticky mobile CTA */}
       {showStickyBtn && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-3 md:hidden bg-primary/95 backdrop-blur-lg border-t border-primary-foreground/10 shadow-xl">
+        <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-3 md:hidden backdrop-blur-lg bg-primary/95 border-t border-primary-foreground/10 shadow-2xl">
           <button
             type="button"
             onClick={scrollToEmail}
             className="w-full h-14 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
           >
-            Get Started Free →
+            Start Free Trial →
           </button>
         </div>
       )}
