@@ -1,21 +1,21 @@
 import FadeIn from "@/components/FadeIn";
 
 const stats = [
-  { value: "200+", label: "Active shops" },
-  { value: "10,000+", label: "Bookings processed" },
-  { value: "4.9 ★", label: "Average rating" },
-  { value: "5min", label: "Average setup" },
+  { value: "200+", label: "Active Shops" },
+  { value: "$2.4M+", label: "Revenue Booked" },
+  { value: "40%", label: "Fewer No-Shows" },
+  { value: "48hrs", label: "Site Goes Live" },
 ];
 
 const PublishersSection = () => {
   return (
-    <section className="bg-secondary py-8 md:py-10 px-5 md:px-8">
+    <section className="bg-background py-8 md:py-12 px-5 md:px-8 border-y border-border">
       <div className="max-w-4xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
           {stats.map((stat, i) => (
-            <FadeIn key={stat.label} delay={i * 80}>
+            <FadeIn key={stat.label} delay={i * 60}>
               <div className="text-2xl md:text-3xl font-extrabold text-foreground">{stat.value}</div>
-              <div className="text-sm text-muted-foreground mt-1">{stat.label}</div>
+              <div className="text-xs md:text-sm text-muted-foreground mt-1">{stat.label}</div>
             </FadeIn>
           ))}
         </div>
