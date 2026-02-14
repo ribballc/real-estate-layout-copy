@@ -67,7 +67,7 @@ const HeroSection = () => {
       />
       {/* Bottom fade */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-64"
+        className="absolute bottom-0 left-0 right-0 h-16 md:h-20"
         style={{ background: `linear-gradient(to bottom, transparent, hsl(var(--background)))` }}
       />
 
@@ -83,7 +83,7 @@ const HeroSection = () => {
             {/* Left: Copy */}
             <div className="text-center lg:text-left">
               <span className="bg-accent/10 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-block mb-4">
-                For Mobile Detailers, PPF & Tint Shops
+                For Mobile Detailers
               </span>
 
               <h1 className="font-heading text-[32px] md:text-5xl lg:text-[54px] font-extrabold text-primary-foreground leading-[1.15] tracking-tight">
