@@ -1,8 +1,7 @@
+import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+
 const CtaFooter = () => {
-  const scrollToForm = () => {
-    const el = document.getElementById("form-funnel");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
+  const { openFunnel } = useSurveyFunnel();
 
   return (
     <>
@@ -15,7 +14,7 @@ const CtaFooter = () => {
             You're Still Relying on Missed Calls and DMs.
           </h2>
           <button
-            onClick={scrollToForm}
+            onClick={openFunnel}
             className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 px-10 py-4 text-lg min-h-[48px]"
           >
             Start My 14-Day Free Trial →

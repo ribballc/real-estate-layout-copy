@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Check } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
+import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const plans = [
   {
@@ -65,11 +66,7 @@ const plans = [
 
 const PricingSection = () => {
   const [annual, setAnnual] = useState(true);
-
-  const scrollToForm = () => {
-    const el = document.getElementById("form-funnel");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
+  const { openFunnel } = useSurveyFunnel();
 
   return (
     <section id="pricing" className="bg-muted py-16 md:py-24 px-5 md:px-8">
@@ -149,7 +146,7 @@ const PricingSection = () => {
                   </div>
 
                   <button
-                    onClick={scrollToForm}
+                    onClick={openFunnel}
                     className="w-full bg-accent text-accent-foreground rounded-full font-bold py-3.5 shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
                   >
                     Start Free Trial
@@ -161,7 +158,7 @@ const PricingSection = () => {
                   <ul className="mt-6 space-y-3 flex-1">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-start gap-2.5 text-sm">
-                        <Check className={`w-5 h-5 flex-shrink-0 mt-0.5 ${isPro ? "text-accent" : "text-accent"}`} />
+                        <Check className={`w-5 h-5 flex-shrink-0 mt-0.5 text-accent`} />
                         <span className={isPro ? "text-primary-foreground/90" : "text-foreground"}>{feature}</span>
                       </li>
                     ))}

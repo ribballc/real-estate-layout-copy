@@ -1,4 +1,5 @@
 import FadeIn from "@/components/FadeIn";
+import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const steps = [
   {
@@ -19,10 +20,7 @@ const steps = [
 ];
 
 const HowItWorksSection = () => {
-  const scrollToForm = () => {
-    const el = document.getElementById("form-funnel");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
+  const { openFunnel } = useSurveyFunnel();
 
   return (
     <section className="bg-muted py-16 md:py-24 px-5 md:px-8">
@@ -52,7 +50,7 @@ const HowItWorksSection = () => {
 
         <div className="text-center mt-10">
           <button
-            onClick={scrollToForm}
+            onClick={openFunnel}
             className="inline-flex items-center gap-2 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 px-8 py-3 text-lg min-h-[48px]"
           >
             Start My Free Trial →
