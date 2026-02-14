@@ -54,7 +54,7 @@ const HeroSection = () => {
             {/* Copy block */}
             <div className="text-center lg:text-left">
               {/* Badge */}
-              <span className="bg-accent/15 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-block mb-5 border border-accent/20">
+              <span className="bg-accent/15 text-accent text-sm font-semibold px-4 py-1.5 rounded-full inline-block mb-3 border border-accent/20 text-left">
                 For Mobile Detailers
               </span>
 
@@ -69,7 +69,7 @@ const HeroSection = () => {
               </h1>
 
               {/* Body */}
-              <p className="mt-4 text-[15px] md:text-lg text-primary-foreground/70 leading-[1.6] max-w-lg mx-auto lg:mx-0">
+              <p className="mt-4 text-[15px] md:text-lg text-primary-foreground/70 leading-[1.6] max-w-lg text-left">
                 Smart booking tools built to help you capture every job, eliminate no-shows, and grow your detailing business on autopilot.
               </p>
 
