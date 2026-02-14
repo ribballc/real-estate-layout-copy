@@ -64,7 +64,7 @@
   }
 }
 
-/* Hero animations */
+/* Hero choreographed entrance */
 @keyframes fadeSlideDown {
   from { opacity: 0; transform: translateY(-12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -75,6 +75,43 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes heroFadeScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes heroBounceIn {
+  0% { opacity: 0; transform: translateY(24px) scale(0.92); }
+  60% { opacity: 1; transform: translateY(-4px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes heroBlurIn {
+  from { opacity: 0; filter: blur(8px); transform: translateY(12px); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+
+@keyframes heroScaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes heroFormIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes heroPhoneIn {
+  0% { opacity: 0; transform: translateY(80px) scale(0.9); }
+  60% { opacity: 1; transform: translateY(-8px) scale(1.01); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes ctaGlow {
+  0%, 100% { box-shadow: 0 4px 16px rgba(164, 214, 94, 0.2); }
+  50% { box-shadow: 0 8px 32px rgba(164, 214, 94, 0.45); }
+}
+
 @keyframes gentlePulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.04); }
@@ -83,4 +120,18 @@
 @keyframes heroFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+/* Ambient floating orbs */
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(40px, -30px); }
+  50% { transform: translate(-20px, 20px); }
+  75% { transform: translate(30px, 40px); }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-50px, 30px); }
+  66% { transform: translate(30px, -40px); }
 }

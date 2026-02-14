@@ -9,12 +9,14 @@ import CtaFooter from "@/components/CtaFooter";
 import SurveyFunnelModal from "@/components/SurveyFunnelModal";
 import ScrollProgress from "@/components/ScrollProgress";
 import SocialProofNotification from "@/components/SocialProofNotification";
+import FloatingOrbs from "@/components/FloatingOrbs";
 import { SurveyFunnelProvider } from "@/components/SurveyFunnelContext";
 
 const Index = () => {
   return (
     <SurveyFunnelProvider>
-      <div className="min-h-screen">
+      <div className="min-h-screen relative">
+        <FloatingOrbs />
         <ScrollProgress />
         <HeroSection />
         <PublishersSection />
