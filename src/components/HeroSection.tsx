@@ -1,8 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import heroDetail from "@/assets/hero-detail.png";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const HeroSection = () => {
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
   const [showStickyBtn, setShowStickyBtn] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
   const { openFunnel } = useSurveyFunnel();
@@ -15,6 +17,16 @@ const HeroSection = () => {
     if (btnRef.current) observer.observe(btnRef.current);
     return () => observer.disconnect();
   }, []);
+
+  const handleSubmit = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    const trimmed = email.trim();
+    if (!trimmed) { setError("Please enter your email"); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError("Please enter a valid email"); return; }
+    window.dispatchEvent(new CustomEvent("hero-email", { detail: trimmed }));
+    openFunnel();
+  }, [email, openFunnel]);
 
   return (
     <section className="relative overflow-hidden" style={{
@@ -35,10 +47,10 @@ const HeroSection = () => {
           <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">velarrio:</h2>
         </div>
 
-        {/* Hero Content — single column, centered */}
+        {/* Hero Content */}
         <div className="max-w-6xl mx-auto mt-8 md:mt-14">
           <div className="max-w-2xl mx-auto text-center lg:text-left lg:max-w-none lg:grid lg:grid-cols-[55%_45%] lg:gap-12 lg:items-center">
-            
+
             {/* Copy block */}
             <div className="text-center lg:text-left">
               {/* Badge */}
@@ -46,61 +58,69 @@ const HeroSection = () => {
                 For Mobile Detailers
               </span>
 
-              {/* Headline — condensed */}
+              {/* Headline */}
               <h1 className="font-heading text-[28px] md:text-5xl lg:text-6xl font-extrabold text-primary-foreground leading-[1.1] tracking-tight">
                 Empowering Your{" "}
-                <span className="italic font-extrabold" style={{ fontStyle: 'italic' }}>
+                <span className="italic">
                   Booking Growth
                 </span>
               </h1>
 
-              {/* Body — condensed */}
+              {/* Body */}
               <p className="mt-4 text-[15px] md:text-lg text-primary-foreground/70 leading-[1.6] max-w-lg mx-auto lg:mx-0">
                 Smart booking tools built to help you capture every job, eliminate no-shows, and grow your detailing business on autopilot.
               </p>
 
-              {/* CTA Button + Social proof row */}
-              <div className="mt-7 flex flex-col sm:flex-row items-center gap-5 justify-center lg:justify-start">
+              {/* Email form + CTA */}
+              <form onSubmit={handleSubmit} className="mt-7 flex flex-col sm:flex-row gap-3 max-w-lg mx-auto lg:mx-0">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
+                  placeholder="Enter your work email"
+                  maxLength={255}
+                  className="h-14 rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 w-full sm:flex-1 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
+                />
                 <button
                   ref={btnRef}
-                  type="button"
-                  onClick={openFunnel}
+                  type="submit"
                   className="h-14 px-8 text-base bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
                 >
-                  Get Started
+                  Start My Free Trial →
                 </button>
+              </form>
+              {error && <p className="text-sm text-accent mt-2 text-center lg:text-left">{error}</p>}
 
-                {/* Social proof inline */}
-                <div className="flex items-center gap-3">
-                  {/* Avatar stack */}
-                  <div className="flex -space-x-2">
-                    {['M', 'J', 'A', 'K'].map((letter, i) => (
-                      <div
-                        key={i}
-                        className="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center text-xs font-bold"
-                        style={{
-                          background: [
-                            'hsl(82, 75%, 55%)',
-                            'hsl(172, 55%, 30%)',
-                            'hsl(42, 85%, 55%)',
-                            'hsl(200, 60%, 50%)',
-                          ][i],
-                          color: i === 0 ? 'hsl(172, 55%, 16%)' : 'white',
-                        }}
-                      >
-                        {letter}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="text-left">
-                    <span className="text-primary-foreground font-bold text-sm block leading-tight">1,200+</span>
-                    <span className="text-primary-foreground/50 text-xs leading-tight">Trusted by mobile detailers</span>
-                  </div>
+              {/* Social proof inline */}
+              <div className="mt-6 flex items-center gap-3 justify-center lg:justify-start">
+                {/* Avatar stack */}
+                <div className="flex -space-x-2">
+                  {['M', 'J', 'A', 'K'].map((letter, i) => (
+                    <div
+                      key={i}
+                      className="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center text-xs font-bold"
+                      style={{
+                        background: [
+                          'hsl(82, 75%, 55%)',
+                          'hsl(172, 55%, 30%)',
+                          'hsl(42, 85%, 55%)',
+                          'hsl(200, 60%, 50%)',
+                        ][i],
+                        color: i === 0 ? 'hsl(172, 55%, 16%)' : 'white',
+                      }}
+                    >
+                      {letter}
+                    </div>
+                  ))}
+                </div>
+                <div className="text-left">
+                  <span className="text-primary-foreground font-bold text-sm block leading-tight">1,200+</span>
+                  <span className="text-primary-foreground/50 text-xs leading-tight">Trusted by mobile detailers</span>
                 </div>
               </div>
             </div>
 
-            {/* Desktop image — right column */}
+            {/* Desktop image */}
             <div className="hidden lg:flex justify-center items-end mt-8">
               <img
                 src={heroDetail}
@@ -113,7 +133,7 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Mobile image — below CTA, full-bleed feel */}
+          {/* Mobile image — below CTA */}
           <div className="lg:hidden mt-10 flex justify-center">
             <img
               src={heroDetail}
