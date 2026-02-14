@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import heroDetail from "@/assets/hero-detail.png";
+import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const HeroSection = () => {
   const [email, setEmail] = useState("");
@@ -7,6 +8,7 @@ const HeroSection = () => {
   const [showStickyBtn, setShowStickyBtn] = useState(false);
   const btnRef = useRef<HTMLButtonElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
+  const { openFunnel } = useSurveyFunnel();
 
   // Sticky CTA observer
   useEffect(() => {
@@ -25,16 +27,8 @@ const HeroSection = () => {
     if (!trimmed) { setError("Please enter your email"); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError("Please enter a valid email"); return; }
     window.dispatchEvent(new CustomEvent("hero-email", { detail: trimmed }));
-    const formSection = document.getElementById("form-funnel");
-    if (formSection) formSection.scrollIntoView({ behavior: "smooth" });
-  }, [email]);
-
-  const scrollToEmail = () => {
-    if (emailRef.current) {
-      emailRef.current.scrollIntoView({ behavior: "smooth" });
-      emailRef.current.focus({ preventScroll: true });
-    }
-  };
+    openFunnel();
+  }, [email, openFunnel]);
 
   const scrollToPricing = () => {
     const el = document.getElementById("pricing");
@@ -142,7 +136,7 @@ const HeroSection = () => {
         <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-3 md:hidden backdrop-blur-lg bg-primary/95 border-t border-primary-foreground/10 shadow-2xl">
           <button
             type="button"
-            onClick={scrollToEmail}
+            onClick={openFunnel}
             className="w-full h-14 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 min-h-[48px]"
           >
             Start Free Trial →

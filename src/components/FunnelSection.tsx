@@ -1,4 +1,5 @@
 import FadeIn from "@/components/FadeIn";
+import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const without = [
   "$50-150/mo for a basic website that doesn't book anything",
@@ -19,10 +20,7 @@ const withRealize = [
 ];
 
 const FunnelSection = () => {
-  const scrollToForm = () => {
-    const el = document.getElementById("form-funnel");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
+  const { openFunnel } = useSurveyFunnel();
 
   return (
     <section className="bg-background py-16 md:py-24 px-5 md:px-8">
@@ -39,7 +37,7 @@ const FunnelSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           <FadeIn delay={0}>
             <div className="bg-background border border-border rounded-2xl p-6 md:p-8 text-left h-full">
-              <h3 className="text-lg font-bold text-foreground mb-6">Without Realize</h3>
+              <h3 className="text-lg font-bold text-foreground mb-6">Without velarrio</h3>
               <ul className="space-y-0">
                 {without.map((item, i) => (
                   <li key={i} className={`flex items-start gap-3 py-2.5 leading-relaxed text-muted-foreground ${i < without.length - 1 ? "border-b border-border" : ""}`}>
@@ -53,7 +51,7 @@ const FunnelSection = () => {
 
           <FadeIn delay={120}>
             <div className="bg-primary text-primary-foreground rounded-2xl p-6 md:p-8 shadow-xl text-left h-full">
-              <h3 className="text-lg font-bold mb-6">With Realize — from $49/mo</h3>
+              <h3 className="text-lg font-bold mb-6">With velarrio — from $49/mo</h3>
               <ul className="space-y-0">
                 {withRealize.map((item, i) => (
                   <li key={i} className={`flex items-start gap-3 py-2.5 leading-relaxed ${i < withRealize.length - 1 ? "border-b border-primary-foreground/10" : ""}`}>
@@ -68,7 +66,7 @@ const FunnelSection = () => {
 
         <div className="mt-10">
           <button
-            onClick={scrollToForm}
+            onClick={openFunnel}
             className="inline-flex items-center gap-2 bg-accent text-accent-foreground font-bold rounded-full shadow-md hover:shadow-lg hover:brightness-105 active:scale-[0.98] transition-all duration-200 px-8 py-3 text-lg min-h-[48px]"
           >
             Start My Free Trial →
