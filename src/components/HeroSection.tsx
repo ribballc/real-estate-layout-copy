@@ -83,7 +83,7 @@ const HeroSection = () => {
                     onChange={(e) => { setBusinessName(e.target.value); if (error) setError(""); }}
                     placeholder="Enter Your Business Name"
                     maxLength={100}
-                    className="h-14 w-full rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
+                    className="h-14 w-full rounded-full border border-primary-foreground/20 bg-primary-foreground/10 px-6 text-sm text-primary-foreground placeholder:text-primary-foreground/30 min-h-[52px] focus:outline-none focus:ring-2 focus:ring-primary-foreground/20 focus:border-primary-foreground/50 transition-all"
                   />
                 </div>
                 <button
