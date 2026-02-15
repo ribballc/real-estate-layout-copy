@@ -7,12 +7,13 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
-  TrendingUp, Users, Eye, CalendarDays, Search,
+  TrendingUp, Users, CalendarDays, Search,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 const pageTitles: Record<string, { title: string; description: string; icon: any }> = {
-  "/dashboard": { title: "Business Info", description: "Manage your brand, address and service areas", icon: Building2 },
+  "/dashboard": { title: "Home", description: "Overview of your business performance", icon: TrendingUp },
+  "/dashboard/business": { title: "Business Info", description: "Manage your brand, address and service areas", icon: Building2 },
   "/dashboard/calendar": { title: "Calendar", description: "View and manage your bookings", icon: CalendarDays },
   "/dashboard/customers": { title: "Customers", description: "Manage your customer relationships", icon: Users },
   "/dashboard/services": { title: "Services", description: "Manage your service offerings and pricing", icon: Wrench },
@@ -22,10 +23,10 @@ const pageTitles: Record<string, { title: string; description: string; icon: any
 };
 
 // Extra searchable items that live inside other pages
-const extraSearchItems = [
+  const extraSearchItems = [
   { url: "/dashboard/services#add-ons", title: "Add-ons", description: "Create add-on packages for services", icon: PuzzleIcon },
-  { url: "/dashboard#social", title: "Social Media", description: "Connect your social profiles", icon: Share2 },
-  { url: "/dashboard#hours", title: "Business Hours", description: "Set your weekly schedule", icon: Clock },
+  { url: "/dashboard/business#social", title: "Social Media", description: "Connect your social profiles", icon: Share2 },
+  { url: "/dashboard/business#hours", title: "Business Hours", description: "Set your weekly schedule", icon: Clock },
 ];
 
 const searchablePages = [
@@ -67,21 +68,6 @@ const DashboardLayout = () => {
   const cardBg = isDark ? "bg-white/[0.03]" : "bg-white";
   const inputBg = isDark ? "bg-white/5 border-white/10 text-white" : "bg-white border-gray-200 text-gray-900";
   const triggerClass = isDark ? "text-white/60 hover:text-white" : "text-gray-500 hover:text-gray-900";
-
-  const [stats, setStats] = useState({ services: 0, photos: 0, testimonials: 0 });
-
-  useEffect(() => {
-    if (!user) return;
-    Promise.all([
-      supabase.from("services").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-      supabase.from("photos").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-      supabase.from("testimonials").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-    ]).then(([s, p, t]) => {
-      setStats({ services: s.count || 0, photos: p.count || 0, testimonials: t.count || 0 });
-    });
-  }, [user, location.pathname]);
-
-  const isIndex = location.pathname === "/dashboard";
 
   return (
     <SidebarProvider>
@@ -168,28 +154,6 @@ const DashboardLayout = () => {
           </header>
 
           <div className="flex-1 overflow-y-auto p-4 md:p-8">
-            {/* Quick stats on index page */}
-            {isIndex && (
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
-                {[
-                  { label: "Services", value: stats.services, icon: Wrench, color: "hsl(217 91% 60%)" },
-                  { label: "Photos", value: stats.photos, icon: Camera, color: "hsl(271 91% 65%)" },
-                  { label: "Reviews", value: stats.testimonials, icon: Star, color: "hsl(45 93% 47%)" },
-                  { label: "Page Views", value: "—", icon: Eye, color: "hsl(160 84% 39%)" },
-                ].map((s) => (
-                  <div key={s.label} className={`rounded-xl border ${borderColor} ${cardBg} p-4 hover:opacity-90 transition-colors group`}>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className={`${textSecondary} text-xs font-medium uppercase tracking-wider`}>{s.label}</span>
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-transform group-hover:scale-110" style={{ background: `${s.color}15` }}>
-                        <s.icon className="w-4 h-4" style={{ color: s.color }} />
-                      </div>
-                    </div>
-                    <p className={`text-2xl font-bold ${textPrimary}`}>{s.value}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-
             <Outlet />
           </div>
 
