@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Star } from "lucide-react";
+import { Loader2, Plus, Trash2, Star, ChevronDown, X } from "lucide-react";
 
 interface Service {
   id: string;
@@ -17,11 +17,24 @@ interface Service {
   sort_order: number;
 }
 
+const PRESET_SERVICES = [
+  { title: "Full Detail", description: "Complete interior and exterior detailing service" },
+  { title: "Paint Protection Film", description: "Clear bra/PPF installation to protect your paint" },
+  { title: "Window Tint", description: "Professional window tinting for heat and UV protection" },
+  { title: "Interior Detail", description: "Deep clean and condition all interior surfaces" },
+  { title: "Exterior Detailing", description: "Full exterior wash, clay bar, polish and wax" },
+  { title: "Vinyl Wrap", description: "Custom vinyl wrap for color change or protection" },
+  { title: "Ceramic Coating", description: "Long-lasting ceramic coating for paint protection and shine" },
+];
+
 const ServicesManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [services, setServices] = useState<Service[]>([]);
+  const [showAddMenu, setShowAddMenu] = useState(false);
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customTitle, setCustomTitle] = useState("");
 
   const fetchServices = async () => {
     if (!user) return;
@@ -32,11 +45,24 @@ const ServicesManager = () => {
 
   useEffect(() => { fetchServices(); }, [user]);
 
-  const addService = async () => {
+  const addPresetService = async (preset: { title: string; description: string }) => {
     if (!user) return;
-    const { error } = await supabase.from("services").insert({ user_id: user.id, title: "New Service", sort_order: services.length });
+    const { error } = await supabase.from("services").insert({
+      user_id: user.id, title: preset.title, description: preset.description, sort_order: services.length,
+    });
     if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
     else fetchServices();
+    setShowAddMenu(false);
+  };
+
+  const addCustomService = async () => {
+    if (!user || !customTitle.trim()) return;
+    const { error } = await supabase.from("services").insert({
+      user_id: user.id, title: customTitle.trim(), sort_order: services.length,
+    });
+    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
+    else { setCustomTitle(""); setShowCustomInput(false); fetchServices(); }
+    setShowAddMenu(false);
   };
 
   const updateService = async (id: string, updates: Partial<Service>) => {
@@ -53,13 +79,57 @@ const ServicesManager = () => {
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
 
+  const existingTitles = new Set(services.map(s => s.title.toLowerCase()));
+  const availablePresets = PRESET_SERVICES.filter(p => !existingTitles.has(p.title.toLowerCase()));
+
   return (
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-white">Services</h2>
-        <Button onClick={addService} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
-          <Plus className="w-4 h-4" /> Add Service
-        </Button>
+        <div className="relative">
+          <Button onClick={() => setShowAddMenu(!showAddMenu)} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+            <Plus className="w-4 h-4" /> Add Service <ChevronDown className="w-3 h-3 ml-1" />
+          </Button>
+          {showAddMenu && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => { setShowAddMenu(false); setShowCustomInput(false); }} />
+              <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-white/10 shadow-xl z-50 py-2 overflow-hidden" style={{ background: "hsl(215 50% 12%)" }}>
+                {availablePresets.map((preset) => (
+                  <button
+                    key={preset.title}
+                    onClick={() => addPresetService(preset)}
+                    className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    {preset.title}
+                  </button>
+                ))}
+                {availablePresets.length > 0 && <div className="border-t border-white/10 my-1" />}
+                {!showCustomInput ? (
+                  <button
+                    onClick={() => setShowCustomInput(true)}
+                    className="w-full text-left px-4 py-2.5 text-sm text-accent hover:bg-white/10 transition-colors flex items-center gap-2"
+                  >
+                    <Plus className="w-3 h-3" /> Custom Service
+                  </button>
+                ) : (
+                  <div className="px-3 py-2 flex gap-2">
+                    <Input
+                      value={customTitle}
+                      onChange={(e) => setCustomTitle(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && addCustomService()}
+                      placeholder="Service name…"
+                      className="h-8 bg-white/5 border-white/10 text-white text-sm focus-visible:ring-accent"
+                      autoFocus
+                    />
+                    <Button onClick={addCustomService} size="sm" className="h-8 px-3 shrink-0" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+                      Add
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
       <div className="space-y-4">
         {services.map((service) => (
@@ -69,7 +139,6 @@ const ServicesManager = () => {
                 <Input
                   value={service.title}
                   onChange={(e) => updateService(service.id, { title: e.target.value })}
-                  onBlur={() => updateService(service.id, { title: service.title })}
                   className="h-10 bg-white/5 border-white/10 text-white font-semibold focus-visible:ring-accent"
                 />
                 <Textarea
