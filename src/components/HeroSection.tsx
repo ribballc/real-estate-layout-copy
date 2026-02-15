@@ -54,7 +54,7 @@ const HeroSection = () => {
         </div>
 
         {/* Two-column grid */}
-        <div className="max-w-[1400px] mx-auto mt-8 md:mt-14 w-full grid grid-cols-1 lg:grid-cols-[45%_55%] gap-10 lg:gap-12 items-center min-h-[calc(100vh-120px)]">
+        <div className="max-w-[1400px] mx-auto mt-8 md:mt-14 w-full grid grid-cols-1 lg:grid-cols-[42%_58%] gap-8 lg:gap-6 items-center min-h-[calc(100vh-120px)]">
 
           {/* LEFT: Text column */}
           <div className="relative z-10 text-left">
