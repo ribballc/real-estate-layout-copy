@@ -1,39 +1,39 @@
 import { useState } from "react";
-import { Globe, CalendarCheck, BellRing, Paintbrush, Smartphone, Search, Clock, CreditCard, MessageSquare, Route, BarChart3, RefreshCw } from "lucide-react";
+import { Paintbrush, Smartphone, Search, Layout, Clock, CreditCard, Route, Users, MessageSquare, RefreshCw, BarChart3, Star } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 
 const tabs = [
   {
     id: "website",
     label: "Website",
-    headline: "A professional website, done for you",
-    description: "Get a stunning, mobile-optimized website that converts visitors into paying customers — no design or coding skills needed.",
+    headline: "Professional website that converts — built for you in 48 hours.",
     features: [
-      { icon: Paintbrush, title: "Custom Design", desc: "Tailored to your brand" },
-      { icon: Smartphone, title: "Mobile-First", desc: "Looks great on every device" },
-      { icon: Search, title: "SEO Optimized", desc: "Get found on Google" },
+      { icon: Paintbrush, title: "Custom Design" },
+      { icon: Smartphone, title: "Mobile-First" },
+      { icon: Search, title: "SEO Optimized" },
+      { icon: Layout, title: "Service Pages" },
     ],
   },
   {
     id: "booking",
     label: "Booking",
-    headline: "24/7 booking that never misses a lead",
-    description: "Customers pick a service, choose a time, and pay a deposit — all while you're working. No more missed calls or back-and-forth texting.",
+    headline: "Customers book, pay deposits, and confirm — 24/7 on autopilot.",
     features: [
-      { icon: Clock, title: "Real-Time Calendar", desc: "Always up to date" },
-      { icon: CreditCard, title: "Deposit Collection", desc: "Get paid upfront" },
-      { icon: Route, title: "Route Optimization", desc: "Save 45-90 min/day" },
+      { icon: Clock, title: "Live Calendar" },
+      { icon: CreditCard, title: "Deposit Collection" },
+      { icon: Route, title: "Route Optimization" },
+      { icon: Users, title: "Client Management" },
     ],
   },
   {
     id: "automations",
     label: "Automations",
-    headline: "Set it and forget it",
-    description: "Automated SMS reminders, follow-ups, and review requests run in the background so you can focus on detailing — not admin work.",
+    headline: "SMS reminders, follow-ups, and reviews — all handled automatically.",
     features: [
-      { icon: MessageSquare, title: "SMS Reminders", desc: "Cut no-shows by 40%" },
-      { icon: RefreshCw, title: "Auto Follow-Ups", desc: "Win repeat business" },
-      { icon: BarChart3, title: "Smart Analytics", desc: "Track what's working" },
+      { icon: MessageSquare, title: "SMS Reminders" },
+      { icon: RefreshCw, title: "Auto Follow-Ups" },
+      { icon: Star, title: "Review Requests" },
+      { icon: BarChart3, title: "Smart Analytics" },
     ],
   },
 ];
@@ -91,28 +91,36 @@ const ManifestoSection = () => {
           </div>
         </FadeIn>
 
-        {/* Tabs */}
+        {/* Underline Tabs */}
         <FadeIn delay={100}>
-          <div className="flex justify-center gap-2 md:gap-3 mb-12 md:mb-16">
+          <div className="flex justify-center gap-8 md:gap-12 mb-12 md:mb-16 relative">
+            {/* Bottom border line */}
+            <div
+              className="absolute bottom-0 left-0 right-0 h-px"
+              style={{ background: "hsla(0, 0%, 100%, 0.1)" }}
+            />
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className="relative px-6 md:px-8 py-3 rounded-xl text-sm md:text-base font-semibold transition-all duration-300 min-h-[48px]"
+                className="relative pb-4 text-sm md:text-base font-semibold transition-colors duration-300 min-h-[48px]"
                 style={{
-                  color: activeTab === tab.id ? "hsl(0, 0%, 100%)" : "hsla(0, 0%, 100%, 0.5)",
-                  background: activeTab === tab.id
-                    ? "linear-gradient(135deg, hsla(217, 91%, 60%, 0.2) 0%, hsla(217, 91%, 70%, 0.1) 100%)"
-                    : "transparent",
-                  border: activeTab === tab.id
-                    ? "1px solid hsla(217, 91%, 60%, 0.4)"
-                    : "1px solid hsla(0, 0%, 100%, 0.08)",
-                  boxShadow: activeTab === tab.id
-                    ? "0 0 20px hsla(217, 91%, 60%, 0.15)"
-                    : "none",
+                  color: activeTab === tab.id ? "hsl(0, 0%, 100%)" : "hsla(0, 0%, 100%, 0.4)",
                 }}
               >
                 {tab.label}
+                {/* Active underline */}
+                <span
+                  className="absolute bottom-0 left-0 right-0 h-[2px] transition-all duration-300"
+                  style={{
+                    background: activeTab === tab.id
+                      ? "hsl(217, 91%, 60%)"
+                      : "transparent",
+                    boxShadow: activeTab === tab.id
+                      ? "0 0 8px hsla(217, 91%, 60%, 0.5)"
+                      : "none",
+                  }}
+                />
               </button>
             ))}
           </div>
@@ -121,7 +129,7 @@ const ManifestoSection = () => {
         {/* Active tab content */}
         <FadeIn delay={150}>
           <div
-            className="rounded-3xl p-8 md:p-12 mb-10"
+            className="rounded-3xl p-8 md:p-12"
             style={{
               background: "hsla(215, 50%, 8%, 0.6)",
               border: "1px solid hsla(0, 0%, 100%, 0.08)",
@@ -129,17 +137,13 @@ const ManifestoSection = () => {
               boxShadow: "0 0 0 1px hsla(0, 0%, 100%, 0.02) inset, 0 20px 60px hsla(0, 0%, 0%, 0.3)",
             }}
           >
-            <div className="max-w-2xl mx-auto text-center mb-10">
-              <h3
-                className="text-xl md:text-2xl font-bold mb-3"
-                style={{ color: "hsl(0, 0%, 100%)" }}
-              >
-                {active.headline}
-              </h3>
-              <p className="text-sm md:text-base leading-relaxed" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
-                {active.description}
-              </p>
-            </div>
+            {/* One-line headline */}
+            <h3
+              className="text-lg md:text-xl font-semibold text-center mb-10"
+              style={{ color: "hsl(0, 0%, 100%)" }}
+            >
+              {active.headline}
+            </h3>
 
             {/* Divider */}
             <div
@@ -149,9 +153,9 @@ const ManifestoSection = () => {
               }}
             />
 
-            {/* Feature icons */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-              {active.features.map((feat, i) => {
+            {/* 4 Feature icons - 2x2 on mobile, 4 cols on desktop */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+              {active.features.map((feat) => {
                 const Icon = feat.icon;
                 return (
                   <div key={feat.title} className="text-center group">
@@ -164,12 +168,9 @@ const ManifestoSection = () => {
                     >
                       <Icon className="w-7 h-7" style={{ color: "hsl(217, 91%, 70%)" }} />
                     </div>
-                    <h4 className="text-base font-semibold mb-1" style={{ color: "hsl(0, 0%, 100%)" }}>
+                    <h4 className="text-sm md:text-base font-semibold" style={{ color: "hsl(0, 0%, 100%)" }}>
                       {feat.title}
                     </h4>
-                    <p className="text-sm" style={{ color: "hsla(0, 0%, 100%, 0.5)" }}>
-                      {feat.desc}
-                    </p>
                   </div>
                 );
               })}
