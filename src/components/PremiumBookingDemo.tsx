@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 
 /* ═══════════════════════════════════════════
-   8-second loop, 4 customer scenes + owner phases
+   Premium Split-Screen Booking Animation
+   8-second loop with customer phone + owner dashboard
    ═══════════════════════════════════════════ */
 const LOOP_MS = 8000;
 
@@ -50,24 +51,24 @@ const PremiumBookingDemo = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Scene: 0-2s=service, 2-4s=time, 4-6s=payment, 6-8s=success
+  // Scenes: 0-2s service, 2-4s datetime, 4-6s book, 6-8s confirmed
   const scene = useMemo(() => Math.floor(elapsed / 2000) as 0 | 1 | 2 | 3, [elapsed]);
-  const sceneProgress = useMemo(() => (elapsed % 2000) / 2000, [elapsed]);
-
-  // Owner phases: 0-4s=waiting, 4-6s=incoming, 6-8s=confirmed
   const ownerPhase = useMemo((): 'waiting' | 'incoming' | 'confirmed' => {
     if (elapsed < 4000) return 'waiting';
     if (elapsed < 6000) return 'incoming';
     return 'confirmed';
   }, [elapsed]);
 
+  const displayRevenue = useMemo(() => {
+    if (ownerPhase !== 'confirmed') return 1847;
+    const t = Math.min((elapsed - 6000) / 800, 1);
+    return Math.round(1847 + easeOut(t) * 149);
+  }, [ownerPhase, elapsed]);
+
   if (reducedMotion) {
     return (
-      <div ref={containerRef} className="p-8">
-        <div className="flex gap-8 items-center justify-center">
-          <StaticCustomerCard />
-          <StaticOwnerCard />
-        </div>
+      <div ref={containerRef} className="w-full flex items-center justify-center p-4">
+        <StaticFallback />
       </div>
     );
   }
@@ -75,502 +76,322 @@ const PremiumBookingDemo = () => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full pointer-events-none overflow-hidden"
-      style={{
-        aspectRatio: '4 / 3',
-        willChange: 'transform',
-      }}
-      aria-label="Animated demonstration of booking system connecting customer booking to business owner calendar"
+      className="relative w-full pointer-events-none"
+      aria-label="Split-screen booking animation showing customer booking and owner dashboard"
     >
-      {/* Desktop layout - use a fixed-size container with internal scaling */}
-      <div className="hidden md:block absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center" style={{ transform: 'scale(0.55)', transformOrigin: '55% center' }}>
-          {/* Customer Side */}
-          <div className="flex items-center justify-end pr-4 shrink-0">
-            <CustomerView scene={scene} sceneProgress={sceneProgress} elapsed={elapsed} />
-          </div>
-
-          {/* Data Flow Line */}
-          <DataFlowLine elapsed={elapsed} ownerPhase={ownerPhase} />
-
-          {/* Owner Side */}
-          <div className="flex items-center justify-start pl-4 shrink-0">
-            <OwnerView ownerPhase={ownerPhase} elapsed={elapsed} />
-          </div>
-        </div>
+      {/* Desktop: 3-column grid */}
+      <div className="hidden md:grid items-center justify-items-center" style={{ gridTemplateColumns: '1fr 80px 1fr', gap: 0 }}>
+        <CustomerPhone scene={scene} elapsed={elapsed} />
+        <FlowIndicator elapsed={elapsed} ownerPhase={ownerPhase} />
+        <OwnerDashboard ownerPhase={ownerPhase} elapsed={elapsed} revenue={displayRevenue} />
       </div>
 
-      {/* Mobile layout */}
-      <div className="flex md:hidden flex-col items-center justify-center min-h-[400px] gap-4 px-4 py-6">
-        {elapsed < 4000 ? (
-          <div style={{ transform: 'scale(0.85)', transformOrigin: 'center center' }}>
-            <CustomerView scene={scene} sceneProgress={sceneProgress} elapsed={elapsed} />
-          </div>
-        ) : (
-          <>
-            <VerticalFlowLine elapsed={elapsed} />
-            <div style={{ transform: 'scale(0.85)', transformOrigin: 'center center' }}>
-              <OwnerView ownerPhase={ownerPhase} elapsed={elapsed} />
-            </div>
-          </>
-        )}
+      {/* Mobile: stacked */}
+      <div className="flex md:hidden flex-col items-center gap-6 px-2">
+        <CustomerPhone scene={scene} elapsed={elapsed} />
+        <MobileFlowIndicator elapsed={elapsed} ownerPhase={ownerPhase} />
+        <OwnerDashboard ownerPhase={ownerPhase} elapsed={elapsed} revenue={displayRevenue} />
       </div>
-
-      {/* Floating particles */}
-      <FloatingParticles />
 
       <style>{`
-        @keyframes ambientDrift {
-          0%, 100% { transform: translate(0, 0); }
-          50% { transform: translate(30px, -20px); }
-        }
-        @keyframes particleFloat {
-          0% { transform: translateX(-20px) translateY(10px); opacity: 0; }
-          20% { opacity: 0.5; }
-          80% { opacity: 0.4; }
-          100% { transform: translateX(80px) translateY(-40px); opacity: 0; }
-        }
-        @keyframes dashFlow {
-          to { stroke-dashoffset: -20; }
-        }
-        @keyframes packetGlow {
-          0%, 100% { box-shadow: 0 0 12px hsla(217, 91%, 60%, 0.4); }
-          50% { box-shadow: 0 0 24px hsla(217, 91%, 60%, 0.7); }
-        }
-        @keyframes ripple {
-          0% { transform: scale(0); opacity: 0.6; }
-          100% { transform: scale(1); opacity: 0; }
-        }
-        @keyframes checkDraw {
-          to { stroke-dashoffset: 0; }
-        }
-        @keyframes cardFloat {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-3px); }
-        }
-        @keyframes typeChar {
-          from { width: 0; }
-          to { width: 100%; }
-        }
+        @keyframes floatPhone { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes floatDash { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+        @keyframes slideInPhone { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes popNotif { from { transform: scale(0.8) translateY(-10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+        @keyframes fadeSlot { from { transform: translateX(-10px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes highlightPulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+        @keyframes pulseArrowBounce { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+        @keyframes pulseDot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
+        @keyframes lineGlow { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        @keyframes dashFlow { to { stroke-dashoffset: -20; } }
       `}</style>
     </div>
   );
 };
 
-/* ═══════════════════════════ Glass Card ═══════════════════════════ */
-const GlassCard = ({ children, className = "", style = {}, float = true }: {
-  children: React.ReactNode; className?: string; style?: React.CSSProperties; float?: boolean;
-}) => (
-  <div className={`relative ${className}`} style={{
-    background: 'transparent',
-    border: '1px solid rgba(255, 255, 255, 0.15)',
-    boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.05) inset, 0 20px 40px rgba(0, 0, 0, 0.15)',
-    borderRadius: 16,
-    animation: float ? 'cardFloat 3s ease-in-out infinite' : 'none',
-    willChange: 'transform',
-    transform: 'translateZ(0)',
-    backfaceVisibility: 'hidden',
-    ...style,
-  }}>
-    <div className="relative z-10">{children}</div>
-  </div>
-);
-
-/* ═══════════════════════════ Customer View ═══════════════════════════ */
-const CustomerView = ({ scene, sceneProgress, elapsed }: {
-  scene: 0 | 1 | 2 | 3; sceneProgress: number; elapsed: number;
-}) => {
-  const transitionIn = Math.min(sceneProgress / 0.15, 1);
-  const transitionOut = scene < 3 ? Math.max(1 - (sceneProgress - 0.85) / 0.15, 0) : 1;
-  const opacity = transitionIn * transitionOut;
+/* ═══════════════════════════ Customer Phone ═══════════════════════════ */
+const CustomerPhone = ({ scene, elapsed }: { scene: 0 | 1 | 2 | 3; elapsed: number }) => {
+  const sceneProgress = (elapsed % 2000) / 2000;
+  const transIn = Math.min(sceneProgress / 0.15, 1);
+  const transOut = scene < 3 ? Math.max(1 - (sceneProgress - 0.85) / 0.15, 0) : 1;
+  const op = transIn * transOut;
 
   return (
-    <div className="relative w-[320px] h-[440px]">
-      {/* Scene 1: Service Selection */}
-      <div className="absolute inset-0" style={{
-        opacity: scene === 0 ? opacity : 0,
-        transform: scene === 0 ? `translateY(${(1 - transitionIn) * 20}px)` : 'translateY(-20px)',
-        transition: scene !== 0 ? 'opacity 0.4s, transform 0.4s' : 'none',
-        pointerEvents: scene === 0 ? 'auto' : 'none',
-      }}>
-        <GlassCard className="h-full p-6" style={{ animationDelay: '0s' }}>
-          <h3 className="text-[15px] font-semibold text-white mb-5">Book Your Detail</h3>
-          <div className="space-y-3">
-            {[
-              { name: 'Exterior Detail', price: '$150', selected: false },
-              { name: 'Full Detail', price: '$250', selected: true },
-              { name: 'Paint Correction', price: '$400', selected: false },
-            ].map((s) => (
-              <div key={s.name} className="flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300" style={{
-                background: 'transparent',
-                border: s.selected ? '1.5px solid hsla(217, 91%, 60%, 0.5)' : '1px solid rgba(255,255,255,0.08)',
-                boxShadow: s.selected ? '0 0 20px hsla(217, 91%, 60%, 0.15)' : 'none',
-              }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center" style={{
-                    borderColor: s.selected ? 'hsl(217, 91%, 60%)' : 'rgba(255,255,255,0.2)',
-                    boxShadow: s.selected ? '0 0 8px hsla(217, 91%, 60%, 0.4)' : 'none',
-                  }}>
-                    {s.selected && <div className="w-2 h-2 rounded-full" style={{ background: 'hsl(217, 91%, 60%)' }} />}
+    <div className="flex flex-col items-center gap-4">
+      {/* Phone shell */}
+      <div
+        className="relative"
+        style={{
+          width: 240, borderRadius: 32, padding: 8,
+          background: '#1d1d1f',
+          boxShadow: '0 0 0 4px rgba(255,255,255,0.1), 0 20px 60px rgba(0,0,0,0.4), 0 0 60px hsla(217,91%,60%,0.15)',
+          animation: 'floatPhone 5s ease-in-out infinite',
+        }}
+      >
+        {/* Screen */}
+        <div className="relative overflow-hidden" style={{
+          borderRadius: 26, padding: '24px 16px',
+          background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+          height: 420,
+          display: 'flex', flexDirection: 'column', gap: 16,
+        }}>
+          {/* Scene 1: Service select */}
+          {scene === 0 && (
+            <div className="flex flex-col gap-4 h-full" style={{ opacity: op, transform: `translateY(${(1-transIn)*10}px)` }}>
+              <PhoneItem delay={0}>
+                <div className="flex gap-3 items-center">
+                  <div className="w-12 h-12 rounded-[10px] shrink-0" style={{ background: 'linear-gradient(135deg, hsl(217,91%,60%), hsl(217,91%,50%))' }} />
+                  <div>
+                    <div className="text-sm font-semibold text-[#1d1d1f]">Premium Detail</div>
+                    <div className="text-lg font-bold" style={{ color: 'hsl(217,91%,60%)' }}>$149</div>
                   </div>
-                  <span className="text-[13px] text-white" style={{ opacity: s.selected ? 1 : 0.5 }}>{s.name}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[13px] font-semibold text-white" style={{ opacity: s.selected ? 1 : 0.5 }}>{s.price}</span>
-                  {s.selected && <span className="text-accent text-xs">✓</span>}
+              </PhoneItem>
+              <PhoneItem delay={0.2}>
+                <div className="flex gap-2">
+                  <DateTimeChip label="Tomorrow" active />
+                  <DateTimeChip label="2:00 PM" active />
                 </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-auto pt-6">
-            <CTAButton text="Select Date & Time →" />
-          </div>
-        </GlassCard>
-      </div>
-
-      {/* Scene 2: Time Selection */}
-      <div className="absolute inset-0" style={{
-        opacity: scene === 1 ? opacity : 0,
-        transform: scene === 1 ? `translateX(${(1 - transitionIn) * 30}px)` : 'translateX(30px)',
-        transition: scene !== 1 ? 'opacity 0.4s, transform 0.4s' : 'none',
-        pointerEvents: scene === 1 ? 'auto' : 'none',
-      }}>
-        <GlassCard className="h-full p-6" style={{ animationDelay: '0.5s' }}>
-          <h3 className="text-[15px] font-semibold text-white mb-1">Friday, Feb 14</h3>
-          <p className="text-[12px] mb-5" style={{ color: 'rgba(255,255,255,0.4)' }}>Select your preferred time</p>
-          <div className="grid grid-cols-2 gap-3 mb-2">
-            <div className="text-[11px] font-medium text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>Morning</div>
-            <div className="text-[11px] font-medium text-center" style={{ color: 'rgba(255,255,255,0.4)' }}>Afternoon</div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { time: '10:00 AM', selected: false },
-              { time: '2:00 PM', selected: true },
-              { time: '11:00 AM', selected: false },
-              { time: '3:00 PM', selected: false },
-            ].map((s) => (
-              <div key={s.time} className="px-4 py-3 rounded-xl text-center text-[13px] font-medium transition-all" style={{
-                background: s.selected ? 'hsl(217, 91%, 60%)' : 'transparent',
-                border: s.selected ? '1px solid hsl(217, 91%, 60%)' : '1px solid rgba(255,255,255,0.08)',
-                color: s.selected ? '#fff' : 'rgba(255,255,255,0.5)',
-                boxShadow: s.selected ? '0 4px 16px hsla(217, 91%, 60%, 0.3)' : 'none',
-                transform: s.selected ? 'scale(1.02)' : 'scale(1)',
-              }}>
-                {s.time} {s.selected && '✓'}
-              </div>
-            ))}
-          </div>
-          <div className="mt-auto pt-6">
-            <CTAButton text="Continue to Payment →" />
-          </div>
-        </GlassCard>
-      </div>
-
-      {/* Scene 3: Payment */}
-      <div className="absolute inset-0" style={{
-        opacity: scene === 2 ? opacity : 0,
-        transform: scene === 2 ? 'translateY(0)' : 'translateY(20px)',
-        transition: scene !== 2 ? 'opacity 0.4s, transform 0.4s' : 'none',
-        pointerEvents: scene === 2 ? 'auto' : 'none',
-      }}>
-        <GlassCard className="h-full p-6" style={{ animationDelay: '1s' }}>
-          <div className="flex items-center gap-2 mb-5">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="hsla(217,91%,60%,0.8)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-            <h3 className="text-[15px] font-semibold text-white">Secure Deposit</h3>
-          </div>
-          <div className="space-y-3 mb-5">
-            <div className="flex justify-between"><span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Full Detail</span><span className="text-[13px] font-semibold text-white">$250</span></div>
-            <div className="flex justify-between"><span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.5)' }}>Deposit Required</span><span className="text-[13px] font-semibold text-white">$100</span></div>
-            <div className="h-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
-            <div className="flex justify-between"><span className="text-[14px] font-semibold text-white">Due Today</span><span className="text-[14px] font-bold" style={{ color: 'hsl(217, 91%, 60%)' }}>$100</span></div>
-          </div>
-          <div className="rounded-xl px-4 py-3 mb-5" style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <span className="text-[13px] font-mono" style={{ color: 'rgba(255,255,255,0.6)' }}>
-              •••• •••• •••• <TypeWriter text="4242" duration={800} elapsed={elapsed - 4000} />
-            </span>
-          </div>
-          <div className="mt-auto">
-            <CTAButton text="Pay Deposit →" />
-          </div>
-        </GlassCard>
-      </div>
-
-      {/* Scene 4: Success */}
-      <div className="absolute inset-0" style={{
-        opacity: scene === 3 ? opacity : 0,
-        transform: scene === 3 ? 'scale(1)' : 'scale(0.95)',
-        transition: scene !== 3 ? 'opacity 0.4s, transform 0.4s' : 'none',
-        pointerEvents: scene === 3 ? 'auto' : 'none',
-      }}>
-        <GlassCard className="h-full p-6 flex flex-col items-center justify-center" style={{ animationDelay: '1.5s' }}>
-          <SuccessCheckmark elapsed={elapsed - 6000} />
-          <h3 className="text-[18px] font-bold text-white mt-4" style={{ opacity: Math.min(Math.max((elapsed - 6400) / 300, 0), 1) }}>
-            Booking Confirmed!
-          </h3>
-          <p className="text-[13px] mt-1" style={{ color: 'rgba(255,255,255,0.5)', opacity: Math.min(Math.max((elapsed - 6600) / 300, 0), 1) }}>
-            Full Detail • $250
-          </p>
-          <p className="text-[12px] mt-4 text-center max-w-[220px]" style={{ color: 'rgba(255,255,255,0.35)', opacity: Math.min(Math.max((elapsed - 6800) / 300, 0), 1) }}>
-            You'll receive a reminder 1 day before your appointment
-          </p>
-        </GlassCard>
-      </div>
-    </div>
-  );
-};
-
-/* ═══════════════════════════ Owner View ═══════════════════════════ */
-const OwnerView = ({ ownerPhase, elapsed }: { ownerPhase: 'waiting' | 'incoming' | 'confirmed'; elapsed: number }) => {
-  const bookingCount = ownerPhase === 'confirmed' ? 7 : 6;
-
-  // Animated revenue counter
-  const displayRevenue = useMemo(() => {
-    if (ownerPhase !== 'confirmed') return 1400;
-    const t = Math.min((elapsed - 6000) / 800, 1);
-    return Math.round(1400 + easeOut(t) * 250);
-  }, [ownerPhase, elapsed]);
-
-  return (
-    <GlassCard className="w-[320px] p-5" style={{ animationDelay: '0.3s' }}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-1">
-        <h3 className="text-[15px] font-semibold text-white">Today's Schedule</h3>
-        <span className="text-[11px] font-medium" style={{ color: 'rgba(255,255,255,0.4)' }}>Fri, Feb 14</span>
-      </div>
-      <p className="text-[12px] mb-4" style={{ color: 'hsla(217, 91%, 60%, 0.7)' }}>
-        {bookingCount} bookings • ${displayRevenue.toLocaleString()} total
-      </p>
-
-      {/* Calendar slots */}
-      <div className="space-y-2.5">
-        <CalSlot time="9:00 AM" name="Mike R." price="$150" dim />
-        <CalSlot time="11:00 AM" name="Sarah K." price="$400" dim />
-        <IncomingSlot ownerPhase={ownerPhase} elapsed={elapsed} />
-        <CalSlot time="4:00 PM" name="David L." price="$180" dim />
-      </div>
-    </GlassCard>
-  );
-};
-
-const CalSlot = ({ time, name, price, dim }: { time: string; name: string; price: string; dim?: boolean }) => (
-  <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300" style={{
-    background: 'transparent',
-    border: '1px solid rgba(255,255,255,0.08)',
-    opacity: dim ? 0.5 : 1,
-  }}>
-    <span className="text-[11px] font-mono w-[60px] shrink-0" style={{ color: 'rgba(255,255,255,0.4)' }}>{time}</span>
-    <span className="text-[12px] text-white flex-1">{name}</span>
-    <span className="text-[12px] font-semibold text-white">{price}</span>
-  </div>
-);
-
-const IncomingSlot = ({ ownerPhase, elapsed }: { ownerPhase: 'waiting' | 'incoming' | 'confirmed'; elapsed: number }) => {
-  if (ownerPhase === 'waiting') {
-    return (
-      <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl" style={{
-        background: 'transparent',
-        border: '1px dashed rgba(255,255,255,0.1)',
-      }}>
-        <span className="text-[11px] font-mono w-[60px] shrink-0" style={{ color: 'rgba(255,255,255,0.3)' }}>2:00 PM</span>
-        <span className="text-[12px] italic" style={{ color: 'rgba(255,255,255,0.2)', animation: 'pulse 2s ease-in-out infinite' }}>Available</span>
-      </div>
-    );
-  }
-
-  const isConfirmed = ownerPhase === 'confirmed';
-  return (
-    <div className="relative px-3 py-2.5 rounded-xl transition-all duration-500 overflow-hidden" style={{
-      background: 'transparent',
-      border: `${isConfirmed ? '2px' : '1.5px'} solid hsla(217, 91%, 60%, ${isConfirmed ? 0.5 : 0.25})`,
-      boxShadow: isConfirmed ? '0 0 20px hsla(217, 91%, 60%, 0.2), 0 0 0 4px hsla(217, 91%, 60%, 0.05)' : 'none',
-    }}>
-      {/* Ripple on confirm */}
-      {isConfirmed && elapsed >= 6000 && elapsed < 6500 && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-0 h-0 rounded-full" style={{
-            background: 'hsla(217, 91%, 60%, 0.2)',
-            animation: 'ripple 0.5s ease-out forwards',
-            width: 200, height: 200,
-          }} />
-        </div>
-      )}
-      <div className="flex items-center gap-3 relative z-10">
-        <span className="text-[11px] font-mono w-[60px] shrink-0" style={{ color: 'hsla(217, 91%, 60%, 0.7)' }}>2:00 PM</span>
-        <div className="flex-1 min-w-0">
-          {ownerPhase === 'incoming' && (
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md" style={{
-              background: 'transparent',
-              border: '1px solid hsla(217, 91%, 60%, 0.3)',
-              animation: 'pulse 1s ease-in-out infinite',
-            }}>INCOMING</span>
-          )}
-          {isConfirmed && (
-            <div>
-              <div className="text-[12px] font-medium text-white overflow-hidden whitespace-nowrap">
-                <span style={{
-                  display: 'inline-block',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                  width: `${Math.min((elapsed - 6000) / 15, 100)}%`,
-                  maxWidth: '100%',
-                }}>Jason Martinez</span>
-              </div>
-              <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)', opacity: Math.min(Math.max((elapsed - 6500) / 300, 0), 1) }}>
-                Full Detail
+              </PhoneItem>
+              <div className="mt-auto" style={{ animation: 'slideInPhone 0.6s cubic-bezier(0.4,0,0.2,1) 0.4s both' }}>
+                <BookNowButton />
               </div>
             </div>
           )}
+          {/* Scene 2: Confirming */}
+          {scene === 1 && (
+            <div className="flex flex-col items-center justify-center h-full gap-4" style={{ opacity: op }}>
+              <div className="w-10 h-10 rounded-full border-4 border-t-transparent animate-spin" style={{ borderColor: 'hsl(217,91%,60%)', borderTopColor: 'transparent' }} />
+              <div className="text-sm font-semibold text-[#1d1d1f]">Processing...</div>
+            </div>
+          )}
+          {/* Scene 3: Payment */}
+          {scene === 2 && (
+            <div className="flex flex-col gap-4 h-full" style={{ opacity: op }}>
+              <PhoneItem delay={0}>
+                <div className="flex justify-between text-sm">
+                  <span className="text-[#86868b]">Premium Detail</span>
+                  <span className="font-semibold text-[#1d1d1f]">$149</span>
+                </div>
+              </PhoneItem>
+              <PhoneItem delay={0.2}>
+                <div className="flex justify-between text-sm">
+                  <span className="text-[#86868b]">Deposit</span>
+                  <span className="font-bold" style={{ color: 'hsl(217,91%,60%)' }}>$50</span>
+                </div>
+              </PhoneItem>
+              <div className="mt-auto" style={{ animation: 'slideInPhone 0.6s cubic-bezier(0.4,0,0.2,1) 0.4s both' }}>
+                <BookNowButton label="Pay Deposit →" />
+              </div>
+            </div>
+          )}
+          {/* Scene 4: Success */}
+          {scene === 3 && (
+            <div className="flex flex-col items-center justify-center h-full gap-3" style={{ opacity: op }}>
+              <SuccessCheck elapsed={elapsed - 6000} />
+              <div className="text-base font-bold text-[#1d1d1f]" style={{ opacity: Math.min(Math.max((elapsed - 6400) / 300, 0), 1) }}>Booking Confirmed!</div>
+              <div className="text-xs text-[#86868b]" style={{ opacity: Math.min(Math.max((elapsed - 6600) / 300, 0), 1) }}>Premium Detail • $149</div>
+            </div>
+          )}
         </div>
-        {isConfirmed && (
-          <div className="flex items-center gap-2" style={{ opacity: Math.min(Math.max((elapsed - 6700) / 300, 0), 1) }}>
-            <span className="text-[12px] font-semibold text-white">$250</span>
-            <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase tracking-wide" style={{
-              background: 'transparent',
-              border: '1px solid hsla(145, 63%, 42%, 0.5)',
-              color: 'hsl(145, 63%, 55%)',
-              boxShadow: '0 0 12px hsla(145, 63%, 42%, 0.3)',
-            }}>PAID</span>
-          </div>
-        )}
+      </div>
+      <span className="text-sm text-primary-foreground/80 font-medium">Customer books instantly</span>
+    </div>
+  );
+};
+
+const PhoneItem = ({ children, delay }: { children: React.ReactNode; delay: number }) => (
+  <div
+    className="rounded-xl p-3.5"
+    style={{
+      background: '#ffffff',
+      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+      animation: `slideInPhone 0.6s cubic-bezier(0.4,0,0.2,1) ${delay}s both`,
+    }}
+  >
+    {children}
+  </div>
+);
+
+const DateTimeChip = ({ label, active }: { label: string; active?: boolean }) => (
+  <div className="flex-1 text-center text-[13px] font-semibold rounded-lg py-2.5" style={{
+    background: active ? 'hsl(217,91%,60%)' : '#f8fafc',
+    border: active ? '2px solid hsl(217,91%,60%)' : '2px solid #e5e7eb',
+    color: active ? '#fff' : '#1d1d1f',
+  }}>
+    {label}
+  </div>
+);
+
+const BookNowButton = ({ label = "Book Now" }: { label?: string }) => (
+  <div className="w-full text-center py-3.5 rounded-[10px] text-[15px] font-semibold text-white" style={{
+    background: '#10b981',
+    boxShadow: '0 4px 16px rgba(16,185,129,0.3)',
+  }}>
+    {label}
+  </div>
+);
+
+const SuccessCheck = ({ elapsed }: { elapsed: number }) => {
+  const p = Math.min(Math.max(elapsed / 600, 0), 1);
+  return (
+    <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{
+      background: 'rgba(16,185,129,0.1)',
+      border: `2px solid rgba(16,185,129,${p * 0.6})`,
+    }}>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M5 13l4 4L19 7" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+          strokeDasharray="24" strokeDashoffset={24 - p * 24} style={{ transition: 'stroke-dashoffset 0.6s ease-out' }} />
+      </svg>
+    </div>
+  );
+};
+
+/* ═══════════════════════════ Flow Indicator ═══════════════════════════ */
+const FlowIndicator = ({ elapsed, ownerPhase }: { elapsed: number; ownerPhase: string }) => {
+  const active = elapsed >= 4000;
+  return (
+    <div className="flex flex-col items-center justify-center gap-3 h-full">
+      <div className="w-0.5 h-10" style={{
+        background: active ? 'linear-gradient(180deg, transparent, hsla(217,91%,60%,0.3), transparent)' : 'rgba(255,255,255,0.05)',
+        animation: active ? 'lineGlow 2s ease-in-out infinite' : 'none',
+      }} />
+      <span className="text-[28px] font-bold" style={{
+        color: 'hsl(217,91%,60%)',
+        animation: active ? 'pulseArrowBounce 2s ease-in-out infinite' : 'none',
+      }}>→</span>
+      <div className="w-3 h-3 rounded-full" style={{
+        background: active ? 'hsl(217,91%,60%)' : 'rgba(255,255,255,0.1)',
+        animation: active ? 'pulseDot 2s ease-in-out infinite' : 'none',
+      }} />
+      <div className="w-0.5 h-10" style={{
+        background: active ? 'linear-gradient(180deg, transparent, hsla(217,91%,60%,0.3), transparent)' : 'rgba(255,255,255,0.05)',
+        animation: active ? 'lineGlow 2s ease-in-out infinite' : 'none',
+      }} />
+    </div>
+  );
+};
+
+const MobileFlowIndicator = ({ elapsed, ownerPhase }: { elapsed: number; ownerPhase: string }) => {
+  const active = elapsed >= 4000;
+  return (
+    <div className="flex items-center justify-center gap-3" style={{ transform: 'rotate(90deg)', height: 60 }}>
+      <div className="w-0.5 h-6" style={{
+        background: active ? 'linear-gradient(180deg, transparent, hsla(217,91%,60%,0.4), transparent)' : 'rgba(255,255,255,0.05)',
+      }} />
+      <span className="text-xl font-bold" style={{ color: 'hsl(217,91%,60%)' }}>→</span>
+      <div className="w-2.5 h-2.5 rounded-full" style={{
+        background: active ? 'hsl(217,91%,60%)' : 'rgba(255,255,255,0.1)',
+        animation: active ? 'pulseDot 2s ease-in-out infinite' : 'none',
+      }} />
+    </div>
+  );
+};
+
+/* ═══════════════════════════ Owner Dashboard ═══════════════════════════ */
+const OwnerDashboard = ({ ownerPhase, elapsed, revenue }: { ownerPhase: 'waiting' | 'incoming' | 'confirmed'; elapsed: number; revenue: number }) => (
+  <div className="flex flex-col items-center gap-4">
+    {/* Dashboard shell */}
+    <div
+      style={{
+        width: 300, borderRadius: 20, padding: 6,
+        background: '#1d1d1f',
+        boxShadow: '0 0 0 4px rgba(255,255,255,0.1), 0 20px 60px rgba(0,0,0,0.4), 0 0 60px hsla(160,84%,39%,0.15)',
+        animation: 'floatDash 5s ease-in-out infinite 0.5s',
+      }}
+    >
+      <div className="overflow-hidden flex flex-col gap-4" style={{
+        borderRadius: 16, padding: 20,
+        background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+        height: 420,
+      }}>
+        {/* Notification */}
+        <NotificationPopup ownerPhase={ownerPhase} elapsed={elapsed} />
+
+        {/* Schedule slots */}
+        <div className="flex flex-col gap-2.5">
+          <ScheduleSlot time="9:00 AM" style={{ animation: 'fadeSlot 0.5s ease 0.2s both' }} />
+          <ScheduleSlot time="11:00 AM" style={{ animation: 'fadeSlot 0.5s ease 0.4s both' }} filled />
+          <ScheduleSlot
+            time="2:00 PM ⚡"
+            isNew={ownerPhase === 'confirmed'}
+            isIncoming={ownerPhase === 'incoming'}
+            style={{ animation: 'fadeSlot 0.5s ease 0.8s both' }}
+          />
+          <ScheduleSlot time="4:00 PM" empty style={{ animation: 'fadeSlot 0.5s ease 1s both' }} />
+        </div>
+
+        {/* Revenue */}
+        <div className="mt-auto flex flex-col items-center gap-1 rounded-xl py-4" style={{
+          background: 'linear-gradient(135deg, hsl(217,91%,60%), hsl(217,91%,50%))',
+          animation: 'slideInPhone 0.6s ease 1s both',
+        }}>
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-white/70">Today</span>
+          <span className="text-[32px] font-bold text-white tracking-tight font-mono">${revenue.toLocaleString()}</span>
+        </div>
+      </div>
+    </div>
+    <span className="text-sm text-primary-foreground/80 font-medium">You get paid automatically</span>
+  </div>
+);
+
+const NotificationPopup = ({ ownerPhase, elapsed }: { ownerPhase: string; elapsed: number }) => {
+  if (ownerPhase === 'waiting') return null;
+  return (
+    <div className="flex items-center gap-3 rounded-xl p-3" style={{
+      background: 'linear-gradient(135deg, #10b981, #059669)',
+      boxShadow: '0 4px 16px rgba(16,185,129,0.3)',
+      animation: 'popNotif 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards',
+    }}>
+      <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(255,255,255,0.2)' }}>
+        <span className="text-base">✓</span>
+      </div>
+      <div className="flex flex-col gap-0.5 flex-1">
+        <span className="text-[13px] font-bold text-white">New Booking!</span>
+        <span className="text-xl font-bold text-white">+$149</span>
       </div>
     </div>
   );
 };
 
-/* ═══════════════════════════ Data Flow Line ═══════════════════════════ */
-const DataFlowLine = ({ elapsed, ownerPhase }: { elapsed: number; ownerPhase: string }) => {
-  const showLine = elapsed >= 4000 && elapsed < 7000;
-  const packetProgress = useMemo(() => {
-    if (elapsed < 4200) return 0;
-    if (elapsed > 5200) return 1;
-    return easeInOut((elapsed - 4200) / 1000);
-  }, [elapsed]);
+const ScheduleSlot = ({ time, filled, isNew, isIncoming, empty, style }: {
+  time: string; filled?: boolean; isNew?: boolean; isIncoming?: boolean; empty?: boolean; style?: React.CSSProperties;
+}) => {
+  let border = '2px solid #e5e7eb';
+  let bg = '#ffffff';
+  let opacity = 1;
+
+  if (filled) { border = '2px solid hsl(217,91%,60%)'; bg = 'rgba(0,113,227,0.05)'; }
+  if (isNew) { border = '2px solid #10b981'; bg = 'rgba(16,185,129,0.1)'; }
+  if (isIncoming) { border = '2px solid hsl(217,91%,60%)'; bg = 'rgba(0,113,227,0.05)'; }
+  if (empty) { opacity = 0.4; }
 
   return (
-    <div className="relative w-16 h-[300px] flex items-center justify-center shrink-0">
-      {/* Dashed line */}
-      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 64 300" fill="none">
-        <path
-          d="M32 40 C32 120, 32 180, 32 260"
-          stroke={showLine ? 'url(#lineGrad)' : 'rgba(255,255,255,0.05)'}
-          strokeWidth="2"
-          strokeDasharray="6 4"
-          style={{ animation: showLine ? 'dashFlow 1s linear infinite' : 'none' }}
-          strokeLinecap="round"
-        />
-        <defs>
-          <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="hsl(217, 91%, 60%)" />
-            <stop offset="100%" stopColor="hsl(217, 91%, 70%)" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      {/* Data packet */}
-      {showLine && elapsed >= 4200 && elapsed <= 5400 && (
-        <div className="absolute left-1/2 -translate-x-1/2" style={{
-          top: `${14 + packetProgress * 74}%`,
-          width: 8, height: 8,
-          borderRadius: '50%',
-          background: 'hsl(217, 91%, 70%)',
-          border: '2px solid white',
-          animation: 'packetGlow 0.8s ease-in-out infinite',
-          willChange: 'top',
-        }} />
-      )}
-    </div>
-  );
-};
-
-const VerticalFlowLine = ({ elapsed }: { elapsed: number }) => (
-  <div className="w-1 h-8 rounded-full" style={{
-    background: elapsed >= 4000 ? 'linear-gradient(180deg, hsl(217, 91%, 60%), hsl(217, 91%, 70%))' : 'rgba(255,255,255,0.05)',
-    transition: 'background 0.4s',
-  }} />
-);
-
-/* ═══════════════════════════ Floating Particles ═══════════════════════════ */
-const FloatingParticles = () => (
-  <div className="absolute inset-0 pointer-events-none overflow-hidden">
-    {Array.from({ length: 6 }).map((_, i) => (
-      <div key={i} className="absolute rounded-full" style={{
-        width: 2 + Math.random() * 2,
-        height: 2 + Math.random() * 2,
-        background: `hsla(217, 91%, 60%, ${0.15 + Math.random() * 0.2})`,
-        left: `${20 + Math.random() * 60}%`,
-        top: `${20 + Math.random() * 60}%`,
-        animation: `particleFloat ${2 + Math.random() * 2}s ease-in-out infinite`,
-        animationDelay: `${i * 0.5}s`,
-      }} />
-    ))}
-  </div>
-);
-
-/* ═══════════════════════════ Small Components ═══════════════════════════ */
-const CTAButton = ({ text }: { text: string }) => (
-  <div className="w-full py-2.5 rounded-xl text-center text-[13px] font-semibold text-white" style={{
-    background: 'linear-gradient(135deg, hsl(217, 91%, 60%), hsl(217, 91%, 50%))',
-    boxShadow: '0 4px 12px hsla(217, 91%, 60%, 0.3)',
-  }}>{text}</div>
-);
-
-const TypeWriter = ({ text, duration, elapsed }: { text: string; duration: number; elapsed: number }) => {
-  const chars = Math.max(0, Math.min(Math.floor(elapsed / (duration / text.length)), text.length));
-  return <>{text.slice(0, chars)}</>;
-};
-
-const SuccessCheckmark = ({ elapsed }: { elapsed: number }) => {
-  const progress = Math.min(Math.max(elapsed / 600, 0), 1);
-  return (
-    <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{
-      background: 'transparent',
-      border: `2px solid hsla(145, 63%, 42%, ${progress * 0.6})`,
-      boxShadow: progress > 0 ? '0 0 20px hsla(145, 63%, 42%, 0.3), 0 0 0 8px hsla(145, 63%, 42%, 0.05)' : 'none',
-      transition: 'all 0.3s',
+    <div className="px-4 py-3 rounded-[10px] text-sm font-semibold text-[#1d1d1f]" style={{
+      background: bg, border, opacity, ...style,
+      animation: isNew ? `highlightPulse 1s ease 0.8s forwards, ${(style?.animation || '')}` : style?.animation,
     }}>
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M5 13l4 4L19 7"
-          stroke="hsl(145, 63%, 55%)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeDasharray="24"
-          strokeDashoffset={24 - progress * 24}
-          style={{ transition: 'stroke-dashoffset 0.6s ease-out' }}
-        />
-      </svg>
+      {time}
     </div>
   );
 };
 
 /* ═══════════════════════════ Static Fallback ═══════════════════════════ */
-const StaticCustomerCard = () => (
-  <GlassCard className="w-[280px] p-5" float={false}>
-    <h3 className="text-[14px] font-semibold text-white mb-3">Book Your Detail</h3>
-    <div className="space-y-2">
-      {['Exterior Detail $150', 'Full Detail $250 ✓', 'Paint Correction $400'].map(s => (
-        <div key={s} className="text-[12px] px-3 py-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.6)' }}>{s}</div>
-      ))}
+const StaticFallback = () => (
+  <div className="flex gap-8 items-center">
+    <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+      <div className="text-sm font-semibold text-white mb-2">Premium Detail – $149</div>
+      <div className="text-xs text-white/50">Tomorrow • 2:00 PM</div>
     </div>
-  </GlassCard>
-);
-const StaticOwnerCard = () => (
-  <GlassCard className="w-[280px] p-5" float={false}>
-    <h3 className="text-[14px] font-semibold text-white mb-3">Today's Schedule</h3>
-    <div className="space-y-2">
-      {['9:00 AM - Mike R. $150', '11:00 AM - Sarah K. $400', '2:00 PM - Jason M. $250'].map(s => (
-        <div key={s} className="text-[12px] px-3 py-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.6)' }}>{s}</div>
-      ))}
+    <span className="text-xl text-sky font-bold">→</span>
+    <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+      <div className="text-sm font-semibold text-white mb-2">New Booking! +$149</div>
+      <div className="text-xs text-white/50">Today: $1,996</div>
     </div>
-  </GlassCard>
+  </div>
 );
 
 /* ═══════════════════════════ Utils ═══════════════════════════ */
 const easeOut = (t: number) => 1 - Math.pow(1 - Math.min(Math.max(t, 0), 1), 3);
-const easeInOut = (t: number) => {
-  const c = Math.min(Math.max(t, 0), 1);
-  return c < 0.5 ? 4 * c * c * c : 1 - Math.pow(-2 * c + 2, 3) / 2;
-};
 
 export default PremiumBookingDemo;
