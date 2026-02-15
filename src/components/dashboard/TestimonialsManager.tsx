@@ -85,10 +85,10 @@ const TestimonialsManager = () => {
           <p className="text-white/40 text-sm mt-1">Manage customer reviews with photos</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => setShowCsvImport(true)} size="sm" variant="outline" className="gap-2 border-white/10 text-white/70 hover:text-white hover:bg-white/5">
+          <Button onClick={() => setShowCsvImport(true)} size="sm" variant="outline" className="gap-2 border-white/10 text-foreground hover:bg-white/5">
             <Upload className="w-4 h-4" /> CSV
           </Button>
-          <Button onClick={() => setShowGmbImport(true)} size="sm" variant="outline" className="gap-2 border-white/10 text-white/70 hover:text-white hover:bg-white/5">
+          <Button onClick={() => setShowGmbImport(true)} size="sm" variant="outline" className="gap-2 border-white/10 text-foreground hover:bg-white/5">
             <Building2 className="w-4 h-4" /> GMB
           </Button>
           <Button onClick={add} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
