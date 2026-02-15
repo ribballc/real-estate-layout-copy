@@ -19,6 +19,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          image_url: string | null
           popular: boolean
           price: number
           service_id: string
@@ -31,6 +32,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          image_url?: string | null
           popular?: boolean
           price?: number
           service_id: string
@@ -43,6 +45,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          image_url?: string | null
           popular?: boolean
           price?: number
           service_id?: string
@@ -291,6 +294,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          image_url: string | null
           popular: boolean
           price: number
           sort_order: number
@@ -302,6 +306,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          image_url?: string | null
           popular?: boolean
           price?: number
           sort_order?: number
@@ -313,6 +318,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          image_url?: string | null
           popular?: boolean
           price?: number
           sort_order?: number

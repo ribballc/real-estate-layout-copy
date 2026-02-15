@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, ChevronDown } from "lucide-react";
+import { Loader2, Plus, Trash2, ChevronDown, Upload, ImageIcon, X } from "lucide-react";
 
-interface AddOn { id: string; service_id: string; title: string; description: string; price: number; }
+interface AddOn { id: string; service_id: string; title: string; description: string; price: number; image_url: string | null; }
 interface Service { id: string; title: string; }
 
 const PRESET_ADDONS: Record<string, { title: string; price: number }[]> = {
@@ -224,6 +224,30 @@ const AddOnsManager = () => {
           <div className="space-y-3">
             {filtered.map((addon) => (
               <div key={addon.id} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
+                {addon.image_url ? (
+                  <div className="relative group shrink-0">
+                    <img src={addon.image_url} alt={addon.title} className="w-12 h-12 rounded-lg object-cover border border-white/10" />
+                    <button
+                      onClick={() => updateAddOn(addon.id, { image_url: null } as any)}
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="w-12 h-12 rounded-lg border-2 border-dashed border-white/10 flex items-center justify-center cursor-pointer hover:border-accent/40 transition-colors shrink-0">
+                    <ImageIcon className="w-4 h-4 text-white/20" />
+                    <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file || !user) return;
+                      const path = `${user.id}/addons/${Date.now()}-${file.name}`;
+                      const { error } = await supabase.storage.from("user-photos").upload(path, file, { upsert: true });
+                      if (error) return;
+                      const { data: { publicUrl } } = supabase.storage.from("user-photos").getPublicUrl(path);
+                      updateAddOn(addon.id, { image_url: publicUrl } as any);
+                    }} />
+                  </label>
+                )}
                 <Input value={addon.title} onChange={(e) => updateAddOn(addon.id, { title: e.target.value })} className="flex-1 h-9 bg-white/5 border-white/10 text-white focus-visible:ring-accent" />
                 <div className="flex items-center gap-1">
                   <span className="text-white/40 text-sm">$</span>

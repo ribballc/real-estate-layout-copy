@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { MessageCircle, X, Send, Loader2, Bug, HelpCircle, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import ReactMarkdown from "react-markdown";
@@ -13,7 +13,11 @@ const quickActions = [
   { label: "How do I...?", icon: HelpCircle, prompt: "I need help with:" },
 ];
 
-const SupportChatbot = () => {
+export interface SupportChatbotHandle {
+  openWithPrompt: (prompt: string) => void;
+}
+
+const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -21,6 +25,14 @@ const SupportChatbot = () => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    openWithPrompt: (prompt: string) => {
+      setOpen(true);
+      setInput(prompt);
+      setTimeout(() => inputRef.current?.focus(), 100);
+    },
+  }));
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -98,7 +110,7 @@ const SupportChatbot = () => {
   };
 
   return (
-    <>
+    <div className="support-chatbot">
       {/* FAB */}
       <button
         onClick={() => setOpen(!open)}
@@ -190,8 +202,10 @@ const SupportChatbot = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
-};
+});
+
+SupportChatbot.displayName = "SupportChatbot";
 
 export default SupportChatbot;

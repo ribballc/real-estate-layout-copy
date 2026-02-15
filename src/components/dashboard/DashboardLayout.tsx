@@ -1,9 +1,9 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar from "./DashboardSidebar";
-import SupportChatbot from "./SupportChatbot";
+import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
@@ -37,6 +37,7 @@ const DashboardLayout = () => {
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const chatbotRef = useRef<SupportChatbotHandle>(null);
 
   const toggleTheme = () => {
     setDashboardTheme(prev => {
@@ -78,7 +79,12 @@ const DashboardLayout = () => {
   return (
     <SidebarProvider>
       <div className={`min-h-screen flex w-full ${isDark ? "" : "dashboard-light"}`} style={{ background: bg }}>
-        <DashboardSidebar dashboardTheme={dashboardTheme} onToggleTheme={toggleTheme} />
+        <DashboardSidebar
+          dashboardTheme={dashboardTheme}
+          onToggleTheme={toggleTheme}
+          onReportBug={() => chatbotRef.current?.openWithPrompt("I'd like to report a bug I found:")}
+          onNeedHelp={() => chatbotRef.current?.openWithPrompt("I need help with:")}
+        />
         <main className="flex-1 flex flex-col min-w-0">
           {/* Header bar */}
           <header className={`flex flex-col shrink-0 border-b ${borderColor}`}>
@@ -191,7 +197,7 @@ const DashboardLayout = () => {
             </div>
           </footer>
 
-          <SupportChatbot />
+          <SupportChatbot ref={chatbotRef} />
         </main>
       </div>
     </SidebarProvider>
