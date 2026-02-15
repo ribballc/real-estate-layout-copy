@@ -289,6 +289,109 @@ export type Database = {
         }
         Relationships: []
       }
+      service_option_groups: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          option_type: string
+          required: boolean
+          service_id: string
+          slider_default: number | null
+          slider_max: number | null
+          slider_min: number | null
+          slider_step: number | null
+          slider_unit: string | null
+          sort_order: number
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          option_type?: string
+          required?: boolean
+          service_id: string
+          slider_default?: number | null
+          slider_max?: number | null
+          slider_min?: number | null
+          slider_step?: number | null
+          slider_unit?: string | null
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          option_type?: string
+          required?: boolean
+          service_id?: string
+          slider_default?: number | null
+          slider_max?: number | null
+          slider_min?: number | null
+          slider_step?: number | null
+          slider_unit?: string | null
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_option_groups_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_option_items: {
+        Row: {
+          created_at: string
+          description: string
+          group_id: string
+          id: string
+          label: string
+          price_modifier: number
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          group_id: string
+          id?: string
+          label?: string
+          price_modifier?: number
+          sort_order?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          group_id?: string
+          id?: string
+          label?: string
+          price_modifier?: number
+          sort_order?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_option_items_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "service_option_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       services: {
         Row: {
           created_at: string

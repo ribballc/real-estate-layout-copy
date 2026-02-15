@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Book from "./pages/Book";
 import BookVehicle from "./pages/BookVehicle";
 import BookAddOns from "./pages/BookAddOns";
+import BookOptions from "./pages/BookOptions";
 import BookBooking from "./pages/BookBooking";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/book" element={<Book />} />
             <Route path="/book/vehicle" element={<BookVehicle />} />
+            <Route path="/book/options" element={<BookOptions />} />
             <Route path="/book/add-ons" element={<BookAddOns />} />
             <Route path="/book/booking" element={<BookBooking />} />
             <Route path="/login" element={<Login />} />
