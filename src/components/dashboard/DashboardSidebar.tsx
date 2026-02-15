@@ -29,9 +29,11 @@ const items = [
 interface DashboardSidebarProps {
   dashboardTheme?: "dark" | "light";
   onToggleTheme?: () => void;
+  onReportBug?: () => void;
+  onNeedHelp?: () => void;
 }
 
-const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme }: DashboardSidebarProps) => {
+const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug, onNeedHelp }: DashboardSidebarProps) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -97,20 +99,20 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme }: DashboardS
 
         {/* Help links */}
         <div className="p-3 space-y-0.5">
-          <a
-            href="mailto:support@darker.com?subject=Bug Report"
-            className="flex items-center gap-3 px-4 py-2.5 text-sm text-white/40 hover:text-amber-400 hover:bg-amber-400/5 rounded-lg transition-colors"
+          <button
+            onClick={onReportBug}
+            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-white/40 hover:text-amber-400 hover:bg-amber-400/5 rounded-lg transition-colors"
           >
             <Bug className="w-4 h-4" />
             <span>Report A Bug</span>
-          </a>
-          <a
-            href="mailto:support@darker.com?subject=Help Request"
-            className="flex items-center gap-3 px-4 py-2.5 text-sm text-white/40 hover:text-accent hover:bg-accent/5 rounded-lg transition-colors"
+          </button>
+          <button
+            onClick={onNeedHelp}
+            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-white/40 hover:text-accent hover:bg-accent/5 rounded-lg transition-colors"
           >
             <HelpCircle className="w-4 h-4" />
             <span>Need Help?</span>
-          </a>
+          </button>
         </div>
 
         {/* Sign out */}

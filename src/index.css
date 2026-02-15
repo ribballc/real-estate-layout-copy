@@ -275,3 +275,56 @@
 .dashboard-light .hover\:bg-accent\/5:hover {
   background-color: hsl(217 91% 97%) !important;
 }
+
+/* Fix select dropdowns in light mode */
+.dashboard-light select {
+  background-color: hsl(0 0% 100%) !important;
+  color: hsl(215 25% 12%) !important;
+  border-color: hsl(214 20% 88%) !important;
+}
+.dashboard-light select option {
+  background-color: hsl(0 0% 100%) !important;
+  color: hsl(215 25% 12%) !important;
+}
+
+/* Fix inline style backgrounds in light mode */
+.dashboard-light [style*="hsl(215 50% 12%)"],
+.dashboard-light [style*="hsl(215, 50%, 12%)"] {
+  background-color: hsl(0 0% 100%) !important;
+}
+
+/* Fix website theme toggle cards in light mode */
+.dashboard-light .bg-\[hsl\(215\2c 50\%\2c 10\%\)\] {
+  background-color: hsl(215 50% 10%) !important;
+}
+.dashboard-light .bg-white {
+  background-color: hsl(0 0% 100%) !important;
+}
+
+/* Fix text in theme toggle */
+.dashboard-light .text-accent {
+  color: hsl(217 91% 60%) !important;
+}
+
+/* Fix chatbot styles - exclude from light mode overrides */
+.dashboard-light .support-chatbot .text-white {
+  color: white !important;
+}
+.dashboard-light .support-chatbot .text-white\/70,
+.dashboard-light .support-chatbot .text-white\/50,
+.dashboard-light .support-chatbot .text-white\/40,
+.dashboard-light .support-chatbot .text-white\/30,
+.dashboard-light .support-chatbot .text-white\/80 {
+  color: inherit !important;
+}
+.dashboard-light .support-chatbot .bg-white\/5,
+.dashboard-light .support-chatbot .bg-white\/\[0\.03\],
+.dashboard-light .support-chatbot .bg-white\/\[0\.06\],
+.dashboard-light .support-chatbot .bg-white\/\[0\.07\] {
+  background-color: inherit !important;
+}
+.dashboard-light .support-chatbot .border-white\/10,
+.dashboard-light .support-chatbot .border-white\/5,
+.dashboard-light .support-chatbot .border-white\/20 {
+  border-color: inherit !important;
+}

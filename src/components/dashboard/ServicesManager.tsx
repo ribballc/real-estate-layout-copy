@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Star, ChevronDown, X } from "lucide-react";
+import { Loader2, Plus, Trash2, Star, ChevronDown, X, Upload, ImageIcon } from "lucide-react";
 
 interface Service {
   id: string;
@@ -15,6 +15,7 @@ interface Service {
   price: number;
   popular: boolean;
   sort_order: number;
+  image_url: string | null;
 }
 
 const PRESET_SERVICES = [
@@ -136,11 +137,38 @@ const ServicesManager = () => {
           <div key={service.id} className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 space-y-3">
-                <Input
-                  value={service.title}
-                  onChange={(e) => updateService(service.id, { title: e.target.value })}
-                  className="h-10 bg-white/5 border-white/10 text-white font-semibold focus-visible:ring-accent"
-                />
+                {/* Image upload */}
+                <div className="flex items-center gap-3">
+                  {service.image_url ? (
+                    <div className="relative group">
+                      <img src={service.image_url} alt={service.title} className="w-16 h-16 rounded-lg object-cover border border-white/10" />
+                      <button
+                        onClick={() => updateService(service.id, { image_url: null } as any)}
+                        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="w-16 h-16 rounded-lg border-2 border-dashed border-white/10 flex items-center justify-center cursor-pointer hover:border-accent/40 transition-colors shrink-0">
+                      <ImageIcon className="w-5 h-5 text-white/20" />
+                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file || !user) return;
+                        const path = `${user.id}/services/${Date.now()}-${file.name}`;
+                        const { error } = await supabase.storage.from("user-photos").upload(path, file, { upsert: true });
+                        if (error) { toast({ title: "Upload failed", description: error.message, variant: "destructive" }); return; }
+                        const { data: { publicUrl } } = supabase.storage.from("user-photos").getPublicUrl(path);
+                        updateService(service.id, { image_url: publicUrl } as any);
+                      }} />
+                    </label>
+                  )}
+                  <Input
+                    value={service.title}
+                    onChange={(e) => updateService(service.id, { title: e.target.value })}
+                    className="h-10 bg-white/5 border-white/10 text-white font-semibold focus-visible:ring-accent"
+                  />
+                </div>
                 <Textarea
                   value={service.description}
                   onChange={(e) => updateService(service.id, { description: e.target.value })}
