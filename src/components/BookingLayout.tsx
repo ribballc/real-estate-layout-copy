@@ -4,11 +4,10 @@ import BookingBreadcrumb from "@/components/BookingBreadcrumb";
 
 interface BookingLayoutProps {
   activeStep: number;
-  showMap?: boolean;
   children: ReactNode;
 }
 
-const BookingLayout = ({ activeStep, showMap = false, children }: BookingLayoutProps) => (
+const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => (
   <div className="min-h-screen" style={{ background: "hsl(210 40% 98%)" }}>
     {/* Top Nav */}
     <header
@@ -32,7 +31,7 @@ const BookingLayout = ({ activeStep, showMap = false, children }: BookingLayoutP
           {children}
         </main>
 
-        <BookingSidebar showMap={showMap} />
+        <BookingSidebar />
       </div>
     </div>
   </div>

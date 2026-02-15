@@ -61,7 +61,7 @@ const BookVehicle = () => {
     "w-full px-4 py-3.5 rounded-xl border border-border bg-card text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-accent transition-all appearance-none min-h-[48px] pl-11";
 
   return (
-    <BookingLayout activeStep={1} showMap>
+    <BookingLayout activeStep={1}>
       {/* Section heading */}
       <FadeIn delay={50}>
         <h1 className="font-heading text-[28px] md:text-[40px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground mb-8 md:mb-10">
