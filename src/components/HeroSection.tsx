@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ChevronRight, Store, ChevronDown } from "lucide-react";
-import AdvancedBookingDemo from "@/components/AdvancedBookingDemo";
+import PremiumBookingDemo from "@/components/PremiumBookingDemo";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const HeroSection = () => {
@@ -54,7 +54,7 @@ const HeroSection = () => {
 
         {/* Hero Content */}
         <div className="max-w-6xl mx-auto mt-8 md:mt-14 flex-1 w-full">
-          <div className="max-w-2xl mx-auto text-center lg:text-left lg:max-w-none lg:grid lg:grid-cols-[55%_45%] lg:gap-12 lg:items-center">
+          <div className="max-w-2xl mx-auto text-center lg:text-left lg:max-w-none lg:grid lg:grid-cols-[50%_50%] lg:gap-8 lg:items-center">
 
             {/* Copy block */}
             <div className="text-left">
@@ -185,14 +185,15 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Advanced Booking Demo */}
+            {/* Premium Booking Demo */}
             <div
+              className="hidden lg:block"
               style={{
                 opacity: 0,
                 animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
               }}
             >
-              <AdvancedBookingDemo />
+              <PremiumBookingDemo />
             </div>
           </div>
         </div>
