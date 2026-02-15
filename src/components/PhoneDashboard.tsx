@@ -156,90 +156,88 @@ const PhoneDashboard = () => {
   }, [runSequence]);
 
   return (
-    <div className="flex flex-col items-center gap-6 sm:gap-8 w-full">
-      {/* Phone Mockup */}
+    <div className="flex flex-col items-center gap-5 sm:gap-6 w-full">
+      {/* Glass Screen */}
       <div className="relative flex justify-center items-center">
-        {/* Phone Frame */}
         <div
-          className="relative w-[300px] sm:w-[340px] lg:w-[360px]"
+          className="relative w-[260px] sm:w-[290px] lg:w-[310px]"
           style={{
-            height: "auto",
-            aspectRatio: "360 / 700",
-            background: "linear-gradient(135deg, #1d1d1f 0%, #2d2d2f 100%)",
-            borderRadius: "40px",
-            padding: "10px",
+            aspectRatio: "360 / 680",
+            background: "linear-gradient(135deg, hsla(217,91%,60%,0.08) 0%, hsla(215,50%,10%,0.6) 50%, hsla(217,91%,60%,0.05) 100%)",
+            borderRadius: "28px",
+            padding: "2px",
             boxShadow:
-              "0 0 0 4px rgba(255,255,255,0.1), 0 30px 80px rgba(0,0,0,0.6), 0 0 100px rgba(0,113,227,0.15)",
+              "0 0 0 1px hsla(217,91%,60%,0.2), 0 20px 60px rgba(0,0,0,0.4), 0 0 80px hsla(217,91%,60%,0.1), inset 0 1px 0 hsla(0,0%,100%,0.1)",
             animation: "phone-float 6s ease-in-out infinite",
+            backdropFilter: "blur(20px)",
           }}
         >
-          {/* Notch */}
+          {/* Inner glass screen */}
           <div
-            className="absolute top-3 left-1/2 -translate-x-1/2 w-[120px] sm:w-[140px] h-7 sm:h-8 z-10"
-            style={{ background: "#000", borderRadius: "0 0 20px 20px" }}
-          />
-
-          {/* Screen */}
-          <div
-            className="w-full h-full flex flex-col gap-4 sm:gap-5 relative overflow-hidden"
+            className="w-full h-full flex flex-col gap-3 sm:gap-4 relative overflow-hidden"
             style={{
-              background: "linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%)",
-              borderRadius: "34px",
-              padding: "44px 16px 16px 16px",
+              background: "linear-gradient(180deg, hsla(215,50%,10%,0.85) 0%, hsla(217,33%,17%,0.9) 100%)",
+              borderRadius: "26px",
+              padding: "20px 14px 14px 14px",
+              backdropFilter: "blur(40px)",
             }}
           >
+            {/* Top edge highlight */}
+            <div
+              className="absolute top-0 left-[10%] right-[10%] h-[1px] pointer-events-none"
+              style={{
+                background: "linear-gradient(90deg, transparent, hsla(217,91%,60%,0.4), transparent)",
+              }}
+            />
+
             {/* Scan lines overlay */}
             <div
               className="absolute inset-0 pointer-events-none z-[1]"
               style={{
                 backgroundImage:
-                  "repeating-linear-gradient(0deg, transparent 0px, rgba(0,113,227,0.02) 1px, transparent 2px)",
+                  "repeating-linear-gradient(0deg, transparent 0px, hsla(217,91%,60%,0.015) 1px, transparent 2px)",
               }}
             />
 
             {/* Status Bar */}
             <div
-              className="flex justify-between items-center px-2 text-[12px] sm:text-[13px] font-medium z-[2]"
-              style={{ color: "rgba(255,255,255,0.6)" }}
+              className="flex justify-between items-center px-1.5 text-[11px] sm:text-[12px] font-medium z-[2]"
+              style={{ color: "hsla(0,0%,100%,0.5)" }}
             >
               <span>2:47</span>
-              <div className="flex gap-3 items-center">
-                <span className="text-[9px] sm:text-[10px] tracking-[1px]">●●●</span>
+              <div className="flex gap-2 items-center">
+                <span className="text-[8px] sm:text-[9px] tracking-[1px]">●●●</span>
                 <span>⚡ 94%</span>
               </div>
             </div>
 
             {/* App Header */}
             <div
-              className="flex justify-between items-start px-2 sm:px-3 pb-3 sm:pb-4 z-[2]"
-              style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+              className="flex justify-between items-start px-1.5 sm:px-2 pb-2.5 sm:pb-3 z-[2]"
+              style={{ borderBottom: "1px solid hsla(217,91%,60%,0.1)" }}
             >
               <div className="flex flex-col gap-1">
-                <span
-                  className="inline-flex items-center gap-1.5 text-[9px] sm:text-[10px] font-bold tracking-[1px] uppercase text-emerald-400"
-                >
+                <span className="inline-flex items-center gap-1.5 text-[8px] sm:text-[9px] font-bold tracking-[1px] uppercase text-emerald-400">
                   <span className="animate-pulse">●</span> LIVE
                 </span>
-                <h3
-                  className="text-lg sm:text-xl lg:text-2xl font-bold text-white tracking-[-0.5px] m-0"
-                >
+                <h3 className="text-base sm:text-lg font-bold text-white tracking-[-0.5px] m-0">
                   Today's Bookings
                 </h3>
               </div>
 
               {/* Revenue Badge */}
               <div
-                className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full"
+                className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full"
                 style={{
-                  background: "rgba(16,185,129,0.15)",
-                  border: "1px solid rgba(16,185,129,0.3)",
+                  background: "hsla(160,84%,39%,0.1)",
+                  border: "1px solid hsla(160,84%,39%,0.25)",
                   backdropFilter: "blur(10px)",
                   transform: revenueBump ? "scale(1.15)" : "scale(1)",
                   transition: "transform 0.4s cubic-bezier(0.34,1.56,0.64,1)",
                 }}
               >
                 <span
-                  className="text-sm sm:text-base lg:text-lg font-bold text-emerald-400 tracking-[-0.3px]"
+                  className="text-xs sm:text-sm font-bold text-emerald-400 tracking-[-0.3px]"
                   style={{ fontFamily: "'Courier New', monospace" }}
                 >
                   ${revenue.toLocaleString()}
@@ -248,7 +246,7 @@ const PhoneDashboard = () => {
             </div>
 
             {/* Bookings List */}
-            <div className="flex flex-col gap-2 sm:gap-3 overflow-hidden flex-1 z-[2]">
+            <div className="flex flex-col gap-1.5 sm:gap-2 overflow-hidden flex-1 z-[2]">
               {EXISTING_BOOKINGS.map((b, i) => (
                 <BookingCard
                   key={`existing-${i}`}
@@ -268,28 +266,36 @@ const PhoneDashboard = () => {
                 />
               ))}
             </div>
+
+            {/* Bottom edge highlight */}
+            <div
+              className="absolute bottom-0 left-[10%] right-[10%] h-[1px] pointer-events-none"
+              style={{
+                background: "linear-gradient(90deg, transparent, hsla(217,91%,60%,0.2), transparent)",
+              }}
+            />
           </div>
         </div>
 
         {/* Corner Accents */}
         {[
-          { top: 16, left: 16, borderRight: "none", borderBottom: "none" },
-          { top: 16, right: 16, borderLeft: "none", borderBottom: "none" },
-          { bottom: 16, left: 16, borderRight: "none", borderTop: "none" },
-          { bottom: 16, right: 16, borderLeft: "none", borderTop: "none" },
+          { top: -4, left: -4, borderRight: "none", borderBottom: "none" },
+          { top: -4, right: -4, borderLeft: "none", borderBottom: "none" },
+          { bottom: -4, left: -4, borderRight: "none", borderTop: "none" },
+          { bottom: -4, right: -4, borderLeft: "none", borderTop: "none" },
         ].map((s, i) => (
           <div
             key={i}
-            className="absolute w-4 h-4 z-[5]"
-            style={{ border: "2px solid rgba(0,113,227,0.4)", ...s }}
+            className="absolute w-3 h-3 z-[5]"
+            style={{ border: "1.5px solid hsla(217,91%,60%,0.35)", ...s }}
           />
         ))}
       </div>
 
       {/* Caption */}
       <p
-        className="text-center text-sm sm:text-base font-semibold tracking-[-0.2px]"
-        style={{ color: "rgba(255,255,255,0.8)" }}
+        className="text-center text-xs sm:text-sm font-semibold tracking-[-0.2px]"
+        style={{ color: "hsla(0,0%,100%,0.7)" }}
       >
         Bookings while you sleep
       </p>
