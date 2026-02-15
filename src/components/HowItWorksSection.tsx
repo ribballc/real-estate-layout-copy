@@ -1,24 +1,27 @@
 import { useRef, useCallback } from "react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
-import { ChevronRight, ClipboardList, Wrench, CalendarCheck } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import stepFormImg from "@/assets/step-form.png";
+import stepBuildImg from "@/assets/step-build.png";
+import stepAutopilotImg from "@/assets/step-autopilot.png";
 
 const steps = [
   {
     step: 1,
-    icon: ClipboardList,
+    image: stepFormImg,
     title: "Tell Us About Your Shop",
     description: "Name, services, hours, location. Takes 60 seconds.",
   },
   {
     step: 2,
-    icon: Wrench,
+    image: stepBuildImg,
     title: "We Build Everything",
     description: "Custom website + booking system with SMS reminders and deposits. Done for you automatically.",
   },
   {
     step: 3,
-    icon: CalendarCheck,
+    image: stepAutopilotImg,
     title: "Bookings on Autopilot",
     description: "Customers find you, book online, pay deposits, and get reminders. You detail.",
   },
@@ -36,8 +39,6 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
     card.style.setProperty("--mouse-x", `${x}%`);
     card.style.setProperty("--mouse-y", `${y}%`);
   }, []);
-
-  const Icon = step.icon;
 
   return (
     <FadeIn delay={index * 150}>
@@ -72,17 +73,17 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           <span className="relative z-10">{step.step}</span>
         </span>
 
-        {/* Icon container */}
+        {/* Animated image */}
         <div className="flex justify-center mb-7 relative z-10">
-          <div
-            className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center transition-all duration-400"
+          <img
+            src={step.image}
+            alt={step.title}
+            className="w-[72px] h-[72px] object-contain transition-transform duration-300 group-hover:scale-110"
             style={{
-              background: "hsla(217, 71%, 53%, 0.08)",
-              border: "1px solid hsla(217, 71%, 53%, 0.15)",
+              animation: "floatIcon 3s ease-in-out infinite",
+              animationDelay: `${index * 0.4}s`,
             }}
-          >
-            <Icon className="w-8 h-8 transition-all duration-300" style={{ color: "hsl(217, 71%, 53%)" }} />
-          </div>
+          />
         </div>
 
         <h3
@@ -97,6 +98,13 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
         >
           {step.description}
         </p>
+
+        <style>{`
+          @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+          }
+        `}</style>
       </div>
     </FadeIn>
   );
