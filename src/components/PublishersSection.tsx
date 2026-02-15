@@ -19,7 +19,7 @@ const PublishersSection = () => {
       <div className="max-w-3xl mx-auto">
         <div className="grid grid-cols-2 gap-4 md:gap-0">
           {[
-            { end: 200, suffix: "+", label: "Shops Trust Velarrio" },
+            { end: 200, suffix: "+", label: "Shops Trust Darker" },
             { end: 2, suffix: "$", label: "In Bookings Captured" },
           ].map((stat, i) => (
             <FadeIn key={stat.label} delay={i * 100}>

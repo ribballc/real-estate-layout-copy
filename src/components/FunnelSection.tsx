@@ -10,7 +10,7 @@ const without = [
   "Looking amateur while competitors look professional",
 ];
 
-const withVelarrio = [
+const withDarker = [
   "Done-for-you website + booking calendar in one",
   "Customers book and pay deposits 24/7",
   "Auto SMS reminders cut no-shows by 40%",
@@ -39,7 +39,7 @@ const FunnelSection = () => {
             <div className="bg-background rounded-2xl p-6 md:p-8 text-left h-full border" style={{
               borderColor: 'hsl(0 84% 90%)',
             }}>
-              <h3 className="text-lg font-semibold mb-6" style={{ color: 'hsl(0 60% 35%)' }}>Without Velarrio</h3>
+              <h3 className="text-lg font-semibold mb-6" style={{ color: 'hsl(0 60% 35%)' }}>Without Darker</h3>
               <ul className="space-y-0">
                 {without.map((item, i) => (
                   <li key={i} className={`flex items-start gap-3 py-3 leading-relaxed text-muted-foreground ${i < without.length - 1 ? "border-b border-border" : ""}`}>
@@ -57,10 +57,10 @@ const FunnelSection = () => {
               border: '1px solid hsla(217, 91%, 60%, 0.2)',
               boxShadow: '0 8px 32px hsla(217, 91%, 60%, 0.15)',
             }}>
-              <h3 className="text-lg font-semibold text-sky mb-6">With Velarrio — from $35/mo</h3>
+              <h3 className="text-lg font-semibold text-sky mb-6">With Darker — from $35/mo</h3>
               <ul className="space-y-0">
-                {withVelarrio.map((item, i) => (
-                  <li key={i} className={`flex items-start gap-3 py-3 leading-relaxed ${i < withVelarrio.length - 1 ? "border-b border-primary-foreground/10" : ""}`}>
+                {withDarker.map((item, i) => (
+                  <li key={i} className={`flex items-start gap-3 py-3 leading-relaxed ${i < withDarker.length - 1 ? "border-b border-primary-foreground/10" : ""}`}>
                     <span className="text-accent font-bold text-lg flex-shrink-0">✓</span>
                     <span className="text-primary-foreground/90">{item}</span>
                   </li>
