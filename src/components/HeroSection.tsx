@@ -76,17 +76,15 @@ const HeroSection = () => {
             <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em]">
               <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold">
                 <span className="inline-block" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
-                  Stop Losing{" "}
-                </span>
-                <span className="inline-block text-sky text-[40px] md:text-[64px] lg:text-[85px]" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
-                  $1,200+/Month
+                  Your Work is Flawless.
                 </span>
               </span>
               <span
                 className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold"
                 style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.8s forwards' }}
               >
-                to Missed Calls
+                Your Bookings Should Be{" "}
+                <span className="text-sky">Too</span>
               </span>
             </h1>
 
