@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 
 /* ═══════════════════════════════════════════
-   Premium Split-Screen Booking Animation
-   8-second loop with customer phone + owner dashboard
+   JARVIS-Inspired Holographic Booking Interface
+   10s loop: 0-4s customer, 4-5s transition, 5-9s owner, 9-10s transition
    ═══════════════════════════════════════════ */
-const LOOP_MS = 8000;
+const LOOP_MS = 10000;
 
 const PremiumBookingDemo = () => {
   const [elapsed, setElapsed] = useState(0);
@@ -45,25 +45,26 @@ const PremiumBookingDemo = () => {
   }, [isVisible, reducedMotion]);
 
   useEffect(() => {
-    const h = () => { pausedRef.current = document.hidden; if (!document.hidden) startRef.current = performance.now() - elapsed; };
+    const h = () => {
+      pausedRef.current = document.hidden;
+      if (!document.hidden) startRef.current = performance.now() - elapsed;
+    };
     document.addEventListener("visibilitychange", h);
     return () => document.removeEventListener("visibilitychange", h);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Scenes: 0-2s service, 2-4s datetime, 4-6s book, 6-8s confirmed
-  const scene = useMemo(() => Math.floor(elapsed / 2000) as 0 | 1 | 2 | 3, [elapsed]);
-  const ownerPhase = useMemo((): 'waiting' | 'incoming' | 'confirmed' => {
-    if (elapsed < 4000) return 'waiting';
-    if (elapsed < 6000) return 'incoming';
-    return 'confirmed';
-  }, [elapsed]);
+  // View state: customer (0-4s), transitioning (4-5s), owner (5-9s), transitioning (9-10s)
+  const isCustomerView = elapsed < 4000 || elapsed >= 9500;
+  const isOwnerView = elapsed >= 5000 && elapsed < 9000;
+  const customerOpacity = elapsed < 4000 ? 1 : elapsed < 5000 ? Math.max(0, 1 - (elapsed - 4000) / 800) : elapsed >= 9500 ? Math.min(1, (elapsed - 9500) / 500) : 0;
+  const ownerOpacity = elapsed >= 5000 && elapsed < 9000 ? 1 : elapsed >= 4200 && elapsed < 5000 ? Math.min(1, (elapsed - 4200) / 800) : elapsed >= 9000 ? Math.max(0, 1 - (elapsed - 9000) / 500) : 0;
 
   const displayRevenue = useMemo(() => {
-    if (ownerPhase !== 'confirmed') return 1847;
-    const t = Math.min((elapsed - 6000) / 800, 1);
-    return Math.round(1847 + easeOut(t) * 149);
-  }, [ownerPhase, elapsed]);
+    if (elapsed < 5000) return 1698;
+    const t = Math.min((elapsed - 5000) / 1200, 1);
+    return Math.round(1698 + easeOut(t) * 149);
+  }, [elapsed]);
 
   if (reducedMotion) {
     return (
@@ -77,306 +78,395 @@ const PremiumBookingDemo = () => {
     <div
       ref={containerRef}
       className="relative w-full pointer-events-none"
-      aria-label="Split-screen booking animation showing customer booking and owner dashboard"
+      aria-label="JARVIS-style holographic booking animation"
     >
-      {/* Desktop: 3-column grid */}
-      <div className="hidden md:grid items-center justify-items-center" style={{ gridTemplateColumns: '1fr 80px 1fr', gap: 0 }}>
-        <CustomerPhone scene={scene} elapsed={elapsed} />
-        <FlowIndicator elapsed={elapsed} ownerPhase={ownerPhase} />
-        <OwnerDashboard ownerPhase={ownerPhase} elapsed={elapsed} revenue={displayRevenue} />
+      {/* Desktop layout */}
+      <div className="hidden lg:grid items-center" style={{ gridTemplateColumns: '120px 1fr 120px', gap: 24 }}>
+        <LeftLabel active={isCustomerView} />
+        <HoloScreen
+          elapsed={elapsed}
+          customerOpacity={customerOpacity}
+          ownerOpacity={ownerOpacity}
+          revenue={displayRevenue}
+        />
+        <RightLabel active={isOwnerView} />
       </div>
 
-      {/* Mobile: stacked */}
-      <div className="flex md:hidden flex-col items-center gap-6 px-2">
-        <CustomerPhone scene={scene} elapsed={elapsed} />
-        <MobileFlowIndicator elapsed={elapsed} ownerPhase={ownerPhase} />
-        <OwnerDashboard ownerPhase={ownerPhase} elapsed={elapsed} revenue={displayRevenue} />
+      {/* Mobile layout */}
+      <div className="flex lg:hidden flex-col items-center gap-5 px-2">
+        <LeftLabel active={isCustomerView} mobile />
+        <HoloScreen
+          elapsed={elapsed}
+          customerOpacity={customerOpacity}
+          ownerOpacity={ownerOpacity}
+          revenue={displayRevenue}
+          mobile
+        />
+        <RightLabel active={isOwnerView} mobile />
       </div>
-
-
     </div>
   );
 };
 
-/* ═══════════════════════════ Customer Phone ═══════════════════════════ */
-const CustomerPhone = ({ scene, elapsed }: { scene: 0 | 1 | 2 | 3; elapsed: number }) => {
-  const sceneProgress = (elapsed % 2000) / 2000;
-  const transIn = Math.min(sceneProgress / 0.15, 1);
-  const transOut = scene < 3 ? Math.max(1 - (sceneProgress - 0.85) / 0.15, 0) : 1;
-  const op = transIn * transOut;
+/* ═══════════════════════════ Flow Labels ═══════════════════════════ */
+const LeftLabel = ({ active, mobile }: { active: boolean; mobile?: boolean }) => (
+  <div className={`flex ${mobile ? 'flex-row' : 'flex-col'} items-center gap-3`}>
+    <span className="text-sm font-semibold text-primary-foreground/90 text-center leading-tight">
+      Customer books instantly
+    </span>
+    <div className={`flex items-center gap-2 ${mobile ? '' : 'flex-row-reverse'}`}>
+      <div className="w-8 h-0.5 overflow-hidden" style={{
+        background: 'linear-gradient(90deg, transparent, hsla(217,91%,60%,0.6))',
+      }}>
+        <div className="w-full h-full" style={{
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)',
+          animation: active ? 'jarvisLineFlow 2s ease-in-out infinite' : 'none',
+        }} />
+      </div>
+      <div className="w-2 h-2 rounded-full" style={{
+        background: active ? 'hsl(217,91%,60%)' : 'rgba(255,255,255,0.1)',
+        boxShadow: active ? '0 0 12px hsl(217,91%,60%), 0 0 24px hsla(217,91%,60%,0.5)' : 'none',
+        animation: active ? 'jarvisGlowPulse 2s ease-in-out infinite' : 'none',
+      }} />
+    </div>
+  </div>
+);
 
-  return (
-    <div className="flex flex-col items-center gap-4">
-      {/* Phone shell */}
-      <div
-        className="relative"
-        style={{
-          width: 240, borderRadius: 32, padding: 8,
-          background: '#1d1d1f',
-          boxShadow: '0 0 0 4px rgba(255,255,255,0.1), 0 20px 60px rgba(0,0,0,0.4), 0 0 60px hsla(217,91%,60%,0.15)',
-          animation: 'floatPhone 5s ease-in-out infinite',
-        }}
-      >
-        {/* Screen */}
-        <div className="relative overflow-hidden" style={{
-          borderRadius: 26, padding: '24px 16px',
-          background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
-          height: 420,
-          display: 'flex', flexDirection: 'column', gap: 16,
+const RightLabel = ({ active, mobile }: { active: boolean; mobile?: boolean }) => (
+  <div className={`flex ${mobile ? 'flex-row-reverse' : 'flex-col'} items-center gap-3`}>
+    <div className={`flex items-center gap-2`}>
+      <div className="w-6 h-6 rounded-full flex items-center justify-center relative" style={{
+        border: `2px solid ${active ? 'hsl(160,84%,39%)' : 'rgba(255,255,255,0.15)'}`,
+        background: active ? 'hsla(160,84%,39%,0.1)' : 'transparent',
+        boxShadow: active ? '0 0 16px hsla(160,84%,39%,0.4)' : 'none',
+      }}>
+        {active && <div className="absolute inset-0 rounded-full" style={{
+          border: '2px solid hsl(160,84%,39%)',
+          animation: 'jarvisCircleExpand 2s ease-out infinite',
+        }} />}
+      </div>
+      <div className="w-8 h-0.5" style={{
+        background: active ? 'linear-gradient(90deg, hsla(160,84%,39%,0.6), transparent)' : 'rgba(255,255,255,0.05)',
+      }} />
+    </div>
+    <span className="text-sm font-semibold text-primary-foreground/90 text-center leading-tight">
+      You get paid automatically
+    </span>
+  </div>
+);
+
+/* ═══════════════════════════ Holographic Screen ═══════════════════════════ */
+const HoloScreen = ({ elapsed, customerOpacity, ownerOpacity, revenue, mobile }: {
+  elapsed: number; customerOpacity: number; ownerOpacity: number; revenue: number; mobile?: boolean;
+}) => (
+  <div className="relative flex justify-center items-center">
+    {/* Edge glow */}
+    <div className="absolute -inset-0.5 rounded-3xl" style={{
+      background: 'linear-gradient(135deg, hsl(217,91%,60%), hsl(160,84%,39%))',
+      opacity: 0.15,
+      filter: 'blur(12px)',
+      animation: 'jarvisEdgePulse 4s ease-in-out infinite',
+    }} />
+
+    {/* Glass frame */}
+    <div
+      className={`relative overflow-hidden ${mobile ? 'w-full max-w-[400px]' : 'w-[480px]'}`}
+      style={{
+        height: mobile ? 480 : 560,
+        background: 'linear-gradient(135deg, hsla(217,91%,60%,0.05), hsla(217,91%,60%,0.02), hsla(160,84%,39%,0.03))',
+        border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: 24,
+        padding: mobile ? 20 : 24,
+        backdropFilter: 'blur(40px)',
+        boxShadow: '0 0 0 1px hsla(217,91%,60%,0.2), 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)',
+        animation: 'jarvisFrameFloat 6s ease-in-out infinite',
+      }}
+    >
+      {/* Corner brackets */}
+      <CornerBracket position="top-left" />
+      <CornerBracket position="top-right" />
+      <CornerBracket position="bottom-left" />
+      <CornerBracket position="bottom-right" />
+
+      {/* Scan lines */}
+      <div className="absolute inset-0 pointer-events-none z-[1]" style={{
+        background: 'repeating-linear-gradient(0deg, hsla(217,91%,60%,0.03) 0px, transparent 2px, transparent 4px)',
+        animation: 'jarvisScanMove 8s linear infinite',
+      }} />
+
+      {/* Particle field */}
+      <ParticleField />
+
+      {/* Screen content */}
+      <div className="relative w-full h-full z-[2]">
+        {/* Customer view */}
+        <div className="absolute inset-0 flex flex-col gap-5" style={{
+          opacity: customerOpacity,
+          transform: `scale(${0.95 + customerOpacity * 0.05}) rotateY(${(1 - customerOpacity) * -10}deg)`,
+          transition: 'transform 0.3s',
+          pointerEvents: customerOpacity > 0.5 ? 'auto' : 'none',
         }}>
-          {/* Scene 1: Service select */}
-          {scene === 0 && (
-            <div className="flex flex-col gap-4 h-full" style={{ opacity: op, transform: `translateY(${(1-transIn)*10}px)` }}>
-              <PhoneItem delay={0}>
-                <div className="flex gap-3 items-center">
-                  <div className="w-12 h-12 rounded-[10px] shrink-0" style={{ background: 'linear-gradient(135deg, hsl(217,91%,60%), hsl(217,91%,50%))' }} />
-                  <div>
-                    <div className="text-sm font-semibold text-[#1d1d1f]">Premium Detail</div>
-                    <div className="text-lg font-bold" style={{ color: 'hsl(217,91%,60%)' }}>$149</div>
-                  </div>
-                </div>
-              </PhoneItem>
-              <PhoneItem delay={0.2}>
-                <div className="flex gap-2">
-                  <DateTimeChip label="Tomorrow" active />
-                  <DateTimeChip label="2:00 PM" active />
-                </div>
-              </PhoneItem>
-              <div className="mt-auto" style={{ animation: 'slideInPhone 0.6s cubic-bezier(0.4,0,0.2,1) 0.4s both' }}>
-                <BookNowButton />
-              </div>
-            </div>
-          )}
-          {/* Scene 2: Confirming */}
-          {scene === 1 && (
-            <div className="flex flex-col items-center justify-center h-full gap-4" style={{ opacity: op }}>
-              <div className="w-10 h-10 rounded-full border-4 border-t-transparent animate-spin" style={{ borderColor: 'hsl(217,91%,60%)', borderTopColor: 'transparent' }} />
-              <div className="text-sm font-semibold text-[#1d1d1f]">Processing...</div>
-            </div>
-          )}
-          {/* Scene 3: Payment */}
-          {scene === 2 && (
-            <div className="flex flex-col gap-4 h-full" style={{ opacity: op }}>
-              <PhoneItem delay={0}>
-                <div className="flex justify-between text-sm">
-                  <span className="text-[#86868b]">Premium Detail</span>
-                  <span className="font-semibold text-[#1d1d1f]">$149</span>
-                </div>
-              </PhoneItem>
-              <PhoneItem delay={0.2}>
-                <div className="flex justify-between text-sm">
-                  <span className="text-[#86868b]">Deposit</span>
-                  <span className="font-bold" style={{ color: 'hsl(217,91%,60%)' }}>$50</span>
-                </div>
-              </PhoneItem>
-              <div className="mt-auto" style={{ animation: 'slideInPhone 0.6s cubic-bezier(0.4,0,0.2,1) 0.4s both' }}>
-                <BookNowButton label="Pay Deposit →" />
-              </div>
-            </div>
-          )}
-          {/* Scene 4: Success */}
-          {scene === 3 && (
-            <div className="flex flex-col items-center justify-center h-full gap-3" style={{ opacity: op }}>
-              <SuccessCheck elapsed={elapsed - 6000} />
-              <div className="text-base font-bold text-[#1d1d1f]" style={{ opacity: Math.min(Math.max((elapsed - 6400) / 300, 0), 1) }}>Booking Confirmed!</div>
-              <div className="text-xs text-[#86868b]" style={{ opacity: Math.min(Math.max((elapsed - 6600) / 300, 0), 1) }}>Premium Detail • $149</div>
-            </div>
-          )}
+          <CustomerView elapsed={elapsed} />
+        </div>
+
+        {/* Owner view */}
+        <div className="absolute inset-0 flex flex-col gap-5" style={{
+          opacity: ownerOpacity,
+          transform: `scale(${0.95 + ownerOpacity * 0.05}) rotateY(${(1 - ownerOpacity) * 10}deg)`,
+          transition: 'transform 0.3s',
+          pointerEvents: ownerOpacity > 0.5 ? 'auto' : 'none',
+        }}>
+          <OwnerView elapsed={elapsed} revenue={revenue} />
         </div>
       </div>
-      <span className="text-sm text-primary-foreground/80 font-medium">Customer books instantly</span>
     </div>
+  </div>
+);
+
+/* ═══════════════════════════ Corner Brackets ═══════════════════════════ */
+const CornerBracket = ({ position }: { position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' }) => {
+  const pos: Record<string, React.CSSProperties> = {
+    'top-left': { top: 12, left: 12, borderRight: 'none', borderBottom: 'none' },
+    'top-right': { top: 12, right: 12, borderLeft: 'none', borderBottom: 'none' },
+    'bottom-left': { bottom: 12, left: 12, borderRight: 'none', borderTop: 'none' },
+    'bottom-right': { bottom: 12, right: 12, borderLeft: 'none', borderTop: 'none' },
+  };
+  return (
+    <div className="absolute w-6 h-6 z-[3]" style={{
+      border: '2px solid hsl(217,91%,60%)',
+      opacity: 0.6,
+      ...pos[position],
+      animation: 'jarvisBracketPulse 3s ease-in-out infinite',
+    }} />
   );
 };
 
-const PhoneItem = ({ children, delay }: { children: React.ReactNode; delay: number }) => (
-  <div
-    className="rounded-xl p-3.5"
-    style={{
-      background: '#ffffff',
-      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-      animation: `slideInPhone 0.6s cubic-bezier(0.4,0,0.2,1) ${delay}s both`,
-    }}
-  >
-    {children}
+/* ═══════════════════════════ Particle Field ═══════════════════════════ */
+const ParticleField = () => (
+  <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+    {[
+      { top: '20%', left: '15%', delay: '0s' },
+      { top: '40%', left: '80%', delay: '1.2s' },
+      { top: '60%', left: '30%', delay: '2.4s' },
+      { top: '75%', left: '70%', delay: '3.6s' },
+      { top: '85%', left: '45%', delay: '4.8s' },
+    ].map((p, i) => (
+      <div key={i} className="absolute w-[3px] h-[3px] rounded-full" style={{
+        top: p.top, left: p.left,
+        background: 'hsl(217,91%,60%)',
+        animation: `jarvisParticleFloat 6s ease-in-out infinite`,
+        animationDelay: p.delay,
+        opacity: 0,
+      }} />
+    ))}
+  </div>
+);
+
+/* ═══════════════════════════ HUD Header ═══════════════════════════ */
+const HudHeader = ({ status, statusColor }: { status: string; statusColor: string }) => (
+  <div className="flex justify-between items-center px-2 pb-3" style={{
+    borderBottom: '1px solid hsla(217,91%,60%,0.2)',
+  }}>
+    <span className="text-[11px] font-semibold tracking-wider font-mono" style={{ color: 'hsl(215,16%,47%)' }}>
+      14:32
+    </span>
+    <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: statusColor }}>
+      ● {status}
+    </span>
+  </div>
+);
+
+/* ═══════════════════════════ Customer View ═══════════════════════════ */
+const CustomerView = ({ elapsed }: { elapsed: number }) => (
+  <>
+    <HudHeader status="LIVE" statusColor="hsl(160,84%,39%)" />
+
+    {/* Service card */}
+    <HoloCard>
+      <div className="flex gap-4 items-center">
+        <div className="w-14 h-14 rounded-xl shrink-0 relative overflow-hidden" style={{
+          background: 'linear-gradient(135deg, hsl(217,91%,60%), hsl(217,91%,50%))',
+        }}>
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%)',
+            animation: 'jarvisIconShine 3s ease-in-out infinite',
+          }} />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-[15px] font-semibold text-primary-foreground tracking-tight">Premium Detail</span>
+          <span className="text-[22px] font-bold tracking-tight" style={{
+            color: 'hsl(217,91%,60%)',
+            textShadow: '0 0 12px hsla(217,91%,60%,0.5)',
+          }}>$149.00</span>
+        </div>
+      </div>
+    </HoloCard>
+
+    {/* DateTime */}
+    <HoloCard>
+      <div className="flex gap-3">
+        <DateTimeChip label="Tomorrow" active />
+        <DateTimeChip label="2:00 PM" active />
+      </div>
+    </HoloCard>
+
+    {/* CTA Button */}
+    <div className="mt-auto relative">
+      <div className="absolute inset-0 rounded-xl" style={{
+        background: 'hsl(160,84%,39%)',
+        filter: 'blur(20px)',
+        opacity: 0.3,
+      }} />
+      <div className="relative w-full py-4 px-6 rounded-xl flex justify-between items-center overflow-hidden" style={{
+        background: 'linear-gradient(135deg, hsl(160,84%,39%), hsl(160,84%,30%))',
+        border: '1px solid hsla(160,84%,39%,0.3)',
+        boxShadow: '0 4px 20px hsla(160,84%,39%,0.3)',
+      }}>
+        <div className="absolute inset-0" style={{
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+          animation: 'jarvisButtonSweep 2s ease-in-out infinite',
+        }} />
+        <span className="text-sm font-bold text-white tracking-wider relative z-10">CONFIRM BOOKING</span>
+        <span className="text-lg text-white relative z-10" style={{
+          animation: 'jarvisArrowSlide 1.5s ease-in-out infinite',
+        }}>→</span>
+      </div>
+    </div>
+  </>
+);
+
+/* ═══════════════════════════ Owner View ═══════════════════════════ */
+const OwnerView = ({ elapsed, revenue }: { elapsed: number; revenue: number }) => (
+  <>
+    <HudHeader status="PROCESSING" statusColor="hsl(160,84%,39%)" />
+
+    {/* Payment notification */}
+    <div className="flex items-center gap-4 rounded-2xl p-4 relative overflow-hidden" style={{
+      background: 'linear-gradient(135deg, hsl(160,84%,39%), hsl(160,84%,30%))',
+      border: '1px solid hsla(160,84%,39%,0.3)',
+      boxShadow: '0 4px 24px hsla(160,84%,39%,0.4)',
+    }}>
+      <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{
+        background: 'rgba(255,255,255,0.2)',
+      }}>
+        <span className="text-xl">✓</span>
+      </div>
+      <div className="flex flex-col gap-0.5 flex-1">
+        <span className="text-xs font-bold text-white/80 tracking-wider uppercase">PAYMENT RECEIVED</span>
+        <span className="text-2xl font-bold text-white tracking-tight">+$149.00</span>
+      </div>
+      {/* Ripple */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full" style={{
+        border: '2px solid rgba(255,255,255,0.3)',
+        animation: 'jarvisRippleExpand 1.5s ease-out infinite',
+      }} />
+    </div>
+
+    {/* Schedule */}
+    <HoloCard>
+      <div className="flex flex-col gap-3">
+        <ScheduleItem time="09:00" filled />
+        <ScheduleItem time="11:00" filled />
+        <ScheduleItem time="14:00" isNew />
+        <ScheduleItem time="16:00" />
+      </div>
+    </HoloCard>
+
+    {/* Revenue HUD */}
+    <div className="mt-auto flex flex-col items-center gap-2 rounded-2xl py-5 px-4 relative overflow-hidden" style={{
+      background: 'linear-gradient(135deg, hsla(217,91%,60%,0.2), hsla(217,91%,60%,0.1))',
+      border: '1px solid hsla(217,91%,60%,0.3)',
+    }}>
+      <span className="text-[10px] font-bold tracking-[1.5px] uppercase" style={{ color: 'hsl(215,16%,47%)' }}>
+        TODAY'S REVENUE
+      </span>
+      <span className="text-4xl font-bold font-mono tracking-tight" style={{
+        color: 'hsl(217,91%,60%)',
+        textShadow: '0 0 20px hsla(217,91%,60%,0.5)',
+      }}>
+        ${revenue.toLocaleString()}.00
+      </span>
+      {/* Mini graph bars */}
+      <div className="flex gap-2 items-end h-10 mt-2">
+        {[16, 24, 28, 36].map((h, i) => (
+          <div key={i} className="w-5 rounded" style={{
+            height: h,
+            background: i === 3 ? 'hsl(160,84%,39%)' : 'hsla(217,91%,60%,0.3)',
+            boxShadow: i === 3 ? '0 0 12px hsla(160,84%,39%,0.5)' : 'none',
+            borderRadius: 4,
+          }} />
+        ))}
+      </div>
+    </div>
+  </>
+);
+
+/* ═══════════════════════════ Shared Components ═══════════════════════════ */
+const HoloCard = ({ children }: { children: React.ReactNode }) => (
+  <div className="relative rounded-2xl p-5 overflow-hidden" style={{
+    background: 'rgba(255,255,255,0.03)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    backdropFilter: 'blur(20px)',
+  }}>
+    {/* Top glow */}
+    <div className="absolute inset-0 pointer-events-none" style={{
+      background: 'radial-gradient(circle at 50% 0%, hsla(217,91%,60%,0.15), transparent 70%)',
+      opacity: 0.5,
+    }} />
+    {/* Shimmer */}
+    <div className="absolute inset-0 pointer-events-none" style={{
+      background: 'linear-gradient(90deg, transparent, hsla(217,91%,60%,0.1), transparent)',
+      animation: 'jarvisCardShimmer 3s ease-in-out infinite',
+    }} />
+    <div className="relative z-10">{children}</div>
   </div>
 );
 
 const DateTimeChip = ({ label, active }: { label: string; active?: boolean }) => (
-  <div className="flex-1 text-center text-[13px] font-semibold rounded-lg py-2.5" style={{
-    background: active ? 'hsl(217,91%,60%)' : '#f8fafc',
-    border: active ? '2px solid hsl(217,91%,60%)' : '2px solid #e5e7eb',
-    color: active ? '#fff' : '#1d1d1f',
+  <div className="flex-1 text-center text-sm font-semibold py-3.5 rounded-xl relative overflow-hidden" style={{
+    background: active ? 'hsla(217,91%,60%,0.2)' : 'rgba(255,255,255,0.05)',
+    border: `1px solid ${active ? 'hsl(217,91%,60%)' : 'rgba(255,255,255,0.1)'}`,
+    color: active ? 'hsl(217,91%,60%)' : 'hsl(215,16%,47%)',
+    boxShadow: active ? '0 0 20px hsla(217,91%,60%,0.3)' : 'none',
   }}>
-    {label}
+    {active && <div className="absolute inset-0" style={{
+      background: 'linear-gradient(135deg, hsla(217,91%,60%,0.2), transparent)',
+    }} />}
+    <span className="relative z-10">{label}</span>
   </div>
 );
 
-const BookNowButton = ({ label = "Book Now" }: { label?: string }) => (
-  <div className="w-full text-center py-3.5 rounded-[10px] text-[15px] font-semibold text-white" style={{
-    background: '#10b981',
-    boxShadow: '0 4px 16px rgba(16,185,129,0.3)',
-  }}>
-    {label}
-  </div>
-);
-
-const SuccessCheck = ({ elapsed }: { elapsed: number }) => {
-  const p = Math.min(Math.max(elapsed / 600, 0), 1);
-  return (
-    <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{
-      background: 'rgba(16,185,129,0.1)',
-      border: `2px solid rgba(16,185,129,${p * 0.6})`,
-    }}>
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <path d="M5 13l4 4L19 7" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-          strokeDasharray="24" strokeDashoffset={24 - p * 24} style={{ transition: 'stroke-dashoffset 0.6s ease-out' }} />
-      </svg>
-    </div>
-  );
-};
-
-/* ═══════════════════════════ Flow Indicator ═══════════════════════════ */
-const FlowIndicator = ({ elapsed, ownerPhase }: { elapsed: number; ownerPhase: string }) => {
-  const active = elapsed >= 4000;
-  return (
-    <div className="flex flex-col items-center justify-center gap-3 h-full">
-      <div className="w-0.5 h-10" style={{
-        background: active ? 'linear-gradient(180deg, transparent, hsla(217,91%,60%,0.3), transparent)' : 'rgba(255,255,255,0.05)',
-        animation: active ? 'lineGlow 2s ease-in-out infinite' : 'none',
-      }} />
-      <span className="text-[28px] font-bold" style={{
-        color: 'hsl(217,91%,60%)',
-        animation: active ? 'pulseArrowBounce 2s ease-in-out infinite' : 'none',
-      }}>→</span>
-      <div className="w-3 h-3 rounded-full" style={{
-        background: active ? 'hsl(217,91%,60%)' : 'rgba(255,255,255,0.1)',
-        animation: active ? 'pulseDot 2s ease-in-out infinite' : 'none',
-      }} />
-      <div className="w-0.5 h-10" style={{
-        background: active ? 'linear-gradient(180deg, transparent, hsla(217,91%,60%,0.3), transparent)' : 'rgba(255,255,255,0.05)',
-        animation: active ? 'lineGlow 2s ease-in-out infinite' : 'none',
-      }} />
-    </div>
-  );
-};
-
-const MobileFlowIndicator = ({ elapsed, ownerPhase }: { elapsed: number; ownerPhase: string }) => {
-  const active = elapsed >= 4000;
-  return (
-    <div className="flex items-center justify-center gap-3" style={{ transform: 'rotate(90deg)', height: 60 }}>
-      <div className="w-0.5 h-6" style={{
-        background: active ? 'linear-gradient(180deg, transparent, hsla(217,91%,60%,0.4), transparent)' : 'rgba(255,255,255,0.05)',
-      }} />
-      <span className="text-xl font-bold" style={{ color: 'hsl(217,91%,60%)' }}>→</span>
-      <div className="w-2.5 h-2.5 rounded-full" style={{
-        background: active ? 'hsl(217,91%,60%)' : 'rgba(255,255,255,0.1)',
-        animation: active ? 'pulseDot 2s ease-in-out infinite' : 'none',
-      }} />
-    </div>
-  );
-};
-
-/* ═══════════════════════════ Owner Dashboard ═══════════════════════════ */
-const OwnerDashboard = ({ ownerPhase, elapsed, revenue }: { ownerPhase: 'waiting' | 'incoming' | 'confirmed'; elapsed: number; revenue: number }) => (
-  <div className="flex flex-col items-center gap-4">
-    {/* Dashboard shell */}
-    <div
-      style={{
-        width: 300, borderRadius: 20, padding: 6,
-        background: '#1d1d1f',
-        boxShadow: '0 0 0 4px rgba(255,255,255,0.1), 0 20px 60px rgba(0,0,0,0.4), 0 0 60px hsla(160,84%,39%,0.15)',
-        animation: 'floatDash 5s ease-in-out infinite 0.5s',
-      }}
-    >
-      <div className="overflow-hidden flex flex-col gap-4" style={{
-        borderRadius: 16, padding: 20,
-        background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
-        height: 420,
-      }}>
-        {/* Notification */}
-        <NotificationPopup ownerPhase={ownerPhase} elapsed={elapsed} />
-
-        {/* Schedule slots */}
-        <div className="flex flex-col gap-2.5">
-          <ScheduleSlot time="9:00 AM" style={{ animation: 'fadeSlot 0.5s ease 0.2s both' }} />
-          <ScheduleSlot time="11:00 AM" style={{ animation: 'fadeSlot 0.5s ease 0.4s both' }} filled />
-          <ScheduleSlot
-            time="2:00 PM ⚡"
-            isNew={ownerPhase === 'confirmed'}
-            isIncoming={ownerPhase === 'incoming'}
-            style={{ animation: 'fadeSlot 0.5s ease 0.8s both' }}
-          />
-          <ScheduleSlot time="4:00 PM" empty style={{ animation: 'fadeSlot 0.5s ease 1s both' }} />
-        </div>
-
-        {/* Revenue */}
-        <div className="mt-auto flex flex-col items-center gap-1 rounded-xl py-4" style={{
-          background: 'linear-gradient(135deg, hsl(217,91%,60%), hsl(217,91%,50%))',
-          animation: 'slideInPhone 0.6s ease 1s both',
-        }}>
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-white/70">Today</span>
-          <span className="text-[32px] font-bold text-white tracking-tight font-mono">${revenue.toLocaleString()}</span>
-        </div>
-      </div>
-    </div>
-    <span className="text-sm text-primary-foreground/80 font-medium">You get paid automatically</span>
-  </div>
-);
-
-const NotificationPopup = ({ ownerPhase, elapsed }: { ownerPhase: string; elapsed: number }) => {
-  if (ownerPhase === 'waiting') return null;
-  return (
-    <div className="flex items-center gap-3 rounded-xl p-3" style={{
-      background: 'linear-gradient(135deg, #10b981, #059669)',
-      boxShadow: '0 4px 16px rgba(16,185,129,0.3)',
-      animation: 'popNotif 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards',
-    }}>
-      <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ background: 'rgba(255,255,255,0.2)' }}>
-        <span className="text-base">✓</span>
-      </div>
-      <div className="flex flex-col gap-0.5 flex-1">
-        <span className="text-[13px] font-bold text-white">New Booking!</span>
-        <span className="text-xl font-bold text-white">+$149</span>
-      </div>
-    </div>
-  );
-};
-
-const ScheduleSlot = ({ time, filled, isNew, isIncoming, empty, style }: {
-  time: string; filled?: boolean; isNew?: boolean; isIncoming?: boolean; empty?: boolean; style?: React.CSSProperties;
-}) => {
-  let border = '2px solid #e5e7eb';
-  let bg = '#ffffff';
-  let opacity = 1;
-
-  if (filled) { border = '2px solid hsl(217,91%,60%)'; bg = 'rgba(0,113,227,0.05)'; }
-  if (isNew) { border = '2px solid #10b981'; bg = 'rgba(16,185,129,0.1)'; }
-  if (isIncoming) { border = '2px solid hsl(217,91%,60%)'; bg = 'rgba(0,113,227,0.05)'; }
-  if (empty) { opacity = 0.4; }
-
-  return (
-    <div className="px-4 py-3 rounded-[10px] text-sm font-semibold text-[#1d1d1f]" style={{
-      background: bg, border, opacity, ...style,
-      animation: isNew ? `highlightPulse 1s ease 0.8s forwards, ${(style?.animation || '')}` : style?.animation,
-    }}>
+const ScheduleItem = ({ time, filled, isNew }: { time: string; filled?: boolean; isNew?: boolean }) => (
+  <div className="flex items-center gap-3">
+    <span className="text-[13px] font-semibold font-mono min-w-[50px]" style={{ color: 'hsl(215,16%,47%)' }}>
       {time}
+    </span>
+    <div className="flex-1 h-2 rounded relative overflow-hidden" style={{
+      background: isNew ? 'hsla(160,84%,39%,0.2)' : filled ? 'hsla(217,91%,60%,0.2)' : 'rgba(255,255,255,0.1)',
+      border: `1px solid ${isNew ? 'hsl(160,84%,39%)' : filled ? 'hsl(217,91%,60%)' : 'rgba(255,255,255,0.15)'}`,
+      animation: isNew ? 'jarvisBarGlow 1.5s ease-in-out infinite' : 'none',
+    }}>
+      {isNew && <div className="absolute inset-0" style={{
+        background: 'linear-gradient(90deg, transparent, hsla(160,84%,39%,0.5), transparent)',
+        animation: 'jarvisBarFill 1.5s ease-in-out',
+      }} />}
     </div>
-  );
-};
+    {isNew && <div className="w-3 h-3 rounded-full" style={{
+      background: 'hsl(160,84%,39%)',
+      animation: 'jarvisDotPulse 1.5s ease-in-out infinite',
+      boxShadow: '0 0 8px hsla(160,84%,39%,0.7)',
+    }} />}
+  </div>
+);
 
 /* ═══════════════════════════ Static Fallback ═══════════════════════════ */
 const StaticFallback = () => (
-  <div className="flex gap-8 items-center">
-    <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
-      <div className="text-sm font-semibold text-white mb-2">Premium Detail – $149</div>
-      <div className="text-xs text-white/50">Tomorrow • 2:00 PM</div>
-    </div>
-    <span className="text-xl text-sky font-bold">→</span>
-    <div className="rounded-2xl p-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
-      <div className="text-sm font-semibold text-white mb-2">New Booking! +$149</div>
-      <div className="text-xs text-white/50">Today: $1,996</div>
-    </div>
+  <div className="rounded-2xl p-6" style={{
+    background: 'rgba(255,255,255,0.04)',
+    border: '1px solid rgba(255,255,255,0.1)',
+  }}>
+    <div className="text-sm font-semibold text-primary-foreground mb-2">Premium Detail – $149</div>
+    <div className="text-xs text-primary-foreground/50">Holographic booking interface</div>
   </div>
 );
 

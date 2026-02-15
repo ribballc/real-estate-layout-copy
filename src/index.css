@@ -428,14 +428,20 @@
 /* Spring banner */
 @keyframes springBounce { 0%,100% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-10deg) scale(1.1); } 75% { transform: rotate(10deg) scale(1.1); } }
 
-/* Premium booking demo */
-@keyframes floatPhone { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-@keyframes floatDash { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
-@keyframes slideInPhone { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes popNotif { from { transform: scale(0.8) translateY(-10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-@keyframes fadeSlot { from { transform: translateX(-10px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes highlightPulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
-@keyframes pulseArrowBounce { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
-@keyframes pulseDot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
-@keyframes lineGlow { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-@keyframes dashFlow { to { stroke-dashoffset: -20; } }
+/* JARVIS Holographic Booking Demo */
+@keyframes jarvisFrameFloat { 0%, 100% { transform: translateY(0) rotateX(0deg); } 50% { transform: translateY(-8px) rotateX(1deg); } }
+@keyframes jarvisBracketPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+@keyframes jarvisScanMove { 0% { transform: translateY(0); } 100% { transform: translateY(8px); } }
+@keyframes jarvisEdgePulse { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.3; } }
+@keyframes jarvisParticleFloat { 0%, 100% { transform: translateY(0) scale(1); opacity: 0; } 10%, 90% { opacity: 0.6; } 50% { transform: translateY(-30px) scale(1.2); opacity: 1; } }
+@keyframes jarvisLineFlow { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes jarvisGlowPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.2); } }
+@keyframes jarvisCircleExpand { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+@keyframes jarvisCardShimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes jarvisIconShine { 0% { transform: translateX(-100%) translateY(-100%); } 100% { transform: translateX(100%) translateY(100%); } }
+@keyframes jarvisButtonSweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes jarvisArrowSlide { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(4px); } }
+@keyframes jarvisRippleExpand { 0% { width: 50px; height: 50px; opacity: 1; } 100% { width: 200px; height: 200px; opacity: 0; } }
+@keyframes jarvisBarGlow { 0%, 100% { box-shadow: 0 0 8px hsla(160,84%,39%,0.3); } 50% { box-shadow: 0 0 16px hsla(160,84%,39%,0.6); } }
+@keyframes jarvisBarFill { 0% { transform: translateX(-100%); } 100% { transform: translateX(0); } }
+@keyframes jarvisDotPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 hsla(160,84%,39%,0.7); } 50% { transform: scale(1.2); box-shadow: 0 0 0 8px hsla(160,84%,39%,0); } }
