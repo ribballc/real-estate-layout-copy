@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ChevronRight, Store, ChevronDown } from "lucide-react";
-import heroDetail from "@/assets/hero-detail.png";
+import BookingSimulator from "@/components/BookingSimulator";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const HeroSection = () => {
@@ -147,7 +147,7 @@ const HeroSection = () => {
                     animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
                   }}
                 >
-                  Build My Website Free
+                  Activate My Free Website
                   <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
               </form>
@@ -185,42 +185,15 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Desktop image */}
+            {/* Booking Simulator */}
             <div
-              className="hidden lg:flex justify-center items-end mt-8"
               style={{
                 opacity: 0,
                 animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
               }}
             >
-              <img
-                src={heroDetail}
-                alt="Detailing booking app showing today's schedule"
-                className="w-full max-w-[520px] h-auto animate-[heroFloat_4s_ease-in-out_infinite]"
-                style={{
-                  filter: 'drop-shadow(0 40px 80px rgba(0,0,0,0.3))',
-                }}
-                loading="eager"
-                width={520}
-                height={960}
-              />
+              <BookingSimulator />
             </div>
-          </div>
-
-          {/* Mobile image */}
-          <div
-            className="lg:hidden mt-10 flex justify-center"
-            style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 1.8s forwards' }}
-          >
-            <img
-              src={heroDetail}
-              alt="Detailing booking app showing today's schedule"
-              className="w-full max-w-[280px] h-auto"
-              style={{ filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.3))' }}
-              loading="eager"
-              width={280}
-              height={520}
-            />
           </div>
         </div>
 
@@ -247,7 +220,7 @@ const HeroSection = () => {
               background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
             }}
           >
-            Build My Website Free →
+            Activate My Free Website →
           </button>
         </div>
       )}
