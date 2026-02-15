@@ -122,7 +122,7 @@ const BookingSidebar = () => (
             Location
           </div>
           <p className="text-sm text-muted-foreground pl-6 leading-relaxed">{businessInfo.address}</p>
-          <div className="pl-6 pt-1">
+          <div className="pl-6 pt-1 space-y-2">
             <div className="rounded-xl overflow-hidden border border-border">
               <iframe
                 title="Business Location"
@@ -134,6 +134,15 @@ const BookingSidebar = () => (
                 src={`https://www.google.com/maps?q=${businessInfo.mapQuery}&output=embed`}
               />
             </div>
+            <a
+              href={`https://www.google.com/maps/dir/?api=1&destination=${businessInfo.mapQuery}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
+            >
+              <MapPin className="w-3.5 h-3.5" />
+              Get Directions
+            </a>
           </div>
         </div>
       </div>
