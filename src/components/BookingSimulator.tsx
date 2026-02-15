@@ -97,13 +97,15 @@ const BookingSimulator = () => {
       aria-label="Animated demonstration showing customer booking on left and notification arriving on right"
     >
       {/* Desktop: two phones */}
-      <div className="hidden md:flex items-center justify-center relative" style={{ gap: 0 }}>
+    <div className="hidden md:flex items-center justify-center relative pb-16" style={{ gap: 0 }}>
         <LeftPhone phase={phase} isVisible={isVisible} />
         <RightPhone phase={phase} isVisible={isVisible} />
-        {/* Money counter */}
-        <MoneyCounter phase={phase} count={moneyCount} />
         {/* Money animation */}
         {phase === 4 && <MoneyArc />}
+      </div>
+      {/* Money counter outside phone container so it's never clipped */}
+      <div className="hidden md:block">
+        <MoneyCounter phase={phase} count={moneyCount} />
       </div>
 
       {/* Mobile: single phone */}
@@ -143,7 +145,7 @@ const PhoneFrame = ({ children, dark, style, className = "" }: {
     {/* Notch */}
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[100px] h-[26px] rounded-b-2xl z-10"
       style={{ background: 'hsl(217, 33%, 17%)' }} />
-    <div className="pt-8 px-3 pb-3 h-full flex flex-col overflow-hidden">
+    <div className="pt-8 px-3 pb-3 h-full flex flex-col overflow-y-auto overflow-x-hidden">
       {children}
     </div>
   </div>
@@ -430,10 +432,10 @@ const MoneyArc = () => (
 
 /* ─── Money Counter ─── */
 const MoneyCounter = ({ phase, count }: { phase: number; count: number }) => (
-  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 z-30 transition-all duration-500"
+  <div className="flex justify-center transition-all duration-500"
     style={{
       opacity: phase >= 4 && phase <= 5 ? 1 : 0,
-      transform: `translateX(-50%) ${phase >= 4 ? 'translateY(0) scale(1)' : 'translateY(10px) scale(0.9)'}`,
+      transform: phase >= 4 ? 'translateY(0) scale(1)' : 'translateY(10px) scale(0.9)',
     }}>
     <div className="px-5 py-3 rounded-xl font-mono font-bold text-[32px]"
       style={{
