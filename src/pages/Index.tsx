@@ -21,7 +21,6 @@ const SpringBanner = () => (
       <span className="text-base" style={{ animation: 'springBounce 2s ease-in-out infinite' }}>🌸</span>
       SPRING SALE: Up To 40% OFF + 4 Free Gifts
     </span>
-    <style>{`@keyframes springBounce { 0%,100% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-10deg) scale(1.1); } 75% { transform: rotate(10deg) scale(1.1); } }`}</style>
   </div>
 );
 
