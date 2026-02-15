@@ -1,41 +1,44 @@
 
 
-# Show Real Car Image After Selection
+# Fix Vehicle Image: Replace Covered Car with Reliable Solution
 
-## What Changes
-When a user selects all three fields (Year, Make, Model) on `/book/vehicle`, the generic car silhouette SVG will be replaced with a photo-realistic render of their exact vehicle, fetched from the free **imagin.studio** Car Image API.
+## The Problem
+The imagin.studio free demo key (`hrjavascript-masede`) returns a red-draped "covered car" image for many vehicle combinations instead of an actual render. There's no way to detect this programmatically since the API returns a 200 OK status with a valid image -- it's just a covered car.
 
-## How It Works
-- The API generates car images from a URL like:
-  `https://cdn.imagin.studio/getimage?customer=hrjavascript-masede&make=BMW&modelFamily=3+Series&modelYear=2024&angle=01`
-- No API key is needed for the free tier (uses a shared demo key)
-- The image renders a realistic 3/4 angle view of the specified vehicle
+## The Fix
+Switch to a more reliable free car image source and add a detection fallback:
 
-## User Experience
-1. **Before selection**: The current faded car silhouette SVG and "Use the categories on the left..." text remain as-is
-2. **After selecting Year + Make + Model**: The silhouette fades out and the real car image fades in with a smooth scale-up animation
-3. **Vehicle label**: The selected Year, Make, and Model appear as text below the image (e.g., "2024 BMW 3 Series")
-4. **Error handling**: If the image fails to load (network issue or unsupported model), it falls back to the silhouette with no broken image shown
+### Option: Use the **logo + styled silhouette** approach
+Since no free car image API reliably covers all year/make/model combos without a paid key, the best approach is:
 
-## Visual Treatment
-- The car image will have a subtle blue glow/shadow underneath to match the dark theme
-- Smooth transition animation (fade + scale from 0.95 to 1.0, 0.5s)
-- Maintains the same container size and centering as the current silhouette
+1. **Show the vehicle make's logo** fetched from a reliable free source (e.g., `https://www.carlogos.org/` or similar CDN)
+2. **Keep the stylized SVG silhouette** but enhance it with the selected vehicle info displayed prominently
+3. **Attempt the imagin.studio image** but detect the red-covered fallback by checking the dominant color of the loaded image using a small canvas check -- if it's predominantly red/brown, treat it as an error and fall back to the logo + silhouette
 
-## Technical Details
+### Changes to `src/pages/BookVehicle.tsx`:
+- Add a canvas-based color check in the `onLoad` handler: draw the image to a tiny canvas, sample pixels, and if the dominant color is in the red/brown range, set `imageError = true`
+- Update the fallback display to show the make logo + vehicle name in a more polished card layout instead of just the generic silhouette
+- Use the logo URL pattern: `https://www.carlogos.org/car-logos/${make.toLowerCase()}-logo.png` or keep a small local map of SVG logos for the top makes
 
-### File: `src/pages/BookVehicle.tsx`
+### Fallback display (when image fails or shows covered car):
+- Show the existing car silhouette SVG at slightly higher opacity (30%)
+- Overlay the vehicle name in larger text: "2016 Chevrolet Corvette"
+- Add a subtle badge: "Vehicle selected" with a checkmark
+- This still looks polished and confirms the user's selection visually
 
-**Changes:**
-- Build the imagin.studio URL from the `year`, `make`, and `model` state using `useMemo`
-- Add an `imageLoaded` state (`useState<boolean>(false)`) to track successful loads
-- Add an `imageError` state to handle fallback
-- Replace the right-side content block with conditional rendering:
-  - If `canContinue && imageLoaded`: show the car image with label
-  - Otherwise: show the existing SVG silhouette
-- The `<img>` tag will use `onLoad` to set `imageLoaded=true` and `onError` to set `imageError=true`
-- Reset `imageLoaded` and `imageError` whenever year/make/model changes
-- The model value is URL-encoded for models with spaces (e.g., "3 Series" becomes "3+Series")
+## Technical Detail
 
-No new files, no new dependencies -- just a simple `<img>` tag with the free API URL.
+The canvas pixel-sampling approach:
+```
+onLoad handler:
+1. Draw loaded image to a 1x1 canvas (averages all pixels)
+2. Read the single pixel's RGB values
+3. If R > 150 && G < 100 && B < 100 → it's the red cover → set imageError(true)
+4. Otherwise → show the real image
+```
+
+This is lightweight (no dependencies) and catches the red-draped fallback reliably.
+
+## Files Modified
+- `src/pages/BookVehicle.tsx` -- add canvas color detection logic and enhanced fallback UI
 
