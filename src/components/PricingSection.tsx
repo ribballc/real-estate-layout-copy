@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Check, ChevronRight, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { Check, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
@@ -24,6 +24,97 @@ const plan = {
     "Priority support + account manager",
   ],
   bottomFeature: "Payment processing: 2.9% + 30¢",
+};
+
+/* ── Odometer Digit ── */
+const OdometerDigit = ({ digit }: { digit: string }) => {
+  const [displayDigit, setDisplayDigit] = useState(digit);
+  const [rolling, setRolling] = useState(false);
+  const prevDigit = useRef(digit);
+
+  useEffect(() => {
+    if (digit !== prevDigit.current) {
+      setRolling(true);
+      const timer = setTimeout(() => {
+        setDisplayDigit(digit);
+        setRolling(false);
+      }, 350);
+      prevDigit.current = digit;
+      return () => clearTimeout(timer);
+    }
+  }, [digit]);
+
+  return (
+    <span className="inline-block overflow-hidden relative" style={{ height: "1em", width: "0.6em" }}>
+      <span
+        className="inline-block transition-transform duration-[350ms] ease-in-out"
+        style={{
+          transform: rolling ? "translateY(-100%)" : "translateY(0)",
+          opacity: rolling ? 0 : 1,
+        }}
+      >
+        {displayDigit}
+      </span>
+      {rolling && (
+        <span
+          className="absolute left-0 top-full inline-block transition-transform duration-[350ms] ease-in-out"
+          style={{ transform: "translateY(-100%)" }}
+        >
+          {digit}
+        </span>
+      )}
+    </span>
+  );
+};
+
+/* ── Odometer Price ── */
+const OdometerPrice = ({ value }: { value: number }) => {
+  const digits = String(value).split("");
+  return (
+    <span className="inline-flex font-mono text-[56px] font-bold tabular-nums leading-none text-accent" style={{
+      textShadow: "0 0 20px hsla(217,91%,60%,0.4)",
+    }}>
+      $
+      {digits.map((d, i) => (
+        <OdometerDigit key={i} digit={d} />
+      ))}
+    </span>
+  );
+};
+
+/* ── Lock → Unlock animation ── */
+const AnimatedLock = () => {
+  const [unlocked, setUnlocked] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setUnlocked(true), 600);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className="relative w-4 h-4">
+      <Lock
+        className="w-4 h-4 text-accent absolute inset-0 transition-all duration-500"
+        style={{ opacity: unlocked ? 0 : 1, transform: unlocked ? "scale(0.5) rotate(-20deg)" : "scale(1)" }}
+      />
+      <Unlock
+        className="w-4 h-4 text-accent absolute inset-0 transition-all duration-500"
+        style={{ opacity: unlocked ? 1 : 0, transform: unlocked ? "scale(1)" : "scale(0.5) rotate(20deg)" }}
+      />
+    </div>
+  );
 };
 
 const PricingSection = () => {
@@ -70,17 +161,15 @@ const PricingSection = () => {
             />
           </button>
           <span className={`text-sm font-semibold transition-colors ${annual ? 'text-foreground' : 'text-muted-foreground'}`}>Annual</span>
-          {annual && (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
-              {savingsPercent}% OFF
-            </span>
-          )}
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
+            32% OFF
+          </span>
         </div>
 
         {/* Pricing Card */}
         <div className="max-w-md mx-auto">
           <FadeIn>
-            {/* Outer glow wrapper - static brand blue glow */}
+            {/* Outer glow wrapper */}
             <div className="relative rounded-3xl p-[2px]" style={{
               background: 'linear-gradient(135deg, hsl(217,91%,60%), hsl(213,94%,68%), hsl(217,91%,60%))',
               boxShadow: '0 0 30px hsla(217,91%,60%,0.25), 0 0 60px hsla(213,94%,68%,0.15), 0 20px 60px hsla(215,50%,10%,0.2)',
@@ -89,16 +178,6 @@ const PricingSection = () => {
               <div className="rounded-[22px] overflow-hidden" style={{
                 background: 'linear-gradient(180deg, hsl(215,50%,10%) 0%, hsl(217,33%,8%) 100%)',
               }}>
-                {/* Top badges bar */}
-                <div className="flex items-center gap-2 px-6 pt-5 pb-0">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full bg-accent text-accent-foreground">
-                    <Sparkles className="w-3 h-3" /> BEST VALUE
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full border border-accent/50 text-accent bg-accent/10">
-                    LIMITED OFFER
-                  </span>
-                </div>
-
                 {/* Plan name and subtitle */}
                 <div className="px-6 pt-5">
                   <div className="flex items-center gap-3 mb-1">
@@ -112,7 +191,7 @@ const PricingSection = () => {
                   <p className="text-sm text-white/50">{plan.subtitle}</p>
                 </div>
 
-                {/* Pricing */}
+                {/* Pricing with odometer */}
                 <div className="px-6 pt-5 pb-2">
                   <div className="flex items-baseline gap-3">
                     {annual && (
@@ -120,9 +199,7 @@ const PricingSection = () => {
                         textDecorationColor: 'hsl(217,91%,60%)',
                       }}>${oldPrice}</span>
                     )}
-                    <span className="font-mono text-[56px] font-bold tabular-nums leading-none text-accent" style={{
-                      textShadow: '0 0 20px hsla(217,91%,60%,0.4)',
-                    }}>${price}</span>
+                    <OdometerPrice value={price} />
                     <span className="text-lg text-white/50">/month</span>
                   </div>
                   {annual && (
@@ -156,16 +233,22 @@ const PricingSection = () => {
 
                 {/* Features */}
                 <div className="px-6 pt-5 pb-6">
-                  <ul className="space-y-3">
-                    {(showAllFeatures ? plan.features : plan.features.slice(0, 5)).map((feature) => (
-                      <li key={feature} className="flex items-start gap-2.5 text-[15px]">
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-accent/15 border border-accent/30">
-                          <Check className="w-3 h-3 text-accent" />
-                        </div>
-                        <span className="text-white/80">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="flex items-center gap-2 mb-4">
+                    <AnimatedLock />
+                    <span className="text-xs font-bold tracking-wider uppercase text-white/50">What's Included</span>
+                  </div>
+                  <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4">
+                    <ul className="space-y-3">
+                      {(showAllFeatures ? plan.features : plan.features.slice(0, 5)).map((feature) => (
+                        <li key={feature} className="flex items-start gap-2.5 text-[15px]">
+                          <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-accent/15 border border-accent/30">
+                            <Check className="w-3 h-3 text-accent" />
+                          </div>
+                          <span className="text-white/80">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
                   {plan.features.length > 5 && (
                     <button
