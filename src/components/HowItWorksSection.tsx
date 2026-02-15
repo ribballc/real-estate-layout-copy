@@ -46,11 +46,9 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
         onMouseMove={handleMouseMove}
         className="process-card group relative rounded-3xl p-10 md:p-12 text-center overflow-hidden z-10 cursor-pointer"
         style={{
-          background: "hsla(215, 50%, 8%, 0.6)",
-          border: "1px solid hsla(0, 0%, 100%, 0.08)",
-          backdropFilter: "blur(20px)",
-          boxShadow:
-            "0 0 0 1px hsla(0, 0%, 100%, 0.02) inset, 0 20px 60px hsla(0, 0%, 0%, 0.3)",
+          background: "hsl(0, 0%, 100%)",
+          border: "1px solid hsl(214, 20%, 90%)",
+          boxShadow: "0 4px 24px hsla(215, 25%, 12%, 0.06)",
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
@@ -59,7 +57,7 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0"
           style={{
             background:
-              "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(217, 91%, 60%, 0.08), transparent 40%)",
+              "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(217, 91%, 60%, 0.05), transparent 40%)",
           }}
         />
 
@@ -99,10 +97,10 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           </div>
         </div>
 
-        <h3 className="text-[22px] font-semibold mb-3 relative z-10 transition-colors duration-300" style={{ color: "hsl(0, 0%, 100%)" }}>
+        <h3 className="text-[22px] font-semibold mb-3 relative z-10 transition-colors duration-300 text-foreground">
           {step.title}
         </h3>
-        <p className="text-[15px] leading-relaxed relative z-10 transition-colors duration-300" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
+        <p className="text-[15px] leading-relaxed relative z-10 transition-colors duration-300 text-muted-foreground">
           {step.description}
         </p>
       </div>
@@ -117,46 +115,19 @@ const HowItWorksSection = () => {
     <section
       className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
       style={{
-        background: "hsl(215, 50%, 8%)",
-        backgroundImage:
-          "radial-gradient(circle at 20% 50%, hsla(217, 91%, 60%, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 80%, hsla(217, 91%, 70%, 0.03) 0%, transparent 50%)",
+        background: "linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 100%)",
       }}
     >
-      {/* Animated background gradient */}
-      <div
-        className="absolute inset-0 pointer-events-none animate-pulse-slow"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 0%, hsla(217, 91%, 60%, 0.08) 0%, transparent 50%)",
-          opacity: 0.6,
-        }}
-      />
-
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-30"
-        style={{
-          backgroundImage:
-            "linear-gradient(hsla(0, 0%, 100%, 0.02) 1px, transparent 1px), linear-gradient(90deg, hsla(0, 0%, 100%, 0.02) 1px, transparent 1px)",
-          backgroundSize: "50px 50px",
-        }}
-      />
 
       <div className="max-w-[1400px] mx-auto relative z-10">
         <FadeIn>
           <div className="text-center mb-16 md:mb-20">
             <h2
-              className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
-              style={{
-                background: "linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsla(0, 0%, 100%, 0.8) 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
+              className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4 text-foreground"
             >
               Live in 5 Minutes
             </h2>
-            <p className="text-lg md:text-xl" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
+            <p className="text-lg md:text-xl text-muted-foreground">
               Three steps. Zero headaches.
             </p>
           </div>
@@ -208,7 +179,7 @@ const HowItWorksSection = () => {
                 }}
               />
             </button>
-            <p className="text-sm mt-4" style={{ color: "hsla(0, 0%, 100%, 0.5)" }}>
+            <p className="text-sm mt-4 text-muted-foreground">
               Free for 14 days · No credit card required
             </p>
           </div>
