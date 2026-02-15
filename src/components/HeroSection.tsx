@@ -187,7 +187,7 @@ const HeroSection = () => {
 
             {/* Premium Booking Demo */}
             <div
-              className="hidden lg:block"
+              className="hidden lg:block relative w-full max-w-[600px] ml-auto"
               style={{
                 opacity: 0,
                 animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
