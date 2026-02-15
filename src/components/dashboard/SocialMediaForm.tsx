@@ -15,7 +15,7 @@ const fields = [
   { key: "google_business", label: "Google Business", placeholder: "https://g.page/yourbusiness" },
 ] as const;
 
-const SocialMediaForm = () => {
+const SocialMediaForm = ({ embedded = false }: { embedded?: boolean }) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -42,8 +42,8 @@ const SocialMediaForm = () => {
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
 
   return (
-    <div className="max-w-2xl">
-      <h2 className="text-2xl font-bold text-white mb-6">Social Media</h2>
+    <div className={embedded ? "" : "max-w-2xl"}>
+      {!embedded && <h2 className="text-2xl font-bold text-white mb-6">Social Media</h2>}
       <div className="space-y-5">
         {fields.map((f) => (
           <div key={f.key} className="space-y-2">

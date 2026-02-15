@@ -15,7 +15,6 @@ const pageTitles: Record<string, { title: string; description: string; icon: any
   "/dashboard": { title: "Business Info", description: "Manage your brand, address and service areas", icon: Building2 },
   "/dashboard/calendar": { title: "Calendar", description: "View and manage your bookings", icon: CalendarDays },
   "/dashboard/customers": { title: "Customers", description: "Manage your customer relationships", icon: Users },
-  "/dashboard/social": { title: "Social Media", description: "Connect your social profiles", icon: Share2 },
   "/dashboard/services": { title: "Services", description: "Manage your service offerings and pricing", icon: Wrench },
   "/dashboard/photos": { title: "Photos", description: "Upload your portfolio and gallery", icon: Camera },
   "/dashboard/testimonials": { title: "Testimonials", description: "Manage customer reviews", icon: Star },
@@ -25,6 +24,7 @@ const pageTitles: Record<string, { title: string; description: string; icon: any
 // Extra searchable items that live inside other pages
 const extraSearchItems = [
   { url: "/dashboard/services#add-ons", title: "Add-ons", description: "Create add-on packages for services", icon: PuzzleIcon },
+  { url: "/dashboard#social", title: "Social Media", description: "Connect your social profiles", icon: Share2 },
   { url: "/dashboard#hours", title: "Business Hours", description: "Set your weekly schedule", icon: Clock },
 ];
 
