@@ -2,6 +2,7 @@ import { useRef, useCallback } from "react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 import { ChevronRight, ClipboardList, Wrench, CalendarCheck } from "lucide-react";
+import SpaceGrid from "@/components/SpaceGrid";
 
 const steps = [
   {
@@ -62,15 +63,6 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           }}
         />
 
-        {/* Glow effect */}
-        <div
-          className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] opacity-0 group-hover:opacity-100 transition-opacity duration-600 pointer-events-none z-0"
-          style={{
-            background:
-              "radial-gradient(circle at center, hsla(217, 91%, 60%, 0.12) 0%, transparent 70%)",
-          }}
-        />
-
         {/* Step number badge */}
         <span
           className="absolute top-5 right-5 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold transition-all duration-300 group-hover:scale-105"
@@ -121,28 +113,18 @@ const HowItWorksSection = () => {
     <section
       className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
       style={{
-        background: "hsl(215, 50%, 8%)",
-        backgroundImage:
-          "radial-gradient(ellipse at 30% 20%, hsla(217, 91%, 60%, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, hsla(213, 94%, 68%, 0.04) 0%, transparent 50%)",
+        background: "linear-gradient(180deg, hsl(215, 50%, 8%) 0%, hsl(215, 50%, 10%) 100%)",
       }}
     >
+      <SpaceGrid opacity={0.03} />
+
       {/* Radial gradient mesh */}
       <div
         className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at 20% 30%, hsla(217, 91%, 60%, 0.08) 0%, transparent 40%), radial-gradient(ellipse at 80% 70%, hsla(213, 94%, 68%, 0.05) 0%, transparent 40%)",
+            "radial-gradient(ellipse at 20% 30%, hsla(217, 91%, 60%, 0.06) 0%, transparent 40%), radial-gradient(ellipse at 80% 70%, hsla(213, 94%, 68%, 0.04) 0%, transparent 40%)",
           animation: "meshMove 30s ease-in-out infinite",
-        }}
-      />
-
-      {/* Diagonal lines grid */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-[0.015]"
-        style={{
-          backgroundImage:
-            "linear-gradient(45deg, hsla(0, 0%, 100%, 1) 1px, transparent 1px), linear-gradient(-45deg, hsla(0, 0%, 100%, 1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
         }}
       />
 
@@ -192,7 +174,7 @@ const HowItWorksSection = () => {
           <div className="text-center">
             <button
               onClick={openFunnel}
-              className="process-cta-btn group relative inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+              className="group relative inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               style={{
                 color: "hsl(0, 0%, 100%)",
                 background: "linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(217, 91%, 45%) 100%)",

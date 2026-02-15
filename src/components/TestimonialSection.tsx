@@ -47,8 +47,8 @@ const ScrollRow = ({ items, direction }: { items: typeof reviews; direction: "le
     : "animate-scroll-right-mobile md:animate-scroll-right";
   return (
     <div className="relative overflow-hidden">
-      <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, hsl(215 50% 10%), transparent)' }} />
-      <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, hsl(215 50% 10%), transparent)' }} />
+      <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, hsl(215, 50%, 9%), transparent)' }} />
+      <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, hsl(215, 50%, 9%), transparent)' }} />
       <div className={`flex gap-4 ${animClass}`} style={{ width: 'max-content' }}>
         {doubled.map((review, i) => (
           <ReviewCard key={`${review.initials}-${i}`} review={review} />
@@ -63,7 +63,7 @@ const TestimonialSection = () => {
 
   return (
     <section className="relative py-10 md:py-14 overflow-hidden" style={{
-      background: 'linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)',
+      background: 'linear-gradient(180deg, hsl(215, 50%, 8%) 0%, hsl(215, 50%, 10%) 100%)',
     }}>
       <div className="relative z-10 max-w-6xl mx-auto text-center px-5 md:px-8">
         <FadeIn>
