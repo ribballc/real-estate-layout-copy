@@ -74,17 +74,17 @@ const HeroSection = () => {
 
             {/* Headline */}
             <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em]">
-              <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold">
-                <span className="inline-block" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
-                  Your Work is Flawless.
-                </span>
+              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
+                Run a Top-Tier
+              </span>
+              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
+                Detailing Business
               </span>
               <span
-                className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold"
-                style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.8s forwards' }}
+                className="block font-heading text-[36px] md:text-[56px] font-semibold italic"
+                style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.8s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}
               >
-                Your Bookings Should Be{" "}
-                <span className="text-sky">Too</span>
+                Flawlessly
               </span>
             </h1>
 
