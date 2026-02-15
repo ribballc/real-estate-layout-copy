@@ -44,48 +44,51 @@ const BookBooking = () => {
           </h2>
         </FadeIn>
 
-        {/* Calendar */}
-        <FadeIn delay={150}>
-          <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-foreground">Select a Date</h3>
-            <div className="rounded-2xl border border-border bg-card p-4 inline-block">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                disabled={{ before: new Date() }}
-                className="pointer-events-auto"
-              />
-            </div>
-          </div>
-        </FadeIn>
-
-        {/* Time slots */}
-        {selectedDate && (
-          <FadeIn delay={50}>
+        {/* Calendar + Time slots side by side on desktop */}
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Calendar */}
+          <FadeIn delay={150}>
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                <Clock className="w-4 h-4 text-accent" />
-                Select a Time
-              </h3>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                {timeSlots.map((time) => (
-                  <button
-                    key={time}
-                    onClick={() => setSelectedTime(time)}
-                    className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200 ${
-                      selectedTime === time
-                        ? "border-accent bg-accent/10 text-accent ring-1 ring-accent"
-                        : "border-border bg-card text-foreground hover:border-accent/50 hover:bg-accent/5"
-                    }`}
-                  >
-                    {time}
-                  </button>
-                ))}
+              <h3 className="text-sm font-semibold text-foreground">Select a Date</h3>
+              <div className="rounded-2xl border border-border bg-card p-4 inline-block">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  disabled={{ before: new Date() }}
+                  className="pointer-events-auto"
+                />
               </div>
             </div>
           </FadeIn>
-        )}
+
+          {/* Time slots */}
+          {selectedDate && (
+            <FadeIn delay={50}>
+              <div className="space-y-3 md:pt-0">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-accent" />
+                  Select a Time
+                </h3>
+                <div className="grid grid-cols-3 gap-3">
+                  {timeSlots.map((time) => (
+                    <button
+                      key={time}
+                      onClick={() => setSelectedTime(time)}
+                      className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                        selectedTime === time
+                          ? "border-accent bg-accent/10 text-accent ring-1 ring-accent"
+                          : "border-border bg-card text-foreground hover:border-accent/50 hover:bg-accent/5"
+                      }`}
+                    >
+                      {time}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </FadeIn>
+          )}
+        </div>
 
         {/* Continue button */}
         {selectedDate && selectedTime && (
