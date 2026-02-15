@@ -126,7 +126,8 @@ const PricingSection = () => {
   return (
     <section
       id="pricing"
-      className="relative py-16 md:py-24 px-5 md:px-8 overflow-hidden bg-background"
+      className="relative py-16 md:py-24 px-5 md:px-8 overflow-hidden"
+      style={{ background: "hsl(210, 40%, 98%)" }}
     >
       <div className="max-w-6xl mx-auto relative z-10">
         <FadeIn>

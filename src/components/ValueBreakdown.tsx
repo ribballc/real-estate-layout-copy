@@ -16,18 +16,18 @@ const ValueBreakdown = () => {
   return (
     <section
       className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
-      style={{ background: "hsl(210, 40%, 98%)" }}
+      style={{ background: "linear-gradient(180deg, hsl(217, 33%, 17%) 0%, hsl(215, 50%, 10%) 100%)" }}
     >
       <div className="max-w-[800px] mx-auto relative z-10">
         <FadeIn>
           <div className="text-center mb-12 md:mb-16">
             <h2
               className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
-              style={{ color: "hsl(222, 47%, 11%)" }}
+              style={{ color: "hsl(0, 0%, 100%)" }}
             >
               What "Free Website" Means
             </h2>
-            <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
+            <p className="text-lg md:text-xl" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
               Yeah.. it's that good.
             </p>
           </div>
@@ -37,9 +37,9 @@ const ValueBreakdown = () => {
           <div
             className="rounded-3xl p-8 md:p-10 mb-8"
             style={{
-              background: "hsl(0, 0%, 100%)",
-              border: "1px solid hsl(214, 20%, 90%)",
-              boxShadow: "0 4px 24px hsla(0, 0%, 0%, 0.06)",
+              background: "hsla(0, 0%, 100%, 0.06)",
+              border: "1px solid hsla(0, 0%, 100%, 0.12)",
+              backdropFilter: "blur(12px)",
             }}
           >
             {valueItems.map((item, i) => (
@@ -49,27 +49,27 @@ const ValueBreakdown = () => {
                 style={{
                   borderBottom:
                     i < valueItems.length - 1
-                      ? "1px solid hsl(214, 20%, 93%)"
+                      ? "1px solid hsla(0, 0%, 100%, 0.08)"
                       : "none",
                 }}
               >
                 <div className="flex items-center gap-3">
                   <div
                     className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: "hsla(217, 91%, 60%, 0.1)" }}
+                    style={{ background: "hsla(217, 91%, 60%, 0.2)" }}
                   >
-                    <Check className="w-4 h-4" style={{ color: "hsl(217, 91%, 60%)" }} />
+                    <Check className="w-4 h-4" style={{ color: "hsl(213, 94%, 68%)" }} />
                   </div>
                   <span
                     className="text-base md:text-lg font-medium"
-                    style={{ color: "hsl(222, 47%, 11%)" }}
+                    style={{ color: "hsla(0, 0%, 100%, 0.9)" }}
                   >
                     {item.text}
                   </span>
                 </div>
                 <span
                   className="text-sm md:text-base font-semibold whitespace-nowrap ml-4"
-                  style={{ color: "hsl(215, 16%, 47%)" }}
+                  style={{ color: "hsla(0, 0%, 100%, 0.5)" }}
                 >
                   {item.worth}
                 </span>
@@ -80,8 +80,8 @@ const ValueBreakdown = () => {
             <div
               className="rounded-[20px] p-8 md:p-10 pb-6 md:pb-8 mt-4"
               style={{
-                background: "linear-gradient(135deg, hsla(217, 91%, 60%, 0.1) 0%, hsla(217, 91%, 60%, 0.05) 100%)",
-                border: "1px solid hsla(217, 91%, 60%, 0.2)",
+                background: "linear-gradient(135deg, hsla(217, 91%, 60%, 0.15) 0%, hsla(217, 91%, 60%, 0.08) 100%)",
+                border: "1px solid hsla(217, 91%, 60%, 0.25)",
               }}
             >
               <div className="flex flex-col md:flex-row items-center justify-center gap-5 md:gap-8 mb-6">
@@ -89,16 +89,15 @@ const ValueBreakdown = () => {
                 <div className="flex flex-col items-center gap-2">
                   <span
                     className="text-[14px] font-semibold uppercase tracking-[1.2px]"
-                    style={{ color: "hsl(215, 16%, 55%)" }}
+                    style={{ color: "hsla(0, 0%, 100%, 0.5)" }}
                   >
                     Total Value
                   </span>
                   <span
                     className="font-mono text-4xl md:text-[40px] font-semibold line-through decoration-[3px]"
                     style={{
-                      color: "hsl(215, 16%, 55%)",
+                      color: "hsla(0, 0%, 100%, 0.4)",
                       textDecorationColor: "hsl(0, 84%, 60%)",
-                      opacity: 0.7,
                       letterSpacing: "-1px",
                     }}
                   >
@@ -110,7 +109,7 @@ const ValueBreakdown = () => {
                 <span
                   className="text-4xl md:text-[36px] font-bold md:rotate-0 rotate-90"
                   style={{
-                    color: "hsl(217, 91%, 60%)",
+                    color: "hsl(213, 94%, 68%)",
                     animation: "pulseArrow 2s ease-in-out infinite",
                   }}
                 >
@@ -121,7 +120,7 @@ const ValueBreakdown = () => {
                 <div className="flex flex-col items-center gap-2">
                   <span
                     className="text-[14px] font-semibold uppercase tracking-[1.2px]"
-                    style={{ color: "hsl(215, 16%, 55%)" }}
+                    style={{ color: "hsla(0, 0%, 100%, 0.5)" }}
                   >
                     Your Price Today
                   </span>
@@ -130,7 +129,7 @@ const ValueBreakdown = () => {
                     style={{
                       color: "hsl(160, 84%, 39%)",
                       letterSpacing: "-2px",
-                      textShadow: "0 0 24px hsla(160, 84%, 39%, 0.3)",
+                      textShadow: "0 0 24px hsla(160, 84%, 39%, 0.4)",
                     }}
                   >
                     FREE
@@ -140,10 +139,10 @@ const ValueBreakdown = () => {
 
               {/* Trial details */}
               <div className="text-center pt-5" style={{ borderTop: "1px solid hsla(0, 0%, 100%, 0.1)" }}>
-                <p className="text-[15px] md:text-base leading-relaxed" style={{ color: "hsl(210, 40%, 96%)" }}>
-                  <strong className="font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>14-day free trial. Zero risk. No card needed.</strong>
+                <p className="text-[15px] md:text-base leading-relaxed">
+                  <strong className="font-semibold" style={{ color: "hsla(0, 0%, 100%, 0.9)" }}>14-day free trial. Zero risk. No card needed.</strong>
                   <br />
-                  <span style={{ color: "hsl(215, 16%, 47%)" }}>Then $54/month for hosting + automation.</span>
+                  <span style={{ color: "hsla(0, 0%, 100%, 0.5)" }}>Then $54/month for hosting + automation.</span>
                 </p>
               </div>
             </div>
@@ -172,7 +171,7 @@ const ValueBreakdown = () => {
                 }}
               />
             </button>
-            <p className="text-sm mt-4" style={{ color: "hsl(215, 16%, 47%)" }}>
+            <p className="text-sm mt-4" style={{ color: "hsla(0, 0%, 100%, 0.4)" }}>
               Free for 14 days · No credit card required
             </p>
           </div>
