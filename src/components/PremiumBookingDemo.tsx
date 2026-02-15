@@ -75,26 +75,28 @@ const PremiumBookingDemo = () => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full pointer-events-none"
+      className="relative w-full pointer-events-none overflow-hidden"
       style={{
-        aspectRatio: '3 / 2',
+        aspectRatio: '4 / 3',
         willChange: 'transform',
       }}
       aria-label="Animated demonstration of booking system connecting customer booking to business owner calendar"
     >
-      {/* Desktop layout */}
-      <div className="hidden md:flex items-center justify-center h-full gap-0 relative" style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
-        {/* Customer Side */}
-        <div className="flex items-center justify-end pr-4 shrink-0">
-          <CustomerView scene={scene} sceneProgress={sceneProgress} elapsed={elapsed} />
-        </div>
+      {/* Desktop layout - use a fixed-size container with internal scaling */}
+      <div className="hidden md:block absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center" style={{ transform: 'scale(0.46)', transformOrigin: '55% center' }}>
+          {/* Customer Side */}
+          <div className="flex items-center justify-end pr-4 shrink-0">
+            <CustomerView scene={scene} sceneProgress={sceneProgress} elapsed={elapsed} />
+          </div>
 
-        {/* Data Flow Line */}
-        <DataFlowLine elapsed={elapsed} ownerPhase={ownerPhase} />
+          {/* Data Flow Line */}
+          <DataFlowLine elapsed={elapsed} ownerPhase={ownerPhase} />
 
-        {/* Owner Side */}
-        <div className="flex items-center justify-start pl-4 shrink-0">
-          <OwnerView ownerPhase={ownerPhase} elapsed={elapsed} />
+          {/* Owner Side */}
+          <div className="flex items-center justify-start pl-4 shrink-0">
+            <OwnerView ownerPhase={ownerPhase} elapsed={elapsed} />
+          </div>
         </div>
       </div>
 
