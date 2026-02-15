@@ -1,20 +1,23 @@
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ClipboardList, Wrench, CalendarCheck } from "lucide-react";
 
 const steps = [
   {
     step: 1,
+    icon: ClipboardList,
     title: "Tell Us About Your Shop",
     description: "Name, services, hours, location. Takes 60 seconds.",
   },
   {
     step: 2,
+    icon: Wrench,
     title: "We Build Everything",
     description: "Custom website + booking system with SMS reminders and deposits. Done in 48 hours.",
   },
   {
     step: 3,
+    icon: CalendarCheck,
     title: "Bookings on Autopilot",
     description: "Customers find you, book online, pay deposits, and get reminders. You detail.",
   },
@@ -46,15 +49,14 @@ const HowItWorksSection = () => {
           {steps.map((step, i) => (
             <FadeIn key={step.step} delay={i * 150}>
               <div className="group bg-card rounded-2xl p-8 md:p-10 text-center border border-border relative z-10 transition-all duration-300 hover:shadow-[0_12px_32px_hsla(217,91%,60%,0.15)] hover:-translate-y-2 hover:border-accent">
+                <span className="absolute top-4 left-5 text-xs font-bold text-muted-foreground/50">{step.step}</span>
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold mx-auto mb-5 min-h-[48px]"
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
                   style={{
-                    background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
-                    color: 'hsl(0 0% 100%)',
-                    boxShadow: '0 4px 12px hsla(217, 91%, 60%, 0.25)',
+                    background: 'hsla(217, 91%, 60%, 0.1)',
                   }}
                 >
-                  {step.step}
+                  <step.icon className="w-7 h-7 text-accent" />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground mb-3">{step.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">{step.description}</p>
