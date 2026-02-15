@@ -1,3 +1,4 @@
+import { useRef, useCallback } from "react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 import { ChevronRight, ClipboardList, Wrench, CalendarCheck } from "lucide-react";
@@ -13,7 +14,7 @@ const steps = [
     step: 2,
     icon: Wrench,
     title: "We Build Everything",
-    description: "Custom website + booking system with SMS reminders and deposits. Done in 48 hours.",
+    description: "Custom website + booking system with SMS reminders and deposits. Done for you automatically.",
   },
   {
     step: 3,
@@ -23,62 +24,193 @@ const steps = [
   },
 ];
 
+const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    card.style.setProperty("--mouse-x", `${x}%`);
+    card.style.setProperty("--mouse-y", `${y}%`);
+  }, []);
+
+  const Icon = step.icon;
+
+  return (
+    <FadeIn delay={index * 150}>
+      <div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        className="process-card group relative rounded-3xl p-10 md:p-12 text-center overflow-hidden z-10 cursor-pointer"
+        style={{
+          background: "hsla(215, 50%, 8%, 0.6)",
+          border: "1px solid hsla(0, 0%, 100%, 0.08)",
+          backdropFilter: "blur(20px)",
+          boxShadow:
+            "0 0 0 1px hsla(0, 0%, 100%, 0.02) inset, 0 20px 60px hsla(0, 0%, 0%, 0.3)",
+          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
+        {/* Spotlight follow effect */}
+        <div
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0"
+          style={{
+            background:
+              "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(217, 91%, 60%, 0.08), transparent 40%)",
+          }}
+        />
+
+        {/* Glow effect */}
+        <div
+          className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] opacity-0 group-hover:opacity-100 transition-opacity duration-600 pointer-events-none z-0"
+          style={{
+            background:
+              "radial-gradient(circle at center, hsla(217, 91%, 60%, 0.12) 0%, transparent 70%)",
+          }}
+        />
+
+        {/* Step number badge */}
+        <span
+          className="absolute top-5 right-5 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold transition-all duration-300 group-hover:scale-105"
+          style={{
+            background: "hsla(217, 91%, 60%, 0.1)",
+            border: "1px solid hsla(217, 91%, 60%, 0.3)",
+            color: "hsl(217, 91%, 70%)",
+            boxShadow: "none",
+          }}
+        >
+          <span className="relative z-10">{step.step}</span>
+        </span>
+
+        {/* Icon container with float + pulse */}
+        <div className="flex justify-center mb-7 relative z-10">
+          <div
+            className="process-icon-container w-[72px] h-[72px] rounded-2xl flex items-center justify-center transition-all duration-400"
+            style={{
+              background:
+                "linear-gradient(135deg, hsla(217, 91%, 60%, 0.15) 0%, hsla(217, 91%, 70%, 0.1) 100%)",
+              border: "1px solid hsla(217, 91%, 60%, 0.2)",
+            }}
+          >
+            <Icon className="w-8 h-8 transition-all duration-300" style={{ color: "hsl(217, 91%, 70%)" }} />
+          </div>
+        </div>
+
+        <h3 className="text-[22px] font-semibold mb-3 relative z-10 transition-colors duration-300" style={{ color: "hsl(0, 0%, 100%)" }}>
+          {step.title}
+        </h3>
+        <p className="text-[15px] leading-relaxed relative z-10 transition-colors duration-300" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
+          {step.description}
+        </p>
+      </div>
+    </FadeIn>
+  );
+};
+
 const HowItWorksSection = () => {
   const { openFunnel } = useSurveyFunnel();
 
   return (
-    <section className="py-16 md:py-24 px-5 md:px-8" style={{
-      background: 'linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%)',
-    }}>
-      <div className="max-w-6xl mx-auto">
+    <section
+      className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
+      style={{
+        background: "hsl(215, 50%, 8%)",
+        backgroundImage:
+          "radial-gradient(circle at 20% 50%, hsla(217, 91%, 60%, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 80%, hsla(217, 91%, 70%, 0.03) 0%, transparent 50%)",
+      }}
+    >
+      {/* Animated background gradient */}
+      <div
+        className="absolute inset-0 pointer-events-none animate-pulse-slow"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 0%, hsla(217, 91%, 60%, 0.08) 0%, transparent 50%)",
+          opacity: 0.6,
+        }}
+      />
+
+      {/* Grid overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-30"
+        style={{
+          backgroundImage:
+            "linear-gradient(hsla(0, 0%, 100%, 0.02) 1px, transparent 1px), linear-gradient(90deg, hsla(0, 0%, 100%, 0.02) 1px, transparent 1px)",
+          backgroundSize: "50px 50px",
+        }}
+      />
+
+      <div className="max-w-[1400px] mx-auto relative z-10">
         <FadeIn>
-          <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-3">
-            Three Simple Steps
-          </h2>
-          <p className="text-base md:text-lg text-muted-foreground text-center max-w-xl mx-auto mb-12 md:mb-16 leading-relaxed">
-            In under 5 minutes
-          </p>
+          <div className="text-center mb-16 md:mb-20">
+            <h2
+              className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
+              style={{
+                background: "linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsla(0, 0%, 100%, 0.8) 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Live in 5 Minutes
+            </h2>
+            <p className="text-lg md:text-xl" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
+              Three steps. Zero headaches.
+            </p>
+          </div>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-          {/* Connecting line (desktop only) */}
-          <div className="hidden md:block absolute top-[56px] left-[20%] right-[20%] h-[2px] z-0" style={{
-            background: 'linear-gradient(90deg, hsla(217, 91%, 60%, 0.3), hsla(217, 91%, 60%, 0.1))',
-            backgroundSize: '12px 2px',
-          }} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-16 md:mb-20 relative">
+          {/* Connecting lines (desktop) */}
+          <div
+            className="hidden md:block absolute top-[100px] left-[18%] w-[18%] h-[2px] z-0"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent 0%, hsla(217, 91%, 60%, 0.3) 20%, hsla(217, 91%, 70%, 0.5) 50%, hsla(217, 91%, 60%, 0.3) 80%, transparent 100%)",
+            }}
+          />
+          <div
+            className="hidden md:block absolute top-[100px] right-[18%] w-[18%] h-[2px] z-0"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent 0%, hsla(217, 91%, 60%, 0.3) 20%, hsla(217, 91%, 70%, 0.5) 50%, hsla(217, 91%, 60%, 0.3) 80%, transparent 100%)",
+            }}
+          />
+
           {steps.map((step, i) => (
-            <FadeIn key={step.step} delay={i * 150}>
-              <div className="group bg-card rounded-2xl p-8 md:p-10 text-center border border-border relative z-10 transition-all duration-300 hover:shadow-[0_12px_32px_hsla(217,91%,60%,0.15)] hover:-translate-y-2 hover:border-accent">
-                <span className="absolute top-4 left-5 text-xs font-bold text-muted-foreground/50">{step.step}</span>
-                <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
-                  style={{
-                    background: 'hsla(217, 91%, 60%, 0.1)',
-                  }}
-                >
-                  <step.icon className="w-7 h-7 text-accent" />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3">{step.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
-              </div>
-            </FadeIn>
+            <ProcessCard key={step.step} step={step} index={i} />
           ))}
         </div>
 
         <FadeIn delay={500}>
-          <div className="text-center mt-12">
+          <div className="text-center">
             <button
               onClick={openFunnel}
-              className="group inline-flex items-center gap-2 font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 px-10 py-4 text-base min-h-[48px] text-primary-foreground"
+              className="process-cta-btn group relative inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               style={{
-                background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
-                boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
+                color: "hsl(0, 0%, 100%)",
+                background: "linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(217, 91%, 45%) 100%)",
+                boxShadow:
+                  "0 4px 16px hsla(217, 91%, 60%, 0.3), 0 8px 32px hsla(217, 91%, 60%, 0.2)",
               }}
             >
-              Start Your 48-Hour Setup
-              <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+              <span className="relative z-10 flex items-center gap-2">
+                Get Started Free →
+              </span>
+              {/* Shine sweep */}
+              <span
+                className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent 0%, hsla(0, 0%, 100%, 0.2) 50%, transparent 100%)",
+                }}
+              />
             </button>
-            <p className="text-sm text-muted-foreground mt-4">Free for 14 days · No credit card required</p>
+            <p className="text-sm mt-4" style={{ color: "hsla(0, 0%, 100%, 0.5)" }}>
+              Free for 14 days · No credit card required
+            </p>
           </div>
         </FadeIn>
       </div>
