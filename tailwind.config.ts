@@ -81,8 +81,10 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "scroll-left": "scroll-left 40s linear infinite",
-        "scroll-right": "scroll-right 40s linear infinite",
+        "scroll-left": "scroll-left 60s linear infinite",
+        "scroll-right": "scroll-right 60s linear infinite",
+        "scroll-left-mobile": "scroll-left 120s linear infinite",
+        "scroll-right-mobile": "scroll-right 120s linear infinite",
       },
     },
   },
