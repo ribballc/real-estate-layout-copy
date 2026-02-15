@@ -142,8 +142,8 @@ const WhySection = () => {
                       style={{
                         background: "linear-gradient(135deg, hsla(217, 91%, 60%, 0.15) 0%, hsla(213, 94%, 68%, 0.1) 100%)",
                         border: "1px solid hsla(217, 91%, 60%, 0.2)",
-                        animation: "pulseRings 4s ease-in-out infinite",
-                      }}
+                      animation: "pulseRings 8s ease-in-out infinite",
+                    }}
                     >
                       <Icon
                         className="w-8 h-8 transition-all duration-500 relative z-10"

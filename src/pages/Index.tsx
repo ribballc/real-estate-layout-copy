@@ -3,7 +3,7 @@ import PublishersSection from "@/components/PublishersSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import WhySection from "@/components/WhySection";
 import ManifestoSection from "@/components/ManifestoSection";
-import RoiCalculator from "@/components/RoiCalculator";
+
 import TestimonialSection from "@/components/TestimonialSection";
 import PricingSection from "@/components/PricingSection";
 import FaqSection from "@/components/FaqSection";
@@ -26,7 +26,7 @@ const Index = () => {
         <HowItWorksSection />
         <ManifestoSection />
         <WhySection />
-        <RoiCalculator />
+        
         <TestimonialSection />
         <PricingSection />
         <FaqSection />

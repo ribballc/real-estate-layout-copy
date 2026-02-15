@@ -163,7 +163,7 @@ const ManifestoSection = () => {
                 return (
                   <div key={feat.title} className="text-center group">
                     <div
-                      className="process-icon-container w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1"
+                      className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1"
                       style={{
                         background: "linear-gradient(135deg, hsla(217, 91%, 60%, 0.15) 0%, hsla(217, 91%, 70%, 0.1) 100%)",
                         border: "1px solid hsla(217, 91%, 60%, 0.2)",
