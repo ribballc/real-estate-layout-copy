@@ -1,16 +1,18 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar from "./DashboardSidebar";
+import SupportChatbot from "./SupportChatbot";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
-  TrendingUp, Users, Eye, Calendar,
+  TrendingUp, Users, Eye, CalendarDays,
 } from "lucide-react";
 
 const pageTitles: Record<string, { title: string; description: string; icon: any }> = {
   "/dashboard": { title: "Business Info", description: "Manage your brand, address and service areas", icon: Building2 },
+  "/dashboard/calendar": { title: "Calendar", description: "View and manage your bookings", icon: CalendarDays },
   "/dashboard/social": { title: "Social Media", description: "Connect your social profiles", icon: Share2 },
   "/dashboard/services": { title: "Services", description: "Manage your service offerings and pricing", icon: Wrench },
   "/dashboard/add-ons": { title: "Add-ons", description: "Create add-on packages for services", icon: PuzzleIcon },
@@ -85,6 +87,7 @@ const DashboardLayout = () => {
 
             <Outlet />
           </div>
+          <SupportChatbot />
         </main>
       </div>
     </SidebarProvider>
