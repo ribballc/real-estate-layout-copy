@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ChevronRight, Store, ChevronDown } from "lucide-react";
-import BookingSimulator from "@/components/BookingSimulator";
+import AdvancedBookingDemo from "@/components/AdvancedBookingDemo";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const HeroSection = () => {
@@ -185,14 +185,14 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Booking Simulator */}
+            {/* Advanced Booking Demo */}
             <div
               style={{
                 opacity: 0,
                 animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
               }}
             >
-              <BookingSimulator />
+              <AdvancedBookingDemo />
             </div>
           </div>
         </div>
