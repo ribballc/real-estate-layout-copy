@@ -128,22 +128,28 @@
   50% { transform: translateY(8px); opacity: 1; }
 }
 
-/* Booking simulator animations */
+/* Advanced booking demo animations */
 
-@keyframes moneyArc {
-  0% { transform: translate(-60px, 0) scale(1); opacity: 1; }
-  50% { transform: translate(0, -40px) scale(1.2); opacity: 1; }
-  100% { transform: translate(60px, 0) scale(0.8); opacity: 0; }
+@keyframes confettiParticle {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
 }
 
-@keyframes subtlePulse {
-  0%, 100% { box-shadow: 0 0 0 0 hsla(217, 91%, 60%, 0); }
-  50% { box-shadow: 0 0 20px 4px hsla(217, 91%, 60%, 0.15); }
+@keyframes bellRing {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(14deg); }
+  30% { transform: rotate(-12deg); }
+  45% { transform: rotate(10deg); }
+  60% { transform: rotate(-8deg); }
+  75% { transform: rotate(4deg); }
 }
 
-@keyframes confetti0 { to { transform: translate(-30px, -50px) scale(0); opacity: 0; } }
-@keyframes confetti1 { to { transform: translate(35px, -45px) scale(0); opacity: 0; } }
-@keyframes confetti2 { to { transform: translate(-20px, -60px) scale(0); opacity: 0; } }
-@keyframes confetti3 { to { transform: translate(25px, -35px) scale(0); opacity: 0; } }
-@keyframes confetti4 { to { transform: translate(-40px, -30px) scale(0); opacity: 0; } }
-@keyframes confetti5 { to { transform: translate(15px, -55px) scale(0); opacity: 0; } }
+@keyframes beamParticle {
+  0% { left: 0; opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+@keyframes floatParticle {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(20px, -30px); }
+}
