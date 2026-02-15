@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import darkerLogo from "@/assets/darker-logo.png";
-import { ChevronRight, Store, ChevronDown } from "lucide-react";
+import { ChevronRight, Store, ChevronDown, Zap, Shield } from "lucide-react";
 import PremiumBookingDemo from "@/components/PremiumBookingDemo";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
@@ -192,11 +192,9 @@ const HeroSection = () => {
                 animation: 'fadeSlideUp 0.4s ease-out 1.8s forwards',
               }}
             >
-              <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Built in 5 minutes</span>
+              <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> Built in 5 minutes</span>
               <span className="text-primary-foreground/20">•</span>
-              <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Free for 14 days</span>
-              <span className="text-primary-foreground/20">•</span>
-              <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Cancel anytime</span>
+              <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> Free for 14 days</span>
             </div>
 
             {/* Social proof */}
