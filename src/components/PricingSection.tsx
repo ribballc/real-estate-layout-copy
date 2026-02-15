@@ -27,42 +27,38 @@ const plan = {
 };
 
 /* ── Odometer Digit ── */
+const DIGITS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
 const OdometerDigit = ({ digit }: { digit: string }) => {
-  const [displayDigit, setDisplayDigit] = useState(digit);
-  const [rolling, setRolling] = useState(false);
-  const prevDigit = useRef(digit);
+  const currentNum = parseInt(digit, 10);
+  const prevNum = useRef(currentNum);
+  const [offset, setOffset] = useState(currentNum);
 
   useEffect(() => {
-    if (digit !== prevDigit.current) {
-      setRolling(true);
-      const timer = setTimeout(() => {
-        setDisplayDigit(digit);
-        setRolling(false);
-      }, 350);
-      prevDigit.current = digit;
-      return () => clearTimeout(timer);
+    if (currentNum !== prevNum.current) {
+      prevNum.current = currentNum;
+      setOffset(currentNum);
     }
-  }, [digit]);
+  }, [currentNum]);
 
   return (
-    <span className="inline-block overflow-hidden relative" style={{ height: "1em", width: "0.6em" }}>
+    <span
+      className="inline-block overflow-hidden relative"
+      style={{ height: "1em", width: "0.6em" }}
+    >
       <span
-        className="inline-block transition-transform duration-[350ms] ease-in-out"
+        className="inline-flex flex-col items-center"
         style={{
-          transform: rolling ? "translateY(-100%)" : "translateY(0)",
-          opacity: rolling ? 0 : 1,
+          transition: "transform 0.5s cubic-bezier(0.45, 0, 0.15, 1)",
+          transform: `translateY(${-offset * 10}%)`,
         }}
       >
-        {displayDigit}
+        {DIGITS.map((d) => (
+          <span key={d} className="block" style={{ height: "1em", lineHeight: "1em" }}>
+            {d}
+          </span>
+        ))}
       </span>
-      {rolling && (
-        <span
-          className="absolute left-0 top-full inline-block transition-transform duration-[350ms] ease-in-out"
-          style={{ transform: "translateY(-100%)" }}
-        >
-          {digit}
-        </span>
-      )}
     </span>
   );
 };
