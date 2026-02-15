@@ -59,6 +59,7 @@ const ServicesManager = () => {
   const [optionsServiceId, setOptionsServiceId] = useState<string | null>(null);
   const [optionsServiceName, setOptionsServiceName] = useState("");
   const [showScanDialog, setShowScanDialog] = useState(false);
+  const [showManualMenu, setShowManualMenu] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scanPreview, setScanPreview] = useState<string | null>(null);
 
@@ -217,55 +218,72 @@ const ServicesManager = () => {
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-foreground">Services</h2>
-        <div className="flex items-center gap-2">
-          {/* Photo scan button */}
-          <Button onClick={() => setShowScanDialog(true)} size="sm" variant="outline" className="gap-2 text-foreground">
-            <Camera className="w-4 h-4" /> Scan Price List
+        <div className="relative">
+          <Button onClick={() => setShowAddMenu(!showAddMenu)} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+            <Plus className="w-4 h-4" /> Add Service <ChevronDown className="w-3 h-3 ml-1" />
           </Button>
-          <div className="relative">
-            <Button onClick={() => setShowAddMenu(!showAddMenu)} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
-              <Plus className="w-4 h-4" /> Add Service <ChevronDown className="w-3 h-3 ml-1" />
-            </Button>
-            {showAddMenu && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => { setShowAddMenu(false); setShowCustomInput(false); }} />
-                <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-border shadow-xl z-50 py-2 overflow-hidden bg-popover">
-                  {availablePresets.map((preset) => (
+          {showAddMenu && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => { setShowAddMenu(false); setShowCustomInput(false); setShowManualMenu(false); }} />
+              <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-border shadow-xl z-50 py-2 overflow-hidden bg-popover">
+                {!showManualMenu ? (
+                  <>
                     <button
-                      key={preset.title}
-                      onClick={() => addPresetService(preset)}
-                      className="w-full text-left px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/10 transition-colors"
+                      onClick={() => setShowManualMenu(true)}
+                      className="w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-accent/10 transition-colors flex items-center gap-2.5"
                     >
-                      {preset.title}
+                      <Plus className="w-4 h-4 text-muted-foreground" /> Add Manually
                     </button>
-                  ))}
-                  {availablePresets.length > 0 && <div className="border-t border-border my-1" />}
-                  {!showCustomInput ? (
                     <button
-                      onClick={() => setShowCustomInput(true)}
-                      className="w-full text-left px-4 py-2.5 text-sm text-primary hover:bg-accent/10 transition-colors flex items-center gap-2"
+                      onClick={() => { setShowAddMenu(false); setShowScanDialog(true); }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-accent/10 transition-colors flex items-center gap-2.5"
                     >
-                      <Plus className="w-3 h-3" /> Custom Service
+                      <Sparkles className="w-4 h-4 text-amber-500" /> Magic Upload
                     </button>
-                  ) : (
-                    <div className="px-3 py-2 flex gap-2">
-                      <Input
-                        value={customTitle}
-                        onChange={(e) => setCustomTitle(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && addCustomService()}
-                        placeholder="Service name…"
-                        className="h-8 text-foreground text-sm"
-                        autoFocus
-                      />
-                      <Button onClick={addCustomService} size="sm" className="h-8 px-3 shrink-0" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
-                        Add
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => setShowManualMenu(false)} className="w-full text-left px-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
+                      <ChevronDown className="w-3 h-3 rotate-90" /> Back
+                    </button>
+                    <div className="border-t border-border my-1" />
+                    {availablePresets.map((preset) => (
+                      <button
+                        key={preset.title}
+                        onClick={() => addPresetService(preset)}
+                        className="w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-accent/10 transition-colors"
+                      >
+                        {preset.title}
+                      </button>
+                    ))}
+                    {availablePresets.length > 0 && <div className="border-t border-border my-1" />}
+                    {!showCustomInput ? (
+                      <button
+                        onClick={() => setShowCustomInput(true)}
+                        className="w-full text-left px-4 py-2.5 text-sm text-primary hover:bg-accent/10 transition-colors flex items-center gap-2"
+                      >
+                        <Plus className="w-3 h-3" /> Custom Service
+                      </button>
+                    ) : (
+                      <div className="px-3 py-2 flex gap-2">
+                        <Input
+                          value={customTitle}
+                          onChange={(e) => setCustomTitle(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && addCustomService()}
+                          placeholder="Service name…"
+                          className="h-8 text-foreground text-sm"
+                          autoFocus
+                        />
+                        <Button onClick={addCustomService} size="sm" className="h-8 px-3 shrink-0" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+                          Add
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
 
