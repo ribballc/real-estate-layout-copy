@@ -46,9 +46,10 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
         onMouseMove={handleMouseMove}
         className="process-card group relative rounded-3xl p-10 md:p-12 text-center overflow-hidden z-10 cursor-pointer"
         style={{
-          background: "hsl(0, 0%, 100%)",
-          border: "1px solid hsl(214, 20%, 90%)",
-          boxShadow: "0 4px 24px hsla(215, 25%, 12%, 0.06)",
+          background: "hsla(215, 50%, 12%, 0.6)",
+          border: "1px solid hsla(0, 0%, 100%, 0.08)",
+          backdropFilter: "blur(20px)",
+          boxShadow: "0 0 0 1px hsla(0, 0%, 100%, 0.02) inset, 0 20px 60px hsla(0, 0%, 0%, 0.3)",
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
@@ -57,7 +58,7 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0"
           style={{
             background:
-              "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(217, 91%, 60%, 0.05), transparent 40%)",
+              "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(217, 91%, 60%, 0.08), transparent 40%)",
           }}
         />
 
@@ -77,13 +78,12 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
             background: "hsla(217, 91%, 60%, 0.1)",
             border: "1px solid hsla(217, 91%, 60%, 0.3)",
             color: "hsl(217, 91%, 70%)",
-            boxShadow: "none",
           }}
         >
           <span className="relative z-10">{step.step}</span>
         </span>
 
-        {/* Icon container with float + pulse */}
+        {/* Icon container */}
         <div className="flex justify-center mb-7 relative z-10">
           <div
             className="process-icon-container w-[72px] h-[72px] rounded-2xl flex items-center justify-center transition-all duration-400"
@@ -97,10 +97,16 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           </div>
         </div>
 
-        <h3 className="text-[22px] font-semibold mb-3 relative z-10 transition-colors duration-300 text-foreground">
+        <h3
+          className="text-[22px] font-semibold mb-3 relative z-10 transition-colors duration-300"
+          style={{ color: "hsl(0, 0%, 100%)" }}
+        >
           {step.title}
         </h3>
-        <p className="text-[15px] leading-relaxed relative z-10 transition-colors duration-300 text-muted-foreground">
+        <p
+          className="text-[15px] leading-relaxed relative z-10 transition-colors duration-300"
+          style={{ color: "hsla(0, 0%, 100%, 0.6)" }}
+        >
           {step.description}
         </p>
       </div>
@@ -115,19 +121,46 @@ const HowItWorksSection = () => {
     <section
       className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
       style={{
-        background: "linear-gradient(180deg, hsl(0, 0%, 100%) 0%, hsl(210, 40%, 98%) 100%)",
+        background: "hsl(215, 50%, 8%)",
+        backgroundImage:
+          "radial-gradient(ellipse at 30% 20%, hsla(217, 91%, 60%, 0.06) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, hsla(213, 94%, 68%, 0.04) 0%, transparent 50%)",
       }}
     >
+      {/* Radial gradient mesh */}
+      <div
+        className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at 20% 30%, hsla(217, 91%, 60%, 0.08) 0%, transparent 40%), radial-gradient(ellipse at 80% 70%, hsla(213, 94%, 68%, 0.05) 0%, transparent 40%)",
+          animation: "meshMove 30s ease-in-out infinite",
+        }}
+      />
+
+      {/* Diagonal lines grid */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.015]"
+        style={{
+          backgroundImage:
+            "linear-gradient(45deg, hsla(0, 0%, 100%, 1) 1px, transparent 1px), linear-gradient(-45deg, hsla(0, 0%, 100%, 1) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
 
       <div className="max-w-[1400px] mx-auto relative z-10">
         <FadeIn>
           <div className="text-center mb-16 md:mb-20">
-             <h2
-              className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4 text-foreground"
+            <h2
+              className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
+              style={{
+                background: "linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsla(0, 0%, 100%, 0.85) 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
             >
               As easy as 1, 2, 3
             </h2>
-            <p className="text-lg md:text-xl text-muted-foreground">
+            <p className="text-lg md:text-xl" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
               Three steps. Zero headaches.
             </p>
           </div>
@@ -170,7 +203,6 @@ const HowItWorksSection = () => {
               <span className="relative z-10 flex items-center gap-2">
                 Get Started Free →
               </span>
-              {/* Shine sweep */}
               <span
                 className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"
                 style={{
@@ -179,7 +211,7 @@ const HowItWorksSection = () => {
                 }}
               />
             </button>
-            <p className="text-sm mt-4 text-muted-foreground">
+            <p className="text-sm mt-4" style={{ color: "hsla(0, 0%, 100%, 0.5)" }}>
               Free for 14 days · No credit card required
             </p>
           </div>
