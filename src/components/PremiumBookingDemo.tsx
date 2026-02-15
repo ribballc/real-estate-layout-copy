@@ -84,7 +84,7 @@ const PremiumBookingDemo = () => {
     >
       {/* Desktop layout - use a fixed-size container with internal scaling */}
       <div className="hidden md:block absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center" style={{ transform: 'scale(0.46)', transformOrigin: '55% center' }}>
+        <div className="absolute inset-0 flex items-center justify-center" style={{ transform: 'scale(0.55)', transformOrigin: '55% center' }}>
           {/* Customer Side */}
           <div className="flex items-center justify-end pr-4 shrink-0">
             <CustomerView scene={scene} sceneProgress={sceneProgress} elapsed={elapsed} />

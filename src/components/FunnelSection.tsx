@@ -26,7 +26,7 @@ const FunnelSection = () => {
     <section className="bg-card py-16 md:py-24 px-5 md:px-8">
       <div className="max-w-6xl mx-auto text-center">
         <FadeIn>
-          <h2 className="font-heading text-[28px] md:text-[48px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-3">
+          <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-3">
             What Changes
           </h2>
           <p className="text-base md:text-lg text-muted-foreground text-center max-w-[600px] mx-auto mb-12 md:mb-16">
