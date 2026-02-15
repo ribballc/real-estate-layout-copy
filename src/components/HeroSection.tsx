@@ -45,17 +45,17 @@ const HeroSection = () => {
       }} />
 
       {/* Main hero content area */}
-      <div className="relative z-10 px-5 md:px-8 lg:px-20 pt-6 md:pt-10">
+      <div className="relative z-10 px-5 md:px-8 lg:px-20 pt-4 md:pt-6">
         {/* Logo */}
         <div className="max-w-[1400px] mx-auto w-full" style={{
           opacity: 0,
           animation: 'heroFadeScale 0.5s ease-out 0s forwards',
         }}>
-          <img src={darkerLogo} alt="Darker" className="h-7" />
+          <img src={darkerLogo} alt="Darker" className="h-10 md:h-12" />
         </div>
 
         {/* Two-column grid */}
-        <div className="max-w-[1400px] mx-auto mt-8 md:mt-14 w-full grid grid-cols-1 lg:grid-cols-[42%_58%] gap-8 lg:gap-6 items-center min-h-[calc(100vh-120px)]">
+        <div className="max-w-[1400px] mx-auto mt-4 md:mt-8 w-full grid grid-cols-1 lg:grid-cols-[42%_58%] gap-8 lg:gap-6 items-center min-h-[calc(100vh-120px)]">
 
           {/* LEFT: Text column */}
           <div className="relative z-10 text-left">
