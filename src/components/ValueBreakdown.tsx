@@ -76,23 +76,76 @@ const ValueBreakdown = () => {
               </div>
             ))}
 
-            {/* Total */}
+            {/* Total bar — pricing comparison */}
             <div
-              className="flex items-center justify-between pt-6 mt-4"
-              style={{ borderTop: "2px solid hsl(214, 20%, 90%)" }}
+              className="rounded-[20px] p-8 md:p-10 pb-6 md:pb-8 mt-4"
+              style={{
+                background: "linear-gradient(135deg, hsla(217, 91%, 60%, 0.1) 0%, hsla(217, 91%, 60%, 0.05) 100%)",
+                border: "1px solid hsla(217, 91%, 60%, 0.2)",
+              }}
             >
-              <span
-                className="text-lg md:text-xl font-semibold"
-                style={{ color: "hsl(222, 47%, 11%)" }}
-              >
-                Total Value
-              </span>
-              <span
-                className="font-mono text-2xl md:text-3xl font-bold"
-                style={{ color: "hsl(217, 91%, 60%)" }}
-              >
-                $5,000+
-              </span>
+              <div className="flex flex-col md:flex-row items-center justify-center gap-5 md:gap-8 mb-6">
+                {/* Total Value side */}
+                <div className="flex flex-col items-center gap-2">
+                  <span
+                    className="text-[14px] font-semibold uppercase tracking-[1.2px]"
+                    style={{ color: "hsl(215, 16%, 55%)" }}
+                  >
+                    Total Value
+                  </span>
+                  <span
+                    className="font-mono text-4xl md:text-[40px] font-semibold line-through decoration-[3px]"
+                    style={{
+                      color: "hsl(215, 16%, 55%)",
+                      textDecorationColor: "hsl(0, 84%, 60%)",
+                      opacity: 0.7,
+                      letterSpacing: "-1px",
+                    }}
+                  >
+                    $5,000
+                  </span>
+                </div>
+
+                {/* Arrow */}
+                <span
+                  className="text-4xl md:text-[36px] font-bold md:rotate-0 rotate-90"
+                  style={{
+                    color: "hsl(217, 91%, 60%)",
+                    animation: "pulseArrow 2s ease-in-out infinite",
+                  }}
+                >
+                  →
+                </span>
+
+                {/* Free side */}
+                <div className="flex flex-col items-center gap-2">
+                  <span
+                    className="text-[14px] font-semibold uppercase tracking-[1.2px]"
+                    style={{ color: "hsl(215, 16%, 55%)" }}
+                  >
+                    Your Price Today
+                  </span>
+                  <span
+                    className="font-bold text-[48px] md:text-[56px] leading-none"
+                    style={{
+                      color: "hsl(160, 84%, 39%)",
+                      letterSpacing: "-2px",
+                      textShadow: "0 0 24px hsla(160, 84%, 39%, 0.3)",
+                    }}
+                  >
+                    FREE
+                  </span>
+                </div>
+              </div>
+
+              {/* Trial details */}
+              <div className="text-center pt-5" style={{ borderTop: "1px solid hsla(0, 0%, 100%, 0.1)" }}>
+                <p className="text-[15px] md:text-base leading-relaxed" style={{ color: "hsl(210, 40%, 96%)" }}>
+                  <strong className="font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>14-day free trial. Zero risk. No card needed.</strong>
+                  <br />
+                  <span style={{ color: "hsl(215, 16%, 47%)" }}>Then $74/month for hosting + automation.</span>
+                </p>
+              </div>
             </div>
           </div>
         </FadeIn>
