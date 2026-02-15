@@ -252,6 +252,15 @@ const CalendarManager = () => {
         </div>
       </div>
 
+      {/* Marketing CTA */}
+      <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-6 text-center">
+        <h3 className="text-white font-semibold text-lg mb-2">Need Help Getting Bookings?</h3>
+        <p className="text-white/40 text-sm mb-4">Let our team help you attract more customers and fill your calendar.</p>
+        <a href="mailto:marketing@darker.com?subject=Marketing Help" className="inline-flex items-center justify-center h-11 px-6 rounded-lg text-sm font-medium text-white transition-colors" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+          Contact Our Marketing Team
+        </a>
+      </div>
+
       {/* Add Booking Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">

@@ -29,11 +29,13 @@ const DashboardSidebar = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [businessName, setBusinessName] = useState<string>("");
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("logo_url").eq("user_id", user.id).single().then(({ data }) => {
+    supabase.from("profiles").select("logo_url, business_name").eq("user_id", user.id).single().then(({ data }) => {
       if (data?.logo_url) setLogoUrl(data.logo_url);
+      if (data?.business_name) setBusinessName(data.business_name);
     });
   }, [user]);
 
@@ -110,7 +112,7 @@ const DashboardSidebar = () => {
           <div className="px-5 py-4 border-t border-white/10">
             <div className="flex items-center gap-3">
               <img src={logoUrl} alt="Business" className="w-9 h-9 rounded-lg object-cover border border-white/10" />
-              <span className="text-white/40 text-xs">Your Business</span>
+              <span className="text-white/40 text-xs truncate">{businessName || "Your Business"}</span>
             </div>
           </div>
         )}
