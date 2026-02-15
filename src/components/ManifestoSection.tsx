@@ -45,57 +45,19 @@ const ManifestoSection = () => {
   return (
     <section
       className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
-      style={{
-        background: "linear-gradient(180deg, hsl(215, 50%, 10%) 0%, hsl(215, 50%, 10%) 100%)",
-      }}
+      style={{ background: "hsl(0, 0%, 100%)" }}
     >
-      {/* Animated dot grid */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: "radial-gradient(circle, hsla(213, 94%, 68%, 0.15) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-          opacity: 0.3,
-          animation: "gridMove 40s linear infinite",
-        }}
-      />
-
-      {/* Radial gradient mesh */}
-      <div
-        className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse at 20% 30%, hsla(217, 91%, 60%, 0.06) 0%, transparent 40%), radial-gradient(ellipse at 80% 70%, hsla(213, 94%, 68%, 0.04) 0%, transparent 40%)",
-          animation: "meshMove 30s ease-in-out infinite",
-        }}
-      />
-
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-30"
-        style={{
-          backgroundImage:
-            "linear-gradient(hsla(0, 0%, 100%, 0.02) 1px, transparent 1px), linear-gradient(90deg, hsla(0, 0%, 100%, 0.02) 1px, transparent 1px)",
-          backgroundSize: "50px 50px",
-        }}
-      />
-
       <div className="max-w-[1400px] mx-auto relative z-10">
         {/* Header */}
         <FadeIn>
           <div className="text-center mb-12 md:mb-16">
             <h2
               className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
-              style={{
-                background: "linear-gradient(135deg, hsl(0, 0%, 100%) 0%, hsla(0, 0%, 100%, 0.8) 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
+              style={{ color: "hsl(222, 47%, 11%)" }}
             >
               What's Included
             </h2>
-            <p className="text-lg md:text-xl" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
+            <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
               Everything done for you — ready in 48 hours.
             </p>
           </div>
@@ -106,7 +68,7 @@ const ManifestoSection = () => {
           <div className="flex justify-center gap-8 md:gap-12 mb-12 md:mb-16 relative">
             <div
               className="absolute bottom-0 left-0 right-0 h-px"
-              style={{ background: "hsla(0, 0%, 100%, 0.1)" }}
+              style={{ background: "hsl(214, 20%, 90%)" }}
             />
             {tabs.map((tab) => (
               <button
@@ -114,15 +76,14 @@ const ManifestoSection = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className="relative pb-4 text-sm md:text-base font-semibold transition-colors duration-300 min-h-[48px]"
                 style={{
-                  color: activeTab === tab.id ? "hsl(0, 0%, 100%)" : "hsla(0, 0%, 100%, 0.4)",
+                  color: activeTab === tab.id ? "hsl(217, 71%, 53%)" : "hsl(215, 16%, 47%)",
                 }}
               >
                 {tab.label}
                 <span
                   className="absolute bottom-0 left-0 right-0 h-[2px] transition-all duration-300"
                   style={{
-                    background: activeTab === tab.id ? "hsl(217, 91%, 60%)" : "transparent",
-                    boxShadow: activeTab === tab.id ? "0 0 8px hsla(217, 91%, 60%, 0.5)" : "none",
+                    background: activeTab === tab.id ? "hsl(217, 71%, 53%)" : "transparent",
                   }}
                 />
               </button>
@@ -135,15 +96,14 @@ const ManifestoSection = () => {
           <div
             className="rounded-3xl p-8 md:p-12"
             style={{
-              background: "hsla(215, 50%, 8%, 0.6)",
-              border: "1px solid hsla(0, 0%, 100%, 0.08)",
-              backdropFilter: "blur(20px)",
-              boxShadow: "0 0 0 1px hsla(0, 0%, 100%, 0.02) inset, 0 20px 60px hsla(0, 0%, 0%, 0.3)",
+              background: "hsl(0, 0%, 100%)",
+              border: "1px solid hsl(214, 20%, 90%)",
+              boxShadow: "0 4px 24px hsla(0, 0%, 0%, 0.06)",
             }}
           >
             <h3
               className="text-lg md:text-xl font-semibold text-center mb-10"
-              style={{ color: "hsl(0, 0%, 100%)" }}
+              style={{ color: "hsl(222, 47%, 11%)" }}
             >
               {active.headline}
             </h3>
@@ -151,7 +111,7 @@ const ManifestoSection = () => {
             <div
               className="h-px mb-10 mx-auto max-w-lg"
               style={{
-                background: "linear-gradient(90deg, transparent, hsla(217, 91%, 60%, 0.3), transparent)",
+                background: "linear-gradient(90deg, transparent, hsl(214, 20%, 90%), transparent)",
               }}
             />
 
@@ -163,13 +123,13 @@ const ManifestoSection = () => {
                     <div
                       className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1"
                       style={{
-                        background: "linear-gradient(135deg, hsla(217, 91%, 60%, 0.15) 0%, hsla(217, 91%, 70%, 0.1) 100%)",
-                        border: "1px solid hsla(217, 91%, 60%, 0.2)",
+                        background: "hsla(217, 71%, 53%, 0.08)",
+                        border: "1px solid hsla(217, 71%, 53%, 0.15)",
                       }}
                     >
-                      <Icon className="w-7 h-7" style={{ color: "hsl(217, 91%, 70%)" }} />
+                      <Icon className="w-7 h-7" style={{ color: "hsl(217, 71%, 53%)" }} />
                     </div>
-                    <h4 className="text-sm md:text-base font-semibold" style={{ color: "hsl(0, 0%, 100%)" }}>
+                    <h4 className="text-sm md:text-base font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>
                       {feat.title}
                     </h4>
                   </div>
