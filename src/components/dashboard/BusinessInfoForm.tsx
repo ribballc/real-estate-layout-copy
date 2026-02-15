@@ -7,8 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, X, Plus, Palette } from "lucide-react";
+import { Loader2, Upload, X, Plus, Palette, ChevronDown, Share2 } from "lucide-react";
 import HoursManager from "./HoursManager";
+import SocialMediaForm from "./SocialMediaForm";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const POPULAR_CITIES = [
   "Los Angeles, CA", "San Diego, CA", "Houston, TX", "Dallas, TX", "Austin, TX",
@@ -266,8 +268,29 @@ const BusinessInfoForm = () => {
         </Button>
       </div>
 
+      {/* Social Media section */}
+      <div id="social" className="mt-10 pt-8 border-t border-white/10">
+        <Collapsible>
+          <CollapsibleTrigger className="flex items-center justify-between w-full group">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                <Share2 className="w-4 h-4 text-accent" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-lg font-semibold text-white">Social Media</h3>
+                <p className="text-white/40 text-xs">Connect your social profiles</p>
+              </div>
+            </div>
+            <ChevronDown className="w-5 h-5 text-white/30 transition-transform group-data-[state=open]:rotate-180" />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="mt-6">
+            <SocialMediaForm embedded />
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+
       {/* Hours section */}
-      <div id="hours" className="mt-10 pt-8 border-t border-white/10">
+      <div id="hours" className="mt-10 pt-8 border-white/10">
         <HoursManager />
       </div>
     </div>

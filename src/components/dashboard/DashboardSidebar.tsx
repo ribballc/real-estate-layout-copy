@@ -17,7 +17,6 @@ const items = [
   { title: "Business Info", url: "/dashboard", icon: Building2 },
   { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
   { title: "Customers", url: "/dashboard/customers", icon: Users },
-  { title: "Social Media", url: "/dashboard/social", icon: Share2 },
   { title: "Services", url: "/dashboard/services", icon: Wrench },
   { title: "Photos", url: "/dashboard/photos", icon: Camera },
   { title: "Testimonials", url: "/dashboard/testimonials", icon: Star },
