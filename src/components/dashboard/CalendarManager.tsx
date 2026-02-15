@@ -12,6 +12,7 @@ import {
 import {
   Loader2, ChevronLeft, ChevronRight, Plus, Clock, User, Mail, Phone,
   DollarSign, FileText, X, Calendar as CalendarIcon, Ban, RefreshCw,
+  Trash2, ChevronDown, PhoneCall,
 } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isToday, isSameDay } from "date-fns";
 
@@ -52,6 +53,8 @@ const CalendarManager = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSyncModal, setShowSyncModal] = useState(false);
+  const [deleteBookingId, setDeleteBookingId] = useState<string | null>(null);
+  const [openStatusDropdown, setOpenStatusDropdown] = useState<string | null>(null);
   const [newBooking, setNewBooking] = useState({
     customer_name: "", customer_email: "", customer_phone: "",
     service_title: "", service_price: 0, booking_date: "",
@@ -142,6 +145,19 @@ const CalendarManager = () => {
   const updateStatus = async (id: string, status: string) => {
     await supabase.from("bookings").update({ status }).eq("id", id);
     setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
+    setOpenStatusDropdown(null);
+  };
+
+  const handleDeleteBooking = async () => {
+    if (!deleteBookingId) return;
+    const { error } = await supabase.from("bookings").delete().eq("id", deleteBookingId);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      setBookings(prev => prev.filter(b => b.id !== deleteBookingId));
+      toast({ title: "Booking deleted" });
+    }
+    setDeleteBookingId(null);
   };
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
@@ -266,9 +282,30 @@ const CalendarManager = () => {
                     <div key={b.id} className="rounded-lg border border-white/10 bg-white/[0.03] p-3.5 space-y-2 hover:border-white/20 transition-colors">
                       <div className="flex items-center justify-between">
                         <span className="text-white font-medium text-sm">{b.service_title || "Booking"}</span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full border ${statusColors[b.status] || statusColors.confirmed}`}>
-                          {b.status}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          {/* Status dropdown */}
+                          <div className="relative">
+                            <button
+                              onClick={() => setOpenStatusDropdown(openStatusDropdown === b.id ? null : b.id)}
+                              className={`text-[10px] px-2 py-0.5 rounded-full border flex items-center gap-1 ${statusColors[b.status] || statusColors.confirmed}`}
+                            >
+                              {b.status} <ChevronDown className="w-2.5 h-2.5" />
+                            </button>
+                            {openStatusDropdown === b.id && (
+                              <div className="absolute right-0 top-full mt-1 z-50 rounded-lg border border-white/10 bg-[hsl(215,50%,12%)] p-1 min-w-[110px] shadow-xl">
+                                {["confirmed", "pending", "completed", "cancelled"].filter(s => s !== b.status).map(s => (
+                                  <button key={s} onClick={() => updateStatus(b.id, s)} className={`w-full text-left text-[11px] px-2.5 py-1.5 rounded-md transition-colors hover:bg-white/10 ${statusColors[s]}`}>
+                                    {s}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          {/* Delete button */}
+                          <button onClick={() => setDeleteBookingId(b.id)} className="text-white/20 hover:text-red-400 transition-colors">
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                       <div className="space-y-1.5 text-xs">
                         <div className="flex items-center gap-2 text-white/50"><User className="w-3 h-3" /> {b.customer_name}</div>
@@ -278,12 +315,18 @@ const CalendarManager = () => {
                         {b.service_price > 0 && <div className="flex items-center gap-2 text-white/50"><DollarSign className="w-3 h-3" /> ${b.service_price}</div>}
                         {b.notes && <div className="flex items-start gap-2 text-white/50"><FileText className="w-3 h-3 mt-0.5" /> {b.notes}</div>}
                       </div>
-                      <div className="flex gap-1.5 pt-1">
-                        {["confirmed", "completed", "cancelled"].filter(s => s !== b.status).map(s => (
-                          <button key={s} onClick={() => updateStatus(b.id, s)} className={`text-[10px] px-2 py-1 rounded-md border transition-colors ${statusColors[s]}`}>
-                            {s}
-                          </button>
-                        ))}
+                      {/* Contact buttons */}
+                      <div className="flex gap-2 pt-1">
+                        {b.customer_phone && (
+                          <a href={`tel:${b.customer_phone}`} className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/25 transition-colors">
+                            <PhoneCall className="w-3 h-3" /> Call
+                          </a>
+                        )}
+                        {b.customer_email && (
+                          <a href={`mailto:${b.customer_email}`} className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/20 hover:bg-blue-500/25 transition-colors">
+                            <Mail className="w-3 h-3" /> Email
+                          </a>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -377,6 +420,21 @@ const CalendarManager = () => {
           </div>
         </div>
       )}
+      {/* Delete Booking Confirmation */}
+      <AlertDialog open={!!deleteBookingId} onOpenChange={(open) => !open && setDeleteBookingId(null)}>
+        <AlertDialogContent className="bg-[hsl(215,50%,12%)] border-white/10 text-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Delete Booking</AlertDialogTitle>
+            <AlertDialogDescription className="text-white/50">
+              Are you sure you want to delete this booking? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-white/5 border-white/10 text-white hover:bg-white/10">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteBooking} className="bg-red-500 hover:bg-red-600 text-white">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
