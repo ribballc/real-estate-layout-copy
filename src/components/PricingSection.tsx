@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Check, ChevronRight, ChevronDown, ChevronUp, Sparkles, Zap } from "lucide-react";
+import { Check, ChevronRight, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const plan = {
-  name: "Creator",
-  subtitle: "For full-time detailers scaling to the max",
+  name: "Pro Plan",
+  subtitle: "One Plan, One Price — Everything You Need",
   monthlyPrice: 79,
   annualPrice: 54,
   features: [
@@ -39,18 +39,14 @@ const PricingSection = () => {
   return (
     <section
       id="pricing"
-      className="relative py-16 md:py-24 px-5 md:px-8 overflow-hidden"
-      style={{ background: "hsl(0, 0%, 100%)" }}
+      className="relative py-16 md:py-24 px-5 md:px-8 overflow-hidden bg-background"
     >
       <div className="max-w-6xl mx-auto relative z-10">
         <FadeIn>
-          <h2
-            className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3"
-            style={{ color: "hsl(222, 47%, 11%)" }}
-          >
+          <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3 text-foreground">
             Simple Pricing
           </h2>
-          <p className="text-base md:text-lg text-center max-w-2xl mx-auto mb-10" style={{ color: "hsl(215, 16%, 47%)" }}>
+          <p className="text-base md:text-lg text-center max-w-2xl mx-auto mb-10 text-muted-foreground">
             Everything you need in one plan. Cancel anytime.
           </p>
         </FadeIn>
@@ -63,8 +59,8 @@ const PricingSection = () => {
             className="relative w-14 h-7 rounded-full transition-all duration-300"
             style={{
               background: annual
-                ? 'linear-gradient(135deg, hsl(217,91%,60%), hsl(271,91%,60%))'
-                : 'hsl(214,20%,85%)',
+                ? 'hsl(var(--accent))'
+                : 'hsl(var(--border))',
               boxShadow: annual ? '0 0 16px hsla(217,91%,60%,0.4)' : 'none',
             }}
             aria-label="Toggle annual billing"
@@ -75,10 +71,7 @@ const PricingSection = () => {
           </button>
           <span className={`text-sm font-semibold transition-colors ${annual ? 'text-foreground' : 'text-muted-foreground'}`}>Annual</span>
           {annual && (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full text-white" style={{
-              background: 'linear-gradient(135deg, hsl(340,82%,52%), hsl(350,90%,55%))',
-              boxShadow: '0 0 12px hsla(340,82%,52%,0.4)',
-            }}>
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
               {savingsPercent}% OFF
             </span>
           )}
@@ -87,29 +80,21 @@ const PricingSection = () => {
         {/* Pricing Card */}
         <div className="max-w-md mx-auto">
           <FadeIn>
-            {/* Outer glow wrapper */}
+            {/* Outer glow wrapper - static brand blue glow */}
             <div className="relative rounded-3xl p-[2px]" style={{
-              background: 'linear-gradient(135deg, hsl(340,82%,52%), hsl(271,91%,60%), hsl(217,91%,60%), hsl(160,84%,39%))',
-              boxShadow: '0 0 40px hsla(340,82%,52%,0.2), 0 0 80px hsla(271,91%,60%,0.15), 0 20px 60px rgba(0,0,0,0.1)',
-              animation: 'pricingGlowRotate 6s linear infinite',
+              background: 'linear-gradient(135deg, hsl(217,91%,60%), hsl(213,94%,68%), hsl(217,91%,60%))',
+              boxShadow: '0 0 30px hsla(217,91%,60%,0.25), 0 0 60px hsla(213,94%,68%,0.15), 0 20px 60px hsla(215,50%,10%,0.2)',
             }}>
               {/* Inner card */}
               <div className="rounded-[22px] overflow-hidden" style={{
-                background: 'linear-gradient(180deg, hsl(260,20%,12%) 0%, hsl(240,15%,8%) 100%)',
+                background: 'linear-gradient(180deg, hsl(215,50%,10%) 0%, hsl(217,33%,8%) 100%)',
               }}>
                 {/* Top badges bar */}
                 <div className="flex items-center gap-2 px-6 pt-5 pb-0">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full" style={{
-                    background: 'linear-gradient(135deg, hsl(45,100%,50%), hsl(35,100%,45%))',
-                    color: 'hsl(0,0%,5%)',
-                  }}>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full bg-accent text-accent-foreground">
                     <Sparkles className="w-3 h-3" /> BEST VALUE
                   </span>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full border" style={{
-                    borderColor: 'hsla(340,82%,52%,0.5)',
-                    color: 'hsl(340,82%,60%)',
-                    background: 'hsla(340,82%,52%,0.1)',
-                  }}>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full border border-accent/50 text-accent bg-accent/10">
                     LIMITED OFFER
                   </span>
                 </div>
@@ -118,17 +103,8 @@ const PricingSection = () => {
                 <div className="px-6 pt-5">
                   <div className="flex items-center gap-3 mb-1">
                     <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
-                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-full" style={{
-                      background: 'hsla(340,82%,52%,0.15)',
-                      color: 'hsl(340,82%,60%)',
-                      border: '1px solid hsla(340,82%,52%,0.3)',
-                    }}>
-                      ✕ LIMITED OFFER
-                    </span>
                     {annual && (
-                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-full text-white" style={{
-                        background: 'linear-gradient(135deg, hsl(340,82%,52%), hsl(350,90%,50%))',
-                      }}>
+                      <span className="text-[11px] font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
                         {savingsPercent}% OFF
                       </span>
                     )}
@@ -140,14 +116,12 @@ const PricingSection = () => {
                 <div className="px-6 pt-5 pb-2">
                   <div className="flex items-baseline gap-3">
                     {annual && (
-                      <span className="text-2xl font-semibold line-through decoration-2" style={{
-                        color: 'hsla(0,0%,100%,0.35)',
-                        textDecorationColor: 'hsl(340,82%,52%)',
+                      <span className="text-2xl font-semibold line-through decoration-2 text-white/35" style={{
+                        textDecorationColor: 'hsl(217,91%,60%)',
                       }}>${oldPrice}</span>
                     )}
-                    <span className="font-mono text-[56px] font-bold tabular-nums leading-none" style={{
-                      color: 'hsl(160,84%,55%)',
-                      textShadow: '0 0 20px hsla(160,84%,39%,0.4)',
+                    <span className="font-mono text-[56px] font-bold tabular-nums leading-none text-accent" style={{
+                      textShadow: '0 0 20px hsla(217,91%,60%,0.4)',
                     }}>${price}</span>
                     <span className="text-lg text-white/50">/month</span>
                   </div>
@@ -158,11 +132,7 @@ const PricingSection = () => {
 
                 {/* Savings callout */}
                 {annual && (
-                  <div className="mx-6 mt-3 rounded-xl py-2.5 text-center text-sm font-semibold" style={{
-                    background: 'linear-gradient(135deg, hsla(160,84%,39%,0.15), hsla(160,84%,39%,0.08))',
-                    border: '1px solid hsla(160,84%,39%,0.25)',
-                    color: 'hsl(160,84%,55%)',
-                  }}>
+                  <div className="mx-6 mt-3 rounded-xl py-2.5 text-center text-sm font-semibold border border-accent/25 text-accent bg-accent/10">
                     ✓ Save ${savingsAmount} compared to monthly
                   </div>
                 )}
@@ -171,18 +141,16 @@ const PricingSection = () => {
                 <div className="px-6 pt-5">
                   <button
                     onClick={openFunnel}
-                    className="w-full rounded-xl font-bold py-4 min-h-[52px] inline-flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-base"
+                    className="w-full rounded-xl font-bold py-4 min-h-[52px] inline-flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-base bg-accent text-accent-foreground"
                     style={{
-                      background: 'linear-gradient(135deg, hsl(340,82%,52%), hsl(350,90%,50%))',
-                      color: 'white',
-                      boxShadow: '0 4px 20px hsla(340,82%,52%,0.4), 0 0 40px hsla(340,82%,52%,0.15)',
+                      boxShadow: '0 4px 20px hsla(217,91%,60%,0.4), 0 0 40px hsla(217,91%,60%,0.15)',
                     }}
                   >
-                    Activate My System
+                    Get Started Free
                     <ChevronRight className="w-4 h-4" />
                   </button>
                   <div className="text-[13px] text-center mt-3 text-white/40">
-                    14-day free trial · Setup in 48 hours
+                    14-day free trial · Setup in 5 mins
                   </div>
                 </div>
 
@@ -191,11 +159,8 @@ const PricingSection = () => {
                   <ul className="space-y-3">
                     {(showAllFeatures ? plan.features : plan.features.slice(0, 5)).map((feature) => (
                       <li key={feature} className="flex items-start gap-2.5 text-[15px]">
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{
-                          background: 'hsla(160,84%,39%,0.15)',
-                          border: '1px solid hsla(160,84%,39%,0.3)',
-                        }}>
-                          <Check className="w-3 h-3" style={{ color: 'hsl(160,84%,55%)' }} />
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-accent/15 border border-accent/30">
+                          <Check className="w-3 h-3 text-accent" />
                         </div>
                         <span className="text-white/80">{feature}</span>
                       </li>
@@ -205,8 +170,7 @@ const PricingSection = () => {
                   {plan.features.length > 5 && (
                     <button
                       onClick={() => setShowAllFeatures(!showAllFeatures)}
-                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium transition-colors"
-                      style={{ color: 'hsl(217,91%,60%)' }}
+                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium transition-colors text-accent"
                     >
                       {showAllFeatures ? (
                         <>View less <ChevronUp className="w-4 h-4" /></>
@@ -216,7 +180,7 @@ const PricingSection = () => {
                     </button>
                   )}
 
-                  <div className="mt-5 pt-4 text-xs text-white/30" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div className="mt-5 pt-4 text-xs text-white/30 border-t border-white/[0.08]">
                     {plan.bottomFeature}
                   </div>
                 </div>
@@ -226,7 +190,7 @@ const PricingSection = () => {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-sm" style={{ color: "hsl(215, 16%, 47%)" }}>
+          <p className="text-sm text-muted-foreground">
             14-day free trial. No credit card required. Cancel in 2 clicks.
           </p>
         </div>
