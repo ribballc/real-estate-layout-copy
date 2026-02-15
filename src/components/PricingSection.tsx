@@ -14,7 +14,7 @@ const plan = {
     "Automated SMS reminders",
     "$50-100 deposit collection",
     "Mobile-optimized (built for phones)",
-    "Route optimization (save 45-90 min/day)",
+    "Custom services & add-ons",
     "Unlimited client database",
     "Automated review requests",
     "Email & SMS marketing suite",
