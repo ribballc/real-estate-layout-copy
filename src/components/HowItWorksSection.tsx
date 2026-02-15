@@ -1,33 +1,34 @@
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 import { ChevronRight } from "lucide-react";
-import stepFormImg from "@/assets/step-form.png";
-import stepBuildImg from "@/assets/step-build.png";
-import stepAutopilotImg from "@/assets/step-autopilot.png";
+import Lottie from "lottie-react";
+
+const lottieFiles = [
+  "/lottie/form-filling.json",
+  "/lottie/website-build.json",
+  "/lottie/calendar.json",
+];
 
 const steps = [
   {
     step: 1,
-    image: stepFormImg,
     title: "Tell Us About Your Shop",
     description: "Name, services, hours, location. Takes 60 seconds.",
   },
   {
     step: 2,
-    image: stepBuildImg,
     title: "We Build Everything",
     description: "Custom website + booking system with SMS reminders and deposits. Done for you automatically.",
   },
   {
     step: 3,
-    image: stepAutopilotImg,
     title: "Bookings on Autopilot",
     description: "Customers find you, book online, pay deposits, and get reminders. You detail.",
   },
 ];
 
-const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) => {
+const ProcessCard = ({ step, index, animationData }: { step: typeof steps[0]; index: number; animationData: any }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -73,17 +74,15 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           <span className="relative z-10">{step.step}</span>
         </span>
 
-        {/* Animated image */}
+        {/* Animated Lottie */}
         <div className="flex justify-center mb-7 relative z-10">
-          <img
-            src={step.image}
-            alt={step.title}
-            className="w-[72px] h-[72px] object-contain transition-transform duration-300 group-hover:scale-110"
-            style={{
-              animation: "floatIcon 3s ease-in-out infinite",
-              animationDelay: `${index * 0.4}s`,
-            }}
-          />
+          <div className="w-[90px] h-[90px] transition-transform duration-300 group-hover:scale-110">
+            {animationData ? (
+              <Lottie animationData={animationData} loop autoplay style={{ width: 90, height: 90 }} />
+            ) : (
+              <div className="w-[90px] h-[90px] rounded-2xl bg-blue-50 animate-pulse" />
+            )}
+          </div>
         </div>
 
         <h3
@@ -98,13 +97,6 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
         >
           {step.description}
         </p>
-
-        <style>{`
-          @keyframes floatIcon {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-          }
-        `}</style>
       </div>
     </FadeIn>
   );
@@ -112,6 +104,22 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
 
 const HowItWorksSection = () => {
   const { openFunnel } = useSurveyFunnel();
+  const [animations, setAnimations] = useState<any[]>([null, null, null]);
+
+  useEffect(() => {
+    lottieFiles.forEach((url, i) => {
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          setAnimations(prev => {
+            const next = [...prev];
+            next[i] = data;
+            return next;
+          });
+        })
+        .catch(() => {});
+    });
+  }, []);
 
   return (
     <section
@@ -151,7 +159,7 @@ const HowItWorksSection = () => {
           />
 
           {steps.map((step, i) => (
-            <ProcessCard key={step.step} step={step} index={i} />
+            <ProcessCard key={step.step} step={step} index={i} animationData={animations[i]} />
           ))}
         </div>
 
