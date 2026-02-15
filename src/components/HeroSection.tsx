@@ -2,8 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import darkerLogo from "@/assets/darker-logo.png";
 import { ChevronRight, Store, ChevronDown, Zap, Shield } from "lucide-react";
 import { lazy, Suspense } from "react";
-const MountRevenue = lazy(() => import("@/components/MountRevenue"));
-import PremiumBookingDemo from "@/components/PremiumBookingDemo";
+const PhoneDashboard = lazy(() => import("@/components/PhoneDashboard"));
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const HeroSection = () => {
@@ -224,8 +223,8 @@ const HeroSection = () => {
               clipPath: 'inset(0)',
             }}
           >
-            <Suspense fallback={<div className="w-full aspect-square max-w-[600px] mx-auto" />}>
-              <MountRevenue />
+            <Suspense fallback={<div className="w-full aspect-[360/700] max-w-[360px] mx-auto" />}>
+              <PhoneDashboard />
             </Suspense>
           </div>
         </div>
@@ -248,8 +247,10 @@ const HeroSection = () => {
           animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
         }}
       >
-        <div className="w-full max-w-[500px] mx-auto min-h-[400px]">
-          <PremiumBookingDemo />
+        <div className="w-full max-w-[360px] mx-auto">
+          <Suspense fallback={<div className="w-full aspect-[360/700]" />}>
+            <PhoneDashboard />
+          </Suspense>
         </div>
       </div>
 
