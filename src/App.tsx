@@ -3,11 +3,24 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Book from "./pages/Book";
 import BookVehicle from "./pages/BookVehicle";
 import BookAddOns from "./pages/BookAddOns";
 import BookBooking from "./pages/BookBooking";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import DashboardLayout from "./components/dashboard/DashboardLayout";
+import BusinessInfoForm from "./components/dashboard/BusinessInfoForm";
+import SocialMediaForm from "./components/dashboard/SocialMediaForm";
+import ServicesManager from "./components/dashboard/ServicesManager";
+import AddOnsManager from "./components/dashboard/AddOnsManager";
+import HoursManager from "./components/dashboard/HoursManager";
+import PhotosManager from "./components/dashboard/PhotosManager";
+import TestimonialsManager from "./components/dashboard/TestimonialsManager";
+import AccountSettings from "./components/dashboard/AccountSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -18,15 +31,29 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/book" element={<Book />} />
-          <Route path="/book/vehicle" element={<BookVehicle />} />
-          <Route path="/book/add-ons" element={<BookAddOns />} />
-          <Route path="/book/booking" element={<BookBooking />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/book" element={<Book />} />
+            <Route path="/book/vehicle" element={<BookVehicle />} />
+            <Route path="/book/add-ons" element={<BookAddOns />} />
+            <Route path="/book/booking" element={<BookBooking />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+              <Route index element={<BusinessInfoForm />} />
+              <Route path="social" element={<SocialMediaForm />} />
+              <Route path="services" element={<ServicesManager />} />
+              <Route path="add-ons" element={<AddOnsManager />} />
+              <Route path="hours" element={<HoursManager />} />
+              <Route path="photos" element={<PhotosManager />} />
+              <Route path="testimonials" element={<TestimonialsManager />} />
+              <Route path="account" element={<AccountSettings />} />
+            </Route>
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
