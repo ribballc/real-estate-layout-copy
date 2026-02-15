@@ -54,7 +54,7 @@ const HeroSection = () => {
         </div>
 
         {/* Two-column grid */}
-        <div className="max-w-[1400px] mx-auto mt-8 md:mt-14 w-full grid grid-cols-1 lg:grid-cols-[45%_55%] gap-10 lg:gap-20 items-center min-h-[calc(100vh-120px)]">
+        <div className="max-w-[1400px] mx-auto mt-8 md:mt-14 w-full grid grid-cols-1 lg:grid-cols-[45%_55%] gap-10 lg:gap-12 items-center min-h-[calc(100vh-120px)]">
 
           {/* LEFT: Text column */}
           <div className="relative z-10 text-left">
@@ -184,15 +184,14 @@ const HeroSection = () => {
 
           {/* RIGHT: Animation column (Desktop only) */}
           <div
-            className="hidden lg:flex relative z-[1] items-center justify-center min-h-[500px]"
+            className="hidden lg:block relative z-[1]"
             style={{
               opacity: 0,
               animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
+              clipPath: 'inset(0)',
             }}
           >
-            <div className="w-full max-w-[600px]">
-              <PremiumBookingDemo />
-            </div>
+            <PremiumBookingDemo />
           </div>
         </div>
 
