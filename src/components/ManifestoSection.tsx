@@ -51,12 +51,24 @@ const ManifestoSection = () => {
           "radial-gradient(circle at 20% 50%, hsla(217, 91%, 60%, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 80%, hsla(217, 91%, 70%, 0.03) 0%, transparent 50%)",
       }}
     >
-      {/* Animated bg gradient */}
+      {/* Animated dot grid */}
       <div
-        className="absolute inset-0 pointer-events-none animate-pulse-slow"
+        className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse at 50% 0%, hsla(217, 91%, 60%, 0.08) 0%, transparent 50%)",
-          opacity: 0.6,
+          backgroundImage: "radial-gradient(circle, hsla(213, 94%, 68%, 0.15) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+          opacity: 0.3,
+          animation: "gridMove 40s linear infinite",
+        }}
+      />
+
+      {/* Radial gradient mesh */}
+      <div
+        className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at 20% 30%, hsla(217, 91%, 60%, 0.06) 0%, transparent 40%), radial-gradient(ellipse at 80% 70%, hsla(213, 94%, 68%, 0.04) 0%, transparent 40%)",
+          animation: "meshMove 30s ease-in-out infinite",
         }}
       />
 
@@ -94,7 +106,6 @@ const ManifestoSection = () => {
         {/* Underline Tabs */}
         <FadeIn delay={100}>
           <div className="flex justify-center gap-8 md:gap-12 mb-12 md:mb-16 relative">
-            {/* Bottom border line */}
             <div
               className="absolute bottom-0 left-0 right-0 h-px"
               style={{ background: "hsla(0, 0%, 100%, 0.1)" }}
@@ -109,16 +120,11 @@ const ManifestoSection = () => {
                 }}
               >
                 {tab.label}
-                {/* Active underline */}
                 <span
                   className="absolute bottom-0 left-0 right-0 h-[2px] transition-all duration-300"
                   style={{
-                    background: activeTab === tab.id
-                      ? "hsl(217, 91%, 60%)"
-                      : "transparent",
-                    boxShadow: activeTab === tab.id
-                      ? "0 0 8px hsla(217, 91%, 60%, 0.5)"
-                      : "none",
+                    background: activeTab === tab.id ? "hsl(217, 91%, 60%)" : "transparent",
+                    boxShadow: activeTab === tab.id ? "0 0 8px hsla(217, 91%, 60%, 0.5)" : "none",
                   }}
                 />
               </button>
@@ -137,7 +143,6 @@ const ManifestoSection = () => {
               boxShadow: "0 0 0 1px hsla(0, 0%, 100%, 0.02) inset, 0 20px 60px hsla(0, 0%, 0%, 0.3)",
             }}
           >
-            {/* One-line headline */}
             <h3
               className="text-lg md:text-xl font-semibold text-center mb-10"
               style={{ color: "hsl(0, 0%, 100%)" }}
@@ -145,7 +150,6 @@ const ManifestoSection = () => {
               {active.headline}
             </h3>
 
-            {/* Divider */}
             <div
               className="h-px mb-10 mx-auto max-w-lg"
               style={{
@@ -153,7 +157,6 @@ const ManifestoSection = () => {
               }}
             />
 
-            {/* 4 Feature icons - 2x2 on mobile, 4 cols on desktop */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
               {active.features.map((feat) => {
                 const Icon = feat.icon;

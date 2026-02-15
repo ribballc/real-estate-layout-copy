@@ -33,13 +33,47 @@ const HeroSection = () => {
     <section className="relative overflow-hidden" style={{
       background: 'linear-gradient(180deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)'
     }}>
-      {/* Subtle mesh glow */}
-      <div className="absolute inset-0" style={{
-        background: 'radial-gradient(ellipse 80% 60% at 30% 20%, hsla(217, 91%, 60%, 0.06), transparent)',
-      }} />
+      {/* Glow Orbs */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 500, height: 500, top: "-15%", left: "-10%",
+          background: "radial-gradient(circle, hsla(217, 91%, 60%, 0.4), transparent)",
+          filter: "blur(80px)", opacity: 0.15,
+          animation: "orbFloat1 25s ease-in-out infinite",
+        }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 600, height: 600, bottom: "-20%", right: "-10%",
+          background: "radial-gradient(circle, hsla(213, 94%, 68%, 0.3), transparent)",
+          filter: "blur(80px)", opacity: 0.12,
+          animation: "orbFloat2 30s ease-in-out infinite 5s",
+        }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 300, height: 300, top: "40%", left: "60%",
+          background: "radial-gradient(circle, hsla(217, 91%, 60%, 0.25), transparent)",
+          filter: "blur(80px)", opacity: 0.08,
+          animation: "orbFloat3 35s ease-in-out infinite 10s",
+        }}
+      />
+
+      {/* Diagonal lines grid */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.015]"
+        style={{
+          backgroundImage:
+            "linear-gradient(45deg, hsla(0, 0%, 100%, 1) 1px, transparent 1px), linear-gradient(-45deg, hsla(0, 0%, 100%, 1) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }}
+      />
 
       {/* Dot grid */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
         backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(0 0% 100%) 1px, transparent 0)',
         backgroundSize: '50px 50px',
       }} />
@@ -204,7 +238,7 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Mobile animation section - completely separate from text */}
+      {/* Mobile animation section */}
       <div
         className="block lg:hidden relative z-[1] w-full px-5 pb-16 pt-8"
         style={{

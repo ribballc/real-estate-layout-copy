@@ -26,6 +26,37 @@ const RoiCalculator = () => {
           "radial-gradient(circle at 20% 30%, hsla(217, 91%, 60%, 0.06) 0%, transparent 50%), radial-gradient(circle at 80% 70%, hsla(217, 91%, 70%, 0.06) 0%, transparent 50%)",
       }}
     >
+      {/* Animated dot grid */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(circle, hsla(213, 94%, 68%, 0.15) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+          opacity: 0.25,
+          animation: "gridMove 40s linear infinite",
+        }}
+      />
+
+      {/* Glow orbs behind calculator */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 450, height: 450, top: "10%", left: "5%",
+          background: "radial-gradient(circle, hsla(217, 91%, 60%, 0.35), transparent)",
+          filter: "blur(80px)", opacity: 0.1,
+          animation: "orbFloat1 25s ease-in-out infinite",
+        }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: 400, height: 400, bottom: "5%", right: "10%",
+          background: "radial-gradient(circle, hsla(213, 94%, 68%, 0.3), transparent)",
+          filter: "blur(80px)", opacity: 0.08,
+          animation: "orbFloat2 30s ease-in-out infinite 5s",
+        }}
+      />
+
       <div className="max-w-[1200px] mx-auto relative z-10">
         <FadeIn>
           <div className="text-center mb-12 md:mb-16">
@@ -133,7 +164,7 @@ const RoiCalculator = () => {
                 </div>
               </div>
 
-              {/* Yearly - featured */}
+              {/* Yearly */}
               <div
                 className="rounded-2xl p-8 relative overflow-hidden"
                 style={{
