@@ -50,6 +50,30 @@ const CUSTOMER_FIELDS = [
   { key: "total_bookings", label: "Total Bookings" },
 ];
 
+const ImportDropdown = ({ onCsv, onGmb }: { onCsv: () => void; onGmb: () => void }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="text-sm text-accent underline underline-offset-2 hover:text-accent/80 transition-colors whitespace-nowrap flex items-center gap-1"
+      >
+        Import <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-1 z-50 rounded-lg border border-white/10 bg-[hsl(215,50%,12%)] p-1 min-w-[160px] shadow-xl">
+          <button onClick={() => { onCsv(); setOpen(false); }} className="w-full text-left text-sm px-3 py-2 rounded-md text-white/70 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2">
+            <Upload className="w-3.5 h-3.5" /> Import CSV
+          </button>
+          <button onClick={() => { onGmb(); setOpen(false); }} className="w-full text-left text-sm px-3 py-2 rounded-md text-white/70 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2">
+            <Building2 className="w-3.5 h-3.5" /> Import GMB
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const CustomersManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -196,12 +220,7 @@ const CustomersManager = () => {
             <option value="all">All Status</option>
             {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[hsl(215,50%,10%)]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
           </select>
-          <button onClick={() => setShowCsvImport(true)} className="text-sm text-accent underline underline-offset-2 hover:text-accent/80 transition-colors whitespace-nowrap">
-            Import CSV
-          </button>
-          <button onClick={() => setShowGmbImport(true)} className="text-sm text-accent underline underline-offset-2 hover:text-accent/80 transition-colors whitespace-nowrap">
-            Import GMB
-          </button>
+          <ImportDropdown onCsv={() => setShowCsvImport(true)} onGmb={() => setShowGmbImport(true)} />
           <Button onClick={() => { resetForm(); setShowAdd(true); }} size="sm" className="gap-2 h-10 px-4" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
             <Plus className="w-4 h-4" /> Add
           </Button>

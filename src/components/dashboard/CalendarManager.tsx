@@ -36,11 +36,36 @@ interface BlockedDay {
   reason: string;
 }
 
-const statusColors: Record<string, string> = {
+// Gentle pastel-tinted colors for status-coded booking cards
+const statusCardColors: Record<string, string> = {
+  confirmed: "bg-emerald-500/10 border-emerald-500/25",
+  pending: "bg-amber-500/10 border-amber-500/25",
+  cancelled: "bg-red-500/10 border-red-500/25",
+  completed: "bg-blue-500/10 border-blue-500/25",
+};
+
+const statusBadgeColors: Record<string, string> = {
   confirmed: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   pending: "bg-amber-500/20 text-amber-400 border-amber-500/30",
   cancelled: "bg-red-500/20 text-red-400 border-red-500/30",
-  completed: "bg-accent/20 text-accent border-accent/30",
+  completed: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+};
+
+// Dot colors for calendar grid
+const statusDotColors: Record<string, string> = {
+  confirmed: "bg-emerald-400",
+  pending: "bg-amber-400",
+  cancelled: "bg-red-400",
+  completed: "bg-blue-400",
+};
+
+const formatTimeShort = (time: string) => {
+  // Remove seconds: "10:00:00" -> "10:00", then format to 12h
+  const [h, m] = time.split(":");
+  const hour = parseInt(h);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  const h12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  return `${h12}:${m} ${ampm}`;
 };
 
 const CalendarManager = () => {
@@ -160,6 +185,14 @@ const CalendarManager = () => {
     setDeleteBookingId(null);
   };
 
+  // Close status dropdown when clicking outside
+  useEffect(() => {
+    if (!openStatusDropdown) return;
+    const handler = () => setOpenStatusDropdown(null);
+    window.addEventListener("click", handler);
+    return () => window.removeEventListener("click", handler);
+  }, [openStatusDropdown]);
+
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
 
   return (
@@ -169,17 +202,17 @@ const CalendarManager = () => {
           <h2 className="text-2xl font-bold text-white">Calendar</h2>
           <p className="text-white/40 text-sm mt-1">View and manage your bookings</p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={() => setShowSyncModal(true)} size="sm" variant="outline" className="gap-2 border-white/10 text-foreground hover:bg-white/5">
-            <RefreshCw className="w-4 h-4" /> Sync Google Calendar
-          </Button>
+        <div className="flex items-center gap-3">
+          <button onClick={() => setShowSyncModal(true)} className="text-sm text-accent underline underline-offset-2 hover:text-accent/80 transition-colors whitespace-nowrap flex items-center gap-1.5">
+            <RefreshCw className="w-3.5 h-3.5" /> Sync Google Calendar
+          </button>
           <Button onClick={() => { setShowAddModal(true); setNewBooking(prev => ({ ...prev, booking_date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd") })); }} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
             <Plus className="w-4 h-4" /> Add Booking
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
         {/* Calendar grid */}
         <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4 md:p-5">
           <div className="flex items-center justify-between mb-5">
@@ -189,6 +222,16 @@ const CalendarManager = () => {
             <h3 className="text-white font-semibold">{format(currentMonth, "MMMM yyyy")}</h3>
             <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
               <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Today button */}
+          <div className="flex justify-center mb-3">
+            <button
+              onClick={() => { setCurrentMonth(new Date()); setSelectedDate(new Date()); }}
+              className="text-xs text-accent hover:text-accent/80 transition-colors underline underline-offset-2"
+            >
+              Today
             </button>
           </div>
 
@@ -227,8 +270,8 @@ const CalendarManager = () => {
                   )}
                   {dayBookings.length > 0 && !blocked && (
                     <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center">
-                      {dayBookings.slice(0, 3).map((_, i) => (
-                        <div key={i} className="w-1.5 h-1.5 rounded-full bg-accent" />
+                      {dayBookings.slice(0, 3).map((b, i) => (
+                        <div key={i} className={`w-1.5 h-1.5 rounded-full ${statusDotColors[b.status] || "bg-accent"}`} />
                       ))}
                       {dayBookings.length > 3 && (
                         <span className="text-[8px] text-accent">+{dayBookings.length - 3}</span>
@@ -250,6 +293,9 @@ const CalendarManager = () => {
                   <CalendarIcon className="w-4 h-4 text-accent" />
                   <h4 className="text-white font-semibold text-sm">{format(selectedDate, "EEEE, MMMM d, yyyy")}</h4>
                 </div>
+                {selectedBookings.length > 0 && (
+                  <span className="text-white/30 text-xs">{selectedBookings.length} booking{selectedBookings.length > 1 ? "s" : ""}</span>
+                )}
               </div>
 
               {/* Out of Work toggle */}
@@ -279,44 +325,48 @@ const CalendarManager = () => {
               ) : (
                 <div className="space-y-3">
                   {selectedBookings.map(b => (
-                    <div key={b.id} className="rounded-lg border border-white/10 bg-white/[0.03] p-3.5 space-y-2 hover:border-white/20 transition-colors">
-                      <div className="flex items-center justify-between">
-                        <span className="text-white font-medium text-sm">{b.service_title || "Booking"}</span>
-                        <div className="flex items-center gap-2">
+                    <div key={b.id} className={`rounded-lg border p-3.5 space-y-2.5 transition-colors ${statusCardColors[b.status] || statusCardColors.confirmed}`}>
+                      {/* Header: Name - Time, status dropdown, X */}
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <span className="text-white font-semibold text-sm">
+                            {b.customer_name || "Booking"} — {formatTimeShort(b.booking_time)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
                           {/* Status dropdown */}
-                          <div className="relative">
+                          <div className="relative" onClick={e => e.stopPropagation()}>
                             <button
                               onClick={() => setOpenStatusDropdown(openStatusDropdown === b.id ? null : b.id)}
-                              className={`text-[10px] px-2 py-0.5 rounded-full border flex items-center gap-1 ${statusColors[b.status] || statusColors.confirmed}`}
+                              className={`text-[10px] px-2 py-0.5 rounded-full border flex items-center gap-1 ${statusBadgeColors[b.status] || statusBadgeColors.confirmed}`}
                             >
                               {b.status} <ChevronDown className="w-2.5 h-2.5" />
                             </button>
                             {openStatusDropdown === b.id && (
                               <div className="absolute right-0 top-full mt-1 z-50 rounded-lg border border-white/10 bg-[hsl(215,50%,12%)] p-1 min-w-[110px] shadow-xl">
                                 {["confirmed", "pending", "completed", "cancelled"].filter(s => s !== b.status).map(s => (
-                                  <button key={s} onClick={() => updateStatus(b.id, s)} className={`w-full text-left text-[11px] px-2.5 py-1.5 rounded-md transition-colors hover:bg-white/10 ${statusColors[s]}`}>
+                                  <button key={s} onClick={() => updateStatus(b.id, s)} className={`w-full text-left text-[11px] px-2.5 py-1.5 rounded-md transition-colors hover:bg-white/10 ${statusBadgeColors[s]}`}>
                                     {s}
                                   </button>
                                 ))}
                               </div>
                             )}
                           </div>
-                          {/* Delete button */}
                           <button onClick={() => setDeleteBookingId(b.id)} className="text-white/20 hover:text-red-400 transition-colors">
                             <X className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
-                      <div className="space-y-1.5 text-xs">
-                        <div className="flex items-center gap-2 text-white/50"><User className="w-3 h-3" /> {b.customer_name}</div>
-                        <div className="flex items-center gap-2 text-white/50"><Clock className="w-3 h-3" /> {b.booking_time} · {b.duration_minutes}min</div>
+                      {/* Details */}
+                      <div className="space-y-1 text-xs">
+                        <div className="flex items-center gap-2 text-white/50"><Clock className="w-3 h-3" /> {formatTimeShort(b.booking_time)} · {b.duration_minutes}min{b.service_title && <> · {b.service_title}</>}</div>
                         {b.customer_email && <div className="flex items-center gap-2 text-white/50"><Mail className="w-3 h-3" /> {b.customer_email}</div>}
                         {b.customer_phone && <div className="flex items-center gap-2 text-white/50"><Phone className="w-3 h-3" /> {b.customer_phone}</div>}
                         {b.service_price > 0 && <div className="flex items-center gap-2 text-white/50"><DollarSign className="w-3 h-3" /> ${b.service_price}</div>}
-                        {b.notes && <div className="flex items-start gap-2 text-white/50"><FileText className="w-3 h-3 mt-0.5" /> {b.notes}</div>}
+                        {b.notes && <div className="flex items-start gap-2 text-white/40"><FileText className="w-3 h-3 mt-0.5" /> {b.notes}</div>}
                       </div>
                       {/* Contact buttons */}
-                      <div className="flex gap-2 pt-1">
+                      <div className="flex gap-2 pt-0.5">
                         {b.customer_phone && (
                           <a href={`tel:${b.customer_phone}`} className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/25 transition-colors">
                             <PhoneCall className="w-3 h-3" /> Call
