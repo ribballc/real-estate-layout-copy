@@ -255,33 +255,6 @@
   50% { transform: scale(1.1); opacity: 0.8; }
 }
 
-/* Split-screen booking animation */
-@keyframes splitArrowPulse {
-  0%, 100% { transform: translateX(0) scale(1); }
-  50% { transform: translateX(8px) scale(1.1); }
-}
-
-@keyframes splitParticleFlow {
-  0% { transform: translateX(-60px); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translateX(60px); opacity: 0; }
-}
-
-@keyframes splitFloatReverse {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(12px); }
-}
-
-@keyframes splitShimmer {
-  0%, 100% { transform: translate(-25%, -25%); }
-  50% { transform: translate(25%, 25%); }
-}
-
-@keyframes splitBadgePulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
 /* Process section animations */
 @keyframes iconFloat {
   0%, 100% { transform: translateY(0); }
