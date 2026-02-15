@@ -2,8 +2,8 @@ import HeroSection from "@/components/HeroSection";
 import PublishersSection from "@/components/PublishersSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import WhySection from "@/components/WhySection";
-
 import ManifestoSection from "@/components/ManifestoSection";
+import RoiCalculator from "@/components/RoiCalculator";
 import TestimonialSection from "@/components/TestimonialSection";
 import PricingSection from "@/components/PricingSection";
 import FaqSection from "@/components/FaqSection";
@@ -12,6 +12,8 @@ import SurveyFunnelModal from "@/components/SurveyFunnelModal";
 import ScrollProgress from "@/components/ScrollProgress";
 import SocialProofNotification from "@/components/SocialProofNotification";
 import FloatingOrbs from "@/components/FloatingOrbs";
+import CustomCursor from "@/components/CustomCursor";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { SurveyFunnelProvider } from "@/components/SurveyFunnelContext";
 
 const Index = () => {
@@ -20,18 +22,20 @@ const Index = () => {
       <div className="min-h-screen relative">
         <FloatingOrbs />
         <ScrollProgress />
+        <CustomCursor />
         <HeroSection />
         <PublishersSection />
         <HowItWorksSection />
         <ManifestoSection />
         <WhySection />
-        
+        <RoiCalculator />
         <TestimonialSection />
         <PricingSection />
         <FaqSection />
         <CtaFooter />
         <SurveyFunnelModal />
         <SocialProofNotification />
+        <ExitIntentPopup />
       </div>
     </SurveyFunnelProvider>
   );
