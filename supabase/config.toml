@@ -2,3 +2,6 @@ project_id = "ibospodoxgumgmjymgtm"
 
 [functions.support-chat]
 verify_jwt = false
+
+[functions.scrape-price-list]
+verify_jwt = false
