@@ -128,22 +128,6 @@
   50% { transform: translateY(8px); opacity: 1; }
 }
 
-@keyframes heroPulseOnce {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
-}
-
-@keyframes ctaPulse {
-  0%, 100% { box-shadow: 0 8px 24px hsla(217, 91%, 60%, 0.35); }
-  50% { box-shadow: 0 8px 32px hsla(217, 91%, 60%, 0.55); }
-}
-
-@keyframes livePulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
 /* Advanced booking demo animations */
 
 @keyframes confettiParticle {
