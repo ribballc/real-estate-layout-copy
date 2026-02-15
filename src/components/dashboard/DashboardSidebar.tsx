@@ -1,12 +1,12 @@
 import {
-  Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings, LogOut,
+  Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings, LogOut, LayoutDashboard,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
-  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger,
+  SidebarMenu, SidebarMenuButton, SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 const items = [
@@ -31,13 +31,20 @@ const DashboardSidebar = () => {
 
   return (
     <Sidebar className="border-r border-white/10" style={{ background: "linear-gradient(180deg, hsl(215 50% 10%) 0%, hsl(217 33% 14%) 100%)" }}>
-      <div className="p-4 border-b border-white/10">
-        <h2 className="text-lg font-bold text-white tracking-tight">Velarrio</h2>
-        <p className="text-xs text-white/40">Dashboard</p>
+      <div className="p-5 border-b border-white/10">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-accent/15 flex items-center justify-center">
+            <LayoutDashboard className="w-4.5 h-4.5 text-accent" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold text-white tracking-tight">Velarrio</h2>
+            <p className="text-[11px] text-white/40 leading-none">Dashboard</p>
+          </div>
+        </div>
       </div>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-white/40 text-xs uppercase tracking-wider px-4">Manage</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-white/30 text-[10px] uppercase tracking-widest px-5 mt-2">Manage</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
@@ -46,10 +53,10 @@ const DashboardSidebar = () => {
                     <NavLink
                       to={item.url}
                       end={item.url === "/dashboard"}
-                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-white/60 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
-                      activeClassName="bg-accent/10 text-accent font-medium"
+                      className="flex items-center gap-3 px-5 py-2.5 text-sm text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all mx-2"
+                      activeClassName="bg-accent/10 text-accent font-medium shadow-[inset_0_0_0_1px_hsla(217,91%,60%,0.15)]"
                     >
-                      <item.icon className="w-4 h-4 shrink-0" />
+                      <item.icon className="w-[18px] h-[18px] shrink-0" />
                       <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>
@@ -62,7 +69,7 @@ const DashboardSidebar = () => {
       <div className="mt-auto p-4 border-t border-white/10">
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-white/40 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+          className="flex items-center gap-3 w-full px-5 py-2.5 text-sm text-white/30 hover:text-red-400 hover:bg-red-400/5 rounded-lg transition-colors"
         >
           <LogOut className="w-4 h-4" />
           <span>Sign Out</span>
