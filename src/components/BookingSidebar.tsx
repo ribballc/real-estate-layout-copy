@@ -1,4 +1,4 @@
-import { Mail, Phone, Clock, MapPin } from "lucide-react";
+import { Mail, Phone, Clock, MapPin, Sparkles } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 
 /* ═══════════════════════════════════════════════════════
@@ -23,12 +23,21 @@ export const businessInfo = {
   ],
 };
 
+const tickerServices = [
+  "Interior Detail",
+  "Exterior Detail",
+  "Full Detail",
+  "Ceramic Coating",
+  "Paint Correction",
+  "Window Tinting",
+];
+
 interface BookingSidebarProps {
   showMap?: boolean;
 }
 
 const BookingSidebar = ({ showMap = false }: BookingSidebarProps) => (
-  <aside className="w-full lg:w-[300px] flex-shrink-0">
+  <aside className="w-full lg:w-[300px] flex-shrink-0 order-2">
     <FadeIn>
       <div className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6">
         {/* Business name */}
@@ -36,11 +45,38 @@ const BookingSidebar = ({ showMap = false }: BookingSidebarProps) => (
           <h2 className="font-heading text-lg font-bold text-foreground">{businessInfo.name}</h2>
         </div>
 
-        {/* Tagline card */}
-        <div className="rounded-xl p-4 border border-accent/20" style={{ background: "hsla(217, 91%, 60%, 0.06)" }}>
-          <p className="text-sm text-foreground leading-relaxed">
-            👋 {businessInfo.tagline}
-          </p>
+        {/* Animated glowing ticker */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-accent">
+            <Sparkles className="w-3.5 h-3.5" />
+            Our Services
+          </div>
+          <div
+            className="relative overflow-hidden rounded-xl border border-accent/30 py-3 px-4"
+            style={{
+              background: "linear-gradient(135deg, hsla(217, 91%, 60%, 0.08) 0%, hsla(217, 91%, 60%, 0.02) 100%)",
+              boxShadow: "0 0 20px hsla(217, 91%, 60%, 0.12), inset 0 0 20px hsla(217, 91%, 60%, 0.04)",
+            }}
+          >
+            {/* Glow pulse overlay */}
+            <div
+              className="absolute inset-0 rounded-xl animate-pulse opacity-40"
+              style={{
+                background: "linear-gradient(90deg, transparent 0%, hsla(217, 91%, 60%, 0.1) 50%, transparent 100%)",
+              }}
+            />
+            {/* Scrolling ticker */}
+            <div className="relative overflow-hidden">
+              <div className="flex animate-[ticker_12s_linear_infinite] whitespace-nowrap gap-6">
+                {[...tickerServices, ...tickerServices].map((s, i) => (
+                  <span key={i} className="text-sm font-medium text-foreground flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0" />
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Email */}

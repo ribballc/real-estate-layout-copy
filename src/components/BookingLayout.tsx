@@ -27,12 +27,12 @@ const BookingLayout = ({ activeStep, showMap = false, children }: BookingLayoutP
 
     <div className="max-w-7xl mx-auto px-5 md:px-8 py-8 md:py-12">
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-        <BookingSidebar showMap={showMap} />
-
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 order-1">
           <BookingBreadcrumb activeStep={activeStep} />
           {children}
         </main>
+
+        <BookingSidebar showMap={showMap} />
       </div>
     </div>
   </div>
