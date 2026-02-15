@@ -1,5 +1,5 @@
 import {
-  Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings, LogOut, LayoutDashboard,
+  Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings, LogOut,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,6 +8,7 @@ import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import darkerLogo from "@/assets/darker-logo.png";
 
 const items = [
   { title: "Business Info", url: "/dashboard", icon: Building2 },
@@ -33,13 +34,7 @@ const DashboardSidebar = () => {
     <Sidebar className="border-r border-white/10" style={{ background: "linear-gradient(180deg, hsl(215 50% 10%) 0%, hsl(217 33% 14%) 100%)" }}>
       <div className="p-5 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-accent/15 flex items-center justify-center">
-            <LayoutDashboard className="w-4.5 h-4.5 text-accent" />
-          </div>
-          <div>
-            <h2 className="text-base font-bold text-white tracking-tight">Velarrio</h2>
-            <p className="text-[11px] text-white/40 leading-none">Dashboard</p>
-          </div>
+          <img src={darkerLogo} alt="Darker" className="h-8" />
         </div>
       </div>
       <SidebarContent>

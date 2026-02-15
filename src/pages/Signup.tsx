@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
+import darkerLogo from "@/assets/darker-logo.png";
 
 const Signup = () => {
   const { toast } = useToast();
@@ -51,7 +52,7 @@ const Signup = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <Link to="/" className="inline-block">
-              <h1 className="text-3xl font-bold tracking-tight text-white">Velarrio</h1>
+              <img src={darkerLogo} alt="Darker" className="h-10 mx-auto" />
             </Link>
             <p className="mt-2 text-sm text-white/50">Create your account and start managing bookings</p>
           </div>
