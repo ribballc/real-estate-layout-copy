@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Paintbrush, Smartphone, Search, Layout, Clock, CreditCard, Route, Users, MessageSquare, RefreshCw, BarChart3, Star } from "lucide-react";
+import { Paintbrush, Smartphone, Search, Globe, Clock, CreditCard, Wrench, Users, MessageSquare, RefreshCw, BarChart3, Star } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 
 const tabs = [
@@ -8,10 +8,10 @@ const tabs = [
     label: "Website",
     headline: "Professional website that converts — built for you in 48 hours.",
     features: [
-      { icon: Paintbrush, title: "Custom Design" },
-      { icon: Smartphone, title: "Mobile-First" },
-      { icon: Search, title: "SEO Optimized" },
-      { icon: Layout, title: "Service Pages" },
+      { icon: Paintbrush, title: "Custom Design", desc: "Tailored to your brand with premium layouts" },
+      { icon: Smartphone, title: "Mobile-First", desc: "Optimized for every screen size and device" },
+      { icon: Search, title: "SEO Optimized", desc: "Rank higher on Google and get found locally" },
+      { icon: Globe, title: "Free Domain", desc: "Your own .com domain included at no extra cost" },
     ],
   },
   {
@@ -19,10 +19,10 @@ const tabs = [
     label: "Booking",
     headline: "Customers book, pay deposits, and confirm — 24/7 on autopilot.",
     features: [
-      { icon: Clock, title: "Live Calendar" },
-      { icon: CreditCard, title: "Deposit Collection" },
-      { icon: Route, title: "Route Optimization" },
-      { icon: Users, title: "Client Management" },
+      { icon: Clock, title: "Live Calendar", desc: "Real-time availability synced to your schedule" },
+      { icon: CreditCard, title: "Deposit Collection", desc: "Collect payments upfront to reduce no-shows" },
+      { icon: Wrench, title: "Custom Services", desc: "List your exact packages, pricing, and add-ons" },
+      { icon: Users, title: "Client Management", desc: "Track every customer, booking, and vehicle" },
     ],
   },
   {
@@ -30,10 +30,10 @@ const tabs = [
     label: "Automations",
     headline: "SMS reminders, follow-ups, and reviews — all handled automatically.",
     features: [
-      { icon: MessageSquare, title: "SMS Reminders" },
-      { icon: RefreshCw, title: "Auto Follow-Ups" },
-      { icon: Star, title: "Review Requests" },
-      { icon: BarChart3, title: "Smart Analytics" },
+      { icon: MessageSquare, title: "SMS Reminders", desc: "Automated texts so clients never forget" },
+      { icon: RefreshCw, title: "Auto Follow-Ups", desc: "Re-engage past customers on autopilot" },
+      { icon: Star, title: "Review Requests", desc: "Get more 5-star reviews without asking" },
+      { icon: BarChart3, title: "Smart Analytics", desc: "Track revenue, bookings, and growth trends" },
     ],
   },
 ];
@@ -74,7 +74,7 @@ const ManifestoSection = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className="relative pb-4 text-sm md:text-base font-semibold transition-colors duration-300 min-h-[48px]"
+                className="relative pb-4 text-base md:text-lg font-semibold transition-colors duration-300 min-h-[48px]"
                 style={{
                   color: activeTab === tab.id ? "hsl(217, 71%, 53%)" : "hsl(215, 16%, 47%)",
                 }}
@@ -129,9 +129,12 @@ const ManifestoSection = () => {
                     >
                       <Icon className="w-7 h-7" style={{ color: "hsl(217, 71%, 53%)" }} />
                     </div>
-                    <h4 className="text-sm md:text-base font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>
+                    <h4 className="text-sm md:text-base font-semibold mb-1.5" style={{ color: "hsl(222, 47%, 11%)" }}>
                       {feat.title}
                     </h4>
+                    <p className="text-[12px] md:text-[13px] leading-relaxed" style={{ color: "hsl(215, 16%, 47%)" }}>
+                      {feat.desc}
+                    </p>
                   </div>
                 );
               })}
