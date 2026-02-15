@@ -6,6 +6,14 @@ const CtaFooter = () => {
 
   return (
     <>
+      {/* Urgency banner */}
+      <div className="py-3 px-5 text-center text-sm font-semibold" style={{
+        background: 'linear-gradient(90deg, hsl(217 91% 55%), hsl(217 91% 45%))',
+        color: 'hsl(0 0% 100%)',
+      }}>
+        🚀 FEBRUARY SPECIAL: First Booking Guarantee — Get bookings in 30 days or full refund
+      </div>
+
       {/* CTA */}
       <section className="py-20 md:py-28 px-5 md:px-8 text-center" style={{
         background: 'linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)',
@@ -16,7 +24,7 @@ const CtaFooter = () => {
               Ready to Stop Missing Jobs?
             </h2>
             <p className="text-base md:text-lg leading-relaxed text-primary-foreground/70 max-w-[600px] mx-auto mb-8">
-              Your website can be live in 48 hours. Join 200+ detailers already using Velarrio.
+              Your website can be live in 5 minutes. Join 200+ detailers already using Velarrio.
             </p>
           </FadeIn>
           <button
@@ -30,7 +38,7 @@ const CtaFooter = () => {
             Build My Website Free →
           </button>
           <p className="text-sm mt-4 text-primary-foreground/50">
-            Free for 14 days · Takes 60 seconds to start
+            Free for 14 days · Live in 5 minutes · Cancel anytime
           </p>
         </div>
       </section>
