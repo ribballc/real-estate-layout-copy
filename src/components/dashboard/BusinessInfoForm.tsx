@@ -10,14 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, X, Plus, Palette, ChevronDown, Share2 } from "lucide-react";
 import HoursManager from "./HoursManager";
 import SocialMediaForm from "./SocialMediaForm";
+import AddressAutocomplete from "./AddressAutocomplete";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-
-const POPULAR_CITIES = [
-  "Los Angeles, CA", "San Diego, CA", "Houston, TX", "Dallas, TX", "Austin, TX",
-  "Phoenix, AZ", "Las Vegas, NV", "Miami, FL", "Orlando, FL", "Tampa, FL",
-  "Atlanta, GA", "Charlotte, NC", "Denver, CO", "Seattle, WA", "Portland, OR",
-  "Chicago, IL", "New York, NY", "Philadelphia, PA", "San Francisco, CA", "Sacramento, CA",
-];
 
 const ACCENT_COLORS = [
   "#3B82F6", "#6366F1", "#8B5CF6", "#EC4899", "#EF4444",
@@ -36,9 +30,9 @@ const BusinessInfoForm = () => {
   const [noBusinessAddress, setNoBusinessAddress] = useState(false);
   const [serviceAreas, setServiceAreas] = useState<string[]>([]);
   const [citySearch, setCitySearch] = useState("");
-  const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [primaryColor, setPrimaryColor] = useState("#3B82F6");
   const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
+  const [showLogoUpsell, setShowLogoUpsell] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -98,14 +92,9 @@ const BusinessInfoForm = () => {
     const trimmed = city.trim();
     if (trimmed && !serviceAreas.includes(trimmed)) setServiceAreas([...serviceAreas, trimmed]);
     setCitySearch("");
-    setShowCityDropdown(false);
   };
 
   const removeServiceArea = (city: string) => setServiceAreas(serviceAreas.filter(a => a !== city));
-
-  const filteredCities = POPULAR_CITIES.filter(
-    c => c.toLowerCase().includes(citySearch.toLowerCase()) && !serviceAreas.includes(c)
-  );
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
 
@@ -156,6 +145,12 @@ const BusinessInfoForm = () => {
               <Upload className="w-4 h-4" /> Upload Logo
               <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
             </label>
+            <button
+              onClick={() => setShowLogoUpsell(true)}
+              className="text-sm text-accent underline underline-offset-2 hover:text-accent/80 transition-colors"
+            >
+              Need A Logo?
+            </button>
           </div>
         </div>
 
@@ -227,15 +222,22 @@ const BusinessInfoForm = () => {
 
         {!noBusinessAddress && (
           <>
-            {field("Address", "address", "text", "123 Main St, City, State")}
-            {field("Map Query", "map_query", "text", "Your+Business+Name+City")}
+            <div className="space-y-2">
+              <Label className="text-white/70 text-sm">Address</Label>
+              <AddressAutocomplete
+                value={form.address}
+                onChange={(val) => setForm({ ...form, address: val, map_query: val.replace(/\s+/g, "+") })}
+                placeholder="Start typing your address..."
+                type="address"
+              />
+            </div>
           </>
         )}
 
         {/* Service Areas */}
         <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
           <Label className="text-white text-sm font-medium">Service Areas</Label>
-          <p className="text-white/40 text-xs">Select all cities you serve</p>
+          <p className="text-white/40 text-xs">Search and select all cities you serve</p>
           {serviceAreas.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {serviceAreas.map(area => (
@@ -246,21 +248,19 @@ const BusinessInfoForm = () => {
               ))}
             </div>
           )}
-          <div className="relative">
-            <Input value={citySearch} onChange={(e) => { setCitySearch(e.target.value); setShowCityDropdown(true); }} onFocus={() => setShowCityDropdown(true)} placeholder="Search or type a city..." className="h-11 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent" />
-            {showCityDropdown && citySearch && (
-              <div className="absolute z-50 top-full mt-1 w-full rounded-xl border border-white/10 bg-[hsl(215,50%,10%)] shadow-xl max-h-48 overflow-y-auto">
-                {filteredCities.map(city => (
-                  <button key={city} onClick={() => addServiceArea(city)} className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:bg-white/10 hover:text-white transition-colors">{city}</button>
-                ))}
-                {!filteredCities.some(c => c.toLowerCase() === citySearch.toLowerCase().trim()) && citySearch.trim() && (
-                  <button onClick={() => addServiceArea(citySearch)} className="w-full text-left px-4 py-2.5 text-sm text-accent hover:bg-white/10 transition-colors flex items-center gap-2">
-                    <Plus className="w-3 h-3" /> Add "{citySearch.trim()}"
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
+          <AddressAutocomplete
+            value={citySearch}
+            onChange={(val) => {
+              setCitySearch(val);
+              // Auto-add if user selects from dropdown (the value will be a formatted city)
+              if (val.includes(",") && val.length > 3) {
+                addServiceArea(val);
+                setCitySearch("");
+              }
+            }}
+            placeholder="Search for a city or town..."
+            type="city"
+          />
         </div>
 
         <Button onClick={handleSave} disabled={saving} className="h-11" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
@@ -293,6 +293,52 @@ const BusinessInfoForm = () => {
       <div id="hours" className="mt-10 pt-8 border-white/10">
         <HoursManager />
       </div>
+
+      {/* Logo Upsell Modal */}
+      {showLogoUpsell && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-white/10 p-6 space-y-5" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+            <div className="flex items-center justify-between">
+              <h3 className="text-white font-semibold text-lg">Custom Logo Design</h3>
+              <button onClick={() => setShowLogoUpsell(false)} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="space-y-3">
+              <p className="text-white/60 text-sm leading-relaxed">
+                Get a professionally designed logo that matches your brand. Our designers will create a custom logo tailored to your detailing business.
+              </p>
+              <div className="rounded-xl bg-accent/10 border border-accent/20 p-4 text-center">
+                <div className="text-3xl font-bold text-white mb-1">$50</div>
+                <div className="text-accent text-sm font-medium">One-time payment</div>
+              </div>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li className="flex items-center gap-2">
+                  <span className="text-accent">✓</span> Custom designed for your brand
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-accent">✓</span> Multiple format files (PNG, SVG)
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-accent">✓</span> 2 revision rounds included
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-accent">✓</span> Delivered in 3-5 business days
+                </li>
+              </ul>
+            </div>
+            <Button
+              className="w-full h-12 text-base font-semibold"
+              style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}
+              onClick={() => {
+                toast({ title: "Coming soon!", description: "Logo design service will be available shortly." });
+                setShowLogoUpsell(false);
+              }}
+            >
+              Get My Custom Logo — $50
+            </Button>
+            <p className="text-white/30 text-xs text-center">Secure payment · Satisfaction guaranteed</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
