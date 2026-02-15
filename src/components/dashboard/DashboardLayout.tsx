@@ -87,6 +87,18 @@ const DashboardLayout = () => {
 
             <Outlet />
           </div>
+
+          {/* Dashboard Footer */}
+          <footer className="border-t border-white/10 px-4 md:px-8 py-4 shrink-0">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-white/30 text-xs">
+              <span>© {new Date().getFullYear()} Darker. All rights reserved.</span>
+              <div className="flex items-center gap-4">
+                <a href="mailto:support@darker.com" className="hover:text-white/60 transition-colors">Support</a>
+                <a href="mailto:support@darker.com?subject=Feedback" className="hover:text-white/60 transition-colors">Feedback</a>
+              </div>
+            </div>
+          </footer>
+
           <SupportChatbot />
         </main>
       </div>
