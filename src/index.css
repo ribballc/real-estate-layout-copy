@@ -449,3 +449,4 @@
 @keyframes jarvisBarFill { 0% { transform: translateX(-100%); } 100% { transform: translateX(0); } }
 @keyframes jarvisDotPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 hsla(160,84%,39%,0.7); } 50% { transform: scale(1.2); box-shadow: 0 0 0 8px hsla(160,84%,39%,0); } }
 @keyframes jarvisBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes phone-float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
