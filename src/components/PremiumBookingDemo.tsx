@@ -93,18 +93,7 @@ const PremiumBookingDemo = () => {
         <OwnerDashboard ownerPhase={ownerPhase} elapsed={elapsed} revenue={displayRevenue} />
       </div>
 
-      <style>{`
-        @keyframes floatPhone { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        @keyframes floatDash { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
-        @keyframes slideInPhone { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes popNotif { from { transform: scale(0.8) translateY(-10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-        @keyframes fadeSlot { from { transform: translateX(-10px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes highlightPulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
-        @keyframes pulseArrowBounce { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
-        @keyframes pulseDot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
-        @keyframes lineGlow { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-        @keyframes dashFlow { to { stroke-dashoffset: -20; } }
-      `}</style>
+
     </div>
   );
 };
