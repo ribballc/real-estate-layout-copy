@@ -127,29 +127,3 @@
   0%, 100% { transform: translateY(0); opacity: 0.6; }
   50% { transform: translateY(8px); opacity: 1; }
 }
-
-/* Urgency pulse */
-@keyframes urgencyPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-}
-
-/* Live indicator pulse */
-@keyframes livePulse {
-  0%, 100% { opacity: 0.75; transform: scale(1); }
-  50% { opacity: 0.3; transform: scale(1.8); }
-}
-
-/* Particle burst variations */
-@keyframes particleBurst0 {
-  0% { opacity: 1; transform: translate(0, 0) scale(1); }
-  100% { opacity: 0; transform: translate(-40px, -60px) scale(0); }
-}
-@keyframes particleBurst1 {
-  0% { opacity: 1; transform: translate(0, 0) scale(1); }
-  100% { opacity: 0; transform: translate(50px, -50px) scale(0); }
-}
-@keyframes particleBurst2 {
-  0% { opacity: 1; transform: translate(0, 0) scale(1); }
-  100% { opacity: 0; transform: translate(30px, -70px) scale(0); }
-}
