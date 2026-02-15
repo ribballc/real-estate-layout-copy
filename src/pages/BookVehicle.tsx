@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Calendar, Car, Truck, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
@@ -7,6 +7,9 @@ import { vehicleYears, vehicleMakes, vehicleModels } from "@/data/vehicles";
 
 const BookVehicle = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const serviceId = searchParams.get("service") || "";
+  const serviceName = searchParams.get("name") || "";
   const [year, setYear] = useState("");
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
@@ -129,7 +132,7 @@ const BookVehicle = () => {
                 Back
               </button>
               <button
-                onClick={() => {/* next step placeholder */}}
+                onClick={() => navigate(`/book/options?service=${serviceId}&name=${encodeURIComponent(serviceName)}`)}
                 disabled={!canContinue}
                 className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold min-h-[44px] transition-all ${
                   canContinue
@@ -145,7 +148,7 @@ const BookVehicle = () => {
             {/* Can't find link */}
             <p className="text-sm text-muted-foreground pt-1">
               Can't find your vehicle?{" "}
-              <a href={`mailto:hello@velarrio.com`} className="text-accent hover:underline">
+              <a href="mailto:hello@darkerdigital.com" className="text-accent hover:underline">
                 Contact us
               </a>
             </p>

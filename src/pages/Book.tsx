@@ -47,8 +47,8 @@ const Book = () => {
 
   const handleSelect = (id: string) => {
     setSelectedService(id);
-    // Navigate to vehicle step after brief highlight
-    setTimeout(() => navigate("/book/vehicle"), 300);
+    const svc = services.find((s) => s.id === id);
+    setTimeout(() => navigate(`/book/vehicle?service=${id}&name=${encodeURIComponent(svc?.title || "")}`), 300);
   };
 
   return (

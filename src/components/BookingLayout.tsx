@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import BookingSidebar from "@/components/BookingSidebar";
 import BookingBreadcrumb from "@/components/BookingBreadcrumb";
+import darkerLogo from "@/assets/darker-logo.png";
 
 interface BookingLayoutProps {
   activeStep: number;
@@ -18,8 +19,8 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => (
       }}
     >
       <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center">
-        <a href="/" className="font-heading text-xl font-bold text-foreground tracking-tight">
-          velarrio
+        <a href="/">
+          <img src={darkerLogo} alt="Darker" className="h-8" />
         </a>
       </div>
     </header>

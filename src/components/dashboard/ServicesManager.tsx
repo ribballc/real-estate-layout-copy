@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Star, ChevronDown, X, Upload, ImageIcon } from "lucide-react";
+import { Loader2, Plus, Trash2, Star, ChevronDown, X, Upload, ImageIcon, Settings2 } from "lucide-react";
+import ServiceOptionsManager from "./ServiceOptionsManager";
 
 interface Service {
   id: string;
@@ -36,6 +37,8 @@ const ServicesManager = () => {
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
+  const [optionsServiceId, setOptionsServiceId] = useState<string | null>(null);
+  const [optionsServiceName, setOptionsServiceName] = useState("");
 
   const fetchServices = async () => {
     if (!user) return;
@@ -82,6 +85,19 @@ const ServicesManager = () => {
 
   const existingTitles = new Set(services.map(s => s.title.toLowerCase()));
   const availablePresets = PRESET_SERVICES.filter(p => !existingTitles.has(p.title.toLowerCase()));
+
+  if (optionsServiceId) {
+    const svc = services.find((s) => s.id === optionsServiceId);
+    return (
+      <div className="max-w-2xl">
+        <ServiceOptionsManager
+          serviceId={optionsServiceId}
+          serviceName={svc?.title || optionsServiceName}
+          onClose={() => setOptionsServiceId(null)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl">
@@ -175,7 +191,7 @@ const ServicesManager = () => {
                   placeholder="Description…"
                   className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent min-h-[60px]"
                 />
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                   <div className="flex items-center gap-2">
                     <Label className="text-white/50 text-xs">Price $</Label>
                     <Input
@@ -190,6 +206,12 @@ const ServicesManager = () => {
                     className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors ${service.popular ? "bg-accent/20 text-accent" : "bg-white/5 text-white/40 hover:text-white/60"}`}
                   >
                     <Star className="w-3 h-3" /> Popular
+                  </button>
+                  <button
+                    onClick={() => { setOptionsServiceId(service.id); setOptionsServiceName(service.title); }}
+                    className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors bg-white/5 text-white/40 hover:text-white/60"
+                  >
+                    <Settings2 className="w-3 h-3" /> Options
                   </button>
                 </div>
               </div>
