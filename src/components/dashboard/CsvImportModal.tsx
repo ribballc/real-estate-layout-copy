@@ -251,7 +251,7 @@ const CsvImportModal = ({ open, onClose, onImport, targetFields, title }: CsvImp
                 <p className="text-white font-medium">Import failed. Please check your CSV format.</p>
               </>
             )}
-            <Button onClick={reset} variant="outline" className="border-white/10 text-white/70 hover:text-white hover:bg-white/5">
+            <Button onClick={reset} variant="outline" className="border-white/10 text-foreground hover:bg-white/5">
               Close
             </Button>
           </div>
