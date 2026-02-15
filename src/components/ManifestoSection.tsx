@@ -27,10 +27,10 @@ const ManifestoSection = () => {
       <div className="relative z-10 max-w-6xl mx-auto">
         <FadeIn>
           <div className="text-center mb-12 md:mb-16">
-            <h2 className="font-heading text-[28px] md:text-[48px] font-bold tracking-[-0.015em] leading-[1.2] text-primary-foreground mb-3">
+            <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-primary-foreground mb-3">
               Built for Detailers Who
             </h2>
-            <p className="text-sky text-[28px] md:text-[48px] font-bold leading-[1.2] tracking-[-0.015em]">
+            <p className="text-sky text-[28px] md:text-[56px] lg:text-[72px] font-bold leading-[1.2] tracking-[-0.015em]">
               Take Their Craft Seriously
             </p>
           </div>

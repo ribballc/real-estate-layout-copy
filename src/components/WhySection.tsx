@@ -29,7 +29,7 @@ const WhySection = () => {
     <section className="py-16 md:py-24 px-5 md:px-8 bg-card">
       <div className="max-w-6xl mx-auto">
         <FadeIn>
-          <h2 className="font-heading text-[28px] md:text-[48px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-3">
+          <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-3">
             Built to Solve Your Problems
           </h2>
           <p className="text-base md:text-lg text-muted-foreground text-center max-w-xl mx-auto mb-12 md:mb-16">

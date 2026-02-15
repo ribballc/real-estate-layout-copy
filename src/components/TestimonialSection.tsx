@@ -10,7 +10,7 @@ const TestimonialSection = () => {
     }}>
       <div className="relative z-10 max-w-3xl mx-auto text-center">
         <FadeIn>
-          <h2 className="font-heading text-[28px] md:text-[48px] font-bold tracking-[-0.015em] leading-[1.2] text-primary-foreground text-center mb-8">
+          <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-primary-foreground text-center mb-8">
             Real Results
           </h2>
         </FadeIn>
