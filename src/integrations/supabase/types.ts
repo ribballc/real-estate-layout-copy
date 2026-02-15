@@ -132,6 +132,8 @@ export type Database = {
           map_query: string
           no_business_address: boolean | null
           phone: string
+          primary_color: string | null
+          secondary_color: string | null
           service_areas: string[] | null
           tagline: string
           tiktok: string
@@ -152,6 +154,8 @@ export type Database = {
           map_query?: string
           no_business_address?: boolean | null
           phone?: string
+          primary_color?: string | null
+          secondary_color?: string | null
           service_areas?: string[] | null
           tagline?: string
           tiktok?: string
@@ -172,6 +176,8 @@ export type Database = {
           map_query?: string
           no_business_address?: boolean | null
           phone?: string
+          primary_color?: string | null
+          secondary_color?: string | null
           service_areas?: string[] | null
           tagline?: string
           tiktok?: string
@@ -223,6 +229,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          photo_url: string | null
           rating: number
           updated_at: string
           user_id: string
@@ -232,6 +239,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          photo_url?: string | null
           rating?: number
           updated_at?: string
           user_id: string
@@ -241,6 +249,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          photo_url?: string | null
           rating?: number
           updated_at?: string
           user_id?: string
