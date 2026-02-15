@@ -77,34 +77,65 @@ const DashboardLayout = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full" style={{ background: bg }}>
+      <div className={`min-h-screen flex w-full ${isDark ? "" : "dashboard-light"}`} style={{ background: bg }}>
         <DashboardSidebar dashboardTheme={dashboardTheme} onToggleTheme={toggleTheme} />
         <main className="flex-1 flex flex-col min-w-0">
           {/* Header bar */}
-          <header className={`h-16 flex items-center gap-4 px-4 md:px-8 border-b ${borderColor} shrink-0`}>
-            <SidebarTrigger className={triggerClass} />
-            <div className="flex items-center gap-3 flex-1">
-              <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center">
-                <PageIcon className="w-4 h-4 text-accent" />
+          <header className={`flex flex-col shrink-0 border-b ${borderColor}`}>
+            <div className="h-14 flex items-center gap-3 px-4 md:px-8">
+              <SidebarTrigger className={triggerClass} />
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                  <PageIcon className="w-4 h-4 text-accent" />
+                </div>
+                <div className="min-w-0">
+                  <h1 className={`${textPrimary} font-semibold text-sm truncate`}>{page.title}</h1>
+                  <p className={`${textSecondary} text-xs hidden sm:block`}>{page.description}</p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <h1 className={`${textPrimary} font-semibold text-sm md:text-base truncate`}>{page.title}</h1>
-                <p className={`${textSecondary} text-xs hidden sm:block`}>{page.description}</p>
+              {/* Desktop search */}
+              <div className="relative hidden sm:block w-64">
+                <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${textMuted}`} />
+                <Input
+                  value={searchQuery}
+                  onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
+                  onFocus={() => setSearchOpen(true)}
+                  onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
+                  placeholder="Search anything..."
+                  className={`pl-10 h-9 text-sm ${inputBg} focus-visible:ring-accent`}
+                />
+                {searchOpen && searchResults.length > 0 && (
+                  <div className={`absolute top-full mt-1 left-0 right-0 rounded-lg border ${borderColor} ${isDark ? "bg-[hsl(215,50%,12%)]" : "bg-white"} shadow-xl z-50 overflow-hidden`}>
+                    {searchResults.map(r => (
+                      <button
+                        key={r.url}
+                        onMouseDown={() => { navigate(r.url); setSearchQuery(""); setSearchOpen(false); }}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm ${isDark ? "hover:bg-white/5 text-white/70" : "hover:bg-gray-50 text-gray-700"} transition-colors`}
+                      >
+                        <r.icon className="w-4 h-4 text-accent" />
+                        <div className="text-left">
+                          <span className="font-medium">{r.title}</span>
+                          <span className={`block text-xs ${textSecondary}`}>{r.description}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-            {/* Search */}
-            <div className="relative hidden sm:block w-64">
-              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${textMuted}`} />
+            {/* Mobile search */}
+            <div className="sm:hidden px-4 pb-3 relative">
+              <Search className={`absolute left-7 top-1/2 -translate-y-1/2 w-4 h-4 ${textMuted} z-10`} />
               <Input
                 value={searchQuery}
                 onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
                 onFocus={() => setSearchOpen(true)}
                 onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
                 placeholder="Search anything..."
-                className={`pl-10 h-9 text-sm ${inputBg} focus-visible:ring-accent`}
+                className={`pl-10 h-11 text-sm ${inputBg} focus-visible:ring-accent`}
               />
               {searchOpen && searchResults.length > 0 && (
-                <div className={`absolute top-full mt-1 left-0 right-0 rounded-lg border ${borderColor} ${isDark ? "bg-[hsl(215,50%,12%)]" : "bg-white"} shadow-xl z-50 overflow-hidden`}>
+                <div className={`absolute top-full mt-1 left-4 right-4 rounded-lg border ${borderColor} ${isDark ? "bg-[hsl(215,50%,12%)]" : "bg-white"} shadow-xl z-50 overflow-hidden`}>
                   {searchResults.map(r => (
                     <button
                       key={r.url}

@@ -212,3 +212,66 @@
 .animate-pulse-slow {
   animation: pulseSlow 8s ease-in-out infinite;
 }
+
+/* Dashboard light mode overrides */
+.dashboard-light .text-white {
+  color: hsl(215 25% 12%) !important;
+}
+.dashboard-light .text-white\/70 {
+  color: hsl(215 16% 37%) !important;
+}
+.dashboard-light .text-white\/60 {
+  color: hsl(215 16% 40%) !important;
+}
+.dashboard-light .text-white\/50 {
+  color: hsl(215 16% 47%) !important;
+}
+.dashboard-light .text-white\/40 {
+  color: hsl(215 16% 55%) !important;
+}
+.dashboard-light .text-white\/30 {
+  color: hsl(215 16% 65%) !important;
+}
+.dashboard-light .text-white\/10 {
+  color: hsl(215 16% 80%) !important;
+}
+.dashboard-light .bg-white\/5,
+.dashboard-light .bg-white\/\[0\.03\],
+.dashboard-light .bg-white\/\[0\.06\] {
+  background-color: hsl(0 0% 100%) !important;
+}
+.dashboard-light .bg-white\/10 {
+  background-color: hsl(214 20% 96%) !important;
+}
+.dashboard-light .border-white\/10 {
+  border-color: hsl(214 20% 88%) !important;
+}
+.dashboard-light .border-white\/20 {
+  border-color: hsl(214 20% 82%) !important;
+}
+.dashboard-light .hover\:bg-white\/5:hover,
+.dashboard-light .hover\:bg-white\/10:hover {
+  background-color: hsl(214 20% 96%) !important;
+}
+.dashboard-light .hover\:text-white:hover {
+  color: hsl(215 25% 12%) !important;
+}
+.dashboard-light .placeholder\:text-white\/30::placeholder {
+  color: hsl(215 16% 65%) !important;
+}
+.dashboard-light .bg-\[hsl\(215\2c 50\%\2c 10\%\)\],
+.dashboard-light .bg-\[hsl\(215\2c 50\%\2c 12\%\)\] {
+  background-color: hsl(0 0% 100%) !important;
+}
+.dashboard-light .ring-offset-\[hsl\(215\2c 50\%\2c 10\%\)\] {
+  --tw-ring-offset-color: hsl(0 0% 100%) !important;
+}
+.dashboard-light .hover\:bg-red-400\/5:hover {
+  background-color: hsl(0 84% 97%) !important;
+}
+.dashboard-light .hover\:bg-amber-400\/5:hover {
+  background-color: hsl(45 93% 97%) !important;
+}
+.dashboard-light .hover\:bg-accent\/5:hover {
+  background-color: hsl(217 91% 97%) !important;
+}
