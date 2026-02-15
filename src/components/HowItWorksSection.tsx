@@ -30,10 +30,10 @@ const HowItWorksSection = () => {
       <div className="max-w-6xl mx-auto">
         <FadeIn>
           <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-3">
-            Live in 48 Hours
+            Three Simple Steps
           </h2>
           <p className="text-base md:text-lg text-muted-foreground text-center max-w-xl mx-auto mb-12 md:mb-16 leading-relaxed">
-            Three steps. Zero headaches.
+            In under 5 minutes
           </p>
         </FadeIn>
 
