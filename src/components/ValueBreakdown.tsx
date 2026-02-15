@@ -143,7 +143,7 @@ const ValueBreakdown = () => {
                 <p className="text-[15px] md:text-base leading-relaxed" style={{ color: "hsl(210, 40%, 96%)" }}>
                   <strong className="font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>14-day free trial. Zero risk. No card needed.</strong>
                   <br />
-                  <span style={{ color: "hsl(215, 16%, 47%)" }}>Then $74/month for hosting + automation.</span>
+                  <span style={{ color: "hsl(215, 16%, 47%)" }}>Then $54/month for hosting + automation.</span>
                 </p>
               </div>
             </div>

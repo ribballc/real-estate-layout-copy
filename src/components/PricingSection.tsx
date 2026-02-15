@@ -6,8 +6,8 @@ import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 const plan = {
   name: "Pro",
   subtitle: "For full-time detailers doing 15-30 jobs/week",
-  monthlyPrice: 99,
-  annualPrice: 75,
+  monthlyPrice: 79,
+  annualPrice: 54,
   features: [
     "Done-for-you website in 48 hours",
     "24/7 smart booking calendar",
@@ -74,7 +74,7 @@ const PricingSection = () => {
                 color: annual ? "hsl(0, 0%, 100%)" : "hsl(215, 16%, 47%)",
               }}
             >
-              Annual (Save 28%)
+              Annual (Save 32%)
             </button>
           </div>
         </div>
