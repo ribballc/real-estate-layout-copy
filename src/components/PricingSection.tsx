@@ -4,7 +4,7 @@ import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
 const plan = {
-  name: "Pro Plan",
+  name: "The 'One' Plan",
   subtitle: "One Plan, One Price — Everything You Need",
   monthlyPrice: 79,
   annualPrice: 54,
