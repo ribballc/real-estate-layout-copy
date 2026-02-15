@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings, LogOut,
-  Bug, HelpCircle, CalendarDays, Users, Sun, Moon,
+  Bug, HelpCircle, CalendarDays, Users, Sun, Moon, LayoutDashboard,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,7 +14,8 @@ import {
 import darkerLogo from "@/assets/darker-logo.png";
 
 const items = [
-  { title: "Business Info", url: "/dashboard", icon: Building2 },
+  { title: "Home", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Business Info", url: "/dashboard/business", icon: Building2 },
   { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
   { title: "Customers", url: "/dashboard/customers", icon: Users },
   { title: "Services", url: "/dashboard/services", icon: Wrench },

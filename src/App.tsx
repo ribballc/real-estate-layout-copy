@@ -14,6 +14,7 @@ import BookBooking from "./pages/BookBooking";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
+import HomeDashboard from "./components/dashboard/HomeDashboard";
 import BusinessInfoForm from "./components/dashboard/BusinessInfoForm";
 import ServicesManager from "./components/dashboard/ServicesManager";
 import PhotosManager from "./components/dashboard/PhotosManager";
@@ -42,7 +43,8 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-              <Route index element={<BusinessInfoForm />} />
+              <Route index element={<HomeDashboard />} />
+              <Route path="business" element={<BusinessInfoForm />} />
               <Route path="calendar" element={<CalendarManager />} />
               <Route path="customers" element={<CustomersManager />} />
               <Route path="services" element={<ServicesManager />} />
