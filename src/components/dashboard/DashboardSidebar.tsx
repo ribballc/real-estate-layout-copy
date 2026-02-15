@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings, LogOut,
-  Bug, HelpCircle, CalendarDays,
+  Bug, HelpCircle, CalendarDays, Users, Sun, Moon,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,6 +16,7 @@ import darkerLogo from "@/assets/darker-logo.png";
 const items = [
   { title: "Business Info", url: "/dashboard", icon: Building2 },
   { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
+  { title: "Customers", url: "/dashboard/customers", icon: Users },
   { title: "Social Media", url: "/dashboard/social", icon: Share2 },
   { title: "Services", url: "/dashboard/services", icon: Wrench },
   { title: "Add-ons", url: "/dashboard/add-ons", icon: PuzzleIcon },
@@ -25,7 +26,12 @@ const items = [
   { title: "Account", url: "/dashboard/account", icon: Settings },
 ];
 
-const DashboardSidebar = () => {
+interface DashboardSidebarProps {
+  dashboardTheme?: "dark" | "light";
+  onToggleTheme?: () => void;
+}
+
+const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme }: DashboardSidebarProps) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -78,6 +84,17 @@ const DashboardSidebar = () => {
 
       {/* Bottom section */}
       <div className="mt-auto border-t border-white/10">
+        {/* Theme toggle */}
+        <div className="px-3 pt-3">
+          <button
+            onClick={onToggleTheme}
+            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-white/40 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+          >
+            {dashboardTheme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            <span>{dashboardTheme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+          </button>
+        </div>
+
         {/* Help links */}
         <div className="p-3 space-y-0.5">
           <a

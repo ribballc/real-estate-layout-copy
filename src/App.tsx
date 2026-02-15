@@ -22,6 +22,7 @@ import PhotosManager from "./components/dashboard/PhotosManager";
 import TestimonialsManager from "./components/dashboard/TestimonialsManager";
 import CalendarManager from "./components/dashboard/CalendarManager";
 import AccountSettings from "./components/dashboard/AccountSettings";
+import CustomersManager from "./components/dashboard/CustomersManager";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
               <Route index element={<BusinessInfoForm />} />
               <Route path="calendar" element={<CalendarManager />} />
+              <Route path="customers" element={<CustomersManager />} />
               <Route path="social" element={<SocialMediaForm />} />
               <Route path="services" element={<ServicesManager />} />
               <Route path="add-ons" element={<AddOnsManager />} />
