@@ -154,7 +154,7 @@ const CalendarManager = () => {
           <p className="text-white/40 text-sm mt-1">View and manage your bookings</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => setShowSyncModal(true)} size="sm" variant="outline" className="gap-2 border-white/10 text-white/70 hover:text-white hover:bg-white/5">
+          <Button onClick={() => setShowSyncModal(true)} size="sm" variant="outline" className="gap-2 border-white/10 text-foreground hover:bg-white/5">
             <RefreshCw className="w-4 h-4" /> Sync Google Calendar
           </Button>
           <Button onClick={() => { setShowAddModal(true); setNewBooking(prev => ({ ...prev, booking_date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd") })); }} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
