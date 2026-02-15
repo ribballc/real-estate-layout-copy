@@ -44,20 +44,20 @@ const ManifestoSection = () => {
 
   return (
     <section
-      className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
-      style={{ background: "hsl(0, 0%, 100%)" }}
+      className="relative py-24 md:py-[100px] px-5 md:px-10 overflow-hidden"
+      style={{ background: "#ffffff" }}
     >
-      <div className="max-w-[1400px] mx-auto relative z-10">
+      <div className="max-w-[1200px] mx-auto relative z-10">
         {/* Header */}
         <FadeIn>
           <div className="text-center mb-12 md:mb-16">
             <h2
-              className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
-              style={{ color: "hsl(222, 47%, 11%)" }}
+              className="font-heading text-[32px] md:text-[40px] font-semibold leading-[1.15] mb-5"
+              style={{ color: "#1d1d1f", letterSpacing: "-0.4px" }}
             >
               What's Included
             </h2>
-            <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
+            <p className="text-[19px] md:text-[21px]" style={{ color: "#86868b", letterSpacing: "-0.2px" }}>
               Everything done for you — ready in 48 hours.
             </p>
           </div>
@@ -68,22 +68,23 @@ const ManifestoSection = () => {
           <div className="flex justify-center gap-8 md:gap-12 mb-12 md:mb-16 relative">
             <div
               className="absolute bottom-0 left-0 right-0 h-px"
-              style={{ background: "hsl(214, 20%, 90%)" }}
+              style={{ background: "rgba(0, 0, 0, 0.08)" }}
             />
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className="relative pb-4 text-sm md:text-base font-semibold transition-colors duration-300 min-h-[48px]"
+                className="relative pb-4 text-[15px] md:text-[17px] font-medium transition-all duration-300 min-h-[48px]"
                 style={{
-                  color: activeTab === tab.id ? "hsl(217, 71%, 53%)" : "hsl(215, 16%, 47%)",
+                  color: activeTab === tab.id ? "#0071e3" : "#86868b",
+                  letterSpacing: "-0.2px",
                 }}
               >
                 {tab.label}
                 <span
                   className="absolute bottom-0 left-0 right-0 h-[2px] transition-all duration-300"
                   style={{
-                    background: activeTab === tab.id ? "hsl(217, 71%, 53%)" : "transparent",
+                    background: activeTab === tab.id ? "#0071e3" : "transparent",
                   }}
                 />
               </button>
@@ -96,14 +97,14 @@ const ManifestoSection = () => {
           <div
             className="rounded-3xl p-8 md:p-12"
             style={{
-              background: "hsl(0, 0%, 100%)",
-              border: "1px solid hsl(214, 20%, 90%)",
-              boxShadow: "0 4px 24px hsla(0, 0%, 0%, 0.06)",
+              background: "#ffffff",
+              border: "1px solid rgba(0, 0, 0, 0.08)",
+              boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
             }}
           >
             <h3
-              className="text-lg md:text-xl font-semibold text-center mb-10"
-              style={{ color: "hsl(222, 47%, 11%)" }}
+              className="text-[17px] md:text-[19px] font-medium text-center mb-10"
+              style={{ color: "#1d1d1f", letterSpacing: "-0.2px" }}
             >
               {active.headline}
             </h3>
@@ -111,7 +112,7 @@ const ManifestoSection = () => {
             <div
               className="h-px mb-10 mx-auto max-w-lg"
               style={{
-                background: "linear-gradient(90deg, transparent, hsl(214, 20%, 90%), transparent)",
+                background: "linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.08), transparent)",
               }}
             />
 
@@ -121,15 +122,14 @@ const ManifestoSection = () => {
                 return (
                   <div key={feat.title} className="text-center group">
                     <div
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1"
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all duration-300 group-hover:scale-105"
                       style={{
-                        background: "hsla(217, 71%, 53%, 0.08)",
-                        border: "1px solid hsla(217, 71%, 53%, 0.15)",
+                        background: "hsla(210, 100%, 45%, 0.08)",
                       }}
                     >
-                      <Icon className="w-7 h-7" style={{ color: "hsl(217, 71%, 53%)" }} />
+                      <Icon className="w-6 h-6" style={{ color: "#0071e3" }} />
                     </div>
-                    <h4 className="text-sm md:text-base font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>
+                    <h4 className="text-[15px] md:text-[17px] font-medium" style={{ color: "#1d1d1f", letterSpacing: "-0.2px" }}>
                       {feat.title}
                     </h4>
                   </div>
