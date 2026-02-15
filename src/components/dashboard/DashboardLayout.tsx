@@ -17,14 +17,21 @@ const pageTitles: Record<string, { title: string; description: string; icon: any
   "/dashboard/customers": { title: "Customers", description: "Manage your customer relationships", icon: Users },
   "/dashboard/social": { title: "Social Media", description: "Connect your social profiles", icon: Share2 },
   "/dashboard/services": { title: "Services", description: "Manage your service offerings and pricing", icon: Wrench },
-  "/dashboard/add-ons": { title: "Add-ons", description: "Create add-on packages for services", icon: PuzzleIcon },
-  "/dashboard/hours": { title: "Business Hours", description: "Set your weekly schedule", icon: Clock },
   "/dashboard/photos": { title: "Photos", description: "Upload your portfolio and gallery", icon: Camera },
   "/dashboard/testimonials": { title: "Testimonials", description: "Manage customer reviews", icon: Star },
   "/dashboard/account": { title: "Account", description: "Manage your account settings", icon: Settings },
 };
 
-const searchablePages = Object.entries(pageTitles).map(([url, info]) => ({ url, ...info }));
+// Extra searchable items that live inside other pages
+const extraSearchItems = [
+  { url: "/dashboard/services#add-ons", title: "Add-ons", description: "Create add-on packages for services", icon: PuzzleIcon },
+  { url: "/dashboard#hours", title: "Business Hours", description: "Set your weekly schedule", icon: Clock },
+];
+
+const searchablePages = [
+  ...Object.entries(pageTitles).map(([url, info]) => ({ url, ...info })),
+  ...extraSearchItems,
+];
 
 const DashboardLayout = () => {
   const location = useLocation();

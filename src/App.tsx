@@ -17,8 +17,6 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import BusinessInfoForm from "./components/dashboard/BusinessInfoForm";
 import SocialMediaForm from "./components/dashboard/SocialMediaForm";
 import ServicesManager from "./components/dashboard/ServicesManager";
-import AddOnsManager from "./components/dashboard/AddOnsManager";
-import HoursManager from "./components/dashboard/HoursManager";
 import PhotosManager from "./components/dashboard/PhotosManager";
 import TestimonialsManager from "./components/dashboard/TestimonialsManager";
 import CalendarManager from "./components/dashboard/CalendarManager";
@@ -50,8 +48,6 @@ const App = () => (
               <Route path="customers" element={<CustomersManager />} />
               <Route path="social" element={<SocialMediaForm />} />
               <Route path="services" element={<ServicesManager />} />
-              <Route path="add-ons" element={<AddOnsManager />} />
-              <Route path="hours" element={<HoursManager />} />
               <Route path="photos" element={<PhotosManager />} />
               <Route path="testimonials" element={<TestimonialsManager />} />
               <Route path="account" element={<AccountSettings />} />

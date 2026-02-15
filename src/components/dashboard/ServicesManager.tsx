@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Trash2, Star, ChevronDown, X, Upload, ImageIcon, Settings2 } from "lucide-react";
 import ServiceOptionsManager from "./ServiceOptionsManager";
+import AddOnsManager from "./AddOnsManager";
 
 interface Service {
   id: string;
@@ -224,6 +225,11 @@ const ServicesManager = () => {
         {services.length === 0 && (
           <p className="text-center text-white/30 py-8 text-sm">No services yet. Add your first service above.</p>
         )}
+      </div>
+
+      {/* Add-ons section */}
+      <div id="add-ons" className="mt-10 pt-8 border-t border-white/10">
+        <AddOnsManager />
       </div>
     </div>
   );

@@ -19,8 +19,6 @@ const items = [
   { title: "Customers", url: "/dashboard/customers", icon: Users },
   { title: "Social Media", url: "/dashboard/social", icon: Share2 },
   { title: "Services", url: "/dashboard/services", icon: Wrench },
-  { title: "Add-ons", url: "/dashboard/add-ons", icon: PuzzleIcon },
-  { title: "Hours", url: "/dashboard/hours", icon: Clock },
   { title: "Photos", url: "/dashboard/photos", icon: Camera },
   { title: "Testimonials", url: "/dashboard/testimonials", icon: Star },
   { title: "Account", url: "/dashboard/account", icon: Settings },

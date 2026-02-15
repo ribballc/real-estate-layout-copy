@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, X, Plus, Palette } from "lucide-react";
+import HoursManager from "./HoursManager";
 
 const POPULAR_CITIES = [
   "Los Angeles, CA", "San Diego, CA", "Houston, TX", "Dallas, TX", "Austin, TX",
@@ -263,6 +264,11 @@ const BusinessInfoForm = () => {
         <Button onClick={handleSave} disabled={saving} className="h-11" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
           {saving ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Saving…</> : "Save Changes"}
         </Button>
+      </div>
+
+      {/* Hours section */}
+      <div id="hours" className="mt-10 pt-8 border-t border-white/10">
+        <HoursManager />
       </div>
     </div>
   );
