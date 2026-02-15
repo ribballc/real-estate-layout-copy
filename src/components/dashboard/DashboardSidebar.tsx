@@ -30,7 +30,7 @@ const DashboardSidebar = () => {
   };
 
   return (
-    <Sidebar className="border-r border-white/10" style={{ background: "hsl(215 50% 10%)" }}>
+    <Sidebar className="border-r border-white/10" style={{ background: "linear-gradient(180deg, hsl(215 50% 10%) 0%, hsl(217 33% 14%) 100%)" }}>
       <div className="p-4 border-b border-white/10">
         <h2 className="text-lg font-bold text-white tracking-tight">Velarrio</h2>
         <p className="text-xs text-white/40">Dashboard</p>

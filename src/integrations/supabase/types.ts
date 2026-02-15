@@ -130,7 +130,9 @@ export type Database = {
           instagram: string
           logo_url: string | null
           map_query: string
+          no_business_address: boolean | null
           phone: string
+          service_areas: string[] | null
           tagline: string
           tiktok: string
           updated_at: string
@@ -148,7 +150,9 @@ export type Database = {
           instagram?: string
           logo_url?: string | null
           map_query?: string
+          no_business_address?: boolean | null
           phone?: string
+          service_areas?: string[] | null
           tagline?: string
           tiktok?: string
           updated_at?: string
@@ -166,7 +170,9 @@ export type Database = {
           instagram?: string
           logo_url?: string | null
           map_query?: string
+          no_business_address?: boolean | null
           phone?: string
+          service_areas?: string[] | null
           tagline?: string
           tiktok?: string
           updated_at?: string
