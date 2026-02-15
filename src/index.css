@@ -190,23 +190,18 @@
 
 .process-card:hover {
   transform: translateY(-8px);
-  border-color: hsla(217, 91%, 60%, 0.4) !important;
-  background: hsla(215, 50%, 8%, 0.8) !important;
+  border-color: hsla(217, 91%, 60%, 0.3) !important;
+  background: hsl(0, 0%, 100%) !important;
   box-shadow:
-    0 0 0 1px hsla(217, 91%, 60%, 0.1) inset,
-    0 20px 60px hsla(0, 0%, 0%, 0.4),
-    0 0 60px hsla(217, 91%, 60%, 0.2),
-    0 0 100px hsla(217, 91%, 60%, 0.1) !important;
+    0 20px 60px hsla(215, 25%, 12%, 0.12),
+    0 0 0 1px hsla(217, 91%, 60%, 0.15),
+    0 0 40px hsla(217, 91%, 60%, 0.08) !important;
 }
 
 .process-card:hover span[class*="absolute top-5 right-5"] {
-  background: hsla(217, 91%, 60%, 0.2) !important;
-  border-color: hsla(217, 91%, 60%, 0.5) !important;
-  box-shadow: 0 0 20px hsla(217, 91%, 60%, 0.3);
-}
-
-.process-card:hover p {
-  color: hsla(0, 0%, 100%, 0.75) !important;
+  background: hsla(217, 91%, 60%, 0.15) !important;
+  border-color: hsla(217, 91%, 60%, 0.4) !important;
+  box-shadow: 0 0 12px hsla(217, 91%, 60%, 0.2);
 }
 
 @keyframes pulseSlow {

@@ -122,10 +122,10 @@ const HowItWorksSection = () => {
       <div className="max-w-[1400px] mx-auto relative z-10">
         <FadeIn>
           <div className="text-center mb-16 md:mb-20">
-            <h2
+             <h2
               className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4 text-foreground"
             >
-              Live in 5 Minutes
+              As easy as 1, 2, 3
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground">
               Three steps. Zero headaches.
