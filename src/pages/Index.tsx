@@ -12,7 +12,6 @@ import SurveyFunnelModal from "@/components/SurveyFunnelModal";
 import ScrollProgress from "@/components/ScrollProgress";
 import SocialProofNotification from "@/components/SocialProofNotification";
 import FloatingOrbs from "@/components/FloatingOrbs";
-import CustomCursor from "@/components/CustomCursor";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { SurveyFunnelProvider } from "@/components/SurveyFunnelContext";
 
@@ -22,7 +21,6 @@ const Index = () => {
       <div className="min-h-screen relative">
         <FloatingOrbs />
         <ScrollProgress />
-        <CustomCursor />
         <HeroSection />
         <PublishersSection />
         <HowItWorksSection />
