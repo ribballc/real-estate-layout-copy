@@ -79,7 +79,7 @@ const HeroSection = () => {
       }} />
 
       {/* Main hero content area */}
-      <div className="relative z-10 px-5 md:px-8 lg:px-20 pt-2 md:pt-3">
+      <div className="relative z-10 px-5 md:px-8 lg:px-20 pt-5 md:pt-6">
         {/* Logo */}
         <div className="max-w-[1400px] mx-auto w-full" style={{
           opacity: 0,
