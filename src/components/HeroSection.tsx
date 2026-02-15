@@ -7,6 +7,7 @@ const HeroSection = () => {
   const [businessName, setBusinessName] = useState("");
   const [error, setError] = useState("");
   const [showStickyBtn, setShowStickyBtn] = useState(false);
+  const [liveCount, setLiveCount] = useState(200);
   const btnRef = useRef<HTMLButtonElement>(null);
   const { openFunnel } = useSurveyFunnel();
 
@@ -17,6 +18,14 @@ const HeroSection = () => {
     );
     if (btnRef.current) observer.observe(btnRef.current);
     return () => observer.disconnect();
+  }, []);
+
+  // Live counter: +1 every 30s, caps at 250, resets to 200
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveCount(prev => prev >= 250 ? 200 : prev + 1);
+    }, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
@@ -65,7 +74,7 @@ const HeroSection = () => {
                   background: 'hsla(217, 91%, 60%, 0.1)',
                   border: '1px solid hsla(217, 91%, 60%, 0.2)',
                   opacity: 0,
-                  animation: 'fadeSlideDown 0.4s ease-out 0.2s forwards',
+                  animation: 'fadeSlideDown 0.4s ease-out 0s forwards',
                 }}
               >
                 For Mobile Detailers
@@ -73,44 +82,57 @@ const HeroSection = () => {
 
               {/* Headline */}
               <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em] text-left">
-                <span className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold">
-                  <span className="inline-block" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
-                    Stop Losing{" "}
-                  </span>
-                  <span className="inline-block text-sky text-[40px] md:text-[64px] lg:text-[85px]" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
-                    $1,200+/Month
-                  </span>
+                {/* Line 1 */}
+                <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.2s forwards' }}>
+                  Stop Losing{" "}
+                  <span className="text-sky">$1,200+/Month</span>
                 </span>
+                <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.3s forwards' }}>
+                  to Missed Calls
+                </span>
+                {/* Line 2 */}
                 <span
-                  className="block font-heading text-[36px] md:text-[56px] lg:text-[72px] font-extrabold"
+                  className="block font-heading text-[44px] md:text-[72px] font-black mt-2 text-sky"
                   style={{
                     opacity: 0,
-                    animation: 'fadeSlideUp 0.6s ease-out 0.8s forwards',
+                    animation: 'fadeSlideUp 0.6s ease-out 0.4s forwards',
+                    textShadow: '0 0 40px hsla(213, 94%, 68%, 0.3)',
                   }}
                 >
-                  to Missed Calls
+                  Get Bookings 24/7 —{" "}
+                  <span className="inline-block" style={{ animation: 'heroPulseOnce 0.6s ease-out 1.0s forwards' }}>FREE</span>
                 </span>
               </h1>
 
-              {/* Sub-headline */}
-              <p
-                className="mt-5 text-[15px] md:text-xl leading-[1.6] max-w-[600px] text-left"
-                style={{
-                  color: 'hsla(0, 0%, 100%, 0.7)',
-                  opacity: 0,
-                  animation: 'heroBlurIn 0.5s ease-out 1.0s forwards',
-                }}
-              >
-                Get a professional website with 24/7 booking. Customers book themselves while you're in the field. Automated reminders, deposits, and a calendar that fills itself.
-              </p>
+              {/* Sub-headline bullet list */}
+              <ul className="mt-5 space-y-3 max-w-[600px] text-left">
+                {[
+                  { text: <>Professional website + booking system (normally <strong className="font-semibold">$2,997</strong>) — yours free</>, delay: '0.7s' },
+                  { text: <>Live in <strong className="font-semibold">less than 5 min</strong></>, delay: '0.82s' },
+                  { text: <>Join <strong className="font-semibold">200+</strong> detailers using Velarrio</>, delay: '0.94s' },
+                ].map((item, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-3 text-[16px] md:text-[18px] font-medium leading-[1.7]"
+                    style={{
+                      color: 'hsla(0, 0%, 100%, 0.9)',
+                      opacity: 0,
+                      animation: `fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${item.delay} forwards`,
+                    }}
+                  >
+                    <span className="text-accent text-[20px] mt-0.5 shrink-0">✓</span>
+                    <span>{item.text}</span>
+                  </li>
+                ))}
+              </ul>
 
               {/* Business name form + CTA */}
               <form
                 onSubmit={handleSubmit}
                 className="mt-7 flex flex-col sm:flex-row gap-3 max-w-lg mx-auto lg:mx-0"
-                style={{ opacity: 0, animation: 'heroFormIn 0.5s ease-out 1.2s forwards' }}
+                style={{ opacity: 0, animation: 'heroFormIn 0.4s ease-out 1.0s forwards' }}
               >
-                <div className="relative w-full sm:flex-1" style={{ opacity: 0, animation: 'heroScaleIn 0.4s ease-out 1.2s forwards' }}>
+                <div className="relative w-full sm:flex-1">
                   <Store className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-foreground/30" />
                   <input
                     type="text"
@@ -138,49 +160,68 @@ const HeroSection = () => {
                 <button
                   ref={btnRef}
                   type="submit"
-                  className="group h-14 px-8 text-base font-semibold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+                  className="group h-14 px-10 text-[17px] font-semibold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
                   style={{
                     background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
                     color: 'hsl(0 0% 100%)',
                     boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
-                    opacity: 0,
-                    animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
+                    animation: 'ctaPulse 3s ease-in-out 1.5s infinite',
                   }}
                 >
-                  Activate My Free Website
+                  Get My Free Website
                   <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
               </form>
               {error && <p className="text-sm text-destructive mt-2 text-center lg:text-left">{error}</p>}
 
+              {/* Outcome preview */}
+              <div
+                className="mt-4 flex items-center gap-3 justify-center lg:justify-start flex-wrap text-[13px] md:text-sm"
+                style={{
+                  color: 'hsla(0, 0%, 100%, 0.6)',
+                  opacity: 0,
+                  animation: 'fadeSlideUp 0.4s ease-out 1.2s forwards',
+                }}
+              >
+                <span className="font-semibold">Try free for 14 days</span>
+                <span className="text-primary-foreground/20">•</span>
+                <span className="font-semibold">Keep it if you love it</span>
+                <span className="text-primary-foreground/20">•</span>
+                <span>Cancel anytime</span>
+              </div>
+
               {/* Trust line */}
               <div
-                className="mt-5 flex items-center gap-4 justify-center lg:justify-start flex-wrap"
+                className="mt-5 flex items-center gap-4 justify-center lg:justify-start flex-wrap text-[13px] md:text-sm"
                 style={{
                   color: 'hsla(0, 0%, 100%, 0.5)',
                   opacity: 0,
-                  animation: 'fadeSlideUp 0.4s ease-out 1.8s forwards',
+                  animation: 'fadeSlideUp 0.4s ease-out 1.3s forwards',
                 }}
               >
-                <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Built in 5 minutes</span>
+                <span className="font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Setup in 5 minutes</span>
                 <span className="text-primary-foreground/20">•</span>
-                <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Free for 14 days</span>
+                <span className="font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Free for 14 days</span>
                 <span className="text-primary-foreground/20">•</span>
-                <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Cancel anytime</span>
+                <span className="font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> No tech skills needed</span>
               </div>
 
               {/* Social proof */}
               <div
-                className="mt-4 inline-flex items-center gap-2 text-sm"
+                className="mt-6 inline-flex items-center gap-4 text-[13px] md:text-sm"
                 style={{
-                  color: 'hsla(0, 0%, 100%, 0.6)',
+                  color: 'hsla(0, 0%, 100%, 0.7)',
                   opacity: 0,
-                  animation: 'fadeSlideUp 0.4s ease-out 2.0s forwards',
+                  animation: 'fadeSlideUp 0.4s ease-out 1.4s forwards',
                 }}
               >
-                <span className="text-accent text-sm tracking-wide">★★★★★</span>
-                <span className="font-semibold">
-                  Trusted by <strong>200+</strong> detailers · <strong>$2.4M</strong> in bookings captured
+                <span className="text-accent text-base tracking-wide">★★★★★</span>
+                <span className="font-semibold flex items-center gap-2">
+                  <span className="relative flex h-2 w-2 shrink-0">
+                    <span className="absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: 'hsl(160 84% 39%)', animation: 'livePulse 2s ease-in-out infinite' }} />
+                    <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: 'hsl(160 84% 39%)' }} />
+                  </span>
+                  Trusted by <strong>{liveCount}+</strong> detailers&nbsp;·&nbsp;<strong>$2.4M</strong> in bookings captured
                 </span>
               </div>
             </div>
@@ -220,7 +261,7 @@ const HeroSection = () => {
               background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
             }}
           >
-            Activate My Free Website →
+            Get My Free Website →
           </button>
         </div>
       )}
