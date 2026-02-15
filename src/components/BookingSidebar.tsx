@@ -32,11 +32,7 @@ const tickerServices = [
   "Window Tinting",
 ];
 
-interface BookingSidebarProps {
-  showMap?: boolean;
-}
-
-const BookingSidebar = ({ showMap = false }: BookingSidebarProps) => (
+const BookingSidebar = () => (
   <aside className="w-full lg:w-[300px] flex-shrink-0 order-2">
     <FadeIn>
       <div className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6">
@@ -126,21 +122,19 @@ const BookingSidebar = ({ showMap = false }: BookingSidebarProps) => (
             Location
           </div>
           <p className="text-sm text-muted-foreground pl-6 leading-relaxed">{businessInfo.address}</p>
-          {showMap && (
-            <div className="pl-6 pt-1">
-              <div className="rounded-xl overflow-hidden border border-border">
-                <iframe
-                  title="Business Location"
-                  width="100%"
-                  height="180"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  src={`https://www.google.com/maps?q=${businessInfo.mapQuery}&output=embed`}
-                />
-              </div>
+          <div className="pl-6 pt-1">
+            <div className="rounded-xl overflow-hidden border border-border">
+              <iframe
+                title="Business Location"
+                width="100%"
+                height="180"
+                style={{ border: 0 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                src={`https://www.google.com/maps?q=${businessInfo.mapQuery}&output=embed`}
+              />
             </div>
-          )}
+          </div>
         </div>
       </div>
     </FadeIn>
