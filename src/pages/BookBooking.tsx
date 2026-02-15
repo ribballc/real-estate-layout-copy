@@ -1,0 +1,112 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowRight, Clock } from "lucide-react";
+import BookingLayout from "@/components/BookingLayout";
+import FadeIn from "@/components/FadeIn";
+import { Calendar } from "@/components/ui/calendar";
+
+const timeSlots = [
+  "8:00 AM",
+  "9:00 AM",
+  "10:00 AM",
+  "11:00 AM",
+  "12:00 PM",
+  "1:00 PM",
+  "2:00 PM",
+  "3:00 PM",
+  "4:00 PM",
+];
+
+const BookBooking = () => {
+  const navigate = useNavigate();
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+
+  const handleContinue = () => {
+    if (selectedDate && selectedTime) {
+      navigate("/book/checkout");
+    }
+  };
+
+  return (
+    <BookingLayout activeStep={4}>
+      <FadeIn delay={50}>
+        <h1 className="font-heading text-[28px] md:text-[40px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground mb-8 md:mb-10">
+          Choose a slot
+        </h1>
+      </FadeIn>
+
+      <div className="space-y-8">
+        {/* Time Slot heading */}
+        <FadeIn delay={100}>
+          <h2 className="font-heading text-xl md:text-2xl font-semibold text-foreground">
+            Time Slot
+          </h2>
+        </FadeIn>
+
+        {/* Calendar */}
+        <FadeIn delay={150}>
+          <div className="space-y-3">
+            <h3 className="text-sm font-semibold text-foreground">Select a Date</h3>
+            <div className="rounded-2xl border border-border bg-card p-4 inline-block">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                disabled={{ before: new Date() }}
+                className="pointer-events-auto"
+              />
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Time slots */}
+        {selectedDate && (
+          <FadeIn delay={50}>
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <Clock className="w-4 h-4 text-accent" />
+                Select a Time
+              </h3>
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                {timeSlots.map((time) => (
+                  <button
+                    key={time}
+                    onClick={() => setSelectedTime(time)}
+                    className={`rounded-xl border px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                      selectedTime === time
+                        ? "border-accent bg-accent/10 text-accent ring-1 ring-accent"
+                        : "border-border bg-card text-foreground hover:border-accent/50 hover:bg-accent/5"
+                    }`}
+                  >
+                    {time}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+        )}
+
+        {/* Continue button */}
+        {selectedDate && selectedTime && (
+          <FadeIn delay={50}>
+            <button
+              onClick={handleContinue}
+              className="inline-flex items-center gap-2 text-sm font-semibold rounded-lg px-6 py-3 min-h-[44px] transition-all duration-300 hover:gap-3"
+              style={{
+                background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)",
+                color: "hsl(0 0% 100%)",
+                boxShadow: "0 4px 12px hsla(217, 91%, 60%, 0.3)",
+              }}
+            >
+              Continue to Checkout
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </FadeIn>
+        )}
+      </div>
+    </BookingLayout>
+  );
+};
+
+export default BookBooking;
