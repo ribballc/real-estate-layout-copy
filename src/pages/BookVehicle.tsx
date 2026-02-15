@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Car, Truck, ArrowLeft, ArrowRight } from "lucide-react";
+import { Calendar, Car, Truck, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
 import { vehicleYears, vehicleMakes, vehicleModels } from "@/data/vehicles";
@@ -30,6 +30,27 @@ const BookVehicle = () => {
     setImageLoaded(false);
     setImageError(false);
   }, [year, make, model]);
+
+  const handleImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget;
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1;
+      canvas.height = 1;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, 1, 1);
+        const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+        if (r > 150 && g < 100 && b < 100) {
+          setImageError(true);
+          return;
+        }
+      }
+    } catch {
+      // CORS or canvas error — still show the image
+    }
+    setImageLoaded(true);
+  }, []);
 
   const handleMakeChange = (val: string) => {
     setMake(val);
@@ -134,12 +155,13 @@ const BookVehicle = () => {
         {/* Right — vehicle image */}
         <FadeIn delay={200}>
           <div className="flex-1 flex flex-col items-center justify-center min-h-[260px]">
-            {/* Hidden img to preload */}
-            {carImageUrl && !imageError && (
+            {/* Hidden img to preload with canvas color check */}
+            {carImageUrl && !imageError && !imageLoaded && (
               <img
                 src={carImageUrl}
-                alt={`${year} ${make} ${model}`}
-                onLoad={() => setImageLoaded(true)}
+                alt=""
+                crossOrigin="anonymous"
+                onLoad={handleImageLoad}
                 onError={() => setImageError(true)}
                 className="hidden"
               />
@@ -155,6 +177,33 @@ const BookVehicle = () => {
                 <p className="text-sm font-medium text-foreground mt-4">
                   {year} {make} {model}
                 </p>
+              </div>
+            ) : canContinue ? (
+              /* Enhanced fallback: silhouette + vehicle info card */
+              <div className="flex flex-col items-center animate-in fade-in zoom-in-95 duration-500">
+                <svg
+                  viewBox="0 0 400 160"
+                  className="w-full max-w-[320px] opacity-30"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M40 120 C40 120 50 60 120 50 C160 44 200 40 240 44 C300 50 340 70 360 90 L380 100 C390 104 390 116 380 118 L360 120 L340 120 C340 106 328 94 314 94 C300 94 288 106 288 120 L140 120 C140 106 128 94 114 94 C100 94 88 106 88 120 Z"
+                    fill="currentColor"
+                    className="text-muted-foreground"
+                  />
+                  <circle cx="114" cy="120" r="18" fill="currentColor" className="text-muted-foreground" />
+                  <circle cx="114" cy="120" r="10" fill="hsl(210 40% 98%)" />
+                  <circle cx="314" cy="120" r="18" fill="currentColor" className="text-muted-foreground" />
+                  <circle cx="314" cy="120" r="10" fill="hsl(210 40% 98%)" />
+                </svg>
+                <p className="text-lg font-semibold text-foreground mt-4">
+                  {year} {make} {model}
+                </p>
+                <span className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-medium">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  Vehicle selected
+                </span>
               </div>
             ) : (
               <>
