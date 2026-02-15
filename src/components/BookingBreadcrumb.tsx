@@ -5,7 +5,7 @@ const steps = [
   { label: "Select a service", path: "/book" },
   { label: "Your Car", path: "/book/vehicle" },
   { label: "Options", path: "/book/options" },
-  { label: "Quote", path: "/book/quote" },
+  { label: "Add-ons", path: "/book/add-ons" },
   { label: "Booking", path: "/book/booking" },
   { label: "Checkout", path: "/book/checkout" },
 ];

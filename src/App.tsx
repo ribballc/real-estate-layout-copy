@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Book from "./pages/Book";
 import BookVehicle from "./pages/BookVehicle";
+import BookAddOns from "./pages/BookAddOns";
 import BookBooking from "./pages/BookBooking";
 import NotFound from "./pages/NotFound";
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/book" element={<Book />} />
           <Route path="/book/vehicle" element={<BookVehicle />} />
+          <Route path="/book/add-ons" element={<BookAddOns />} />
           <Route path="/book/booking" element={<BookBooking />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
