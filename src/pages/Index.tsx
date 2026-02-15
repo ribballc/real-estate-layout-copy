@@ -6,6 +6,7 @@ import FunnelSection from "@/components/FunnelSection";
 import ManifestoSection from "@/components/ManifestoSection";
 import TestimonialSection from "@/components/TestimonialSection";
 import PricingSection from "@/components/PricingSection";
+import FaqSection from "@/components/FaqSection";
 import CtaFooter from "@/components/CtaFooter";
 import SurveyFunnelModal from "@/components/SurveyFunnelModal";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -27,6 +28,7 @@ const Index = () => {
         <FunnelSection />
         <TestimonialSection />
         <PricingSection />
+        <FaqSection />
         <CtaFooter />
         <SurveyFunnelModal />
         <SocialProofNotification />
