@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronRight, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Check, ChevronRight, ChevronDown, ChevronUp, Unlock } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
@@ -70,11 +70,9 @@ const PricingSection = () => {
             />
           </button>
           <span className={`text-sm font-semibold transition-colors ${annual ? 'text-foreground' : 'text-muted-foreground'}`}>Annual</span>
-          {annual && (
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
-              {savingsPercent}% OFF
-            </span>
-          )}
+          <span className="text-xs font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
+            32% OFF
+          </span>
         </div>
 
         {/* Pricing Card */}
@@ -89,16 +87,6 @@ const PricingSection = () => {
               <div className="rounded-[22px] overflow-hidden" style={{
                 background: 'linear-gradient(180deg, hsl(215,50%,10%) 0%, hsl(217,33%,8%) 100%)',
               }}>
-                {/* Top badges bar */}
-                <div className="flex items-center gap-2 px-6 pt-5 pb-0">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full bg-accent text-accent-foreground">
-                    <Sparkles className="w-3 h-3" /> BEST VALUE
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold tracking-wider uppercase px-3 py-1.5 rounded-full border border-accent/50 text-accent bg-accent/10">
-                    LIMITED OFFER
-                  </span>
-                </div>
-
                 {/* Plan name and subtitle */}
                 <div className="px-6 pt-5">
                   <div className="flex items-center gap-3 mb-1">
@@ -156,16 +144,22 @@ const PricingSection = () => {
 
                 {/* Features */}
                 <div className="px-6 pt-5 pb-6">
-                  <ul className="space-y-3">
-                    {(showAllFeatures ? plan.features : plan.features.slice(0, 5)).map((feature) => (
-                      <li key={feature} className="flex items-start gap-2.5 text-[15px]">
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-accent/15 border border-accent/30">
-                          <Check className="w-3 h-3 text-accent" />
-                        </div>
-                        <span className="text-white/80">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Unlock className="w-4 h-4 text-accent" />
+                    <span className="text-xs font-bold tracking-wider uppercase text-white/50">What's Included</span>
+                  </div>
+                  <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4">
+                    <ul className="space-y-3">
+                      {(showAllFeatures ? plan.features : plan.features.slice(0, 5)).map((feature) => (
+                        <li key={feature} className="flex items-start gap-2.5 text-[15px]">
+                          <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-accent/15 border border-accent/30">
+                            <Check className="w-3 h-3 text-accent" />
+                          </div>
+                          <span className="text-white/80">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
                   {plan.features.length > 5 && (
                     <button
