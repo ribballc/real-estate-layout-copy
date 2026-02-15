@@ -62,10 +62,10 @@ const DashboardSidebar = () => {
                     <NavLink
                       to={item.url}
                       end={item.url === "/dashboard"}
-                      className="flex items-center gap-3 px-5 py-2.5 text-sm text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all mx-2"
+                      className="flex items-center gap-3 px-5 py-3.5 text-[15px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all mx-2"
                       activeClassName="bg-accent/10 text-accent font-medium shadow-[inset_0_0_0_1px_hsla(217,91%,60%,0.15)]"
                     >
-                      <item.icon className="w-[18px] h-[18px] shrink-0" />
+                      <item.icon className="w-5 h-5 shrink-0" />
                       <span>{item.title}</span>
                     </NavLink>
                   </SidebarMenuButton>

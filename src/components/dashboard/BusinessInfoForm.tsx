@@ -16,10 +16,9 @@ const POPULAR_CITIES = [
   "Chicago, IL", "New York, NY", "Philadelphia, PA", "San Francisco, CA", "Sacramento, CA",
 ];
 
-const PRESET_COLORS = [
+const ACCENT_COLORS = [
   "#3B82F6", "#6366F1", "#8B5CF6", "#EC4899", "#EF4444",
   "#F97316", "#EAB308", "#22C55E", "#14B8A6", "#06B6D4",
-  "#1E3A5F", "#1E293B", "#0F172A", "#18181B", "#292524",
 ];
 
 const BusinessInfoForm = () => {
@@ -36,7 +35,7 @@ const BusinessInfoForm = () => {
   const [citySearch, setCitySearch] = useState("");
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [primaryColor, setPrimaryColor] = useState("#3B82F6");
-  const [secondaryColor, setSecondaryColor] = useState("#1E3A5F");
+  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
     if (!user) return;
@@ -54,7 +53,7 @@ const BusinessInfoForm = () => {
         setNoBusinessAddress((data as any).no_business_address ?? false);
         setServiceAreas((data as any).service_areas ?? []);
         setPrimaryColor((data as any).primary_color || "#3B82F6");
-        setSecondaryColor((data as any).secondary_color || "#1E3A5F");
+        setThemeMode((data as any).secondary_color === "#FFFFFF" ? "light" : "dark");
       }
       setLoading(false);
     });
@@ -68,7 +67,7 @@ const BusinessInfoForm = () => {
       no_business_address: noBusinessAddress,
       service_areas: serviceAreas,
       primary_color: primaryColor,
-      secondary_color: secondaryColor,
+      secondary_color: themeMode === "light" ? "#FFFFFF" : "#1E3A5F",
     };
     if (noBusinessAddress) {
       updateData.address = "";
@@ -114,28 +113,28 @@ const BusinessInfoForm = () => {
     </div>
   );
 
-  const ColorPicker = ({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) => (
+  const AccentPicker = () => (
     <div className="space-y-3">
-      <Label className="text-white/70 text-sm">{label}</Label>
+      <Label className="text-white/70 text-sm">Accent Color</Label>
       <div className="flex items-center gap-3 flex-wrap">
-        {PRESET_COLORS.map(c => (
+        {ACCENT_COLORS.map(c => (
           <button
             key={c}
-            onClick={() => onChange(c)}
-            className={`w-8 h-8 rounded-lg transition-all hover:scale-110 ${value === c ? "ring-2 ring-white ring-offset-2 ring-offset-[hsl(215,50%,10%)] scale-110" : "ring-1 ring-white/10"}`}
+            onClick={() => setPrimaryColor(c)}
+            className={`w-8 h-8 rounded-lg transition-all hover:scale-110 ${primaryColor === c ? "ring-2 ring-white ring-offset-2 ring-offset-[hsl(215,50%,10%)] scale-110" : "ring-1 ring-white/10"}`}
             style={{ background: c }}
           />
         ))}
         <label className="relative cursor-pointer">
-          <div className="w-8 h-8 rounded-lg border-2 border-dashed border-white/20 flex items-center justify-center hover:border-white/40 transition-colors" style={{ background: value }}>
+          <div className="w-8 h-8 rounded-lg border-2 border-dashed border-white/20 flex items-center justify-center hover:border-white/40 transition-colors" style={{ background: primaryColor }}>
             <Plus className="w-3 h-3 text-white/60" />
           </div>
-          <input type="color" value={value} onChange={(e) => onChange(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer" />
+          <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer" />
         </label>
       </div>
       <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-md border border-white/10" style={{ background: value }} />
-        <Input value={value} onChange={(e) => onChange(e.target.value)} className="h-8 w-28 bg-white/5 border-white/10 text-white text-xs font-mono focus-visible:ring-accent" />
+        <div className="w-6 h-6 rounded-md border border-white/10" style={{ background: primaryColor }} />
+        <Input value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="h-8 w-28 bg-white/5 border-white/10 text-white text-xs font-mono focus-visible:ring-accent" />
       </div>
     </div>
   );
@@ -165,23 +164,44 @@ const BusinessInfoForm = () => {
         {field("Email", "email", "email", "contact@business.com")}
         {field("Phone", "phone", "tel", "(555) 123-4567")}
 
-        {/* Brand Colors */}
+        {/* Brand Colors & Theme */}
         <div className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-5">
           <div className="flex items-center gap-2">
             <Palette className="w-5 h-5 text-accent" />
             <div>
-              <Label className="text-white text-sm font-medium">Brand Colors</Label>
-              <p className="text-white/40 text-xs mt-0.5">Used on your public booking website</p>
+              <Label className="text-white text-sm font-medium">Website Appearance</Label>
+              <p className="text-white/40 text-xs mt-0.5">Customize your public booking website</p>
             </div>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <ColorPicker label="Primary Color" value={primaryColor} onChange={setPrimaryColor} />
-            <ColorPicker label="Secondary Color" value={secondaryColor} onChange={setSecondaryColor} />
+
+          {/* Theme Mode */}
+          <div className="space-y-3">
+            <Label className="text-white/70 text-sm">Theme Mode</Label>
+            <div className="grid grid-cols-2 gap-3">
+              {(["light", "dark"] as const).map(mode => (
+                <button
+                  key={mode}
+                  onClick={() => setThemeMode(mode)}
+                  className={`rounded-xl border p-4 text-left transition-all ${themeMode === mode ? "border-accent bg-accent/10 ring-1 ring-accent/30" : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"}`}
+                >
+                  <div className={`w-full h-16 rounded-lg mb-3 border ${mode === "light" ? "bg-white border-gray-200" : "bg-[hsl(215,50%,10%)] border-white/10"}`}>
+                    <div className="p-2 flex gap-1.5">
+                      <div className="w-6 h-1.5 rounded-full" style={{ background: primaryColor }} />
+                      <div className={`w-4 h-1.5 rounded-full ${mode === "light" ? "bg-gray-300" : "bg-white/20"}`} />
+                    </div>
+                  </div>
+                  <span className={`text-sm font-medium capitalize ${themeMode === mode ? "text-accent" : "text-white/60"}`}>{mode} Mode</span>
+                </button>
+              ))}
+            </div>
           </div>
+
+          <AccentPicker />
+
           {/* Live preview */}
           <div className="mt-3">
             <Label className="text-white/50 text-xs mb-2 block">Preview</Label>
-            <div className="rounded-lg p-4 flex items-center gap-3" style={{ background: secondaryColor }}>
+            <div className={`rounded-lg p-4 flex items-center gap-3 border ${themeMode === "light" ? "bg-white border-gray-200" : "bg-[hsl(215,50%,10%)] border-white/10"}`}>
               <div className="h-8 px-4 rounded-md flex items-center text-sm font-medium text-white" style={{ background: primaryColor }}>
                 Book Now
               </div>
