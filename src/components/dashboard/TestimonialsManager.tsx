@@ -6,15 +6,24 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Star, Upload, UserCircle } from "lucide-react";
+import { Loader2, Plus, Trash2, Star, Upload, UserCircle, Building2, X } from "lucide-react";
+import CsvImportModal from "./CsvImportModal";
 
 interface Testimonial { id: string; author: string; content: string; rating: number; photo_url: string; }
+
+const REVIEW_FIELDS = [
+  { key: "author", label: "Author / Name", required: true },
+  { key: "content", label: "Review Text", required: true },
+  { key: "rating", label: "Rating (1-5)" },
+];
 
 const TestimonialsManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Testimonial[]>([]);
+  const [showCsvImport, setShowCsvImport] = useState(false);
+  const [showGmbImport, setShowGmbImport] = useState(false);
 
   const fetchItems = async () => {
     if (!user) return;
@@ -53,6 +62,19 @@ const TestimonialsManager = () => {
     toast({ title: "Photo uploaded!" });
   };
 
+  const handleCsvImport = async (rows: Record<string, string>[]) => {
+    if (!user) return;
+    const records = rows.map(row => ({
+      user_id: user.id,
+      author: row.author || "Unknown",
+      content: row.content || "",
+      rating: Math.min(5, Math.max(1, parseInt(row.rating) || 5)),
+    }));
+    const { error } = await supabase.from("testimonials").insert(records);
+    if (error) throw error;
+    fetchItems();
+  };
+
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
 
   return (
@@ -62,15 +84,22 @@ const TestimonialsManager = () => {
           <h2 className="text-2xl font-bold text-white">Testimonials</h2>
           <p className="text-white/40 text-sm mt-1">Manage customer reviews with photos</p>
         </div>
-        <Button onClick={add} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
-          <Plus className="w-4 h-4" /> Add
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setShowCsvImport(true)} size="sm" variant="outline" className="gap-2 border-white/10 text-white/70 hover:text-white hover:bg-white/5">
+            <Upload className="w-4 h-4" /> CSV
+          </Button>
+          <Button onClick={() => setShowGmbImport(true)} size="sm" variant="outline" className="gap-2 border-white/10 text-white/70 hover:text-white hover:bg-white/5">
+            <Building2 className="w-4 h-4" /> GMB
+          </Button>
+          <Button onClick={add} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+            <Plus className="w-4 h-4" /> Add
+          </Button>
+        </div>
       </div>
       <div className="space-y-4">
         {items.map((t) => (
           <div key={t.id} className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-3 hover:border-white/20 transition-colors">
             <div className="flex items-start gap-4">
-              {/* Photo upload */}
               <label className="cursor-pointer shrink-0 group">
                 {t.photo_url ? (
                   <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-accent/40 transition-colors">
@@ -86,7 +115,6 @@ const TestimonialsManager = () => {
                 )}
                 <input type="file" accept="image/*" onChange={(e) => handlePhotoUpload(t.id, e)} className="hidden" />
               </label>
-
               <div className="flex-1 space-y-3">
                 <Input value={t.author} onChange={(e) => update(t.id, { author: e.target.value })} placeholder="Author name" className="h-9 bg-white/5 border-white/10 text-white font-medium focus-visible:ring-accent" />
                 <Textarea value={t.content} onChange={(e) => update(t.id, { content: e.target.value })} placeholder="Testimonial text…" className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent min-h-[60px]" />
@@ -110,6 +138,34 @@ const TestimonialsManager = () => {
           </div>
         )}
       </div>
+
+      {/* CSV Import */}
+      <CsvImportModal
+        open={showCsvImport}
+        onClose={() => setShowCsvImport(false)}
+        onImport={handleCsvImport}
+        targetFields={REVIEW_FIELDS}
+        title="Import Reviews from CSV"
+      />
+
+      {/* GMB Import Modal */}
+      {showGmbImport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+            <div className="flex items-center justify-between">
+              <h3 className="text-white font-semibold text-lg">Import from Google My Business</h3>
+              <button onClick={() => setShowGmbImport(false)} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <p className="text-white/50 text-sm">Import your reviews directly from Google My Business.</p>
+            <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
+              <p className="text-amber-400 text-xs">⚠️ Google My Business integration requires API credentials to be configured. Please contact support to enable this feature.</p>
+            </div>
+            <Button disabled className="w-full h-11 gap-2 opacity-50" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+              <Building2 className="w-4 h-4" /> Connect Google My Business
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
