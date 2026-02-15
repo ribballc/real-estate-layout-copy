@@ -46,10 +46,10 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
         onMouseMove={handleMouseMove}
         className="group relative rounded-3xl p-10 md:p-12 text-center overflow-hidden z-10 cursor-pointer"
         style={{
-          background: "#ffffff",
-          border: "1px solid rgba(0, 0, 0, 0.08)",
-          boxShadow: "0 4px 24px rgba(0, 0, 0, 0.06)",
-          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          background: "hsl(0, 0%, 100%)",
+          border: "1px solid hsl(214, 20%, 90%)",
+          boxShadow: "0 4px 24px hsla(0, 0%, 0%, 0.06)",
+          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
         {/* Spotlight follow effect */}
@@ -57,16 +57,16 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0"
           style={{
             background:
-              "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(210, 100%, 45%, 0.04), transparent 40%)",
+              "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(217, 71%, 53%, 0.06), transparent 40%)",
           }}
         />
 
         {/* Step number badge */}
         <span
-          className="absolute top-5 right-5 w-8 h-8 rounded-xl flex items-center justify-center text-sm font-semibold"
+          className="absolute top-5 right-5 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-all duration-300 group-hover:scale-105"
           style={{
-            background: "#0071e3",
-            color: "#ffffff",
+            background: "hsl(217, 71%, 53%)",
+            color: "hsl(0, 0%, 100%)",
           }}
         >
           <span className="relative z-10">{step.step}</span>
@@ -75,24 +75,25 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
         {/* Icon container */}
         <div className="flex justify-center mb-7 relative z-10">
           <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-105"
+            className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center transition-all duration-400"
             style={{
-              background: "hsla(210, 100%, 45%, 0.08)",
+              background: "hsla(217, 71%, 53%, 0.08)",
+              border: "1px solid hsla(217, 71%, 53%, 0.15)",
             }}
           >
-            <Icon className="w-7 h-7" style={{ color: "#0071e3" }} />
+            <Icon className="w-8 h-8 transition-all duration-300" style={{ color: "hsl(217, 71%, 53%)" }} />
           </div>
         </div>
 
         <h3
-          className="text-[19px] md:text-[21px] font-semibold mb-3 relative z-10"
-          style={{ color: "#1d1d1f", letterSpacing: "-0.3px" }}
+          className="text-[22px] font-semibold mb-3 relative z-10 transition-colors duration-300"
+          style={{ color: "hsl(222, 47%, 11%)" }}
         >
           {step.title}
         </h3>
         <p
-          className="text-[15px] md:text-[17px] leading-[1.5] relative z-10"
-          style={{ color: "#86868b", letterSpacing: "-0.2px" }}
+          className="text-[15px] leading-relaxed relative z-10 transition-colors duration-300"
+          style={{ color: "hsl(215, 16%, 47%)" }}
         >
           {step.description}
         </p>
@@ -106,25 +107,41 @@ const HowItWorksSection = () => {
 
   return (
     <section
-      className="relative py-24 md:py-[100px] px-5 md:px-10 overflow-hidden"
-      style={{ background: "#fbfbfd" }}
+      className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
+      style={{ background: "hsl(210, 40%, 98%)" }}
     >
-      <div className="max-w-[1200px] mx-auto relative z-10">
+      <div className="max-w-[1400px] mx-auto relative z-10">
         <FadeIn>
           <div className="text-center mb-16 md:mb-20">
             <h2
-              className="font-heading text-[32px] md:text-[40px] font-semibold leading-[1.15] mb-5"
-              style={{ color: "#1d1d1f", letterSpacing: "-0.4px" }}
+              className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
+              style={{ color: "hsl(222, 47%, 11%)" }}
             >
               As easy as 1, 2, 3
             </h2>
-            <p className="text-[19px] md:text-[21px]" style={{ color: "#86868b", letterSpacing: "-0.2px" }}>
+            <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
               Three steps. Zero headaches.
             </p>
           </div>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-16 md:mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-16 md:mb-20 relative">
+          {/* Connecting lines (desktop) */}
+          <div
+            className="hidden md:block absolute top-[100px] left-[18%] w-[18%] h-[2px] z-0"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent 0%, hsla(217, 71%, 53%, 0.3) 20%, hsla(217, 71%, 53%, 0.5) 50%, hsla(217, 71%, 53%, 0.3) 80%, transparent 100%)",
+            }}
+          />
+          <div
+            className="hidden md:block absolute top-[100px] right-[18%] w-[18%] h-[2px] z-0"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent 0%, hsla(217, 71%, 53%, 0.3) 20%, hsla(217, 71%, 53%, 0.5) 50%, hsla(217, 71%, 53%, 0.3) 80%, transparent 100%)",
+            }}
+          />
+
           {steps.map((step, i) => (
             <ProcessCard key={step.step} step={step} index={i} />
           ))}
@@ -134,19 +151,25 @@ const HowItWorksSection = () => {
           <div className="text-center">
             <button
               onClick={openFunnel}
-              className="group relative inline-flex items-center gap-2 font-medium rounded-full px-8 py-[17px] text-[17px] min-h-[48px] overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              className="group relative inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
               style={{
-                color: "#ffffff",
-                background: "#0071e3",
-                letterSpacing: "-0.2px",
+                color: "hsl(0, 0%, 100%)",
+                background: "linear-gradient(135deg, hsl(217, 71%, 53%) 0%, hsl(217, 71%, 43%) 100%)",
+                boxShadow: "0 4px 16px hsla(217, 71%, 53%, 0.3)",
               }}
             >
               <span className="relative z-10 flex items-center gap-2">
-                Get Started Free
-                <ChevronRight className="w-5 h-5" />
+                Get Started Free →
               </span>
+              <span
+                className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent 0%, hsla(0, 0%, 100%, 0.2) 50%, transparent 100%)",
+                }}
+              />
             </button>
-            <p className="text-[15px] mt-4" style={{ color: "#86868b", letterSpacing: "-0.2px" }}>
+            <p className="text-sm mt-4" style={{ color: "hsl(215, 16%, 47%)" }}>
               Free for 14 days · No credit card required
             </p>
           </div>

@@ -17,29 +17,29 @@ const row2 = reviews.slice(4);
 
 const ReviewCard = ({ review }: { review: typeof reviews[0] }) => (
   <div
-    className="flex-shrink-0 w-[260px] md:w-[280px] rounded-2xl p-5 md:p-6 text-left"
+    className="flex-shrink-0 w-[260px] md:w-[280px] rounded-xl p-4 md:p-5 text-left"
     style={{
-      background: 'hsla(0, 0%, 100%, 0.1)',
-      border: '1px solid hsla(0, 0%, 100%, 0.15)',
+      background: 'hsla(0, 0%, 100%, 0.12)',
+      border: '1px solid hsla(0, 0%, 100%, 0.2)',
       backdropFilter: 'blur(20px)',
     }}
   >
     <div className="flex items-center gap-2.5 mb-3">
       <div
-        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold flex-shrink-0"
-        style={{ background: '#ffffff', color: '#0071e3' }}
+        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+        style={{ background: 'hsl(0, 0%, 100%)', color: 'hsl(217, 71%, 53%)' }}
       >
         {review.initials}
       </div>
       <div>
-        <div className="font-medium text-xs" style={{ color: '#ffffff' }}>{review.name}</div>
+        <div className="font-semibold text-xs" style={{ color: 'hsl(0, 0%, 100%)' }}>{review.name}</div>
         <div className="text-[10px]" style={{ color: 'hsla(0, 0%, 100%, 0.6)' }}>{review.role}</div>
       </div>
     </div>
     <p className="text-xs leading-relaxed mb-3 line-clamp-3" style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}>
       "{review.quote}"
     </p>
-    <div className="text-[10px] font-semibold" style={{ color: 'hsla(0, 0%, 100%, 0.9)' }}>{review.metric}</div>
+    <div className="text-[10px] font-bold" style={{ color: 'hsla(0, 0%, 100%, 0.9)' }}>{review.metric}</div>
   </div>
 );
 
@@ -50,8 +50,8 @@ const ScrollRow = ({ items, direction }: { items: typeof reviews; direction: "le
     : "animate-scroll-right-mobile md:animate-scroll-right";
   return (
     <div className="relative overflow-hidden">
-      <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #0071e3, transparent)' }} />
-      <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #0077ed, transparent)' }} />
+      <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, hsl(217, 71%, 43%), transparent)' }} />
+      <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, hsl(217, 71%, 48%), transparent)' }} />
       <div className={`flex gap-4 ${animClass}`} style={{ width: 'max-content' }}>
         {doubled.map((review, i) => (
           <ReviewCard key={`${review.initials}-${i}`} review={review} />
@@ -66,16 +66,16 @@ const TestimonialSection = () => {
 
   return (
     <section
-      className="relative py-14 md:py-20 overflow-hidden"
+      className="relative py-10 md:py-14 overflow-hidden"
       style={{
-        background: 'linear-gradient(180deg, #0071e3 0%, #0077ed 100%)',
+        background: 'linear-gradient(135deg, hsl(224, 64%, 33%) 0%, hsl(217, 71%, 53%) 100%)',
       }}
     >
       <div className="relative z-10 max-w-6xl mx-auto text-center px-5 md:px-8">
         <FadeIn>
           <h2
-            className="font-heading text-[28px] md:text-[40px] font-semibold leading-[1.15] text-center mb-4"
-            style={{ color: '#ffffff', letterSpacing: '-0.4px' }}
+            className="font-heading text-[28px] md:text-[40px] lg:text-[48px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-4"
+            style={{ color: 'hsl(0, 0%, 100%)' }}
           >
             Real Results
           </h2>
@@ -84,12 +84,12 @@ const TestimonialSection = () => {
         <FadeIn delay={100}>
           <div className="mb-8" ref={statRef}>
             <div
-              className="font-mono text-6xl md:text-[100px] font-semibold tabular-nums leading-none"
-              style={{ color: '#ffffff' }}
+              className="font-mono text-6xl md:text-[100px] font-bold tabular-nums leading-none"
+              style={{ color: 'hsl(0, 0%, 100%)', textShadow: '0 0 40px hsla(0, 0%, 100%, 0.3)' }}
             >
               {noShowCount}%
             </div>
-            <p className="text-[17px] md:text-[19px] font-medium mt-2" style={{ color: 'hsla(0, 0%, 100%, 0.85)', letterSpacing: '-0.2px' }}>fewer no-shows on average</p>
+            <p className="text-base md:text-lg font-medium mt-2" style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}>fewer no-shows on average</p>
           </div>
         </FadeIn>
       </div>
