@@ -428,6 +428,9 @@
 /* Spring banner */
 @keyframes springBounce { 0%,100% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(-10deg) scale(1.1); } 75% { transform: rotate(10deg) scale(1.1); } }
 
+/* Pricing glow */
+@keyframes pricingGlowRotate { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+
 /* JARVIS Holographic Booking Demo */
 @keyframes jarvisFrameFloat { 0%, 100% { transform: translateY(0) rotateX(0deg); } 50% { transform: translateY(-8px) rotateX(1deg); } }
 @keyframes jarvisBracketPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
