@@ -6,7 +6,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Star, ChevronDown, X, Upload, ImageIcon, Settings2 } from "lucide-react";
+import {
+  Loader2,
+  Plus,
+  Trash2,
+  Star,
+  ChevronDown,
+  X,
+  ImageIcon,
+  Settings2,
+  Camera,
+  Sparkles,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import ServiceOptionsManager from "./ServiceOptionsManager";
 import AddOnsManager from "./AddOnsManager";
 
@@ -40,6 +58,9 @@ const ServicesManager = () => {
   const [customTitle, setCustomTitle] = useState("");
   const [optionsServiceId, setOptionsServiceId] = useState<string | null>(null);
   const [optionsServiceName, setOptionsServiceName] = useState("");
+  const [showScanDialog, setShowScanDialog] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scanPreview, setScanPreview] = useState<string | null>(null);
 
   const fetchServices = async () => {
     if (!user) return;
@@ -82,6 +103,98 @@ const ServicesManager = () => {
     else setServices((prev) => prev.filter((s) => s.id !== id));
   };
 
+  // Photo scan handler
+  const handlePhotoScan = async (file: File) => {
+    if (!user) return;
+    setScanning(true);
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => setScanPreview(e.target?.result as string);
+    reader.readAsDataURL(file);
+
+    try {
+      // Upload to storage first
+      const path = `${user.id}/scans/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from("user-photos").upload(path, file, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from("user-photos").getPublicUrl(path);
+
+      // Call AI edge function
+      const { data: session } = await supabase.auth.getSession();
+      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/scrape-price-list`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ imageUrl: publicUrl }),
+      });
+
+      if (!resp.ok) {
+        const errData = await resp.json().catch(() => ({}));
+        throw new Error(errData.error || `Failed (${resp.status})`);
+      }
+
+      const result = await resp.json();
+      const extracted = result.services || [];
+
+      if (extracted.length === 0) {
+        toast({ title: "No services found", description: "Couldn't identify services in this image. Try a clearer photo.", variant: "destructive" });
+        setScanning(false);
+        return;
+      }
+
+      // Create services + their options
+      let created = 0;
+      for (const svc of extracted) {
+        const { data: newService, error: svcErr } = await supabase.from("services").insert({
+          user_id: user.id,
+          title: svc.title,
+          description: svc.description || "",
+          price: svc.base_price || 0,
+          sort_order: services.length + created,
+        }).select().single();
+
+        if (svcErr || !newService) continue;
+        created++;
+
+        // Add options if present
+        if (svc.options && svc.options.length > 0) {
+          const { data: group } = await supabase.from("service_option_groups").insert({
+            service_id: newService.id,
+            user_id: user.id,
+            title: "Package Level",
+            option_type: "radio",
+            sort_order: 0,
+          }).select().single();
+
+          if (group) {
+            const items = svc.options.map((opt: any, i: number) => ({
+              group_id: group.id,
+              user_id: user.id,
+              label: opt.label,
+              description: opt.description || "",
+              price_modifier: opt.price || 0,
+              sort_order: i,
+            }));
+            await supabase.from("service_option_items").insert(items);
+          }
+        }
+      }
+
+      toast({ title: "Services imported!", description: `Added ${created} service${created !== 1 ? "s" : ""} from your photo.` });
+      fetchServices();
+      setShowScanDialog(false);
+      setScanPreview(null);
+    } catch (err: any) {
+      console.error("Scan error:", err);
+      toast({ title: "Scan failed", description: err.message || "Something went wrong", variant: "destructive" });
+    } finally {
+      setScanning(false);
+    }
+  };
+
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
 
   const existingTitles = new Set(services.map(s => s.title.toLowerCase()));
@@ -103,72 +216,120 @@ const ServicesManager = () => {
   return (
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-white">Services</h2>
-        <div className="relative">
-          <Button onClick={() => setShowAddMenu(!showAddMenu)} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
-            <Plus className="w-4 h-4" /> Add Service <ChevronDown className="w-3 h-3 ml-1" />
+        <h2 className="text-2xl font-bold text-foreground">Services</h2>
+        <div className="flex items-center gap-2">
+          {/* Photo scan button */}
+          <Button onClick={() => setShowScanDialog(true)} size="sm" variant="outline" className="gap-2 text-foreground">
+            <Camera className="w-4 h-4" /> Scan Price List
           </Button>
-          {showAddMenu && (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => { setShowAddMenu(false); setShowCustomInput(false); }} />
-              <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-white/10 shadow-xl z-50 py-2 overflow-hidden" style={{ background: "hsl(215 50% 12%)" }}>
-                {availablePresets.map((preset) => (
-                  <button
-                    key={preset.title}
-                    onClick={() => addPresetService(preset)}
-                    className="w-full text-left px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-                  >
-                    {preset.title}
-                  </button>
-                ))}
-                {availablePresets.length > 0 && <div className="border-t border-white/10 my-1" />}
-                {!showCustomInput ? (
-                  <button
-                    onClick={() => setShowCustomInput(true)}
-                    className="w-full text-left px-4 py-2.5 text-sm text-accent hover:bg-white/10 transition-colors flex items-center gap-2"
-                  >
-                    <Plus className="w-3 h-3" /> Custom Service
-                  </button>
-                ) : (
-                  <div className="px-3 py-2 flex gap-2">
-                    <Input
-                      value={customTitle}
-                      onChange={(e) => setCustomTitle(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && addCustomService()}
-                      placeholder="Service name…"
-                      className="h-8 bg-white/5 border-white/10 text-white text-sm focus-visible:ring-accent"
-                      autoFocus
-                    />
-                    <Button onClick={addCustomService} size="sm" className="h-8 px-3 shrink-0" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
-                      Add
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
+          <div className="relative">
+            <Button onClick={() => setShowAddMenu(!showAddMenu)} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+              <Plus className="w-4 h-4" /> Add Service <ChevronDown className="w-3 h-3 ml-1" />
+            </Button>
+            {showAddMenu && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => { setShowAddMenu(false); setShowCustomInput(false); }} />
+                <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-border shadow-xl z-50 py-2 overflow-hidden bg-popover">
+                  {availablePresets.map((preset) => (
+                    <button
+                      key={preset.title}
+                      onClick={() => addPresetService(preset)}
+                      className="w-full text-left px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/10 transition-colors"
+                    >
+                      {preset.title}
+                    </button>
+                  ))}
+                  {availablePresets.length > 0 && <div className="border-t border-border my-1" />}
+                  {!showCustomInput ? (
+                    <button
+                      onClick={() => setShowCustomInput(true)}
+                      className="w-full text-left px-4 py-2.5 text-sm text-primary hover:bg-accent/10 transition-colors flex items-center gap-2"
+                    >
+                      <Plus className="w-3 h-3" /> Custom Service
+                    </button>
+                  ) : (
+                    <div className="px-3 py-2 flex gap-2">
+                      <Input
+                        value={customTitle}
+                        onChange={(e) => setCustomTitle(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && addCustomService()}
+                        placeholder="Service name…"
+                        className="h-8 text-foreground text-sm"
+                        autoFocus
+                      />
+                      <Button onClick={addCustomService} size="sm" className="h-8 px-3 shrink-0" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+                        Add
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Photo Scan Dialog */}
+      <Dialog open={showScanDialog} onOpenChange={(o) => { setShowScanDialog(o); if (!o) { setScanPreview(null); setScanning(false); } }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-500" /> Scan Your Price List
+            </DialogTitle>
+            <DialogDescription>
+              Upload or take a photo of your price list, menu, or flyer. We'll automatically extract your services, packages, and pricing.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            {scanning ? (
+              <div className="flex flex-col items-center gap-4 py-8">
+                {scanPreview && (
+                  <img src={scanPreview} alt="Scanning" className="w-32 h-32 object-cover rounded-xl opacity-60" />
+                )}
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <p className="text-sm text-muted-foreground">Analyzing your price list…</p>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center gap-3 border-2 border-dashed border-border rounded-xl p-10 cursor-pointer hover:border-primary/40 transition-colors">
+                <Camera className="w-10 h-10 text-muted-foreground/40" />
+                <span className="text-sm font-medium text-foreground">Tap to upload or take a photo</span>
+                <span className="text-xs text-muted-foreground">JPG, PNG, or HEIC</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handlePhotoScan(file);
+                  }}
+                />
+              </label>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="space-y-4">
         {services.map((service) => (
-          <div key={service.id} className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-4">
+          <div key={service.id} className="rounded-xl border border-border bg-card p-5 space-y-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 space-y-3">
                 {/* Image upload */}
                 <div className="flex items-center gap-3">
                   {service.image_url ? (
                     <div className="relative group">
-                      <img src={service.image_url} alt={service.title} className="w-16 h-16 rounded-lg object-cover border border-white/10" />
+                      <img src={service.image_url} alt={service.title} className="w-16 h-16 rounded-lg object-cover border border-border" />
                       <button
                         onClick={() => updateService(service.id, { image_url: null } as any)}
-                        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         <X className="w-3 h-3" />
                       </button>
                     </div>
                   ) : (
-                    <label className="w-16 h-16 rounded-lg border-2 border-dashed border-white/10 flex items-center justify-center cursor-pointer hover:border-accent/40 transition-colors shrink-0">
-                      <ImageIcon className="w-5 h-5 text-white/20" />
+                    <label className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/40 transition-colors shrink-0">
+                      <ImageIcon className="w-5 h-5 text-muted-foreground/40" />
                       <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (!file || !user) return;
@@ -183,52 +344,52 @@ const ServicesManager = () => {
                   <Input
                     value={service.title}
                     onChange={(e) => updateService(service.id, { title: e.target.value })}
-                    className="h-10 bg-white/5 border-white/10 text-white font-semibold focus-visible:ring-accent"
+                    className="h-10 text-foreground font-semibold"
                   />
                 </div>
                 <Textarea
                   value={service.description}
                   onChange={(e) => updateService(service.id, { description: e.target.value })}
                   placeholder="Description…"
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent min-h-[60px]"
+                  className="text-foreground placeholder:text-muted-foreground/40 min-h-[60px]"
                 />
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="flex items-center gap-2">
-                    <Label className="text-white/50 text-xs">Price $</Label>
+                    <Label className="text-muted-foreground text-xs">Price $</Label>
                     <Input
                       type="number"
                       value={service.price}
                       onChange={(e) => updateService(service.id, { price: parseFloat(e.target.value) || 0 })}
-                      className="w-28 h-9 bg-white/5 border-white/10 text-white focus-visible:ring-accent"
+                      className="w-28 h-9 text-foreground"
                     />
                   </div>
                   <button
                     onClick={() => updateService(service.id, { popular: !service.popular })}
-                    className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors ${service.popular ? "bg-accent/20 text-accent" : "bg-white/5 text-white/40 hover:text-white/60"}`}
+                    className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors ${service.popular ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground hover:text-foreground"}`}
                   >
                     <Star className="w-3 h-3" /> Popular
                   </button>
                   <button
                     onClick={() => { setOptionsServiceId(service.id); setOptionsServiceName(service.title); }}
-                    className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors bg-white/5 text-white/40 hover:text-white/60"
+                    className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors bg-muted text-muted-foreground hover:text-foreground"
                   >
                     <Settings2 className="w-3 h-3" /> Options
                   </button>
                 </div>
               </div>
-              <button onClick={() => deleteService(service.id)} className="text-white/30 hover:text-red-400 transition-colors p-1">
+              <button onClick={() => deleteService(service.id)} className="text-muted-foreground/30 hover:text-destructive transition-colors p-1">
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>
           </div>
         ))}
         {services.length === 0 && (
-          <p className="text-center text-white/30 py-8 text-sm">No services yet. Add your first service above.</p>
+          <p className="text-center text-muted-foreground/50 py-8 text-sm">No services yet. Add your first service above.</p>
         )}
       </div>
 
       {/* Add-ons section */}
-      <div id="add-ons" className="mt-10 pt-8 border-t border-white/10">
+      <div id="add-ons" className="mt-10 pt-8 border-t border-border">
         <AddOnsManager />
       </div>
     </div>
