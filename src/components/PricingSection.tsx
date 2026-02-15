@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronRight } from "lucide-react";
+import { Check, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
@@ -28,6 +28,7 @@ const plan = {
 
 const PricingSection = () => {
   const [annual, setAnnual] = useState(true);
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
   const { openFunnel } = useSurveyFunnel();
 
   const price = annual ? plan.annualPrice : plan.monthlyPrice;
@@ -103,13 +104,26 @@ const PricingSection = () => {
                   </div>
 
                   <ul className="mt-6 space-y-3 flex-1">
-                    {plan.features.map((feature) => (
+                    {(showAllFeatures ? plan.features : plan.features.slice(0, 5)).map((feature) => (
                       <li key={feature} className="flex items-start gap-2.5 text-[15px]">
                         <Check className="w-4 h-4 flex-shrink-0 mt-0.5 text-accent" />
                         <span className="text-muted-foreground">{feature}</span>
                       </li>
                     ))}
                   </ul>
+
+                  {plan.features.length > 5 && (
+                    <button
+                      onClick={() => setShowAllFeatures(!showAllFeatures)}
+                      className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-accent hover:text-accent/80 transition-colors"
+                    >
+                      {showAllFeatures ? (
+                        <>View less <ChevronUp className="w-4 h-4" /></>
+                      ) : (
+                        <>View more <ChevronDown className="w-4 h-4" /></>
+                      )}
+                    </button>
+                  )}
 
                   <div className="mt-4 pt-4 border-t border-border text-xs text-muted-foreground">
                     {plan.bottomFeature}
