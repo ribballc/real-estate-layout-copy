@@ -120,55 +120,29 @@ const ValueBreakdown = () => {
           </div>
         </FadeIn>
 
-        {/* Your Cost Box */}
-        <FadeIn delay={400}>
-          <div
-            className="rounded-xl px-6 py-5 mb-8"
-            style={{
-              background: "hsla(160, 84%, 39%, 0.1)",
-              border: "2px solid hsl(160, 84%, 39%)",
-            }}
-          >
-            <p className="text-lg md:text-xl font-medium" style={{ color: "hsl(0, 0%, 100%)" }}>
-              Your Cost:{" "}
-              <span
-                className="font-bold text-xl md:text-2xl"
-                style={{ color: "hsl(160, 84%, 39%)" }}
-              >
-                $0 upfront
-              </span>{" "}
-              +{" "}
-              <span className="font-semibold" style={{ color: "hsl(45, 93%, 56%)" }}>
-                $64/month hosting
-              </span>
-            </p>
-          </div>
-        </FadeIn>
-
         {/* CTA Message */}
-        <FadeIn delay={450}>
+        <FadeIn delay={400}>
           <p
             className="text-base md:text-lg leading-relaxed mb-8"
             style={{ color: "hsla(0, 0%, 100%, 0.9)" }}
           >
-            Yeah, we're serious. Scroll back up if you want
-            <br className="hidden md:block" /> to stop losing $1,200/month to missed calls.
+            Yeah.. it's that good.
           </p>
         </FadeIn>
 
         {/* CTA Button */}
-        <FadeIn delay={500}>
+        <FadeIn delay={450}>
           <button
             onClick={openFunnel}
-            className="inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 w-full md:w-auto justify-center"
+            className="group inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-4 text-base min-h-[48px] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 w-full md:w-auto justify-center"
             style={{
-              background: "linear-gradient(135deg, hsl(160, 84%, 39%) 0%, hsl(160, 64%, 30%) 100%)",
-              color: "hsl(222, 47%, 11%)",
-              boxShadow: "0 4px 20px hsla(160, 84%, 39%, 0.3)",
+              background: "linear-gradient(135deg, hsl(217, 91%, 60%) 0%, hsl(217, 91%, 50%) 100%)",
+              color: "hsl(0, 0%, 100%)",
+              boxShadow: "0 4px 20px hsla(217, 91%, 60%, 0.3)",
             }}
           >
-            Get My Free Website
-            <ChevronRight className="w-5 h-5" />
+            Claim Now
+            <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
           </button>
         </FadeIn>
       </div>
