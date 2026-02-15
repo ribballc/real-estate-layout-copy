@@ -1,5 +1,6 @@
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 import FadeIn from "@/components/FadeIn";
+import darkerLogo from "@/assets/darker-logo.png";
 
 const CtaFooter = () => {
   const { openFunnel } = useSurveyFunnel();
@@ -16,7 +17,7 @@ const CtaFooter = () => {
               Ready to Stop Missing Jobs?
             </h2>
             <p className="text-base md:text-lg leading-relaxed text-primary-foreground/70 max-w-[600px] mx-auto mb-8">
-              Your website can be live in 48 hours. Join 200+ detailers already using Velarrio.
+              Your website can be live in 48 hours. Join 200+ detailers already using Darker.
             </p>
           </FadeIn>
           <button
@@ -47,13 +48,13 @@ const CtaFooter = () => {
 
           <div className="border-t border-primary-foreground/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex flex-col items-center md:items-start gap-1">
-              <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">velarrio</h2>
+              <img src={darkerLogo} alt="Darker" className="h-7" />
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-sm text-primary-foreground/35">
               <a href="#" className="hover:text-primary-foreground transition-colors">Privacy Policy</a>
               <a href="#" className="hover:text-primary-foreground transition-colors">Terms of Use</a>
             </div>
-            <p className="text-xs text-primary-foreground/20">© 2026 Velarrio. All rights reserved.</p>
+            <p className="text-xs text-primary-foreground/20">© 2026 Darker. All rights reserved.</p>
           </div>
         </div>
       </footer>

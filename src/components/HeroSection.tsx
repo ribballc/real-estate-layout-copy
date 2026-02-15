@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import darkerLogo from "@/assets/darker-logo.png";
 import { ChevronRight, Store, ChevronDown } from "lucide-react";
 import PremiumBookingDemo from "@/components/PremiumBookingDemo";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
@@ -50,7 +51,7 @@ const HeroSection = () => {
           opacity: 0,
           animation: 'heroFadeScale 0.5s ease-out 0s forwards',
         }}>
-          <h2 className="text-xl font-heading font-bold text-primary-foreground tracking-tight">velarrio</h2>
+          <img src={darkerLogo} alt="Darker" className="h-7" />
         </div>
 
         {/* Two-column grid */}
@@ -177,7 +178,7 @@ const HeroSection = () => {
             >
               <span className="text-accent text-sm tracking-wide">★★★★★</span>
               <span className="font-semibold">
-                Trusted by <strong>200+</strong> detailers · <strong>$2.4M</strong> in bookings captured
+              Trusted by <strong>200+</strong> detailers · <strong>$2.4M</strong> in bookings captured
               </span>
             </div>
           </div>

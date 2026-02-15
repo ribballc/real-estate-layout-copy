@@ -9,7 +9,7 @@ const faqs = [
   },
   {
     question: "Do I need any tech skills?",
-    answer: "Zero. We handle everything from setup to launch. If you can send a text message, you can manage your Velarrio dashboard. We also provide hands-on support if you ever get stuck.",
+    answer: "Zero. We handle everything from setup to launch. If you can send a text message, you can manage your Darker dashboard. We also provide hands-on support if you ever get stuck.",
   },
   {
     question: "How does the deposit system work?",
