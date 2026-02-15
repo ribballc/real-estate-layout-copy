@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Car, Truck, ArrowLeft, ArrowRight } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
@@ -10,6 +10,8 @@ const BookVehicle = () => {
   const [year, setYear] = useState("");
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const availableModels = useMemo(() => {
     if (!make) return [];
@@ -17,6 +19,17 @@ const BookVehicle = () => {
   }, [make]);
 
   const canContinue = !!(year && make && model);
+
+  const carImageUrl = useMemo(() => {
+    if (!year || !make || !model) return null;
+    const encodedModel = model.replace(/\s+/g, "+");
+    return `https://cdn.imagin.studio/getimage?customer=hrjavascript-masede&make=${encodeURIComponent(make)}&modelFamily=${encodedModel}&modelYear=${year}&angle=01`;
+  }, [year, make, model]);
+
+  useEffect(() => {
+    setImageLoaded(false);
+    setImageError(false);
+  }, [year, make, model]);
 
   const handleMakeChange = (val: string) => {
     setMake(val);
@@ -118,28 +131,54 @@ const BookVehicle = () => {
           </div>
         </FadeIn>
 
-        {/* Right — vehicle silhouette */}
+        {/* Right — vehicle image */}
         <FadeIn delay={200}>
           <div className="flex-1 flex flex-col items-center justify-center min-h-[260px]">
-            <svg
-              viewBox="0 0 400 160"
-              className="w-full max-w-[320px] opacity-20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M40 120 C40 120 50 60 120 50 C160 44 200 40 240 44 C300 50 340 70 360 90 L380 100 C390 104 390 116 380 118 L360 120 L340 120 C340 106 328 94 314 94 C300 94 288 106 288 120 L140 120 C140 106 128 94 114 94 C100 94 88 106 88 120 Z"
-                fill="currentColor"
-                className="text-muted-foreground"
+            {/* Hidden img to preload */}
+            {carImageUrl && !imageError && (
+              <img
+                src={carImageUrl}
+                alt={`${year} ${make} ${model}`}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)}
+                className="hidden"
               />
-              <circle cx="114" cy="120" r="18" fill="currentColor" className="text-muted-foreground" />
-              <circle cx="114" cy="120" r="10" fill="hsl(210 40% 98%)" />
-              <circle cx="314" cy="120" r="18" fill="currentColor" className="text-muted-foreground" />
-              <circle cx="314" cy="120" r="10" fill="hsl(210 40% 98%)" />
-            </svg>
-            <p className="text-sm text-muted-foreground mt-4 text-center max-w-[240px] leading-relaxed">
-              Use the categories on the left to find your vehicle
-            </p>
+            )}
+
+            {canContinue && imageLoaded && !imageError ? (
+              <div className="flex flex-col items-center animate-in fade-in zoom-in-95 duration-500">
+                <img
+                  src={carImageUrl!}
+                  alt={`${year} ${make} ${model}`}
+                  className="w-full max-w-[360px] drop-shadow-[0_8px_24px_hsl(var(--accent)/0.3)]"
+                />
+                <p className="text-sm font-medium text-foreground mt-4">
+                  {year} {make} {model}
+                </p>
+              </div>
+            ) : (
+              <>
+                <svg
+                  viewBox="0 0 400 160"
+                  className="w-full max-w-[320px] opacity-20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M40 120 C40 120 50 60 120 50 C160 44 200 40 240 44 C300 50 340 70 360 90 L380 100 C390 104 390 116 380 118 L360 120 L340 120 C340 106 328 94 314 94 C300 94 288 106 288 120 L140 120 C140 106 128 94 114 94 C100 94 88 106 88 120 Z"
+                    fill="currentColor"
+                    className="text-muted-foreground"
+                  />
+                  <circle cx="114" cy="120" r="18" fill="currentColor" className="text-muted-foreground" />
+                  <circle cx="114" cy="120" r="10" fill="hsl(210 40% 98%)" />
+                  <circle cx="314" cy="120" r="18" fill="currentColor" className="text-muted-foreground" />
+                  <circle cx="314" cy="120" r="10" fill="hsl(210 40% 98%)" />
+                </svg>
+                <p className="text-sm text-muted-foreground mt-4 text-center max-w-[240px] leading-relaxed">
+                  Use the categories on the left to find your vehicle
+                </p>
+              </>
+            )}
           </div>
         </FadeIn>
       </div>
