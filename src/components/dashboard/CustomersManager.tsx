@@ -11,9 +11,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   Loader2, Plus, Phone, Mail, Search, User, Car, DollarSign,
-  FileText, X, ChevronDown, Filter, MoreHorizontal, Calendar,
+  FileText, X, ChevronDown, Filter, MoreHorizontal, Calendar, Upload, Building2,
 } from "lucide-react";
 import { format } from "date-fns";
+import CsvImportModal from "./CsvImportModal";
 
 interface Customer {
   id: string;
@@ -38,6 +39,17 @@ const statusStyles: Record<string, string> = {
   inactive: "bg-white/10 text-white/40 border-white/10",
 };
 
+const CUSTOMER_FIELDS = [
+  { key: "name", label: "Name", required: true },
+  { key: "email", label: "Email" },
+  { key: "phone", label: "Phone" },
+  { key: "vehicle", label: "Vehicle" },
+  { key: "notes", label: "Notes" },
+  { key: "status", label: "Status" },
+  { key: "total_spent", label: "Total Spent" },
+  { key: "total_bookings", label: "Total Bookings" },
+];
+
 const CustomersManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -48,6 +60,8 @@ const CustomersManager = () => {
   const [showAdd, setShowAdd] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [showCsvImport, setShowCsvImport] = useState(false);
+  const [showGmbImport, setShowGmbImport] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", vehicle: "", notes: "", status: "lead" });
 
   const fetchCustomers = async () => {
@@ -118,6 +132,24 @@ const CustomersManager = () => {
     setDeleteId(null);
   };
 
+  const handleCsvImport = async (rows: Record<string, string>[]) => {
+    if (!user) return;
+    const records = rows.map(row => ({
+      user_id: user.id,
+      name: row.name || "",
+      email: row.email || "",
+      phone: row.phone || "",
+      vehicle: row.vehicle || "",
+      notes: row.notes || "",
+      status: row.status && STATUS_OPTIONS.includes(row.status.toLowerCase() as any) ? row.status.toLowerCase() : "lead",
+      total_spent: parseFloat(row.total_spent) || 0,
+      total_bookings: parseInt(row.total_bookings) || 0,
+    }));
+    const { error } = await supabase.from("customers").insert(records);
+    if (error) throw error;
+    fetchCustomers();
+  };
+
   const stats = useMemo(() => ({
     total: customers.length,
     active: customers.filter(c => c.status === "active").length,
@@ -164,6 +196,12 @@ const CustomersManager = () => {
             <option value="all">All Status</option>
             {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[hsl(215,50%,10%)]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
           </select>
+          <Button onClick={() => setShowCsvImport(true)} size="sm" variant="outline" className="gap-2 h-10 border-white/10 text-white/70 hover:text-white hover:bg-white/5">
+            <Upload className="w-4 h-4" /> CSV
+          </Button>
+          <Button onClick={() => setShowGmbImport(true)} size="sm" variant="outline" className="gap-2 h-10 border-white/10 text-white/70 hover:text-white hover:bg-white/5">
+            <Building2 className="w-4 h-4" /> GMB
+          </Button>
           <Button onClick={() => { resetForm(); setShowAdd(true); }} size="sm" className="gap-2 h-10 px-4" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
             <Plus className="w-4 h-4" /> Add
           </Button>
@@ -181,7 +219,6 @@ const CustomersManager = () => {
           {filtered.map(c => (
             <div key={c.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-white/20 transition-colors">
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                {/* Avatar & info */}
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
                     <span className="text-accent font-semibold text-sm">{c.name.charAt(0).toUpperCase()}</span>
@@ -194,23 +231,13 @@ const CustomersManager = () => {
                       </span>
                     </div>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
-                      {c.vehicle && (
-                        <span className="text-white/40 text-xs flex items-center gap-1"><Car className="w-3 h-3" /> {c.vehicle}</span>
-                      )}
-                      {c.total_bookings > 0 && (
-                        <span className="text-white/40 text-xs flex items-center gap-1"><Calendar className="w-3 h-3" /> {c.total_bookings} bookings</span>
-                      )}
-                      {c.total_spent > 0 && (
-                        <span className="text-white/40 text-xs flex items-center gap-1"><DollarSign className="w-3 h-3" /> ${c.total_spent}</span>
-                      )}
-                      {c.last_service_date && (
-                        <span className="text-white/40 text-xs">Last: {format(new Date(c.last_service_date), "MMM d, yyyy")}</span>
-                      )}
+                      {c.vehicle && <span className="text-white/40 text-xs flex items-center gap-1"><Car className="w-3 h-3" /> {c.vehicle}</span>}
+                      {c.total_bookings > 0 && <span className="text-white/40 text-xs flex items-center gap-1"><Calendar className="w-3 h-3" /> {c.total_bookings} bookings</span>}
+                      {c.total_spent > 0 && <span className="text-white/40 text-xs flex items-center gap-1"><DollarSign className="w-3 h-3" /> ${c.total_spent}</span>}
+                      {c.last_service_date && <span className="text-white/40 text-xs">Last: {format(new Date(c.last_service_date), "MMM d, yyyy")}</span>}
                     </div>
                   </div>
                 </div>
-
-                {/* Actions */}
                 <div className="flex items-center gap-1.5 shrink-0">
                   {c.phone && (
                     <a href={`tel:${c.phone}`} className="w-9 h-9 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 flex items-center justify-center text-emerald-400 transition-colors" title="Call">
@@ -222,7 +249,6 @@ const CustomersManager = () => {
                       <Mail className="w-4 h-4" />
                     </a>
                   )}
-                  {/* Status quick-change */}
                   <select
                     value={c.status}
                     onChange={e => updateStatus(c.id, e.target.value)}
@@ -238,10 +264,7 @@ const CustomersManager = () => {
                   </button>
                 </div>
               </div>
-              {/* Notes preview */}
-              {c.notes && (
-                <p className="text-white/30 text-xs mt-2 pl-[52px] line-clamp-1">{c.notes}</p>
-              )}
+              {c.notes && <p className="text-white/30 text-xs mt-2 pl-[52px] line-clamp-1">{c.notes}</p>}
             </div>
           ))}
         </div>
@@ -289,6 +312,35 @@ const CustomersManager = () => {
           </div>
         </div>
       )}
+
+      {/* CSV Import */}
+      <CsvImportModal
+        open={showCsvImport}
+        onClose={() => setShowCsvImport(false)}
+        onImport={handleCsvImport}
+        targetFields={CUSTOMER_FIELDS}
+        title="Import Customers from CSV"
+      />
+
+      {/* GMB Import Modal */}
+      {showGmbImport && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+            <div className="flex items-center justify-between">
+              <h3 className="text-white font-semibold text-lg">Import from Google My Business</h3>
+              <button onClick={() => setShowGmbImport(false)} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <p className="text-white/50 text-sm">Import your customer list directly from Google My Business.</p>
+            <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
+              <p className="text-amber-400 text-xs">⚠️ Google My Business integration requires API credentials to be configured. Please contact support to enable this feature.</p>
+            </div>
+            <Button disabled className="w-full h-11 gap-2 opacity-50" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+              <Building2 className="w-4 h-4" /> Connect Google My Business
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Delete confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent className="border-white/10" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>

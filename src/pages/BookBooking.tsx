@@ -1,26 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Clock } from "lucide-react";
+import { ArrowRight, Clock, Ban } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
 import { Calendar } from "@/components/ui/calendar";
+import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
 
 const timeSlots = [
-  "8:00 AM",
-  "9:00 AM",
-  "10:00 AM",
-  "11:00 AM",
-  "12:00 PM",
-  "1:00 PM",
-  "2:00 PM",
-  "3:00 PM",
-  "4:00 PM",
+  "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
+  "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM",
 ];
 
 const BookBooking = () => {
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [blockedDates, setBlockedDates] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const fetchBlockedDays = async () => {
+      const { data } = await supabase
+        .from("blocked_days")
+        .select("blocked_date");
+      if (data) {
+        setBlockedDates(new Set(data.map(d => d.blocked_date)));
+      }
+    };
+    fetchBlockedDays();
+  }, []);
+
+  const isDateBlocked = (date: Date) => {
+    return blockedDates.has(format(date, "yyyy-MM-dd"));
+  };
 
   const handleContinue = () => {
     if (selectedDate && selectedTime) {
@@ -37,16 +49,13 @@ const BookBooking = () => {
       </FadeIn>
 
       <div className="space-y-8">
-        {/* Time Slot heading */}
         <FadeIn delay={100}>
           <h2 className="font-heading text-xl md:text-2xl font-semibold text-foreground">
             Time Slot
           </h2>
         </FadeIn>
 
-        {/* Calendar + Time slots side by side on desktop */}
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Calendar */}
           <FadeIn delay={150}>
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-foreground">Select a Date</h3>
@@ -54,15 +63,18 @@ const BookBooking = () => {
                 <Calendar
                   mode="single"
                   selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  disabled={{ before: new Date() }}
+                  onSelect={(date) => {
+                    if (date && !isDateBlocked(date)) {
+                      setSelectedDate(date);
+                    }
+                  }}
+                  disabled={(date) => date < new Date() || isDateBlocked(date)}
                   className="pointer-events-auto"
                 />
               </div>
             </div>
           </FadeIn>
 
-          {/* Time slots */}
           {selectedDate && (
             <FadeIn delay={50}>
               <div className="space-y-3 md:pt-0">
@@ -90,7 +102,6 @@ const BookBooking = () => {
           )}
         </div>
 
-        {/* Continue button */}
         {selectedDate && selectedTime && (
           <FadeIn delay={50}>
             <button
