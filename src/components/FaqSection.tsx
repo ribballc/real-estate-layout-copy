@@ -5,39 +5,27 @@ import FadeIn from "@/components/FadeIn";
 const faqs = [
   {
     question: "How long does it take to get my website live?",
-    answer: "Your website is ready in 5 minutes after you complete the signup form. We use smart templates designed specifically for mobile detailers, so there's zero wait time.",
+    answer: "48 hours or less. Once you tell us about your shop — services, hours, location — we build everything: your website, booking calendar, SMS reminders, and deposit collection. You'll be taking online bookings by the weekend.",
   },
   {
     question: "Do I need any tech skills?",
-    answer: "None. We build everything for you. You just tell us your business name, services, and location. We handle the rest.",
-  },
-  {
-    question: "How does the 14-day free trial work?",
-    answer: "Start your trial instantly. No credit card required until day 14. Use the full system, get bookings, collect deposits. If you don't love it, cancel anytime with 2 clicks.",
-  },
-  {
-    question: "Can I cancel anytime?",
-    answer: "Yes. Cancel anytime from your dashboard in 2 clicks. No contracts, no commitments, no hassle.",
-  },
-  {
-    question: "What if I already have a website?",
-    answer: "Keep it or replace it — your choice. Most detailers replace their old site because ours books jobs automatically and looks more professional. We can also add a booking calendar to your existing site.",
+    answer: "Zero. We handle everything from setup to launch. If you can send a text message, you can manage your Velarrio dashboard. We also provide hands-on support if you ever get stuck.",
   },
   {
     question: "How does the deposit system work?",
-    answer: "Customers pay a deposit ($50-100, you choose) when they book. This filters out tire-kickers and cuts no-shows by 40%. Deposits are automatically applied to the final invoice.",
+    answer: "When customers book, they pay a deposit ($50–$100, you choose the amount) upfront via card. This filters out tire-kickers and protects you from no-shows. If they don't show, you keep the deposit. Payments hit your bank account next business day.",
   },
   {
-    question: "What's included in the $64/mo?",
-    answer: "Everything: Website, booking calendar, SMS reminders, deposit collection, route optimization, client database, review automation, and priority support. Only additional cost is payment processing (2.9% + 30¢ per transaction).",
+    question: "What if I already have a website?",
+    answer: "No problem. We can either replace your existing site or add our booking system alongside it. Most detailers find our done-for-you website outperforms what they were paying $100–$150/month for elsewhere.",
   },
   {
-    question: "Do you take a percentage of my bookings?",
-    answer: "Never. We don't touch your money. You pay $64/mo flat, plus standard payment processing fees (same as Stripe/Square). We make money when you subscribe, not when you get paid.",
+    question: "Can I cancel anytime?",
+    answer: "Yes — cancel in 2 clicks from your dashboard. No contracts, no cancellation fees, no questions asked. You also get a full 14-day free trial before you're ever charged.",
   },
   {
-    question: "What if I don't get any bookings?",
-    answer: "We offer a First Booking Guarantee. If you don't get your first booking within 30 days, we'll refund everything. Zero risk.",
+    question: "How does the 14-day free trial work?",
+    answer: "Sign up, get your website built, and start taking bookings — all without entering a credit card. After 14 days, pick the plan that fits. If it's not for you, just walk away. No charge, no hassle.",
   },
 ];
 

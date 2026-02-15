@@ -94,34 +94,15 @@ const HeroSection = () => {
 
               {/* Sub-headline */}
               <p
-                className="mt-5 text-[20px] md:text-2xl font-semibold leading-[1.4] max-w-[600px] text-left"
+                className="mt-5 text-[15px] md:text-xl leading-[1.6] max-w-[600px] text-left"
                 style={{
-                  color: 'hsla(0, 0%, 100%, 0.85)',
+                  color: 'hsla(0, 0%, 100%, 0.7)',
                   opacity: 0,
                   animation: 'heroBlurIn 0.5s ease-out 1.0s forwards',
                 }}
               >
-                Get Bookings 24/7 — <span className="text-accent text-[24px] md:text-[32px] font-bold">FREE</span>
+                Get a professional website with 24/7 booking. Customers book themselves while you're in the field. Automated reminders, deposits, and a calendar that fills itself.
               </p>
-
-              {/* Bullets */}
-              <div
-                className="mt-5 space-y-2 max-w-[520px]"
-                style={{ opacity: 0, animation: 'heroBlurIn 0.5s ease-out 1.1s forwards' }}
-              >
-                <p className="text-[15px] md:text-base flex items-start gap-2" style={{ color: 'hsla(0, 0%, 100%, 0.75)' }}>
-                  <span className="text-accent flex-shrink-0">✓</span>
-                  Professional website + booking system (normally $2,997) — yours free
-                </p>
-                <p className="text-[15px] md:text-base flex items-start gap-2" style={{ color: 'hsla(0, 0%, 100%, 0.75)' }}>
-                  <span className="text-accent flex-shrink-0">✓</span>
-                  Live in 5 minutes
-                </p>
-                <p className="text-[15px] md:text-base flex items-start gap-2" style={{ color: 'hsla(0, 0%, 100%, 0.75)' }}>
-                  <span className="text-accent flex-shrink-0">✓</span>
-                  Join <span className="relative inline-flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> 200+ detailers</span> using Velarrio
-                </p>
-              </div>
 
               {/* Business name form + CTA */}
               <form
@@ -166,23 +147,11 @@ const HeroSection = () => {
                     animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
                   }}
                 >
-                  Get My Free Website
+                  Activate My Free Website
                   <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
               </form>
               {error && <p className="text-sm text-destructive mt-2 text-center lg:text-left">{error}</p>}
-
-              {/* Below CTA text */}
-              <p
-                className="mt-3 text-[13px] text-center lg:text-left"
-                style={{
-                  color: 'hsla(0, 0%, 100%, 0.45)',
-                  opacity: 0,
-                  animation: 'fadeSlideUp 0.4s ease-out 1.6s forwards',
-                }}
-              >
-                Try free for 14 days • Keep it if you love it • Cancel anytime
-              </p>
 
               {/* Trust line */}
               <div
@@ -193,11 +162,11 @@ const HeroSection = () => {
                   animation: 'fadeSlideUp 0.4s ease-out 1.8s forwards',
                 }}
               >
-                <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Live in 5 minutes</span>
+                <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Built in 5 minutes</span>
                 <span className="text-primary-foreground/20">•</span>
                 <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Free for 14 days</span>
                 <span className="text-primary-foreground/20">•</span>
-                <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> No tech skills needed</span>
+                <span className="text-sm font-medium flex items-center gap-1.5"><span className="text-accent">✓</span> Cancel anytime</span>
               </div>
 
               {/* Social proof */}
@@ -211,7 +180,7 @@ const HeroSection = () => {
               >
                 <span className="text-accent text-sm tracking-wide">★★★★★</span>
                 <span className="font-semibold">
-                  Trusted by <span className="relative inline-flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />200+</span> detailers · <strong>$2.4M</strong> in bookings captured
+                  Trusted by <strong>200+</strong> detailers · <strong>$2.4M</strong> in bookings captured
                 </span>
               </div>
             </div>
@@ -251,7 +220,7 @@ const HeroSection = () => {
               background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
             }}
           >
-            Start Free Trial →
+            Activate My Free Website →
           </button>
         </div>
       )}

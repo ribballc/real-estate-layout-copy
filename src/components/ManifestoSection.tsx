@@ -4,18 +4,18 @@ import FadeIn from "@/components/FadeIn";
 const pillars = [
   {
     icon: Shield,
-    title: "Get Paid What You're Worth",
-    copy: "Your work is flawless. Your tools should be too. Stop losing money to missed calls and no-shows.",
+    title: "Demand Excellence",
+    copy: "Your work is flawless. Your tools should be too.",
   },
   {
     icon: Zap,
-    title: "Stop Chasing Bookings",
-    copy: "Every minute chasing bookings is money lost. Every minute detailing is money earned. Let the system work for you.",
+    title: "Value Your Time",
+    copy: "Every minute detailing is money earned. Every minute chasing bookings is money lost.",
   },
   {
     icon: TrendingUp,
-    title: "Scale Past $15k/Month",
-    copy: "You're not a side hustle. You're a professional building something real. Get the system that grows with you.",
+    title: "Build a Business",
+    copy: "You're not a side hustle. You're a professional building something real.",
   },
 ];
 

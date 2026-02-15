@@ -14,9 +14,9 @@ const withVelarrio = [
   "Done-for-you website + booking calendar in one",
   "Customers book and pay deposits 24/7",
   "Auto SMS reminders cut no-shows by 40%",
-  "Route optimization saves 45-90 min/day",
+  "Route optimization saves 45-90 min/day (Pro)",
   "Deposit protection filters out tire-kickers",
-  "Live in 5 minutes — zero tech skills needed",
+  "Live in 48 hours — zero tech skills needed",
 ];
 
 const FunnelSection = () => {
@@ -57,7 +57,7 @@ const FunnelSection = () => {
               border: '1px solid hsla(217, 91%, 60%, 0.2)',
               boxShadow: '0 8px 32px hsla(217, 91%, 60%, 0.15)',
             }}>
-              <h3 className="text-lg font-semibold text-sky mb-6">With Velarrio — from $64/mo</h3>
+              <h3 className="text-lg font-semibold text-sky mb-6">With Velarrio — from $35/mo</h3>
               <ul className="space-y-0">
                 {withVelarrio.map((item, i) => (
                   <li key={i} className={`flex items-start gap-3 py-3 leading-relaxed ${i < withVelarrio.length - 1 ? "border-b border-primary-foreground/10" : ""}`}>

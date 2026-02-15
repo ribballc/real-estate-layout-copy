@@ -30,7 +30,7 @@ const HowItWorksSection = () => {
       <div className="max-w-6xl mx-auto">
         <FadeIn>
           <h2 className="font-heading text-[28px] md:text-[48px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground text-center mb-3">
-            Live in 5 Minutes
+            Live in 48 Hours
           </h2>
           <p className="text-base md:text-lg text-muted-foreground text-center max-w-xl mx-auto mb-12 md:mb-16 leading-relaxed">
             Three steps. Zero headaches.
@@ -73,7 +73,7 @@ const HowItWorksSection = () => {
                 boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
               }}
             >
-              Get Started in 5 Minutes
+              Start Your 48-Hour Setup
               <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
             <p className="text-sm text-muted-foreground mt-4">Free for 14 days · No credit card required</p>
