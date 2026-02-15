@@ -20,7 +20,6 @@ const items = [
   { title: "Services", url: "/dashboard/services", icon: Wrench },
   { title: "Photos", url: "/dashboard/photos", icon: Camera },
   { title: "Testimonials", url: "/dashboard/testimonials", icon: Star },
-  { title: "Account", url: "/dashboard/account", icon: Settings },
 ];
 
 interface DashboardSidebarProps {
@@ -123,15 +122,22 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
           </button>
         </div>
 
-        {/* Business logo */}
-        {logoUrl && (
-          <div className="px-5 py-4 border-t border-white/10">
-            <div className="flex items-center gap-3">
+        {/* Business logo + Account gear */}
+        <div className="px-5 py-4 border-t border-white/10">
+          <div className="flex items-center gap-3">
+            {logoUrl && (
               <img src={logoUrl} alt="Business" className="w-9 h-9 rounded-lg object-cover border border-white/10" />
-              <span className="text-white/40 text-xs truncate">{businessName || "Your Business"}</span>
-            </div>
+            )}
+            <span className="text-white/40 text-xs truncate flex-1">{businessName || "Your Business"}</span>
+            <button
+              onClick={() => navigate("/dashboard/account")}
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-white hover:bg-white/5 transition-colors shrink-0"
+              title="Account Settings"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
           </div>
-        )}
+        </div>
       </div>
     </Sidebar>
   );

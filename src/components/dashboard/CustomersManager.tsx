@@ -6,6 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Loader2, Plus, Phone, Mail, Search, User, Car, DollarSign,
   FileText, X, ChevronDown, Filter, MoreHorizontal, Calendar,
 } from "lucide-react";
@@ -43,6 +47,7 @@ const CustomersManager = () => {
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [showAdd, setShowAdd] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", vehicle: "", notes: "", status: "lead" });
 
   const fetchCustomers = async () => {
@@ -105,10 +110,12 @@ const CustomersManager = () => {
     setCustomers(prev => prev.map(c => c.id === id ? { ...c, status } : c));
   };
 
-  const handleDelete = async (id: string) => {
-    await supabase.from("customers").delete().eq("id", id);
-    setCustomers(prev => prev.filter(c => c.id !== id));
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    await supabase.from("customers").delete().eq("id", deleteId);
+    setCustomers(prev => prev.filter(c => c.id !== deleteId));
     toast({ title: "Customer removed" });
+    setDeleteId(null);
   };
 
   const stats = useMemo(() => ({
@@ -226,7 +233,7 @@ const CustomersManager = () => {
                   <button onClick={() => startEdit(c)} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors" title="Edit">
                     <FileText className="w-4 h-4" />
                   </button>
-                  <button onClick={() => handleDelete(c.id)} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-red-500/10 flex items-center justify-center text-white/40 hover:text-red-400 transition-colors" title="Delete">
+                  <button onClick={() => setDeleteId(c.id)} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-red-500/10 flex items-center justify-center text-white/40 hover:text-red-400 transition-colors" title="Delete">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
@@ -282,6 +289,21 @@ const CustomersManager = () => {
           </div>
         </div>
       )}
+      {/* Delete confirmation */}
+      <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
+        <AlertDialogContent className="border-white/10" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">Remove Customer</AlertDialogTitle>
+            <AlertDialogDescription className="text-white/50">
+              Are you sure you want to remove this customer? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white">Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600 text-white">Remove</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
