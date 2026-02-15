@@ -34,8 +34,8 @@ const Index = () => {
         <ValueBreakdown />
         <ManifestoSection />
         <HowItWorksSection />
-        <WhySection />
         <TestimonialSection />
+        <WhySection />
         <PricingSection />
         <FaqSection />
         <CtaFooter />
