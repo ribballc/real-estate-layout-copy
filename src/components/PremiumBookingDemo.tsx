@@ -63,7 +63,7 @@ const PremiumBookingDemo = () => {
 
   if (reducedMotion) {
     return (
-      <div ref={containerRef} className="rounded-3xl overflow-hidden p-8" style={{ background: 'radial-gradient(ellipse at center, hsl(215 40% 18%), hsl(215 50% 10%))' }}>
+      <div ref={containerRef} className="p-8">
         <div className="flex gap-8 items-center justify-center">
           <StaticCustomerCard />
           <StaticOwnerCard />
@@ -75,27 +75,15 @@ const PremiumBookingDemo = () => {
   return (
     <div
       ref={containerRef}
-      className="relative rounded-3xl overflow-hidden w-full"
+      className="relative w-full pointer-events-none"
       style={{
-        height: 520,
-        background: 'radial-gradient(ellipse at 40% 30%, hsl(215 40% 18%), hsl(215 55% 8%))',
+        aspectRatio: '3 / 2',
         willChange: 'transform',
       }}
       aria-label="Animated demonstration of booking system connecting customer booking to business owner calendar"
     >
-      {/* Ambient spotlight */}
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 60% 50% at 35% 25%, hsla(217, 91%, 60%, 0.05), transparent)',
-        animation: 'ambientDrift 15s ease-in-out infinite',
-      }} />
-
-      {/* Noise texture */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{
-        backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")',
-      }} />
-
       {/* Desktop layout */}
-      <div className="hidden md:flex items-center justify-center h-full gap-0 relative px-4" style={{ transform: 'scale(0.78)', transformOrigin: 'center center' }}>
+      <div className="hidden md:flex items-center justify-center h-full gap-0 relative" style={{ transform: 'scale(0.82)', transformOrigin: 'center center' }}>
         {/* Customer Side */}
         <div className="flex items-center justify-end pr-4 shrink-0">
           <CustomerView scene={scene} sceneProgress={sceneProgress} elapsed={elapsed} />
@@ -111,7 +99,7 @@ const PremiumBookingDemo = () => {
       </div>
 
       {/* Mobile layout */}
-      <div className="flex md:hidden flex-col items-center justify-center h-full gap-4 px-5 py-6">
+      <div className="flex md:hidden flex-col items-center justify-center min-h-[400px] gap-4 px-4 py-6">
         {elapsed < 4000 ? (
           <div style={{ transform: 'scale(0.85)', transformOrigin: 'center center' }}>
             <CustomerView scene={scene} sceneProgress={sceneProgress} elapsed={elapsed} />
@@ -171,21 +159,17 @@ const PremiumBookingDemo = () => {
 const GlassCard = ({ children, className = "", style = {}, float = true }: {
   children: React.ReactNode; className?: string; style?: React.CSSProperties; float?: boolean;
 }) => (
-  <div className={`relative overflow-hidden ${className}`} style={{
-    background: 'rgba(255, 255, 255, 0.05)',
-    backdropFilter: 'blur(40px) saturate(180%)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+  <div className={`relative ${className}`} style={{
+    background: 'transparent',
+    border: '1px solid rgba(255, 255, 255, 0.15)',
+    boxShadow: '0 0 0 1px rgba(255, 255, 255, 0.05) inset, 0 20px 40px rgba(0, 0, 0, 0.15)',
     borderRadius: 16,
     animation: float ? 'cardFloat 3s ease-in-out infinite' : 'none',
     willChange: 'transform',
+    transform: 'translateZ(0)',
+    backfaceVisibility: 'hidden',
     ...style,
   }}>
-    {/* Top sheen */}
-    <div className="absolute inset-0 pointer-events-none" style={{
-      background: 'linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 40%)',
-      borderRadius: 16,
-    }} />
     <div className="relative z-10">{children}</div>
   </div>
 );
@@ -216,8 +200,8 @@ const CustomerView = ({ scene, sceneProgress, elapsed }: {
               { name: 'Paint Correction', price: '$400', selected: false },
             ].map((s) => (
               <div key={s.name} className="flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300" style={{
-                background: s.selected ? 'hsla(217, 91%, 60%, 0.12)' : 'rgba(255,255,255,0.03)',
-                border: s.selected ? '1.5px solid hsla(217, 91%, 60%, 0.5)' : '1px solid rgba(255,255,255,0.06)',
+                background: 'transparent',
+                border: s.selected ? '1.5px solid hsla(217, 91%, 60%, 0.5)' : '1px solid rgba(255,255,255,0.08)',
                 boxShadow: s.selected ? '0 0 20px hsla(217, 91%, 60%, 0.15)' : 'none',
               }}>
                 <div className="flex items-center gap-3">
@@ -264,8 +248,8 @@ const CustomerView = ({ scene, sceneProgress, elapsed }: {
               { time: '3:00 PM', selected: false },
             ].map((s) => (
               <div key={s.time} className="px-4 py-3 rounded-xl text-center text-[13px] font-medium transition-all" style={{
-                background: s.selected ? 'hsl(217, 91%, 60%)' : 'rgba(255,255,255,0.04)',
-                border: s.selected ? 'none' : '1px solid rgba(255,255,255,0.06)',
+                background: s.selected ? 'hsl(217, 91%, 60%)' : 'transparent',
+                border: s.selected ? '1px solid hsl(217, 91%, 60%)' : '1px solid rgba(255,255,255,0.08)',
                 color: s.selected ? '#fff' : 'rgba(255,255,255,0.5)',
                 boxShadow: s.selected ? '0 4px 16px hsla(217, 91%, 60%, 0.3)' : 'none',
                 transform: s.selected ? 'scale(1.02)' : 'scale(1)',
@@ -298,7 +282,7 @@ const CustomerView = ({ scene, sceneProgress, elapsed }: {
             <div className="h-px" style={{ background: 'rgba(255,255,255,0.08)' }} />
             <div className="flex justify-between"><span className="text-[14px] font-semibold text-white">Due Today</span><span className="text-[14px] font-bold" style={{ color: 'hsl(217, 91%, 60%)' }}>$100</span></div>
           </div>
-          <div className="rounded-xl px-4 py-3 mb-5" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="rounded-xl px-4 py-3 mb-5" style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.1)' }}>
             <span className="text-[13px] font-mono" style={{ color: 'rgba(255,255,255,0.6)' }}>
               •••• •••• •••• <TypeWriter text="4242" duration={800} elapsed={elapsed - 4000} />
             </span>
@@ -336,7 +320,6 @@ const CustomerView = ({ scene, sceneProgress, elapsed }: {
 /* ═══════════════════════════ Owner View ═══════════════════════════ */
 const OwnerView = ({ ownerPhase, elapsed }: { ownerPhase: 'waiting' | 'incoming' | 'confirmed'; elapsed: number }) => {
   const bookingCount = ownerPhase === 'confirmed' ? 7 : 6;
-  const totalRevenue = ownerPhase === 'confirmed' ? 1650 : 1400;
 
   // Animated revenue counter
   const displayRevenue = useMemo(() => {
@@ -368,9 +351,9 @@ const OwnerView = ({ ownerPhase, elapsed }: { ownerPhase: 'waiting' | 'incoming'
 };
 
 const CalSlot = ({ time, name, price, dim }: { time: string; name: string; price: string; dim?: boolean }) => (
-  <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl" style={{
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.05)',
+  <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300" style={{
+    background: 'transparent',
+    border: '1px solid rgba(255,255,255,0.08)',
     opacity: dim ? 0.5 : 1,
   }}>
     <span className="text-[11px] font-mono w-[60px] shrink-0" style={{ color: 'rgba(255,255,255,0.4)' }}>{time}</span>
@@ -383,8 +366,8 @@ const IncomingSlot = ({ ownerPhase, elapsed }: { ownerPhase: 'waiting' | 'incomi
   if (ownerPhase === 'waiting') {
     return (
       <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl" style={{
-        background: 'rgba(255,255,255,0.02)',
-        border: '1px dashed rgba(255,255,255,0.08)',
+        background: 'transparent',
+        border: '1px dashed rgba(255,255,255,0.1)',
       }}>
         <span className="text-[11px] font-mono w-[60px] shrink-0" style={{ color: 'rgba(255,255,255,0.3)' }}>2:00 PM</span>
         <span className="text-[12px] italic" style={{ color: 'rgba(255,255,255,0.2)', animation: 'pulse 2s ease-in-out infinite' }}>Available</span>
@@ -395,9 +378,9 @@ const IncomingSlot = ({ ownerPhase, elapsed }: { ownerPhase: 'waiting' | 'incomi
   const isConfirmed = ownerPhase === 'confirmed';
   return (
     <div className="relative px-3 py-2.5 rounded-xl transition-all duration-500 overflow-hidden" style={{
-      background: isConfirmed ? 'hsla(217, 91%, 60%, 0.08)' : 'hsla(217, 91%, 60%, 0.05)',
-      border: `1.5px solid hsla(217, 91%, 60%, ${isConfirmed ? 0.4 : 0.25})`,
-      boxShadow: isConfirmed ? '0 0 20px hsla(217, 91%, 60%, 0.15)' : 'none',
+      background: 'transparent',
+      border: `${isConfirmed ? '2px' : '1.5px'} solid hsla(217, 91%, 60%, ${isConfirmed ? 0.5 : 0.25})`,
+      boxShadow: isConfirmed ? '0 0 20px hsla(217, 91%, 60%, 0.2), 0 0 0 4px hsla(217, 91%, 60%, 0.05)' : 'none',
     }}>
       {/* Ripple on confirm */}
       {isConfirmed && elapsed >= 6000 && elapsed < 6500 && (
@@ -414,8 +397,8 @@ const IncomingSlot = ({ ownerPhase, elapsed }: { ownerPhase: 'waiting' | 'incomi
         <div className="flex-1 min-w-0">
           {ownerPhase === 'incoming' && (
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md" style={{
-              background: 'hsla(217, 91%, 60%, 0.2)',
-              color: 'hsl(217, 91%, 70%)',
+              background: 'transparent',
+              border: '1px solid hsla(217, 91%, 60%, 0.3)',
               animation: 'pulse 1s ease-in-out infinite',
             }}>INCOMING</span>
           )}
@@ -439,9 +422,11 @@ const IncomingSlot = ({ ownerPhase, elapsed }: { ownerPhase: 'waiting' | 'incomi
         {isConfirmed && (
           <div className="flex items-center gap-2" style={{ opacity: Math.min(Math.max((elapsed - 6700) / 300, 0), 1) }}>
             <span className="text-[12px] font-semibold text-white">$250</span>
-            <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded" style={{
-              background: 'hsla(145, 63%, 42%, 0.2)',
+            <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded uppercase tracking-wide" style={{
+              background: 'transparent',
+              border: '1px solid hsla(145, 63%, 42%, 0.5)',
               color: 'hsl(145, 63%, 55%)',
+              boxShadow: '0 0 12px hsla(145, 63%, 42%, 0.3)',
             }}>PAID</span>
           </div>
         )}
@@ -536,8 +521,9 @@ const SuccessCheckmark = ({ elapsed }: { elapsed: number }) => {
   const progress = Math.min(Math.max(elapsed / 600, 0), 1);
   return (
     <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{
-      background: progress > 0 ? 'hsla(145, 63%, 42%, 0.15)' : 'transparent',
-      border: `2px solid hsla(145, 63%, 42%, ${progress * 0.5})`,
+      background: 'transparent',
+      border: `2px solid hsla(145, 63%, 42%, ${progress * 0.6})`,
+      boxShadow: progress > 0 ? '0 0 20px hsla(145, 63%, 42%, 0.3), 0 0 0 8px hsla(145, 63%, 42%, 0.05)' : 'none',
       transition: 'all 0.3s',
     }}>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
