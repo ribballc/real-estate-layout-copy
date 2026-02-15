@@ -32,14 +32,18 @@ const animatedIconStyles = `
 
 const FormIcon = () => (
   <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style={{ animation: "stepIconFloat 3s ease-in-out infinite" }}>
-    <rect x="16" y="12" width="40" height="52" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.1)" />
-    <rect x="26" y="6" width="20" height="12" rx="4" stroke="hsl(217, 91%, 60%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.15)" />
+    {/* Clipboard body */}
+    <rect x="16" y="12" width="40" height="52" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.06)" />
+    {/* Clipboard clip */}
+    <rect x="26" y="6" width="20" height="12" rx="4" stroke="hsl(217, 91%, 60%)" strokeWidth="2.5" fill="hsl(210, 40%, 98%)" />
+    {/* Lines with draw animation */}
     <line x1="26" y1="30" x2="46" y2="30" stroke="hsl(213, 94%, 68%)" strokeWidth="2" strokeLinecap="round"
       strokeDasharray="20" strokeDashoffset="0" style={{ animation: "drawLine 1.5s ease-out infinite", animationDelay: "0s" }} />
     <line x1="26" y1="38" x2="42" y2="38" stroke="hsl(213, 94%, 68%)" strokeWidth="2" strokeLinecap="round"
       strokeDasharray="16" strokeDashoffset="0" style={{ animation: "drawLine 1.5s ease-out infinite", animationDelay: "0.3s" }} />
     <line x1="26" y1="46" x2="38" y2="46" stroke="hsl(213, 94%, 68%)" strokeWidth="2" strokeLinecap="round"
       strokeDasharray="12" strokeDashoffset="0" style={{ animation: "drawLine 1.5s ease-out infinite", animationDelay: "0.6s" }} />
+    {/* Checkmark */}
     <circle cx="48" cy="52" r="8" fill="hsl(217, 91%, 60%)" style={{ animation: "fillCheck 2s ease-out infinite", transformOrigin: "48px 52px" }} />
     <path d="M44 52 L47 55 L53 49" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
@@ -47,27 +51,35 @@ const FormIcon = () => (
 
 const BuildIcon = () => (
   <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style={{ animation: "stepIconFloat 3s ease-in-out infinite", animationDelay: "0.4s" }}>
-    <rect x="10" y="14" width="52" height="44" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.1)" />
-    <rect x="10" y="14" width="52" height="14" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.15)" />
+    {/* Browser frame */}
+    <rect x="10" y="14" width="52" height="44" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.06)" />
+    {/* URL bar */}
+    <rect x="10" y="14" width="52" height="14" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.1)" />
     <circle cx="20" cy="21" r="2" fill="hsl(0, 84%, 60%)" />
     <circle cx="27" cy="21" r="2" fill="hsl(45, 93%, 60%)" />
     <circle cx="34" cy="21" r="2" fill="hsl(142, 71%, 45%)" />
+    {/* Building blocks with animation */}
     <rect x="16" y="34" width="18" height="8" rx="2" fill="hsl(217, 91%, 60%)" opacity="0.8"
       style={{ animation: "buildUp 2s ease-out infinite", transformOrigin: "bottom", animationDelay: "0s" }} />
     <rect x="16" y="45" width="40" height="4" rx="1.5" fill="hsl(213, 94%, 68%)" opacity="0.5"
       style={{ animation: "buildUp 2s ease-out infinite", transformOrigin: "bottom", animationDelay: "0.3s" }} />
     <rect x="38" y="34" width="18" height="8" rx="2" fill="hsl(213, 94%, 68%)" opacity="0.6"
       style={{ animation: "buildUp 2s ease-out infinite", transformOrigin: "bottom", animationDelay: "0.6s" }} />
+    {/* Cursor blink */}
     <rect x="18" y="52" width="2" height="4" fill="hsl(217, 91%, 60%)" style={{ animation: "cursorBlink 1s step-end infinite" }} />
   </svg>
 );
 
 const CalendarIcon = () => (
   <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style={{ animation: "stepIconFloat 3s ease-in-out infinite", animationDelay: "0.8s" }}>
-    <rect x="12" y="18" width="48" height="44" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.1)" />
+    {/* Calendar body */}
+    <rect x="12" y="18" width="48" height="44" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.06)" />
+    {/* Top bar */}
     <rect x="12" y="18" width="48" height="14" rx="6" fill="hsl(217, 91%, 60%)" />
+    {/* Rings */}
     <line x1="26" y1="12" x2="26" y2="24" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" strokeLinecap="round" />
     <line x1="46" y1="12" x2="46" y2="24" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" strokeLinecap="round" />
+    {/* Grid cells filling up */}
     {[0,1,2,3].map((row) =>
       [0,1,2,3].map((col) => (
         <rect key={`${row}-${col}`} x={18 + col * 10} y={36 + row * 6} width="7" height="4" rx="1"
@@ -124,9 +136,9 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
         onMouseMove={handleMouseMove}
         className="group relative rounded-3xl p-8 md:p-10 overflow-hidden z-10 cursor-pointer"
         style={{
-          background: "hsla(0, 0%, 100%, 0.06)",
-          border: "1px solid hsla(0, 0%, 100%, 0.12)",
-          backdropFilter: "blur(12px)",
+          background: "hsl(0, 0%, 100%)",
+          border: "1px solid hsl(214, 20%, 90%)",
+          boxShadow: "0 4px 24px hsla(0, 0%, 0%, 0.06)",
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
@@ -134,7 +146,7 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0"
           style={{
             background:
-              "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(217, 71%, 53%, 0.12), transparent 40%)",
+              "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(217, 71%, 53%, 0.06), transparent 40%)",
           }}
         />
 
@@ -155,8 +167,8 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
             <div
               className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110"
               style={{
-                background: "hsla(217, 71%, 53%, 0.15)",
-                border: "1px solid hsla(217, 71%, 53%, 0.25)",
+                background: "hsla(217, 71%, 53%, 0.08)",
+                border: "1px solid hsla(217, 71%, 53%, 0.15)",
               }}
             >
               <IconComponent />
@@ -165,13 +177,13 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           <div className="flex-1 min-w-0">
             <h3
               className="text-[22px] font-semibold mb-3 transition-colors duration-300"
-              style={{ color: "hsl(0, 0%, 100%)" }}
+              style={{ color: "hsl(222, 47%, 11%)" }}
             >
               {step.title}
             </h3>
             <p
               className="text-[15px] leading-[1.7] transition-colors duration-300"
-              style={{ color: "hsla(0, 0%, 100%, 0.55)" }}
+              style={{ color: "hsl(215, 16%, 47%)" }}
             >
               {step.description}
             </p>
@@ -190,18 +202,18 @@ const HowItWorksSection = () => {
       <style>{animatedIconStyles}</style>
     <section
       className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
-      style={{ background: "linear-gradient(180deg, hsl(215, 50%, 10%) 0%, hsl(217, 33%, 14%) 100%)" }}
+      style={{ background: "hsl(210, 40%, 98%)" }}
     >
       <div className="max-w-[1400px] mx-auto relative z-10">
         <FadeIn>
           <div className="text-center mb-16 md:mb-20">
             <h2
               className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
-              style={{ color: "hsl(0, 0%, 100%)" }}
+              style={{ color: "hsl(222, 47%, 11%)" }}
             >
               As easy as 1, 2, 3
             </h2>
-            <p className="text-lg md:text-xl" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
+            <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
               Three steps. Zero headaches.
             </p>
           </div>
@@ -235,7 +247,7 @@ const HowItWorksSection = () => {
                 }}
               />
             </button>
-            <p className="text-sm mt-4" style={{ color: "hsla(0, 0%, 100%, 0.4)" }}>
+            <p className="text-sm mt-4" style={{ color: "hsl(215, 16%, 47%)" }}>
               Free for 14 days · No credit card required
             </p>
           </div>
