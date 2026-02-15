@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import darkerLogo from "@/assets/darker-logo.png";
 import { ChevronRight, Store, ChevronDown, Zap, Shield } from "lucide-react";
+import { lazy, Suspense } from "react";
+const MountRevenue = lazy(() => import("@/components/MountRevenue"));
 import PremiumBookingDemo from "@/components/PremiumBookingDemo";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
@@ -222,7 +224,9 @@ const HeroSection = () => {
               clipPath: 'inset(0)',
             }}
           >
-            <PremiumBookingDemo />
+            <Suspense fallback={<div className="w-full aspect-square max-w-[600px] mx-auto" />}>
+              <MountRevenue />
+            </Suspense>
           </div>
         </div>
 
