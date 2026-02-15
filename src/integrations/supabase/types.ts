@@ -61,6 +61,57 @@ export type Database = {
           },
         ]
       }
+      bookings: {
+        Row: {
+          booking_date: string
+          booking_time: string
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          duration_minutes: number
+          id: string
+          notes: string
+          service_price: number
+          service_title: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          booking_date: string
+          booking_time: string
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          duration_minutes?: number
+          id?: string
+          notes?: string
+          service_price?: number
+          service_title?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          booking_date?: string
+          booking_time?: string
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          duration_minutes?: number
+          id?: string
+          notes?: string
+          service_price?: number
+          service_title?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       business_hours: {
         Row: {
           close_time: string
@@ -219,6 +270,30 @@ export type Database = {
           sort_order?: number
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      support_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
           user_id?: string
         }
         Relationships: []
