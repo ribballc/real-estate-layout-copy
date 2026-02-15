@@ -46,9 +46,7 @@ const ManifestoSection = () => {
     <section
       className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
       style={{
-        background: "hsl(215, 50%, 8%)",
-        backgroundImage:
-          "radial-gradient(circle at 20% 50%, hsla(217, 91%, 60%, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 80%, hsla(217, 91%, 70%, 0.03) 0%, transparent 50%)",
+        background: "linear-gradient(180deg, hsl(215, 50%, 10%) 0%, hsl(215, 50%, 10%) 100%)",
       }}
     >
       {/* Animated dot grid */}

@@ -29,9 +29,7 @@ const WhySection = () => {
     <section
       className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
       style={{
-        background: "hsl(215, 50%, 8%)",
-        backgroundImage:
-          "radial-gradient(ellipse at 30% 20%, hsla(217, 91%, 60%, 0.08) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, hsla(213, 94%, 68%, 0.06) 0%, transparent 50%)",
+        background: "linear-gradient(180deg, hsl(215, 50%, 10%) 0%, hsl(215, 50%, 8%) 100%)",
       }}
     >
       {/* Glow Orbs */}
