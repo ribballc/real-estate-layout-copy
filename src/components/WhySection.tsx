@@ -14,8 +14,8 @@ const features = [
   },
   {
     icon: Zap,
-    title: "Professional Website in 48 Hours",
-    description: "Mobile-optimized website that looks like you paid <strong class='text-accent font-bold'>$3,000</strong>. Zero tech skills required.",
+    title: "Professional Website in 5 Minutes",
+    description: "Mobile-optimized website that looks like you paid <strong class='text-accent font-bold'>$3,000</strong>. Zero tech skills required. Built in 5 minutes.",
   },
   {
     icon: CreditCard,
