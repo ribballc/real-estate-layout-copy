@@ -134,7 +134,7 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
-        className="group relative rounded-3xl p-10 md:p-12 text-center overflow-hidden z-10 cursor-pointer"
+        className="group relative rounded-3xl p-8 md:p-10 overflow-hidden z-10 cursor-pointer"
         style={{
           background: "hsl(0, 0%, 100%)",
           border: "1px solid hsl(214, 20%, 90%)",
@@ -150,6 +150,7 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           }}
         />
 
+        {/* Step number badge */}
         <span
           className="absolute top-5 right-5 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-all duration-300 group-hover:scale-105"
           style={{
@@ -160,24 +161,34 @@ const ProcessCard = ({ step, index }: { step: typeof steps[0]; index: number }) 
           <span className="relative z-10">{step.step}</span>
         </span>
 
-        <div className="flex justify-center mb-7 relative z-10">
-          <div className="w-[72px] h-[72px] transition-transform duration-300 group-hover:scale-110">
-            <IconComponent />
+        {/* Horizontal layout: icon left, text right */}
+        <div className="flex items-start gap-6 relative z-10">
+          <div className="flex-shrink-0">
+            <div
+              className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110"
+              style={{
+                background: "hsla(217, 71%, 53%, 0.08)",
+                border: "1px solid hsla(217, 71%, 53%, 0.15)",
+              }}
+            >
+              <IconComponent />
+            </div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3
+              className="text-[22px] font-semibold mb-3 transition-colors duration-300"
+              style={{ color: "hsl(222, 47%, 11%)" }}
+            >
+              {step.title}
+            </h3>
+            <p
+              className="text-[15px] leading-[1.7] transition-colors duration-300"
+              style={{ color: "hsl(215, 16%, 47%)" }}
+            >
+              {step.description}
+            </p>
           </div>
         </div>
-
-        <h3
-          className="text-[22px] font-semibold mb-3 relative z-10 transition-colors duration-300"
-          style={{ color: "hsl(222, 47%, 11%)" }}
-        >
-          {step.title}
-        </h3>
-        <p
-          className="text-[15px] leading-relaxed relative z-10 transition-colors duration-300"
-          style={{ color: "hsl(215, 16%, 47%)" }}
-        >
-          {step.description}
-        </p>
       </div>
     </FadeIn>
   );
@@ -208,23 +219,7 @@ const HowItWorksSection = () => {
           </div>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-16 md:mb-20 relative">
-          {/* Connecting lines (desktop) */}
-          <div
-            className="hidden md:block absolute top-[100px] left-[18%] w-[18%] h-[2px] z-0"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent 0%, hsla(217, 71%, 53%, 0.3) 20%, hsla(217, 71%, 53%, 0.5) 50%, hsla(217, 71%, 53%, 0.3) 80%, transparent 100%)",
-            }}
-          />
-          <div
-            className="hidden md:block absolute top-[100px] right-[18%] w-[18%] h-[2px] z-0"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent 0%, hsla(217, 71%, 53%, 0.3) 20%, hsla(217, 71%, 53%, 0.5) 50%, hsla(217, 71%, 53%, 0.3) 80%, transparent 100%)",
-            }}
-          />
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 md:mb-20 max-w-[1200px] mx-auto">
           {steps.map((step, i) => (
             <ProcessCard key={step.step} step={step} index={i} />
           ))}
