@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
+import Loading from "./pages/Loading";
+import Preview from "./pages/Preview";
 import Book from "./pages/Book";
 import BookVehicle from "./pages/BookVehicle";
 import BookAddOns from "./pages/BookAddOns";
@@ -35,6 +37,8 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/loading" element={<Loading />} />
+            <Route path="/preview" element={<Preview />} />
             <Route path="/book" element={<Book />} />
             <Route path="/book/vehicle" element={<BookVehicle />} />
             <Route path="/book/options" element={<BookOptions />} />
