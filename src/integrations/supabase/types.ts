@@ -257,12 +257,14 @@ export type Database = {
           logo_url: string | null
           map_query: string
           no_business_address: boolean | null
+          onboarding_complete: boolean
           phone: string
           primary_color: string | null
           secondary_color: string | null
           service_areas: string[] | null
           tagline: string
           tiktok: string
+          trial_active: boolean
           updated_at: string
           user_id: string
           youtube: string
@@ -279,12 +281,14 @@ export type Database = {
           logo_url?: string | null
           map_query?: string
           no_business_address?: boolean | null
+          onboarding_complete?: boolean
           phone?: string
           primary_color?: string | null
           secondary_color?: string | null
           service_areas?: string[] | null
           tagline?: string
           tiktok?: string
+          trial_active?: boolean
           updated_at?: string
           user_id: string
           youtube?: string
@@ -301,12 +305,14 @@ export type Database = {
           logo_url?: string | null
           map_query?: string
           no_business_address?: boolean | null
+          onboarding_complete?: boolean
           phone?: string
           primary_color?: string | null
           secondary_color?: string | null
           service_areas?: string[] | null
           tagline?: string
           tiktok?: string
+          trial_active?: boolean
           updated_at?: string
           user_id?: string
           youtube?: string

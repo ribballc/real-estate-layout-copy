@@ -33,13 +33,13 @@ const Signup = () => {
     if (error) {
       toast({ title: "Signup failed", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Check your email", description: "We sent you a confirmation link to verify your account." });
+      toast({ title: "Check your email", description: "We sent you a confirmation link to verify your account. After confirming, you'll be taken to set up your business." });
     }
   };
 
   const handleGoogleSignup = async () => {
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/dashboard`,
+      redirect_uri: `${window.location.origin}/onboarding`,
     });
     if (result?.error) {
       toast({ title: "Google sign-up failed", description: String(result.error), variant: "destructive" });

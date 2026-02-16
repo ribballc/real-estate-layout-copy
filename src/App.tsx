@@ -24,6 +24,7 @@ import TestimonialsManager from "./components/dashboard/TestimonialsManager";
 import CalendarManager from "./components/dashboard/CalendarManager";
 import AccountSettings from "./components/dashboard/AccountSettings";
 import CustomersManager from "./components/dashboard/CustomersManager";
+import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,7 +38,8 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/loading" element={<Loading />} />
+            <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+            <Route path="/loading" element={<ProtectedRoute><Loading /></ProtectedRoute>} />
             <Route path="/preview" element={<Preview />} />
             <Route path="/book" element={<Book />} />
             <Route path="/book/vehicle" element={<BookVehicle />} />
