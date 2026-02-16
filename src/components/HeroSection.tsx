@@ -100,16 +100,16 @@ const HeroSection = () => {
             {/* Headline */}
             <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em]">
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
-                The Instant Website
+                The Instant
+              </span>
+              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.5s forwards' }}>
+                Website & Booking
               </span>
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
-                & Booking System For
-              </span>
-              <span
-                className="block font-heading text-[36px] md:text-[56px] font-semibold italic"
-                style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.8s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}
-              >
-                Auto Pros
+                System For{' '}
+                <span className="font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
+                  Auto Pros
+                </span>
               </span>
             </h1>
 
@@ -122,7 +122,7 @@ const HeroSection = () => {
                 animation: 'heroBlurIn 0.5s ease-out 1.0s forwards',
               }}
             >
-              Get a professional website with 24/7 booking. Customers book themselves while you're in the field. Automated reminders, deposits, and a calendar that fills itself.
+              Realize builds your custom website + AI booking system that captures leads 24/7, collects deposits, sends reminders, and optimizes routes. Wake up to booked jobs.
             </p>
 
             {/* Business name form + CTA */}
