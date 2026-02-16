@@ -125,7 +125,7 @@ const Onboarding = () => {
         </div>
 
         <FadeIn key={step}>
-          <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-8">
+          <div className="rounded-2xl border border-white/10 p-8" style={{ background: "hsl(215, 50%, 10%)" }}>
             <div className="text-center mb-8">
               <div
                 className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4"
