@@ -5,7 +5,7 @@ import {
   Globe, Phone, Mail, Clock, MapPin, Instagram, Facebook, Star,
   ChevronLeft, Menu, X, Calendar, ChevronRight,
 } from "lucide-react";
-import previewHeroBg from "@/assets/preview-hero-bg.jpg";
+import demoHeroBg from "@/assets/demo-hero.jpg";
 
 /* ─── Types ─── */
 interface Profile {
@@ -291,7 +291,7 @@ const DemoWebsite = () => {
           <>
             {/* Hero */}
             <section className="relative min-h-[60vh] flex items-center overflow-hidden">
-              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${photos[0]?.url || previewHeroBg})` }}>
+              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${photos[0]?.url || demoHeroBg})` }}>
                 <div className="absolute inset-0" style={{ background: isDark ? "linear-gradient(to right, rgba(0,0,0,0.95), rgba(0,0,0,0.5))" : "linear-gradient(to right, rgba(255,255,255,0.95), rgba(255,255,255,0.5))" }} />
               </div>
               <div className="relative z-10 px-8 md:px-16 py-16 max-w-3xl">
