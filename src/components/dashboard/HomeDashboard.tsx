@@ -154,13 +154,17 @@ const HomeDashboard = () => {
     bookings: { label: "Bookings", color: "hsl(217 91% 60%)" },
   };
 
+  const darkCard = "bg-[linear-gradient(135deg,hsla(215,50%,12%,0.5)_0%,hsla(217,33%,14%,0.3)_100%)] border-white/[0.06]";
+  const lightCard = "bg-white border-gray-200 shadow-sm";
+  const cardCls = (extra = "") => `dash-card rounded-2xl border ${extra}`;
+
   return (
     <div className="space-y-6">
       {/* Date controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-0.5 tracking-tight">Dashboard</h2>
-          <p className="text-white/40 text-sm">Track your business performance</p>
+          <h2 className="text-2xl font-bold mb-0.5 tracking-tight dashboard-light:text-gray-900 text-white">Dashboard</h2>
+          <p className="text-white/40 text-sm dashboard-light:text-gray-500">Track your business performance</p>
         </div>
         <div className="flex items-center gap-2">
           <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}>
@@ -190,19 +194,17 @@ const HomeDashboard = () => {
         {quickStats.map((s) => (
           <div
             key={s.label}
-            className="dash-card rounded-2xl border border-white/[0.06] p-4 group relative overflow-hidden"
-            style={{ background: "linear-gradient(135deg, hsla(215,50%,12%,0.5) 0%, hsla(217,33%,14%,0.3) 100%)" }}
+            className={`${cardCls()} p-4 group relative overflow-hidden dark-card`}
           >
-            {/* Subtle accent glow on hover */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" style={{ background: `radial-gradient(ellipse at 50% 0%, ${s.accent}, transparent 70%)` }} />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-white/35 text-[11px] font-medium uppercase tracking-wider">{s.label}</span>
+                <span className="card-label text-[11px] font-medium uppercase tracking-wider">{s.label}</span>
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110" style={{ background: s.accent }}>
                   <s.icon className="w-4 h-4 text-white/60 group-hover:text-white/90 transition-colors duration-300" strokeWidth={1.5} />
                 </div>
               </div>
-              <p className="text-2xl font-semibold text-white tracking-tight">{s.value}</p>
+              <p className="text-2xl font-semibold card-value tracking-tight">{s.value}</p>
             </div>
           </div>
         ))}
@@ -213,10 +215,8 @@ const HomeDashboard = () => {
         {metricCards.map((metric) => (
           <div
             key={metric.label}
-            className="dash-card rounded-2xl border border-white/[0.06] p-5 space-y-4 relative overflow-hidden group"
-            style={{ background: "linear-gradient(135deg, hsla(215,50%,12%,0.5) 0%, hsla(217,33%,14%,0.3) 100%)" }}
+            className={`${cardCls()} p-5 space-y-4 relative overflow-hidden group dark-card`}
           >
-            {/* Hover border glow */}
             <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ boxShadow: `inset 0 0 0 1px hsla(217,91%,60%,0.15), 0 0 30px hsla(217,91%,60%,0.06)` }} />
             <div className="relative z-10">
               <div className="flex items-center justify-between">
@@ -231,8 +231,8 @@ const HomeDashboard = () => {
                     <metric.icon className="w-[18px] h-[18px] transition-all duration-300" style={{ color: metric.color }} strokeWidth={1.5} />
                   </div>
                   <div>
-                    <p className="text-white/35 text-[11px] font-medium uppercase tracking-wider">{metric.label}</p>
-                    <p className="text-2xl font-semibold text-white mt-0.5 tracking-tight">{metric.value}</p>
+                    <p className="card-label text-[11px] font-medium uppercase tracking-wider">{metric.label}</p>
+                    <p className="text-2xl font-semibold card-value mt-0.5 tracking-tight">{metric.value}</p>
                   </div>
                 </div>
                 {metric.change !== null && compareMode === "previous" && (
@@ -287,39 +287,36 @@ const HomeDashboard = () => {
       </div>
 
       {/* Recent bookings table */}
-      <div
-        className="dash-card rounded-2xl border border-white/[0.06] overflow-hidden"
-        style={{ background: "linear-gradient(135deg, hsla(215,50%,12%,0.5) 0%, hsla(217,33%,14%,0.3) 100%)" }}
-      >
-        <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-3">
+      <div className={`${cardCls()} overflow-hidden dark-card`}>
+        <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-3 table-header-border">
           <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-          <h3 className="text-white font-semibold text-sm">Recent Bookings</h3>
+          <h3 className="card-value font-semibold text-sm">Recent Bookings</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.04]">
-                <th className="text-left text-white/25 text-[10px] font-medium uppercase tracking-widest px-5 py-3">Customer</th>
-                <th className="text-left text-white/25 text-[10px] font-medium uppercase tracking-widest px-5 py-3">Service</th>
-                <th className="text-left text-white/25 text-[10px] font-medium uppercase tracking-widest px-5 py-3">Date</th>
-                <th className="text-right text-white/25 text-[10px] font-medium uppercase tracking-widest px-5 py-3">Amount</th>
-                <th className="text-right text-white/25 text-[10px] font-medium uppercase tracking-widest px-5 py-3">Status</th>
+              <tr className="border-b border-white/[0.04] table-row-border">
+                <th className="text-left card-label text-[10px] font-medium uppercase tracking-widest px-5 py-3">Customer</th>
+                <th className="text-left card-label text-[10px] font-medium uppercase tracking-widest px-5 py-3">Service</th>
+                <th className="text-left card-label text-[10px] font-medium uppercase tracking-widest px-5 py-3">Date</th>
+                <th className="text-right card-label text-[10px] font-medium uppercase tracking-widest px-5 py-3">Amount</th>
+                <th className="text-right card-label text-[10px] font-medium uppercase tracking-widest px-5 py-3">Status</th>
               </tr>
             </thead>
             <tbody>
               {currentBookings.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-8 text-center text-white/30 text-sm">
+                  <td colSpan={5} className="px-5 py-8 text-center card-label text-sm">
                     No bookings in this period
                   </td>
                 </tr>
               ) : (
                 currentBookings.slice(0, 10).map((b) => (
-                  <tr key={b.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors group/row">
-                    <td className="px-5 py-3.5 text-white/80 font-medium">{b.customer_name || "—"}</td>
-                    <td className="px-5 py-3.5 text-white/50">{b.service_title || "—"}</td>
-                    <td className="px-5 py-3.5 text-white/40 font-mono text-xs">{b.booking_date}</td>
-                    <td className="px-5 py-3.5 text-right text-white font-semibold font-mono text-xs">{formatCurrency(Number(b.service_price) || 0)}</td>
+                  <tr key={b.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors group/row table-row-border table-row-hover">
+                    <td className="px-5 py-3.5 table-cell-primary font-medium">{b.customer_name || "—"}</td>
+                    <td className="px-5 py-3.5 table-cell-secondary">{b.service_title || "—"}</td>
+                    <td className="px-5 py-3.5 table-cell-muted font-mono text-xs">{b.booking_date}</td>
+                    <td className="px-5 py-3.5 text-right card-value font-semibold font-mono text-xs">{formatCurrency(Number(b.service_price) || 0)}</td>
                     <td className="px-5 py-3.5 text-right">
                       <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide ${
                         b.status === "confirmed" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
@@ -342,8 +339,8 @@ const HomeDashboard = () => {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-white font-semibold text-sm">Your Website Preview</h3>
-            <p className="text-white/40 text-xs">This is how your live site looks with your current data</p>
+            <h3 className="card-value font-semibold text-sm">Your Website Preview</h3>
+            <p className="card-label text-xs">This is how your live site looks with your current data</p>
           </div>
           <a
             href="#"
