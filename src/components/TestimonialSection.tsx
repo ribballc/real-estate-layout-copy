@@ -74,11 +74,21 @@ const TestimonialSection = () => {
       <div className="relative z-10 max-w-6xl mx-auto text-center px-5 md:px-8">
         <FadeIn>
           <h2
-            className="font-heading text-[28px] md:text-[40px] lg:text-[48px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-4"
+            className="font-heading text-[28px] md:text-[40px] lg:text-[48px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3"
             style={{ color: 'hsl(0, 0%, 100%)' }}
           >
             Real Results
           </h2>
+          <span
+            className="inline-block text-sm font-semibold px-4 py-1.5 rounded-full mb-4"
+            style={{
+              background: 'hsla(0, 0%, 100%, 0.15)',
+              border: '1px solid hsla(0, 0%, 100%, 0.25)',
+              color: 'hsl(0, 0%, 100%)',
+            }}
+          >
+            From Real Detailers
+          </span>
         </FadeIn>
 
         <FadeIn delay={100}>

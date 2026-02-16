@@ -60,10 +60,10 @@ const ValueBreakdown = () => {
               className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
               style={{ color: "hsl(222, 47%, 11%)" }}
             >
-              What "Free Website" Means
+              Here's What You Get
             </h2>
             <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
-              Yeah.. it's that good.
+              it's a lot of stuff but... it's all done for you
             </p>
           </div>
         </FadeIn>
