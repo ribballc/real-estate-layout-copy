@@ -158,7 +158,7 @@ const PricingSection = () => {
           </button>
           <span className={`text-sm font-semibold transition-colors ${annual ? 'text-foreground' : 'text-muted-foreground'}`}>Annual</span>
           <span className="text-xs font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
-            32% OFF
+            32% OFF + Free Gifts
           </span>
         </div>
 
@@ -180,7 +180,7 @@ const PricingSection = () => {
                     <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
                     {annual && (
                       <span className="text-[11px] font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
-                        {savingsPercent}% OFF
+                        {savingsPercent}% OFF + Free Gifts
                       </span>
                     )}
                   </div>
@@ -205,8 +205,8 @@ const PricingSection = () => {
 
                 {/* Savings callout */}
                 {annual && (
-                  <div className="mx-6 mt-3 rounded-xl py-2.5 text-center text-sm font-semibold border border-accent/25 text-accent bg-accent/10">
-                    ✓ Save ${savingsAmount} compared to monthly
+                   <div className="mx-6 mt-3 rounded-xl py-2.5 text-center text-sm font-semibold border border-accent/25 text-accent bg-accent/10">
+                    ✓ Save ${savingsAmount}/yr + Free Gifts included
                   </div>
                 )}
 
