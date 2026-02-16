@@ -107,7 +107,14 @@ const DashboardLayout = () => {
             <div className="h-14 flex items-center gap-3 px-4 md:px-8">
               <SidebarTrigger className={triggerClass} />
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                <div
+                  className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                  style={{
+                    background: "linear-gradient(135deg, hsla(217,91%,60%,0.15) 0%, hsla(217,91%,60%,0.05) 100%)",
+                    border: "1px solid hsla(217,91%,60%,0.25)",
+                    boxShadow: "0 0 16px hsla(217,91%,60%,0.1)",
+                  }}
+                >
                   <PageIcon className="w-4 h-4 text-accent" />
                 </div>
                 <div className="min-w-0">
