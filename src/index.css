@@ -480,31 +480,62 @@
 /* ValueBreakdown arrow */
 @keyframes pulseArrow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-/* Dashboard home cards — dark mode defaults */
-.dark-card {
-  background: linear-gradient(135deg, hsla(215,50%,12%,0.5) 0%, hsla(217,33%,14%,0.3) 100%);
-  border-color: hsla(0,0%,100%,0.06);
-}
-.card-label { color: hsla(0,0%,100%,0.35); }
-.card-value { color: hsl(0,0%,100%); }
-.table-cell-primary { color: hsla(0,0%,100%,0.8); }
-.table-cell-secondary { color: hsla(0,0%,100%,0.5); }
-.table-cell-muted { color: hsla(0,0%,100%,0.4); }
-.table-header-border { border-color: hsla(0,0%,100%,0.06); }
-.table-row-border { border-color: hsla(0,0%,100%,0.03); }
-.table-row-hover:hover { background: hsla(0,0%,100%,0.02); }
+/* ═══════════════════════════════════════════════════════
+   Dashboard Home — Exonad-inspired card system
+   ═══════════════════════════════════════════════════════ */
 
-/* Dashboard home cards — light mode overrides */
-.dashboard-light .dark-card {
-  background: hsl(0,0%,100%);
-  border-color: hsl(214,20%,90%);
-  box-shadow: 0 1px 3px hsla(215,25%,12%,0.06);
+/* --- Dark mode defaults --- */
+.dash-title { color: hsl(0, 0%, 100%); }
+.dash-subtitle { color: hsla(0, 0%, 100%, 0.4); }
+.dash-select {
+  background: hsla(0, 0%, 100%, 0.04);
+  border-color: hsla(0, 0%, 100%, 0.08);
+  color: hsl(0, 0%, 100%);
 }
-.dashboard-light .card-label { color: hsl(215,16%,47%); }
-.dashboard-light .card-value { color: hsl(215,25%,12%); }
-.dashboard-light .table-cell-primary { color: hsl(215,25%,20%); }
-.dashboard-light .table-cell-secondary { color: hsl(215,16%,47%); }
-.dashboard-light .table-cell-muted { color: hsl(215,16%,57%); }
-.dashboard-light .table-header-border { border-color: hsl(214,20%,90%); }
-.dashboard-light .table-row-border { border-color: hsl(214,20%,94%); }
-.dashboard-light .table-row-hover:hover { background: hsl(214,20%,97%); }
+.dash-card {
+  background: linear-gradient(135deg, hsla(215, 50%, 12%, 0.5) 0%, hsla(217, 33%, 14%, 0.3) 100%);
+  border: 1px solid hsla(0, 0%, 100%, 0.06);
+}
+.dash-card-highlight {
+  background: linear-gradient(135deg, hsla(217, 91%, 60%, 0.18) 0%, hsla(217, 91%, 60%, 0.06) 100%);
+  border-color: hsla(217, 91%, 60%, 0.25);
+}
+.dash-card-label { color: hsla(0, 0%, 100%, 0.4); }
+.dash-card-value { color: hsl(0, 0%, 100%); }
+.dash-card-sublabel { color: hsla(0, 0%, 100%, 0.3); }
+.dash-menu-btn { color: hsla(0, 0%, 100%, 0.25); }
+.dash-menu-btn:hover { background: hsla(0, 0%, 100%, 0.06); color: hsla(0, 0%, 100%, 0.6); }
+.dash-card-border-b { border-bottom: 1px solid hsla(0, 0%, 100%, 0.06); }
+.dash-divide > * + * { border-color: hsla(0, 0%, 100%, 0.04); }
+.dash-row-hover:hover { background: hsla(0, 0%, 100%, 0.03); }
+
+/* --- Light mode overrides --- */
+.dashboard-light .dash-title { color: hsl(215, 25%, 12%); }
+.dashboard-light .dash-subtitle { color: hsl(215, 16%, 55%); }
+.dashboard-light .dash-select {
+  background: hsl(0, 0%, 100%);
+  border-color: hsl(214, 20%, 88%);
+  color: hsl(215, 25%, 12%);
+}
+.dashboard-light .dash-card {
+  background: hsl(0, 0%, 100%);
+  border-color: hsl(214, 20%, 90%);
+  box-shadow: 0 1px 4px hsla(215, 25%, 12%, 0.06), 0 0 0 1px hsla(215, 25%, 12%, 0.03);
+}
+.dashboard-light .dash-card-highlight {
+  background: linear-gradient(135deg, hsl(217, 91%, 56%) 0%, hsl(217, 91%, 64%) 100%);
+  border-color: hsl(217, 91%, 60%);
+  box-shadow: 0 4px 16px hsla(217, 91%, 60%, 0.25);
+}
+.dashboard-light .dash-card-highlight .dash-card-label { color: hsla(0, 0%, 100%, 0.8); }
+.dashboard-light .dash-card-highlight .dash-card-value { color: hsl(0, 0%, 100%); }
+.dashboard-light .dash-card-highlight .dash-card-sublabel { color: hsla(0, 0%, 100%, 0.6); }
+.dashboard-light .dash-card-highlight .dash-menu-btn { color: hsla(0, 0%, 100%, 0.5); }
+.dashboard-light .dash-card-label { color: hsl(215, 16%, 50%); }
+.dashboard-light .dash-card-value { color: hsl(215, 25%, 12%); }
+.dashboard-light .dash-card-sublabel { color: hsl(215, 16%, 60%); }
+.dashboard-light .dash-menu-btn { color: hsl(215, 16%, 72%); }
+.dashboard-light .dash-menu-btn:hover { background: hsl(214, 20%, 96%); color: hsl(215, 16%, 40%); }
+.dashboard-light .dash-card-border-b { border-color: hsl(214, 20%, 92%); }
+.dashboard-light .dash-divide > * + * { border-color: hsl(214, 20%, 94%); }
+.dashboard-light .dash-row-hover:hover { background: hsl(214, 20%, 97%); }

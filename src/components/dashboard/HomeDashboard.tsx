@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Wrench, Camera, Star, Eye, CalendarDays, DollarSign,
-  TrendingUp, TrendingDown, ChevronDown, ArrowUpRight, ArrowDownRight,
+  TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, MoreHorizontal,
 } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -12,7 +12,7 @@ import {
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent,
 } from "@/components/ui/chart";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { format, subDays, startOfDay, endOfDay, startOfYear, eachDayOfInterval, isWithinInterval, parseISO } from "date-fns";
 
 type DateRange = "7d" | "14d" | "30d" | "90d" | "ytd";
@@ -90,7 +90,6 @@ const HomeDashboard = () => {
   const currentJobCount = currentBookings.length;
   const previousJobCount = previousBookings.length;
 
-  // Chart data
   const chartData = useMemo(() => {
     const days = eachDayOfInterval({ start, end });
     return days.map(day => {
@@ -109,66 +108,59 @@ const HomeDashboard = () => {
 
   const metricCards = [
     {
-      label: "Revenue",
+      label: "TOTAL REVENUE",
       value: formatCurrency(currentRevenue),
       change: revenuePct,
       icon: DollarSign,
-      color: "hsl(160 84% 39%)",
-      chartKey: "revenue" as const,
+      iconBg: "hsla(217, 91%, 60%, 0.12)",
+      iconColor: "hsl(217, 91%, 60%)",
+      highlighted: false,
     },
     {
-      label: "Booked Jobs",
+      label: "BOOKED JOBS",
       value: currentJobCount,
       change: jobsPct,
       icon: CalendarDays,
-      color: "hsl(217 91% 60%)",
-      chartKey: "bookings" as const,
+      iconBg: "hsla(217, 91%, 60%, 1)",
+      iconColor: "hsl(0, 0%, 100%)",
+      highlighted: true,
     },
     {
-      label: "Page Views",
+      label: "PAGE VIEWS",
       value: "—",
       change: null,
       icon: Eye,
-      color: "hsl(215 16% 47%)",
-      chartKey: null,
+      iconBg: "hsla(217, 91%, 60%, 0.12)",
+      iconColor: "hsl(217, 91%, 60%)",
+      highlighted: false,
     },
     {
-      label: "Reviews",
+      label: "REVIEWS",
       value: stats.testimonials,
       change: null,
       icon: Star,
-      color: "hsl(45 93% 47%)",
-      chartKey: null,
+      iconBg: "hsla(45, 93%, 47%, 0.12)",
+      iconColor: "hsl(45, 93%, 47%)",
+      highlighted: false,
     },
   ];
 
-  const quickStats = [
-    { label: "Services", value: stats.services, icon: Wrench, accent: "hsla(217,91%,60%,0.15)" },
-    { label: "Photos", value: stats.photos, icon: Camera, accent: "hsla(213,94%,68%,0.15)" },
-    { label: "Reviews", value: stats.testimonials, icon: Star, accent: "hsla(45,93%,47%,0.12)" },
-    { label: "Page Views", value: "—", icon: Eye, accent: "hsla(215,16%,47%,0.12)" },
-  ];
-
   const chartConfig = {
-    revenue: { label: "Revenue", color: "hsl(160 84% 39%)" },
+    revenue: { label: "Revenue", color: "hsl(217 91% 60%)" },
     bookings: { label: "Bookings", color: "hsl(217 91% 60%)" },
   };
-
-  const darkCard = "bg-[linear-gradient(135deg,hsla(215,50%,12%,0.5)_0%,hsla(217,33%,14%,0.3)_100%)] border-white/[0.06]";
-  const lightCard = "bg-white border-gray-200 shadow-sm";
-  const cardCls = (extra = "") => `dash-card rounded-2xl border ${extra}`;
 
   return (
     <div className="space-y-6">
       {/* Date controls */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold mb-0.5 tracking-tight dashboard-light:text-gray-900 text-white">Dashboard</h2>
-          <p className="text-white/40 text-sm dashboard-light:text-gray-500">Track your business performance</p>
+          <h2 className="dash-title text-2xl font-bold mb-0.5 tracking-tight">Dashboard</h2>
+          <p className="dash-subtitle text-sm">Track your business performance</p>
         </div>
         <div className="flex items-center gap-2">
           <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}>
-            <SelectTrigger className="h-9 w-[160px] bg-white/[0.04] border-white/[0.08] text-white text-sm rounded-xl backdrop-blur-sm hover:bg-white/[0.06] transition-colors">
+            <SelectTrigger className="h-9 w-[160px] dash-select text-sm rounded-xl">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -178,7 +170,7 @@ const HomeDashboard = () => {
             </SelectContent>
           </Select>
           <Select value={compareMode} onValueChange={(v) => setCompareMode(v as CompareMode)}>
-            <SelectTrigger className="h-9 w-[170px] bg-white/[0.04] border-white/[0.08] text-white text-sm rounded-xl backdrop-blur-sm hover:bg-white/[0.06] transition-colors">
+            <SelectTrigger className="h-9 w-[170px] dash-select text-sm rounded-xl">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -189,149 +181,189 @@ const HomeDashboard = () => {
         </div>
       </div>
 
-      {/* Quick stats grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {quickStats.map((s) => (
-          <div
-            key={s.label}
-            className={`${cardCls()} p-4 group relative overflow-hidden dark-card`}
-          >
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" style={{ background: `radial-gradient(ellipse at 50% 0%, ${s.accent}, transparent 70%)` }} />
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-3">
-                <span className="card-label text-[11px] font-medium uppercase tracking-wider">{s.label}</span>
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110" style={{ background: s.accent }}>
-                  <s.icon className="w-4 h-4 text-white/60 group-hover:text-white/90 transition-colors duration-300" strokeWidth={1.5} />
-                </div>
-              </div>
-              <p className="text-2xl font-semibold card-value tracking-tight">{s.value}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Metric cards with sparklines */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Metric cards row — Exonad style */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
         {metricCards.map((metric) => (
           <div
             key={metric.label}
-            className={`${cardCls()} p-5 space-y-4 relative overflow-hidden group dark-card`}
+            className={`dash-card rounded-2xl p-4 lg:p-5 relative group transition-all duration-200 ${
+              metric.highlighted ? "dash-card-highlight" : ""
+            }`}
           >
-            <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ boxShadow: `inset 0 0 0 1px hsla(217,91%,60%,0.15), 0 0 30px hsla(217,91%,60%,0.06)` }} />
-            <div className="relative z-10">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                    style={{
-                      background: `linear-gradient(135deg, ${metric.color}20, ${metric.color}08)`,
-                      border: `1px solid ${metric.color}25`,
-                    }}
-                  >
-                    <metric.icon className="w-[18px] h-[18px] transition-all duration-300" style={{ color: metric.color }} strokeWidth={1.5} />
-                  </div>
-                  <div>
-                    <p className="card-label text-[11px] font-medium uppercase tracking-wider">{metric.label}</p>
-                    <p className="text-2xl font-semibold card-value mt-0.5 tracking-tight">{metric.value}</p>
-                  </div>
-                </div>
-                {metric.change !== null && compareMode === "previous" && (
-                  <div className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-semibold ${
-                    metric.change >= 0
-                      ? "bg-emerald-500/10 text-emerald-400"
-                      : "bg-red-500/10 text-red-400"
-                  }`}>
-                    {metric.change >= 0 ? (
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    ) : (
-                      <ArrowDownRight className="w-3.5 h-3.5" />
-                    )}
-                    {metric.change >= 0 ? "+" : ""}{metric.change}%
-                  </div>
-                )}
+            {/* Top row: icon + menu */}
+            <div className="flex items-start justify-between mb-3 lg:mb-4">
+              <div
+                className="w-10 h-10 lg:w-11 lg:h-11 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
+                style={{ background: metric.iconBg }}
+              >
+                <metric.icon
+                  className="w-5 h-5 lg:w-[18px] lg:h-[18px]"
+                  style={{ color: metric.iconColor }}
+                  strokeWidth={1.5}
+                />
               </div>
-
-              {metric.chartKey && chartData.length > 1 && (
-                <div className="h-[120px] -mx-2 mt-4">
-                  <ChartContainer config={chartConfig} className="h-full w-full">
-                    <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: 5 }}>
-                      <defs>
-                        <linearGradient id={`gradient-${metric.chartKey}`} x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor={metric.color} stopOpacity={0.3} />
-                          <stop offset="100%" stopColor={metric.color} stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsla(0,0%,100%,0.04)" vertical={false} />
-                      <XAxis
-                        dataKey="date"
-                        tickLine={false}
-                        axisLine={false}
-                        tick={{ fill: "hsla(0,0%,100%,0.25)", fontSize: 11 }}
-                        interval="preserveStartEnd"
-                      />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Area
-                        type="monotone"
-                        dataKey={metric.chartKey}
-                        stroke={metric.color}
-                        strokeWidth={2}
-                        fill={`url(#gradient-${metric.chartKey})`}
-                      />
-                    </AreaChart>
-                  </ChartContainer>
-                </div>
-              )}
+              <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
             </div>
+
+            {/* Label */}
+            <p className="dash-card-label text-[10px] lg:text-[11px] font-semibold uppercase tracking-wider mb-1">
+              {metric.label}
+            </p>
+
+            {/* Value */}
+            <p className="dash-card-value text-xl lg:text-2xl font-bold tracking-tight mb-1">
+              {metric.value}
+            </p>
+
+            {/* Change indicator */}
+            {metric.change !== null && compareMode === "previous" ? (
+              <div className="flex items-center gap-1 mt-1">
+                {metric.change >= 0 ? (
+                  <ArrowUpRight className="w-3.5 h-3.5 text-emerald-500" />
+                ) : (
+                  <ArrowDownRight className="w-3.5 h-3.5 text-red-500" />
+                )}
+                <span className={`text-xs font-semibold ${metric.change >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                  {Math.abs(metric.change)}%
+                </span>
+                <span className="dash-card-sublabel text-[10px]">vs last period</span>
+              </div>
+            ) : (
+              <div className="h-4" />
+            )}
           </div>
         ))}
       </div>
 
-      {/* Recent bookings table */}
-      <div className={`${cardCls()} overflow-hidden dark-card`}>
-        <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-3 table-header-border">
-          <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-          <h3 className="card-value font-semibold text-sm">Recent Bookings</h3>
+      {/* Revenue bar chart — Exonad style */}
+      {chartData.length > 1 && (
+        <div className="dash-card rounded-2xl p-5 lg:p-6">
+          <div className="flex items-center justify-between mb-4 lg:mb-6">
+            <h3 className="dash-card-value font-semibold text-base lg:text-lg">Revenue Overview</h3>
+            <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center">
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="h-[200px] lg:h-[280px]">
+            <ChartContainer config={chartConfig} className="h-full w-full">
+              <BarChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
+                <CartesianGrid strokeDasharray="3 3" className="dash-grid-stroke" vertical={false} />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  className="dash-axis-tick"
+                  tick={{ fontSize: 11 }}
+                  interval="preserveStartEnd"
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  className="dash-axis-tick"
+                  tick={{ fontSize: 11 }}
+                  tickFormatter={(v) => `$${v}`}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar
+                  dataKey="revenue"
+                  fill="hsl(217, 91%, 60%)"
+                  radius={[6, 6, 0, 0]}
+                  maxBarSize={40}
+                />
+              </BarChart>
+            </ChartContainer>
+          </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-white/[0.04] table-row-border">
-                <th className="text-left card-label text-[10px] font-medium uppercase tracking-widest px-5 py-3">Customer</th>
-                <th className="text-left card-label text-[10px] font-medium uppercase tracking-widest px-5 py-3">Service</th>
-                <th className="text-left card-label text-[10px] font-medium uppercase tracking-widest px-5 py-3">Date</th>
-                <th className="text-right card-label text-[10px] font-medium uppercase tracking-widest px-5 py-3">Amount</th>
-                <th className="text-right card-label text-[10px] font-medium uppercase tracking-widest px-5 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentBookings.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-5 py-8 text-center card-label text-sm">
-                    No bookings in this period
-                  </td>
-                </tr>
-              ) : (
-                currentBookings.slice(0, 10).map((b) => (
-                  <tr key={b.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors group/row table-row-border table-row-hover">
-                    <td className="px-5 py-3.5 table-cell-primary font-medium">{b.customer_name || "—"}</td>
-                    <td className="px-5 py-3.5 table-cell-secondary">{b.service_title || "—"}</td>
-                    <td className="px-5 py-3.5 table-cell-muted font-mono text-xs">{b.booking_date}</td>
-                    <td className="px-5 py-3.5 text-right card-value font-semibold font-mono text-xs">{formatCurrency(Number(b.service_price) || 0)}</td>
-                    <td className="px-5 py-3.5 text-right">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide ${
-                        b.status === "confirmed" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
-                        b.status === "completed" ? "bg-accent/10 text-accent border border-accent/20" :
-                        b.status === "cancelled" ? "bg-red-500/10 text-red-400 border border-red-500/20" :
-                        "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                      }`}>
-                        {b.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      )}
+
+      {/* Bookings activity chart */}
+      {chartData.length > 1 && (
+        <div className="dash-card rounded-2xl p-5 lg:p-6">
+          <div className="flex items-center justify-between mb-4 lg:mb-6">
+            <h3 className="dash-card-value font-semibold text-base lg:text-lg">Booking Activity</h3>
+            <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center">
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="h-[180px] lg:h-[220px]">
+            <ChartContainer config={chartConfig} className="h-full w-full">
+              <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
+                <defs>
+                  <linearGradient id="bookingGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0.2} />
+                    <stop offset="100%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" className="dash-grid-stroke" vertical={false} />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  className="dash-axis-tick"
+                  tick={{ fontSize: 11 }}
+                  interval="preserveStartEnd"
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  className="dash-axis-tick"
+                  tick={{ fontSize: 11 }}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <Area
+                  type="monotone"
+                  dataKey="bookings"
+                  stroke="hsl(217, 91%, 60%)"
+                  strokeWidth={2}
+                  fill="url(#bookingGradient)"
+                />
+              </AreaChart>
+            </ChartContainer>
+          </div>
+        </div>
+      )}
+
+      {/* Recent bookings list — Exonad style */}
+      <div className="dash-card rounded-2xl overflow-hidden">
+        <div className="px-5 py-4 flex items-center justify-between dash-card-border-b">
+          <h3 className="dash-card-value font-semibold text-base">Recent Bookings</h3>
+          <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center">
+            <MoreHorizontal className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="divide-y dash-divide">
+          {currentBookings.length === 0 ? (
+            <div className="px-5 py-8 text-center">
+              <p className="dash-card-sublabel text-sm">No bookings in this period</p>
+            </div>
+          ) : (
+            currentBookings.slice(0, 8).map((b) => (
+              <div key={b.id} className="flex items-center justify-between px-5 py-3.5 dash-row-hover transition-colors">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "hsla(217, 91%, 60%, 0.1)" }}>
+                    <CalendarDays className="w-4 h-4" style={{ color: "hsl(217, 91%, 60%)" }} strokeWidth={1.5} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="dash-card-value text-sm font-medium truncate">{b.customer_name || "—"}</p>
+                    <p className="dash-card-sublabel text-xs">{b.service_title || "—"} · {b.booking_date}</p>
+                  </div>
+                </div>
+                <div className="text-right shrink-0 ml-3">
+                  <p className="dash-card-value text-sm font-semibold font-mono">{formatCurrency(Number(b.service_price) || 0)}</p>
+                  <span className={`text-[10px] font-semibold uppercase tracking-wide ${
+                    b.status === "confirmed" ? "text-emerald-500" :
+                    b.status === "completed" ? "text-accent" :
+                    b.status === "cancelled" ? "text-red-500" :
+                    "text-amber-500"
+                  }`}>
+                    {b.status}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
@@ -339,8 +371,8 @@ const HomeDashboard = () => {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="card-value font-semibold text-sm">Your Website Preview</h3>
-            <p className="card-label text-xs">This is how your live site looks with your current data</p>
+            <h3 className="dash-card-value font-semibold text-sm">Your Website Preview</h3>
+            <p className="dash-card-sublabel text-xs">This is how your live site looks with your current data</p>
           </div>
           <a
             href="#"
