@@ -41,7 +41,7 @@ const DashboardBackdrop = () => (
     className="absolute inset-0 overflow-hidden"
     style={{
       background: "linear-gradient(160deg, hsl(215 50% 6%) 0%, hsl(217 33% 10%) 100%)",
-      filter: "blur(12px) brightness(0.4)",
+      filter: "blur(4px) brightness(0.55)",
       transform: "scale(1.05)",
     }}
   >
