@@ -158,7 +158,7 @@ const PricingSection = () => {
           </button>
           <span className={`text-sm font-semibold transition-colors ${annual ? 'text-foreground' : 'text-muted-foreground'}`}>Annual</span>
           <span className="text-xs font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
-            32% OFF + Free Gifts
+            32% OFF
           </span>
         </div>
 
@@ -180,7 +180,7 @@ const PricingSection = () => {
                     <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
                     {annual && (
                       <span className="text-[11px] font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
-                        Limited Time Offer
+                        32% OFF
                       </span>
                     )}
                   </div>
