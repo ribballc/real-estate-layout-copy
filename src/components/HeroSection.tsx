@@ -122,7 +122,7 @@ const HeroSection = () => {
                 animation: 'heroBlurIn 0.5s ease-out 1.0s forwards',
               }}
             >
-              Realize builds your custom website + AI booking system that captures leads 24/7, collects deposits, sends reminders, and optimizes routes. Wake up to booked jobs.
+              We will build your custom website + AI booking system that captures leads 24/7, collects deposits, sends reminders, and optimizes routes. Wake up to booked jobs.
             </p>
 
             {/* Business name form + CTA */}
@@ -168,7 +168,7 @@ const HeroSection = () => {
                   animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
                 }}
               >
-                Activate My Free Website
+                Launch My Site Free
                 <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </form>
