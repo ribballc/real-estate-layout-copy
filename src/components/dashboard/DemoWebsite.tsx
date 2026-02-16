@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Globe, Phone, Mail, Clock, MapPin, Instagram, Facebook, Star,
-  ChevronLeft, Menu, X, Calendar, ChevronRight,
+  ChevronLeft, Menu, X, Calendar, ChevronRight, ChevronDown,
+  Shield, Award, Sparkles, Check,
 } from "lucide-react";
 import demoHeroBg from "@/assets/demo-hero.jpg";
 
@@ -289,55 +290,96 @@ const DemoWebsite = () => {
         {/* ─── PAGE: HOME ─── */}
         {page === "home" && (
           <>
-            {/* Hero */}
-            <section className="relative min-h-[60vh] flex items-center overflow-hidden">
+            {/* ══ HERO ══ */}
+            <section className="relative min-h-[80vh] flex items-end overflow-hidden">
               <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${photos[0]?.url || demoHeroBg})` }}>
-                <div className="absolute inset-0" style={{ background: isDark ? "linear-gradient(to right, rgba(0,0,0,0.95), rgba(0,0,0,0.5))" : "linear-gradient(to right, rgba(255,255,255,0.95), rgba(255,255,255,0.5))" }} />
+                <div className="absolute inset-0" style={{ background: isDark
+                  ? "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 40%, rgba(0,0,0,0.3) 100%)"
+                  : "linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 40%, rgba(255,255,255,0.3) 100%)"
+                }} />
               </div>
-              <div className="relative z-10 px-8 md:px-16 py-16 max-w-3xl">
-                <p className="text-sm font-semibold tracking-[0.3em] uppercase mb-4" style={{ color: accent }}>
-                  {profile.tagline || "Premium Auto Detailing"}
+              <div className="relative z-10 w-full px-8 md:px-16 pb-16 pt-32">
+                <p className="text-xs font-bold tracking-[0.35em] uppercase mb-4" style={{ color: accent }}>
+                  {(profile.service_areas?.length ?? 0) > 0 ? profile.service_areas![0] : "Professional Auto Detailing"}
                 </p>
-                <h1 className="text-4xl md:text-6xl font-black uppercase leading-none mb-6">
-                  <GoldText>{biz}</GoldText>
+                <h1 className="text-5xl md:text-7xl font-black uppercase leading-[0.95] mb-5" style={{ letterSpacing: "-0.02em" }}>
+                  {biz.split(" ").map((word, i) => (
+                    <span key={i} className="block">{word}</span>
+                  ))}
                 </h1>
-                {profile.tagline && <p className="text-lg mb-6" style={{ color: mutedFg }}>{profile.tagline}</p>}
-                {(profile.service_areas?.length ?? 0) > 0 && (
-                  <p className="text-sm mb-6" style={{ color: mutedFg }}>Serving: {profile.service_areas!.join(" · ")}</p>
-                )}
+                <p className="text-base md:text-lg max-w-lg mb-8" style={{ color: mutedFg }}>
+                  {profile.tagline || "Your Go-To For Professional Detailing, Ceramic Coating, and Paint Correction Services"}
+                </p>
                 <div className="flex gap-4 flex-wrap">
-                  <div className="h-12 px-8 rounded-lg flex items-center text-sm font-bold" style={btnStyle()} onClick={() => navigate("booking")}>
-                    <Calendar className="w-4 h-4 mr-2" /> Book Now
+                  <div className="h-14 px-10 rounded-none flex items-center text-sm font-bold uppercase tracking-wider cursor-pointer transition-transform hover:scale-105" style={{ ...btnStyle(), letterSpacing: "0.1em" }} onClick={() => navigate("booking")}>
+                    Book Now
                   </div>
                   {profile.phone && (
-                    <a href={`tel:${profile.phone}`} className="h-12 px-8 rounded-lg flex items-center text-sm font-bold no-underline" style={btnStyle(true)}>
-                      <Phone className="w-4 h-4 mr-2" /> Call Us
+                    <a href={`tel:${profile.phone}`} className="h-14 px-10 rounded-none flex items-center text-sm font-bold uppercase tracking-wider no-underline cursor-pointer transition-transform hover:scale-105" style={{ ...btnStyle(true), letterSpacing: "0.1em" }}>
+                      Call {profile.phone}
                     </a>
                   )}
                 </div>
+                {testimonials.length > 0 && (
+                  <div className="mt-8 flex items-center gap-3">
+                    <div className="flex gap-0.5">
+                      {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" style={{ color: "#facc15" }} />)}
+                    </div>
+                    <span className="text-sm font-semibold">{testimonials.length}+ Five Star Reviews</span>
+                  </div>
+                )}
               </div>
             </section>
 
-            {/* Services */}
+            {/* ══ WELCOME / ABOUT ══ */}
+            <section className="py-20 px-8 md:px-16" style={{ background: bg }}>
+              <div className="max-w-4xl mx-auto text-center">
+                <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: accent }}>Welcome to</p>
+                <h2 className="text-3xl md:text-5xl font-black uppercase mb-6"><GoldText>{biz}</GoldText></h2>
+                <p className="text-base leading-relaxed max-w-2xl mx-auto" style={{ color: mutedFg }}>
+                  {profile.tagline
+                    ? `${profile.tagline}. We bring top-quality detailing straight to your location. Skip the hassle of waiting at a shop.`
+                    : "We bring top-quality detailing, ceramic coating, and paint correction straight to your location. With years of experience, we take pride in making vehicles look their best."}
+                </p>
+              </div>
+            </section>
+
+            {/* ══ SERVICES / PRICING ══ */}
             {services.length > 0 && (
-              <section className="py-14 px-8 md:px-16" style={{ background: bg }}>
-                <div className="text-center mb-10">
-                  <p className="text-sm font-semibold tracking-[0.2em] uppercase mb-3" style={{ color: accent }}>Our Services</p>
-                  <h2 className="text-3xl md:text-4xl font-bold">What We <GoldText>Offer</GoldText></h2>
+              <section className="py-20 px-8 md:px-16" style={{ background: secBg }}>
+                <div className="text-center mb-14">
+                  <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: accent }}>Our Services</p>
+                  <h2 className="text-3xl md:text-5xl font-black uppercase">Detailing <GoldText>Plans</GoldText></h2>
+                  <p className="text-sm mt-3" style={{ color: mutedFg }}>* Starting Prices - Subject to Change Based On Condition Of Vehicle *</p>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {services.map(svc => (
-                    <div key={svc.id} className="rounded-xl overflow-hidden" style={{ background: cardBg, border: `1px solid ${borderClr}` }}>
-                      {svc.image_url && <div className="h-36 bg-cover bg-center" style={{ backgroundImage: `url(${svc.image_url})` }} />}
-                      <div className="p-5">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-bold">{svc.title}</h4>
-                          {svc.popular && <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full" style={{ background: accentGrad, color: isDark ? "#000" : "#fff" }}>Popular</span>}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                  {services.map((svc, idx) => (
+                    <div key={svc.id} className="rounded-xl overflow-hidden relative group transition-transform hover:scale-[1.02]"
+                      style={{ background: cardBg, border: `1px solid ${borderClr}` }}>
+                      {svc.popular && (
+                        <div className="absolute top-4 right-4 z-10 text-[10px] font-black uppercase px-3 py-1 rounded-full" style={{ background: accentGrad, color: isDark ? "#000" : "#fff" }}>
+                          Most Popular
                         </div>
-                        <p className="text-sm mb-3" style={{ color: mutedFg }}>{svc.description}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xl font-black" style={{ color: accent }}>${svc.price}</span>
-                          <div className="h-9 px-4 rounded-lg flex items-center text-xs font-bold cursor-pointer" style={btnStyle(true)} onClick={() => handleBookService(svc)}>Book</div>
+                      )}
+                      {svc.image_url && <div className="h-44 bg-cover bg-center" style={{ backgroundImage: `url(${svc.image_url})` }} />}
+                      <div className="p-6">
+                        <h3 className="text-xl font-black uppercase mb-3">{svc.title}</h3>
+                        <div className="flex items-baseline gap-3 mb-4">
+                          <span className="text-4xl font-black" style={{ color: accent }}>${svc.price}</span>
+                          <span className="text-sm uppercase tracking-wider" style={{ color: mutedFg }}>Starting Price</span>
+                        </div>
+                        {svc.description && (
+                          <p className="text-sm mb-5 leading-relaxed" style={{ color: mutedFg }}>{svc.description}</p>
+                        )}
+                        <div className="flex gap-3">
+                          <div className="flex-1 h-11 rounded-lg flex items-center justify-center text-sm font-bold uppercase tracking-wider cursor-pointer" style={btnStyle()} onClick={() => handleBookService(svc)}>
+                            Book Now
+                          </div>
+                          {profile.phone && (
+                            <a href={`tel:${profile.phone}`} className="h-11 px-5 rounded-lg flex items-center justify-center text-sm font-bold no-underline cursor-pointer" style={btnStyle(true)}>
+                              <Phone className="w-4 h-4" />
+                            </a>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -346,53 +388,98 @@ const DemoWebsite = () => {
               </section>
             )}
 
-            {/* Photo Gallery preview */}
+            {/* ══ WHY CHOOSE US ══ */}
+            <section className="py-20 px-8 md:px-16" style={{ background: bg }}>
+              <div className="text-center mb-14">
+                <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: accent }}>Why Us</p>
+                <h2 className="text-3xl md:text-5xl font-black uppercase">Why Choose <GoldText>{biz}</GoldText></h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                {[
+                  { icon: Award, title: "Professional Expertise", desc: "Our team comprises skilled professionals passionate about detailing. With years of experience, we guarantee top-notch service." },
+                  { icon: Shield, title: "Premium Products", desc: "We use only the highest quality products and advanced techniques to ensure exceptional, long-lasting results for your vehicle." },
+                  { icon: Sparkles, title: "Customized Care", desc: "Every vehicle is different. We provide customized detailing packages designed to fit your specific needs and budget." },
+                ].map((item, i) => (
+                  <div key={i} className="text-center p-6 rounded-xl" style={{ background: cardBg, border: `1px solid ${borderClr}` }}>
+                    <div className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4" style={{ background: `${accent}15`, border: `1px solid ${accent}30` }}>
+                      <item.icon className="w-6 h-6" style={{ color: accent }} />
+                    </div>
+                    <h3 className="text-lg font-bold mb-2">{item.title}</h3>
+                    <p className="text-sm leading-relaxed" style={{ color: mutedFg }}>{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* ══ GALLERY PREVIEW ══ */}
             {photos.length > 0 && (
-              <section className="py-14 px-8 md:px-16" style={{ background: secBg }}>
-                <div className="text-center mb-10">
-                  <p className="text-sm font-semibold tracking-[0.2em] uppercase mb-3" style={{ color: accent }}>Our Work</p>
-                  <h2 className="text-3xl md:text-4xl font-bold"><GoldText>Gallery</GoldText></h2>
+              <section className="py-20 px-8 md:px-16" style={{ background: secBg }}>
+                <div className="text-center mb-14">
+                  <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: accent }}>Our Work</p>
+                  <h2 className="text-3xl md:text-5xl font-black uppercase"><GoldText>Gallery</GoldText></h2>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {photos.slice(0, 8).map(p => (
-                    <div key={p.id} className="rounded-xl overflow-hidden aspect-square cursor-pointer" onClick={() => navigate("gallery")}>
-                      <img src={p.url} alt={p.caption} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                    <div key={p.id} className="rounded-xl overflow-hidden aspect-square cursor-pointer group" onClick={() => navigate("gallery")}>
+                      <img src={p.url} alt={p.caption} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     </div>
                   ))}
                 </div>
                 {photos.length > 8 && (
-                  <div className="text-center mt-6">
-                    <span className="text-sm font-semibold cursor-pointer" style={{ color: accent }} onClick={() => navigate("gallery")}>View All Photos →</span>
+                  <div className="text-center mt-8">
+                    <span className="text-sm font-bold uppercase tracking-wider cursor-pointer" style={{ color: accent }} onClick={() => navigate("gallery")}>View All Photos →</span>
                   </div>
                 )}
               </section>
             )}
 
-            {/* Testimonials preview */}
+            {/* ══ REVIEWS ══ */}
             {testimonials.length > 0 && (
-              <section className="py-14 px-8 md:px-16" style={{ background: bg }}>
-                <div className="text-center mb-10">
-                  <p className="text-sm font-semibold tracking-[0.2em] uppercase mb-3" style={{ color: accent }}>Customer Reviews</p>
-                  <h2 className="text-3xl md:text-4xl font-bold">What Our <GoldText>Clients</GoldText> Say</h2>
+              <section className="py-20 px-8 md:px-16" style={{ background: bg }}>
+                <div className="text-center mb-14">
+                  <p className="text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: accent }}>Customer Reviews</p>
+                  <h2 className="text-3xl md:text-5xl font-black uppercase">What Our <GoldText>Clients</GoldText> Say</h2>
+                  <div className="flex items-center justify-center gap-1 mt-4">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-current" style={{ color: "#facc15" }} />)}
+                    <span className="ml-2 text-sm font-semibold">{(testimonials.reduce((a, t) => a + t.rating, 0) / testimonials.length).toFixed(1)} ({testimonials.length} reviews)</span>
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {testimonials.slice(0, 4).map(r => (
-                    <div key={r.id} className="rounded-xl p-5" style={{ background: cardBg, border: `1px solid ${borderClr}` }}>
-                      <div className="flex gap-0.5 mb-2">
-                        {[...Array(r.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" style={{ color: accent }} />)}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
+                  {testimonials.slice(0, 6).map(r => (
+                    <div key={r.id} className="rounded-xl p-6" style={{ background: cardBg, border: `1px solid ${borderClr}` }}>
+                      <div className="flex gap-0.5 mb-3">
+                        {[...Array(r.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" style={{ color: "#facc15" }} />)}
                       </div>
-                      <p className="text-sm mb-3" style={{ color: isDark ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.7)" }}>"{r.content}"</p>
-                      <span className="text-xs font-semibold">— {r.author}</span>
+                      <p className="text-sm mb-4 leading-relaxed" style={{ color: isDark ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.7)" }}>"{r.content}"</p>
+                      <span className="text-xs font-bold uppercase tracking-wider">— {r.author}</span>
                     </div>
                   ))}
                 </div>
-                {testimonials.length > 4 && (
-                  <div className="text-center mt-6">
-                    <span className="text-sm font-semibold cursor-pointer" style={{ color: accent }} onClick={() => navigate("reviews")}>See All Reviews →</span>
+                {testimonials.length > 6 && (
+                  <div className="text-center mt-8">
+                    <span className="text-sm font-bold uppercase tracking-wider cursor-pointer" style={{ color: accent }} onClick={() => navigate("reviews")}>See All Reviews →</span>
                   </div>
                 )}
               </section>
             )}
+
+            {/* ══ CTA BANNER ══ */}
+            <section className="py-20 px-8 md:px-16 text-center" style={{ background: secBg }}>
+              <h2 className="text-3xl md:text-4xl font-black uppercase mb-4">Ready to Get <GoldText>Started</GoldText>?</h2>
+              <p className="text-base max-w-lg mx-auto mb-8" style={{ color: mutedFg }}>
+                We are here and ready to bring your vehicle back to life. Book your appointment today!
+              </p>
+              <div className="flex gap-4 justify-center flex-wrap">
+                <div className="h-14 px-10 flex items-center text-sm font-bold uppercase tracking-wider cursor-pointer" style={{ ...btnStyle(), letterSpacing: "0.1em" }} onClick={() => navigate("booking")}>
+                  <Calendar className="w-4 h-4 mr-2" /> Book Now
+                </div>
+                {profile.phone && (
+                  <a href={`tel:${profile.phone}`} className="h-14 px-10 flex items-center text-sm font-bold uppercase tracking-wider no-underline cursor-pointer" style={{ ...btnStyle(true), letterSpacing: "0.1em" }}>
+                    <Phone className="w-4 h-4 mr-2" /> Call {profile.phone}
+                  </a>
+                )}
+              </div>
+            </section>
           </>
         )}
 
