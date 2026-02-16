@@ -62,7 +62,7 @@ const AccountSettings = () => {
       <h2 className="text-2xl font-bold text-white mb-6">Account Settings</h2>
 
       {/* Current Email */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 space-y-4 mb-6">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-4 mb-6">
         <div>
           <Label className="text-white/50 text-xs">Current Email</Label>
           <p className="text-white text-sm mt-1">{user?.email}</p>
@@ -70,7 +70,7 @@ const AccountSettings = () => {
       </div>
 
       {/* Manage Subscription */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 mb-6">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-6">
         <h3 className="text-lg font-semibold text-white mb-2">Subscription & Billing</h3>
         <p className="text-white/50 text-sm mb-4">Manage your plan, payment method, and invoices.</p>
         <Button
@@ -84,7 +84,7 @@ const AccountSettings = () => {
       </div>
 
       {/* Change Email */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 mb-6">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-6">
         <h3 className="text-lg font-semibold text-white mb-4">Change Email</h3>
         <form onSubmit={handleChangeEmail} className="space-y-4">
           <div className="space-y-2">
@@ -105,7 +105,7 @@ const AccountSettings = () => {
       </div>
 
       {/* Change Password */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-5">
         <h3 className="text-lg font-semibold text-white mb-4">Change Password</h3>
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div className="space-y-2">
