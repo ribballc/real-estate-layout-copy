@@ -2,29 +2,6 @@ import { useRef, useCallback, useEffect, useState } from "react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
-const animatedIconStyles = `
-@keyframes drawLine {
-  from { stroke-dashoffset: 100; }
-  to { stroke-dashoffset: 0; }
-}
-@keyframes fillCheck {
-  0% { opacity: 0; transform: scale(0); }
-  50% { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 1; transform: scale(1); }
-}
-@keyframes buildUp {
-  from { transform: scaleY(0); opacity: 0; }
-  to { transform: scaleY(1); opacity: 1; }
-}
-@keyframes cursorBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-@keyframes stepIconFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-`;
 
 const FormIcon = () => (
   <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style={{ animation: "stepIconFloat 3s ease-in-out infinite" }}>
@@ -209,7 +186,6 @@ const HowItWorksSection = () => {
 
   return (
     <>
-      <style>{animatedIconStyles}</style>
       <section
         ref={sectionRef}
         className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
