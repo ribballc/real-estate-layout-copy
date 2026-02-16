@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useCallback } from "react";
 import darkerLogo from "@/assets/darker-logo.png";
 import { ChevronRight, Store, ChevronDown, Zap, Shield } from "lucide-react";
 import { lazy, Suspense } from "react";
@@ -8,18 +8,8 @@ import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 const HeroSection = () => {
   const [businessName, setBusinessName] = useState("");
   const [error, setError] = useState("");
-  const [showStickyBtn, setShowStickyBtn] = useState(false);
-  const btnRef = useRef<HTMLButtonElement>(null);
   const { openFunnel } = useSurveyFunnel();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => setShowStickyBtn(!entry.isIntersecting),
-      { threshold: 0 }
-    );
-    if (btnRef.current) observer.observe(btnRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
@@ -167,7 +157,7 @@ const HeroSection = () => {
                 />
               </div>
               <button
-                ref={btnRef}
+                
                 type="submit"
                 className="group h-14 px-8 text-base font-semibold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
                 style={{
@@ -254,23 +244,6 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Sticky mobile CTA */}
-      {showStickyBtn && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-5 pt-3 md:hidden border-t border-primary-foreground/10 shadow-2xl animate-[fadeSlideUp_0.3s_ease-out]"
-          style={{ background: 'hsla(215, 50%, 10%, 0.95)', backdropFilter: 'blur(16px)' }}
-        >
-          <button
-            type="button"
-            onClick={openFunnel}
-            className="w-full h-14 font-semibold rounded-xl shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 min-h-[48px] text-primary-foreground"
-            style={{
-              background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
-            }}
-          >
-            Activate My Free Website →
-          </button>
-        </div>
-      )}
     </section>
   );
 };
