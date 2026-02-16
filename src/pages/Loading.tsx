@@ -1,208 +1,302 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 const STEPS = [
-  { label: "Analyzing your business...", duration: 1200 },
-  { label: "Generating custom layout...", duration: 1400 },
-  { label: "Building booking engine...", duration: 1200 },
-  { label: "Configuring automations...", duration: 1000 },
-  { label: "Polishing final details...", duration: 1000 },
-  { label: "Your site is ready!", duration: 600 },
+  { label: "Analyzing your business", threshold: 20 },
+  { label: "Generating pages", threshold: 40 },
+  { label: "Setting up booking system", threshold: 60 },
+  { label: "Optimizing for mobile", threshold: 80 },
 ];
 
-const TOTAL_DURATION = STEPS.reduce((s, step) => s + step.duration, 0);
+const PARTICLE_COUNT = 100;
+const DURATION_MS = 6500;
 
-const Loading = () => {
-  const navigate = useNavigate();
-  const [progress, setProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [businessName, setBusinessName] = useState("Your Website");
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animFrameRef = useRef<number>();
+// ── Particle canvas ────────────────────────────────
+const useParticleCanvas = (canvasRef: React.RefObject<HTMLCanvasElement | null>) => {
+  const animRef = useRef<number>();
 
-  useEffect(() => {
-    try {
-      const data = JSON.parse(localStorage.getItem("leadData") || "{}");
-      if (data.businessName) setBusinessName(data.businessName);
-      if (!data.businessName) { navigate("/"); return; }
-    } catch { navigate("/"); return; }
-  }, [navigate]);
-
-  // Progress + step tracking
-  useEffect(() => {
-    const start = Date.now();
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - start;
-      const pct = Math.min((elapsed / TOTAL_DURATION) * 100, 100);
-      setProgress(pct);
-
-      let accumulated = 0;
-      for (let i = 0; i < STEPS.length; i++) {
-        accumulated += STEPS[i].duration;
-        if (elapsed < accumulated) { setCurrentStep(i); break; }
-        if (i === STEPS.length - 1) setCurrentStep(i);
-      }
-
-      if (pct >= 100) {
-        clearInterval(interval);
-        setTimeout(() => navigate("/preview"), 400);
-      }
-    }, 50);
-    return () => clearInterval(interval);
-  }, [navigate]);
-
-  // Particle canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+    let w = 0, h = 0;
+    const resize = () => { w = canvas.width = canvas.clientWidth; h = canvas.height = canvas.clientHeight; };
     resize();
     window.addEventListener("resize", resize);
 
-    const particles: { x: number; y: number; vx: number; vy: number; size: number; alpha: number; hue: number }[] = [];
-    for (let i = 0; i < 80; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
-        size: Math.random() * 2 + 0.5,
-        alpha: Math.random() * 0.5 + 0.1,
+    // Create particles that converge toward center
+    const particles = Array.from({ length: PARTICLE_COUNT }, () => {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 200 + Math.random() * 150;
+      return {
+        ox: Math.cos(angle) * dist,
+        oy: Math.sin(angle) * dist,
+        x: 0, y: 0,
+        size: 1 + Math.random() * 2.5,
+        speed: 0.3 + Math.random() * 0.7,
+        phase: Math.random() * Math.PI * 2,
         hue: Math.random() > 0.5 ? 217 : 160,
-      });
-    }
+        t: 0,
+      };
+    });
+
+    const startTime = Date.now();
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
+      ctx.clearRect(0, 0, w, h);
+      const elapsed = (Date.now() - startTime) / 1000;
+      const cx = w / 2, cy = h / 2;
 
+      particles.forEach((p) => {
+        // Converge over first 2 seconds, then orbit
+        p.t = Math.min(1, elapsed * p.speed * 0.5);
+        const convergeFactor = 1 - p.t;
+        const orbitAngle = elapsed * 0.3 + p.phase;
+        const orbitRadius = 20 * convergeFactor;
+
+        p.x = cx + p.ox * convergeFactor + Math.cos(orbitAngle) * orbitRadius;
+        p.y = cy + p.oy * convergeFactor + Math.sin(orbitAngle) * orbitRadius;
+
+        const alpha = 0.3 + p.t * 0.5;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 80%, 65%, ${p.alpha})`;
+        ctx.fillStyle = `hsla(${p.hue}, 80%, 65%, ${alpha})`;
         ctx.fill();
       });
 
-      // Draw connection lines
+      // Connection lines
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
+          if (dist < 80) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `hsla(217, 80%, 65%, ${0.08 * (1 - dist / 120)})`;
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = `hsla(217, 80%, 60%, ${0.12 * (1 - dist / 80)})`;
+            ctx.lineWidth = 0.6;
             ctx.stroke();
           }
         }
       }
 
-      animFrameRef.current = requestAnimationFrame(draw);
+      animRef.current = requestAnimationFrame(draw);
     };
     draw();
 
     return () => {
       window.removeEventListener("resize", resize);
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
+      if (animRef.current) cancelAnimationFrame(animRef.current);
     };
-  }, []);
+  }, [canvasRef]);
+};
+
+// ── Main component ─────────────────────────────────
+const Loading = () => {
+  const navigate = useNavigate();
+  const [progress, setProgress] = useState(0);
+  const [businessName, setBusinessName] = useState("Your Website");
+  const [glitching, setGlitching] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const startRef = useRef(Date.now());
+
+  useParticleCanvas(canvasRef);
+
+  // Redirect guard
+  useEffect(() => {
+    try {
+      const data = JSON.parse(localStorage.getItem("leadData") || "{}");
+      if (data.businessName) setBusinessName(data.businessName);
+      else if (data.email) setBusinessName(data.email);
+      else { navigate("/"); return; }
+    } catch { navigate("/"); }
+  }, [navigate]);
+
+  // Progress ticker
+  useEffect(() => {
+    startRef.current = Date.now();
+    const tick = () => {
+      const elapsed = Date.now() - startRef.current;
+      const pct = Math.min((elapsed / DURATION_MS) * 100, 100);
+      setProgress(pct);
+
+      if (pct >= 100) {
+        setTimeout(() => {
+          setGlitching(true);
+          setTimeout(() => navigate("/preview"), 500);
+        }, 400);
+        return;
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [navigate]);
+
+  const activeStep = useCallback((threshold: number) => progress >= threshold, [progress]);
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden" style={{
-      background: 'linear-gradient(180deg, #000000 0%, #0a0a0a 100%)',
-    }}>
-      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
-
-      {/* Scan beam */}
-      <div className="absolute inset-x-0 pointer-events-none" style={{
-        height: '2px',
-        background: 'linear-gradient(90deg, transparent 0%, hsla(217, 91%, 60%, 0.6) 50%, transparent 100%)',
-        top: `${30 + (progress / 100) * 40}%`,
-        opacity: progress < 95 ? 0.6 : 0,
-        transition: 'opacity 0.3s ease',
-        boxShadow: '0 0 20px hsla(217, 91%, 60%, 0.4)',
+    <div
+      className="fixed inset-0 flex items-center justify-center overflow-hidden"
+      style={{
+        background: "radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%)",
+        animation: glitching ? "loadingGlitchOut 0.5s ease-out forwards" : undefined,
+      }}
+    >
+      {/* Scanline overlay */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: "repeating-linear-gradient(0deg, transparent 0px, rgba(0,113,227,0.03) 1px, transparent 2px)",
+        animation: "loadingScanDrift 8s linear infinite",
       }} />
 
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-lg">
-        {/* Holographic icon */}
-        <div className="w-20 h-20 rounded-2xl flex items-center justify-center mb-8" style={{
-          background: 'linear-gradient(135deg, hsla(217, 91%, 60%, 0.15), hsla(160, 80%, 50%, 0.1))',
-          border: '1px solid hsla(217, 91%, 60%, 0.3)',
-          boxShadow: '0 0 40px hsla(217, 91%, 60%, 0.15)',
-          animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        }}>
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="hsla(217, 91%, 60%, 0.9)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <path d="M3 9h18" />
-            <path d="M9 21V9" />
-          </svg>
-        </div>
+      {/* Particle canvas */}
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
-        {/* Business name */}
-        <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#fff' }}>
-          Building{' '}
-          <span style={{ color: '#10b981', textShadow: '0 0 20px rgba(16,185,129,0.3)' }}>
+      {/* ── Holographic display (desktop) ── */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block pointer-events-none" style={{ width: 600, height: 600, perspective: 1200 }}>
+        {/* 3D website formation */}
+        <div style={{
+          position: "absolute", width: 400, height: 500, top: "50%", left: "50%",
+          transform: "translate(-50%,-50%) rotateX(-10deg) rotateY(15deg)",
+          transformStyle: "preserve-3d",
+          animation: "loadingFormationRotate 8s ease-in-out infinite",
+        }}>
+          {/* Wireframe grid */}
+          <div style={{ position: "absolute", inset: 0, opacity: 0, animation: "loadingGridAppear 0.8s ease-out 0.5s forwards" }}>
+            {[20, 40, 60, 80].map((p) => (
+              <div key={`h${p}`} style={{
+                position: "absolute", width: "100%", height: 1, top: `${p}%`,
+                background: "linear-gradient(90deg, transparent, #0071e3, transparent)",
+                opacity: 0.4, animation: "loadingLineScan 2s ease-in-out infinite",
+                animationDelay: `${p * 0.02}s`,
+              }} />
+            ))}
+            {[25, 50, 75].map((p) => (
+              <div key={`v${p}`} style={{
+                position: "absolute", height: "100%", width: 1, left: `${p}%`,
+                background: "linear-gradient(0deg, transparent, #0071e3, transparent)",
+                opacity: 0.4, animation: "loadingLineScan 2s ease-in-out infinite",
+                animationDelay: `${p * 0.015}s`,
+              }} />
+            ))}
+          </div>
+
+          {/* Website blocks materializing */}
+          {[
+            { top: "0%", left: "0%", w: "100%", h: "15%", delay: "1s" },
+            { top: "15%", left: "0%", w: "20%", h: "70%", delay: "1.3s" },
+            { top: "15%", left: "20%", w: "80%", h: "35%", delay: "1.6s" },
+            { top: "50%", left: "20%", w: "80%", h: "35%", delay: "1.9s" },
+            { bottom: "0%", left: "0%", w: "100%", h: "15%", delay: "2.2s" },
+          ].map((block, i) => (
+            <div key={i} style={{
+              position: "absolute",
+              top: block.top, bottom: block.bottom, left: block.left,
+              width: block.w, height: block.h,
+              background: "rgba(0, 113, 227, 0.15)",
+              border: "1px solid rgba(0, 113, 227, 0.35)",
+              backdropFilter: "blur(10px)",
+              boxShadow: "0 0 20px rgba(0, 113, 227, 0.2)",
+              opacity: 0, transform: "scale(0)",
+              animation: `loadingBlockMaterialize 0.6s ease-out ${block.delay} forwards`,
+            }} />
+          ))}
+
+          {/* Core pulse */}
+          <div style={{
+            position: "absolute", width: 60, height: 60, top: "50%", left: "50%",
+            transform: "translate(-50%,-50%)",
+            background: "radial-gradient(circle, #0071e3 0%, transparent 70%)",
+            borderRadius: "50%",
+            animation: "loadingCorePulse 2s ease-in-out infinite",
+          }} />
+
+          {/* Scan beams */}
+          <div style={{
+            position: "absolute", width: "100%", height: 2, top: "50%",
+            background: "linear-gradient(90deg, transparent, #0071e3, transparent)",
+            boxShadow: "0 0 20px rgba(0,113,227,0.8)",
+            opacity: 0,
+            animation: "loadingScanH 3s ease-in-out 2.5s forwards",
+          }} />
+          <div style={{
+            position: "absolute", height: "100%", width: 2, left: "50%",
+            background: "linear-gradient(0deg, transparent, #0071e3, transparent)",
+            boxShadow: "0 0 20px rgba(0,113,227,0.8)",
+            opacity: 0,
+            animation: "loadingScanV 3s ease-in-out 2.5s forwards",
+          }} />
+        </div>
+      </div>
+
+      {/* ── Status panel ── */}
+      <div className="relative z-10 flex flex-col items-center text-center px-5 max-w-[600px] w-full">
+        <h1 className="text-2xl md:text-[32px] font-bold mb-8 md:mb-10 tracking-tight" style={{ color: "#fff", letterSpacing: "-0.5px" }}>
+          Building{" "}
+          <span style={{ color: "#0071e3", textShadow: "0 0 20px rgba(0,113,227,0.6)" }}>
             {businessName}
           </span>
         </h1>
 
-        {/* Current step */}
-        <p className="text-base md:text-lg mb-10" style={{ color: 'rgba(255,255,255,0.6)' }}>
-          {STEPS[currentStep]?.label}
-        </p>
+        {/* Steps */}
+        <div className="flex flex-col gap-3 w-full mb-8 md:mb-10">
+          {STEPS.map((step, i) => {
+            const isActive = activeStep(step.threshold);
+            return (
+              <div
+                key={i}
+                className="flex items-center gap-3 rounded-xl px-4 md:px-6 py-3.5 md:py-4 transition-all duration-400"
+                style={{
+                  background: isActive ? "rgba(0, 113, 227, 0.1)" : "rgba(255,255,255,0.03)",
+                  border: `1px solid ${isActive ? "#0071e3" : "rgba(255,255,255,0.08)"}`,
+                  boxShadow: isActive ? "0 0 20px rgba(0,113,227,0.3)" : "none",
+                  opacity: isActive ? 1 : 0.3,
+                }}
+              >
+                <span className="text-lg" style={{
+                  transition: "transform 0.3s ease",
+                  transform: isActive ? "scale(1.3)" : "scale(1)",
+                }}>⚡</span>
+                <span className="text-[15px] md:text-base font-medium" style={{ color: "rgba(255,255,255,0.8)" }}>
+                  {step.label}
+                </span>
+              </div>
+            );
+          })}
+        </div>
 
         {/* Progress bar */}
-        <div className="w-full max-w-sm mb-4 rounded-full overflow-hidden" style={{
-          height: 6,
-          background: 'rgba(255,255,255,0.08)',
+        <div className="w-full rounded-full overflow-hidden relative mb-3" style={{
+          height: 8, background: "rgba(255,255,255,0.05)",
         }}>
-          <div
-            className="h-full rounded-full transition-all duration-200"
-            style={{
-              width: `${progress}%`,
-              background: 'linear-gradient(90deg, hsl(217, 91%, 60%), #10b981)',
-              boxShadow: '0 0 12px hsla(217, 91%, 60%, 0.5)',
-            }}
-          />
-        </div>
-
-        <span className="text-sm font-mono font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          {Math.round(progress)}%
-        </span>
-
-        {/* Step indicators */}
-        <div className="mt-8 flex flex-col gap-2 items-start w-full max-w-sm">
-          {STEPS.map((step, i) => (
-            <div key={i} className="flex items-center gap-3 transition-opacity duration-300" style={{
-              opacity: i <= currentStep ? 1 : 0.3,
-            }}>
-              <div className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold" style={{
-                background: i < currentStep ? '#10b981' : i === currentStep ? 'hsl(217, 91%, 60%)' : 'rgba(255,255,255,0.1)',
-                color: '#fff',
-                boxShadow: i === currentStep ? '0 0 12px hsla(217, 91%, 60%, 0.5)' : 'none',
-                transition: 'all 0.3s ease',
-              }}>
-                {i < currentStep ? '✓' : ''}
-              </div>
-              <span className="text-sm" style={{
-                color: i <= currentStep ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.3)',
-              }}>
-                {step.label}
-              </span>
+          <div className="h-full rounded-full relative" style={{
+            width: `${progress}%`,
+            background: "linear-gradient(90deg, #0071e3, #10b981)",
+            transition: "width 0.1s linear",
+          }}>
+            {/* Shimmer */}
+            <div className="absolute inset-0 overflow-hidden rounded-full">
+              <div className="absolute inset-0" style={{
+                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+                animation: "loadingProgressShimmer 1.5s ease-in-out infinite",
+              }} />
             </div>
-          ))}
+          </div>
+          {/* Glow underneath */}
+          <div className="absolute top-0 left-0 h-full rounded-full" style={{
+            width: `${progress}%`,
+            background: "#0071e3",
+            filter: "blur(12px)",
+            opacity: 0.5,
+            transition: "width 0.1s linear",
+          }} />
         </div>
+
+        <span className="text-xl font-bold font-mono" style={{ color: "#0071e3" }}>
+          {Math.floor(progress)}%
+        </span>
       </div>
     </div>
   );
