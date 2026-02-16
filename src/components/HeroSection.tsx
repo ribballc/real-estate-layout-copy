@@ -94,22 +94,22 @@ const HeroSection = () => {
                 animation: 'fadeSlideDown 0.4s ease-out 0.2s forwards',
               }}
             >
-              For Mobile Detailers
+              FOR DETAILERS & INSTALLERS
             </span>
 
             {/* Headline */}
             <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em]">
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
-                Run a Top-Tier
+                The Instant Website
               </span>
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
-                Detailing Business
+                & Booking System For
               </span>
               <span
                 className="block font-heading text-[36px] md:text-[56px] font-semibold italic"
                 style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.8s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}
               >
-                Flawlessly
+                Auto Pros
               </span>
             </h1>
 
