@@ -182,10 +182,10 @@ const WhySection = () => {
                 className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
                 style={{ color: "hsl(222, 47%, 11%)" }}
               >
-                Built to Solve Your Problems
+                Why It Works
               </h2>
               <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
-                Stop cobbling together apps. Get everything in one system.
+                Why hundreds of detailers, installers, and shop owners swear by it.
               </p>
             </div>
           </FadeIn>
