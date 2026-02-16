@@ -105,26 +105,30 @@ const PaymentIcon = () => (
   </svg>
 );
 
+const Highlight = ({ children }: { children: React.ReactNode }) => (
+  <span style={{ color: "hsl(217, 71%, 53%)", fontWeight: 700 }}>{children}</span>
+);
+
 const features = [
   {
     Icon: CalendarBookingIcon,
     title: "24/7 Smart Booking Calendar",
-    description: "Customers book while you're detailing. Capture the <span style='color: hsl(217, 71%, 53%); font-weight: 700;'>$500-1,000/month</span> you're losing to missed calls.",
+    description: <>Customers book while you're detailing. Capture the <Highlight>$500-1,000/month</Highlight> you're losing to missed calls.</>,
   },
   {
     Icon: ShieldIcon,
     title: "No-Show Protection That Works",
-    description: "Automated reminders + <span style='color: hsl(217, 71%, 53%); font-weight: 700;'>$100</span> deposits = <span style='color: hsl(217, 71%, 53%); font-weight: 700;'>40%</span> fewer no-shows.",
+    description: <>Automated reminders + <Highlight>$100</Highlight> deposits = <Highlight>40%</Highlight> fewer no-shows.</>,
   },
   {
     Icon: WebsiteIcon,
     title: "Professional Website in 48 Hours",
-    description: "Mobile-optimized website that looks like you paid <span style='color: hsl(217, 71%, 53%); font-weight: 700;'>$3,000</span>. Zero tech skills required.",
+    description: <>Mobile-optimized website that looks like you paid <Highlight>$3,000</Highlight>. Zero tech skills required.</>,
   },
   {
     Icon: PaymentIcon,
     title: "Payment Processing Built-In",
-    description: "Accept cards, collect deposits, get paid next day. <span style='color: hsl(217, 71%, 53%); font-weight: 700;'>2.9% + 30¢</span> per transaction.",
+    description: <>Accept cards, collect deposits, get paid next day. <Highlight>2.9% + 30¢</Highlight> per transaction.</>,
   },
 ];
 
@@ -183,8 +187,9 @@ const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: n
         <p
           className="text-[15px] leading-[1.7] relative z-10 transition-colors duration-300"
           style={{ color: "hsl(215, 16%, 47%)" }}
-          dangerouslySetInnerHTML={{ __html: feature.description }}
-        />
+        >
+          {feature.description}
+        </p>
       </div>
     </FadeIn>
   );
