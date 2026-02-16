@@ -1,60 +1,24 @@
 import { useState, useCallback } from "react";
 import darkerLogo from "@/assets/darker-logo.png";
-import { ChevronRight, ChevronDown, Zap, Shield } from "lucide-react";
+import { ChevronRight, ChevronDown, Zap, Shield, Mail } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 const PhoneDashboard = lazy(() => import("@/components/PhoneDashboard"));
 
-const SERVICE_TYPES = [
-  "Auto Detailing",
-  "Mobile Detailing",
-  "Car Wash",
-  "Detailing Shop",
-] as const;
-
 const HeroSection = () => {
-  const [businessName, setBusinessName] = useState("");
-  const [serviceType, setServiceType] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const trimmed = businessName.trim();
-    if (!trimmed) { setError("Please enter your business name"); return; }
-    if (!serviceType) { setError("Please select a service type"); return; }
-    if (!firstName.trim()) { setError("Please enter your first name"); return; }
-    if (!phone.trim()) { setError("Please enter your phone number"); return; }
-
-    const leadData = {
-      businessName: trimmed,
-      serviceType,
-      firstName: firstName.trim(),
-      phone: phone.trim(),
-    };
-    localStorage.setItem("leadData", JSON.stringify(leadData));
+    const trimmed = email.trim();
+    if (!trimmed) { setError("Please enter your email"); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError("Please enter a valid email"); return; }
+    localStorage.setItem("leadData", JSON.stringify({ email: trimmed }));
     navigate("/loading");
-  }, [businessName, serviceType, firstName, phone, navigate]);
-
-  const inputStyle = {
-    background: 'hsla(0, 0%, 100%, 0.05)',
-    border: '1px solid hsla(0, 0%, 100%, 0.15)',
-  };
-
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    e.currentTarget.style.border = '1px solid hsl(217 91% 60%)';
-    e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.08)';
-    e.currentTarget.style.boxShadow = '0 0 0 3px hsla(217, 91%, 60%, 0.1)';
-  };
-
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    e.currentTarget.style.border = '1px solid hsla(0, 0%, 100%, 0.15)';
-    e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.05)';
-    e.currentTarget.style.boxShadow = 'none';
-  };
+  }, [email, navigate]);
 
   return (
     <section className="relative overflow-hidden" style={{
@@ -64,20 +28,17 @@ const HeroSection = () => {
       <div className="absolute rounded-full pointer-events-none" style={{
         width: 500, height: 500, top: "-15%", left: "-10%",
         background: "radial-gradient(circle, hsla(217, 91%, 60%, 0.4), transparent)",
-        filter: "blur(80px)", opacity: 0.15,
-        animation: "orbFloat1 25s ease-in-out infinite",
+        filter: "blur(80px)", opacity: 0.15, animation: "orbFloat1 25s ease-in-out infinite",
       }} />
       <div className="absolute rounded-full pointer-events-none" style={{
         width: 600, height: 600, bottom: "-20%", right: "-10%",
         background: "radial-gradient(circle, hsla(213, 94%, 68%, 0.3), transparent)",
-        filter: "blur(80px)", opacity: 0.12,
-        animation: "orbFloat2 30s ease-in-out infinite 5s",
+        filter: "blur(80px)", opacity: 0.12, animation: "orbFloat2 30s ease-in-out infinite 5s",
       }} />
       <div className="absolute rounded-full pointer-events-none" style={{
         width: 300, height: 300, top: "40%", left: "60%",
         background: "radial-gradient(circle, hsla(217, 91%, 60%, 0.25), transparent)",
-        filter: "blur(80px)", opacity: 0.08,
-        animation: "orbFloat3 35s ease-in-out infinite 10s",
+        filter: "blur(80px)", opacity: 0.08, animation: "orbFloat3 35s ease-in-out infinite 10s",
       }} />
 
       {/* Grid patterns */}
@@ -102,7 +63,7 @@ const HeroSection = () => {
         {/* Two-column grid */}
         <div className="max-w-[1400px] mx-auto mt-1 md:mt-2 lg:mt-4 w-full grid grid-cols-1 lg:grid-cols-[42%_58%] gap-8 lg:gap-6 items-center min-h-[calc(100vh-120px)]">
 
-          {/* LEFT: Text + Form */}
+          {/* LEFT: Text column */}
           <div className="relative z-10 text-left">
             {/* Badge */}
             <span
@@ -126,9 +87,12 @@ const HeroSection = () => {
               </span>
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
                 System For{' '}
-                <span className="font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
+                <span className="hidden md:inline font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
                   Auto Pros
                 </span>
+              </span>
+              <span className="block md:hidden font-heading text-[36px] font-semibold italic" style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.7s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
+                Auto Pros
               </span>
             </h1>
 
@@ -140,111 +104,52 @@ const HeroSection = () => {
               We will build your custom website + AI booking system that captures leads 24/7, collects deposits, sends reminders, and optimizes routes. Wake up to booked jobs.
             </p>
 
-            {/* Lead Capture Form */}
+            {/* Email form + CTA */}
             <form
               onSubmit={handleSubmit}
-              className="mt-7 max-w-[500px] rounded-2xl p-7 md:p-10"
-              style={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(20px)',
-                opacity: 0, animation: 'heroFormIn 0.5s ease-out 1.2s forwards',
-              }}
+              className="mt-7 flex flex-col sm:flex-row gap-3 max-w-lg"
+              style={{ opacity: 0, animation: 'heroFormIn 0.5s ease-out 1.2s forwards' }}
             >
-              {/* Business Name */}
-              <div className="mb-5">
-                <label className="block text-sm font-semibold mb-2 tracking-wide" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                  Business Name *
-                </label>
+              <div className="relative w-full sm:flex-1" style={{ opacity: 0, animation: 'heroScaleIn 0.4s ease-out 1.2s forwards' }}>
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-foreground/30" />
                 <input
-                  type="text"
-                  value={businessName}
-                  onChange={(e) => { setBusinessName(e.target.value); if (error) setError(""); }}
-                  placeholder="e.g. Elite Mobile Detailing"
+                  type="email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
+                  placeholder="Enter Your Email"
                   maxLength={100}
-                  className="w-full h-[52px] rounded-xl px-4 text-base text-primary-foreground placeholder:text-primary-foreground/40 focus:outline-none transition-all duration-300"
-                  style={inputStyle}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
+                  className="h-14 w-full rounded-xl pl-10 pr-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none transition-all duration-200"
+                  style={{
+                    background: 'hsla(0, 0%, 100%, 0.08)',
+                    border: '1px solid hsla(0, 0%, 100%, 0.15)',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.border = '2px solid hsl(217 91% 60%)';
+                    e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.12)';
+                    e.currentTarget.style.boxShadow = '0 0 0 4px hsla(217, 91%, 60%, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.border = '1px solid hsla(0, 0%, 100%, 0.15)';
+                    e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.08)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 />
               </div>
-
-              {/* Service Type */}
-              <div className="mb-5">
-                <label className="block text-sm font-semibold mb-2 tracking-wide" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                  Service Type *
-                </label>
-                <select
-                  value={serviceType}
-                  onChange={(e) => { setServiceType(e.target.value); if (error) setError(""); }}
-                  className="w-full h-[52px] rounded-xl px-4 text-base text-primary-foreground focus:outline-none transition-all duration-300 appearance-none cursor-pointer"
-                  style={inputStyle}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                >
-                  <option value="" disabled className="bg-slate-900">Select your service...</option>
-                  {SERVICE_TYPES.map((type) => (
-                    <option key={type} value={type} className="bg-slate-900">{type}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Name + Phone row */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
-                <div>
-                  <label className="block text-sm font-semibold mb-2 tracking-wide" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                    First Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => { setFirstName(e.target.value); if (error) setError(""); }}
-                    placeholder="First name"
-                    maxLength={50}
-                    className="w-full h-[52px] rounded-xl px-4 text-base text-primary-foreground placeholder:text-primary-foreground/40 focus:outline-none transition-all duration-300"
-                    style={inputStyle}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-2 tracking-wide" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => { setPhone(e.target.value); if (error) setError(""); }}
-                    placeholder="(555) 123-4567"
-                    maxLength={20}
-                    className="w-full h-[52px] rounded-xl px-4 text-base text-primary-foreground placeholder:text-primary-foreground/40 focus:outline-none transition-all duration-300"
-                    style={inputStyle}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                  />
-                </div>
-              </div>
-
-              {error && <p className="text-sm text-destructive mb-3">{error}</p>}
-
-              {/* Submit */}
               <button
                 type="submit"
-                className="group w-full h-[56px] rounded-xl text-[17px] font-semibold inline-flex items-center justify-between px-8 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 cursor-pointer"
+                className="group h-14 px-8 text-base font-semibold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
                 style={{
-                  background: 'linear-gradient(135deg, #10b981, #059669)',
-                  color: '#fff',
-                  boxShadow: '0 4px 20px rgba(16, 185, 129, 0.3)',
+                  background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
+                  color: 'hsl(0 0% 100%)',
+                  boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
+                  opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
                 }}
               >
-                <span>Build My Free Website</span>
+                Launch My Site Free
                 <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
-
-              <p className="text-center text-[13px] mt-4" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                No card required • Takes 30 seconds • 14-day free trial
-              </p>
             </form>
+            {error && <p className="text-sm text-destructive mt-2">{error}</p>}
 
             {/* Trust line */}
             <div className="mt-5 flex items-center gap-4 flex-wrap" style={{
