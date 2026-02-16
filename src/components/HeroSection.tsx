@@ -101,7 +101,7 @@ const HeroSection = () => {
               className="mt-5 text-[15px] md:text-xl leading-[1.6] max-w-[600px]"
               style={{ color: 'hsla(0, 0%, 100%, 0.7)', opacity: 0, animation: 'heroBlurIn 0.5s ease-out 1.0s forwards' }}
             >
-              We will build your custom website + AI booking system that captures leads 24/7, collects deposits, sends reminders, and optimizes routes. Wake up to booked jobs.
+              Get a professional website with 24/7 booking. Customers book themselves while you're in the field. Automated reminders, deposits, and a calendar that fills itself.
             </p>
 
             {/* Email form + CTA */}
