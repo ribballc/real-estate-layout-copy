@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, CreditCard } from "lucide-react";
 
 const AccountSettings = () => {
   const { user } = useAuth();
@@ -14,6 +14,21 @@ const AccountSettings = () => {
   const [newPassword, setNewPassword] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
+  const [openingPortal, setOpeningPortal] = useState(false);
+
+  const handleManageSubscription = async () => {
+    setOpeningPortal(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("customer-portal");
+      if (error) throw error;
+      if (data?.url) window.open(data.url, "_blank");
+      else throw new Error("No portal URL returned");
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message || "Could not open billing portal.", variant: "destructive" });
+    } finally {
+      setOpeningPortal(false);
+    }
+  };
 
   const handleChangeEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +67,20 @@ const AccountSettings = () => {
           <Label className="text-white/50 text-xs">Current Email</Label>
           <p className="text-white text-sm mt-1">{user?.email}</p>
         </div>
+      </div>
+
+      {/* Manage Subscription */}
+      <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-6">
+        <h3 className="text-lg font-semibold text-white mb-2">Subscription & Billing</h3>
+        <p className="text-white/50 text-sm mb-4">Manage your plan, payment method, and invoices.</p>
+        <Button
+          onClick={handleManageSubscription}
+          disabled={openingPortal}
+          className="h-11 gap-2"
+          style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}
+        >
+          {openingPortal ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening…</> : <><CreditCard className="w-4 h-4" /> Manage Subscription</>}
+        </Button>
       </div>
 
       {/* Change Email */}
