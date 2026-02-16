@@ -198,10 +198,10 @@ const HowItWorksSection = () => {
                 className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
                 style={{ color: "hsl(222, 47%, 11%)" }}
               >
-                As easy as 1, 2, 3
+                How It Works
               </h2>
               <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
-                Three steps. Zero headaches.
+                yeah... its pretty darn simple.
               </p>
             </div>
           </FadeIn>

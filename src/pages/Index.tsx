@@ -31,9 +31,8 @@ const Index = () => {
         <ScrollProgress />
         <SpringBanner />
         <HeroSection />
-        <ValueBreakdown />
-        
         <HowItWorksSection />
+        <ValueBreakdown />
         <TestimonialSection />
         <WhySection />
         <PricingSection />
