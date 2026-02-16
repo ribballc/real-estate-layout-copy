@@ -4,7 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, X, Plus, Palette, ChevronDown, Share2 } from "lucide-react";
@@ -24,7 +23,7 @@ const BusinessInfoForm = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
-    business_name: "", tagline: "", email: "", phone: "", address: "", map_query: "",
+    business_name: "", email: "", phone: "", address: "", map_query: "",
   });
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [noBusinessAddress, setNoBusinessAddress] = useState(false);
@@ -40,7 +39,6 @@ const BusinessInfoForm = () => {
       if (data) {
         setForm({
           business_name: data.business_name || "",
-          tagline: data.tagline || "",
           email: data.email || "",
           phone: data.phone || "",
           address: data.address || "",
@@ -100,48 +98,48 @@ const BusinessInfoForm = () => {
 
   const field = (label: string, key: keyof typeof form, type = "text", placeholder = "") => (
     <div className="space-y-2">
-      <Label className="text-white/70 text-sm">{label}</Label>
-      <Input type={type} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} className="h-11 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent" />
+      <Label className="text-muted-foreground text-sm">{label}</Label>
+      <Input type={type} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} className="h-11 bg-muted/50 border-border text-foreground placeholder:text-muted-foreground/40 focus-visible:ring-accent" />
     </div>
   );
 
   const AccentPicker = () => (
     <div className="space-y-3">
-      <Label className="text-white/70 text-sm">Accent Color</Label>
+      <Label className="text-muted-foreground text-sm">Accent Color</Label>
       <div className="flex items-center gap-3 flex-wrap">
         {ACCENT_COLORS.map(c => (
           <button
             key={c}
             onClick={() => setPrimaryColor(c)}
-            className={`w-8 h-8 rounded-lg transition-all hover:scale-110 ${primaryColor === c ? "ring-2 ring-white ring-offset-2 ring-offset-[hsl(215,50%,10%)] scale-110" : "ring-1 ring-white/10"}`}
+            className={`w-8 h-8 rounded-lg transition-all hover:scale-110 ${primaryColor === c ? "ring-2 ring-foreground ring-offset-2 ring-offset-background scale-110" : "ring-1 ring-border"}`}
             style={{ background: c }}
           />
         ))}
         <label className="relative cursor-pointer">
-          <div className="w-8 h-8 rounded-lg border-2 border-dashed border-white/20 flex items-center justify-center hover:border-white/40 transition-colors" style={{ background: primaryColor }}>
-            <Plus className="w-3 h-3 text-white/60" />
+          <div className="w-8 h-8 rounded-lg border-2 border-dashed border-border flex items-center justify-center hover:border-muted-foreground transition-colors" style={{ background: primaryColor }}>
+            <Plus className="w-3 h-3 text-muted-foreground" />
           </div>
           <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer" />
         </label>
       </div>
       <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-md border border-white/10" style={{ background: primaryColor }} />
-        <Input value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="h-8 w-28 bg-white/5 border-white/10 text-white text-xs font-mono focus-visible:ring-accent" />
+        <div className="w-6 h-6 rounded-md border border-border" style={{ background: primaryColor }} />
+        <Input value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="h-8 w-28 bg-muted/50 border-border text-foreground text-xs font-mono focus-visible:ring-accent" />
       </div>
     </div>
   );
 
   return (
     <div className="max-w-2xl">
-      <h2 className="text-2xl font-bold text-white mb-1">Business Info</h2>
-      <p className="text-white/40 text-sm mb-6">Manage your business details and branding</p>
+      <h2 className="text-2xl font-bold text-foreground mb-1">Business Info</h2>
+      <p className="text-muted-foreground text-sm mb-6">Manage your business details and branding</p>
       <div className="space-y-5">
         {/* Logo */}
         <div className="space-y-2">
-          <Label className="text-white/70 text-sm">Logo</Label>
+          <Label className="text-muted-foreground text-sm">Logo</Label>
           <div className="flex items-center gap-4">
-            {logoUrl && <img src={logoUrl} alt="Logo" className="w-16 h-16 rounded-xl object-cover border border-white/10" />}
-            <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-colors">
+            {logoUrl && <img src={logoUrl} alt="Logo" className="w-16 h-16 rounded-xl object-cover border border-border" />}
+            <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm bg-muted/50 border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
               <Upload className="w-4 h-4" /> Upload Logo
               <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
             </label>
@@ -155,32 +153,28 @@ const BusinessInfoForm = () => {
         </div>
 
         {field("Business Name", "business_name", "text", "Your Business Name")}
-        <div className="space-y-2">
-          <Label className="text-white/70 text-sm">Tagline</Label>
-          <Textarea value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} placeholder="A short description of your business" className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent" />
-        </div>
-        {field("Email", "email", "email", "contact@business.com")}
-        {field("Phone", "phone", "tel", "(555) 123-4567")}
+        {field("Business Email", "email", "email", "contact@business.com")}
+        {field("Business Phone", "phone", "tel", "(555) 123-4567")}
 
         {/* Brand Colors & Theme */}
-        <div className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-5">
+        <div className="rounded-xl border border-border bg-muted/50 p-5 space-y-5">
           <div className="flex items-center gap-2">
             <Palette className="w-5 h-5 text-accent" />
             <div>
-              <Label className="text-white text-sm font-medium">Website Appearance</Label>
-              <p className="text-white/40 text-xs mt-0.5">Customize your public booking website</p>
+              <Label className="text-foreground text-sm font-medium">Website Appearance</Label>
+              <p className="text-muted-foreground text-xs mt-0.5">Customize your public booking website</p>
             </div>
           </div>
 
           {/* Theme Mode */}
           <div className="space-y-3">
-            <Label className="text-white/70 text-sm">Theme Mode</Label>
+            <Label className="text-muted-foreground text-sm">Theme Mode</Label>
             <div className="grid grid-cols-2 gap-3">
               {(["light", "dark"] as const).map(mode => (
                 <button
                   key={mode}
                   onClick={() => setThemeMode(mode)}
-                  className={`rounded-xl border p-4 text-left transition-all ${themeMode === mode ? "border-accent bg-accent/10 ring-1 ring-accent/30" : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"}`}
+                  className={`rounded-xl border p-4 text-left transition-all ${themeMode === mode ? "border-accent bg-accent/10 ring-1 ring-accent/30" : "border-border bg-muted/30 hover:bg-muted/60"}`}
                 >
                   <div className={`w-full h-16 rounded-lg mb-3 border ${mode === "light" ? "bg-white border-gray-200" : "bg-[hsl(215,50%,10%)] border-white/10"}`}>
                     <div className="p-2 flex gap-1.5">
@@ -188,7 +182,7 @@ const BusinessInfoForm = () => {
                       <div className={`w-4 h-1.5 rounded-full ${mode === "light" ? "bg-gray-300" : "bg-white/20"}`} />
                     </div>
                   </div>
-                  <span className={`text-sm font-medium capitalize ${themeMode === mode ? "text-accent" : "text-white/60"}`}>{mode} Mode</span>
+                  <span className={`text-sm font-medium capitalize ${themeMode === mode ? "text-accent" : "text-muted-foreground"}`}>{mode} Mode</span>
                 </button>
               ))}
             </div>
@@ -198,7 +192,7 @@ const BusinessInfoForm = () => {
 
           {/* Live preview */}
           <div className="mt-3">
-            <Label className="text-white/50 text-xs mb-2 block">Preview</Label>
+            <Label className="text-muted-foreground text-xs mb-2 block">Preview</Label>
             <div className={`rounded-lg p-4 flex items-center gap-3 border ${themeMode === "light" ? "bg-white border-gray-200" : "bg-[hsl(215,50%,10%)] border-white/10"}`}>
               <div className="h-8 px-4 rounded-md flex items-center text-sm font-medium text-white" style={{ background: primaryColor }}>
                 Book Now
@@ -210,11 +204,11 @@ const BusinessInfoForm = () => {
         </div>
 
         {/* No Business Address Toggle */}
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+        <div className="rounded-xl border border-border bg-muted/50 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <Label className="text-white text-sm font-medium">No Business Address</Label>
-              <p className="text-white/40 text-xs mt-0.5">Enable if you're a mobile-only business</p>
+              <Label className="text-foreground text-sm font-medium">No Business Address</Label>
+              <p className="text-muted-foreground text-xs mt-0.5">Enable if you're a mobile-only business</p>
             </div>
             <Switch checked={noBusinessAddress} onCheckedChange={setNoBusinessAddress} />
           </div>
@@ -223,7 +217,7 @@ const BusinessInfoForm = () => {
         {!noBusinessAddress && (
           <>
             <div className="space-y-2">
-              <Label className="text-white/70 text-sm">Address</Label>
+              <Label className="text-muted-foreground text-sm">Address</Label>
               <AddressAutocomplete
                 value={form.address}
                 onChange={(val) => setForm({ ...form, address: val, map_query: val.replace(/\s+/g, "+") })}
@@ -235,15 +229,15 @@ const BusinessInfoForm = () => {
         )}
 
         {/* Service Areas */}
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
-          <Label className="text-white text-sm font-medium">Service Areas</Label>
-          <p className="text-white/40 text-xs">Search and select all cities you serve</p>
+        <div className="rounded-xl border border-border bg-muted/50 p-4 space-y-3">
+          <Label className="text-foreground text-sm font-medium">Service Areas</Label>
+          <p className="text-muted-foreground text-xs">Search and select all cities you serve</p>
           {serviceAreas.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {serviceAreas.map(area => (
                 <span key={area} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-accent/15 text-accent border border-accent/20">
                   {area}
-                  <button onClick={() => removeServiceArea(area)} className="hover:text-white transition-colors"><X className="w-3 h-3" /></button>
+                  <button onClick={() => removeServiceArea(area)} className="hover:text-foreground transition-colors"><X className="w-3 h-3" /></button>
                 </span>
               ))}
             </div>
@@ -252,7 +246,6 @@ const BusinessInfoForm = () => {
             value={citySearch}
             onChange={(val) => {
               setCitySearch(val);
-              // Auto-add if user selects from dropdown (the value will be a formatted city)
               if (val.includes(",") && val.length > 3) {
                 addServiceArea(val);
                 setCitySearch("");
@@ -269,7 +262,7 @@ const BusinessInfoForm = () => {
       </div>
 
       {/* Social Media section */}
-      <div id="social" className="mt-10 pt-8 border-t border-white/10">
+      <div id="social" className="mt-10 pt-8 border-t border-border">
         <Collapsible>
           <CollapsibleTrigger className="flex items-center justify-between w-full group">
             <div className="flex items-center gap-3">
@@ -277,11 +270,11 @@ const BusinessInfoForm = () => {
                 <Share2 className="w-4 h-4 text-accent" />
               </div>
               <div className="text-left">
-                <h3 className="text-lg font-semibold text-white">Social Media</h3>
-                <p className="text-white/40 text-xs">Connect your social profiles</p>
+                <h3 className="text-lg font-semibold text-foreground">Social Media</h3>
+                <p className="text-muted-foreground text-xs">Connect your social profiles</p>
               </div>
             </div>
-            <ChevronDown className="w-5 h-5 text-white/30 transition-transform group-data-[state=open]:rotate-180" />
+            <ChevronDown className="w-5 h-5 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
           </CollapsibleTrigger>
           <CollapsibleContent className="mt-6">
             <SocialMediaForm embedded />
