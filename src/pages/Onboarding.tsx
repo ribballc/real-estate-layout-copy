@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Check, ChevronRight, ArrowLeft, Building2, Wrench, Target } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import darkerLogo from "@/assets/darker-logo.png";
+import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
 
 const SPECIALTIES = [
   "Mobile Detailing",
@@ -89,11 +90,21 @@ const Onboarding = () => {
   const currentStep = STEPS[step];
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4 py-12"
-      style={{ background: "linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)" }}
-    >
-      <div className="w-full max-w-lg">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      {/* Blurred dashboard background */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `url(${dashboardPreview})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(6px) brightness(0.4)",
+          transform: "scale(1.05)",
+        }}
+      />
+      {/* Dark overlay for readability */}
+      <div className="absolute inset-0 z-0" style={{ background: "hsla(215, 50%, 10%, 0.55)" }} />
+      <div className="w-full max-w-lg relative z-10">
         {/* Logo */}
         <div className="text-center mb-6">
           <img src={darkerLogo} alt="Darker" className="h-10 mx-auto" />
