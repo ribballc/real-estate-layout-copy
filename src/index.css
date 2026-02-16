@@ -479,3 +479,32 @@
 
 /* ValueBreakdown arrow */
 @keyframes pulseArrow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* Dashboard home cards — dark mode defaults */
+.dark-card {
+  background: linear-gradient(135deg, hsla(215,50%,12%,0.5) 0%, hsla(217,33%,14%,0.3) 100%);
+  border-color: hsla(0,0%,100%,0.06);
+}
+.card-label { color: hsla(0,0%,100%,0.35); }
+.card-value { color: hsl(0,0%,100%); }
+.table-cell-primary { color: hsla(0,0%,100%,0.8); }
+.table-cell-secondary { color: hsla(0,0%,100%,0.5); }
+.table-cell-muted { color: hsla(0,0%,100%,0.4); }
+.table-header-border { border-color: hsla(0,0%,100%,0.06); }
+.table-row-border { border-color: hsla(0,0%,100%,0.03); }
+.table-row-hover:hover { background: hsla(0,0%,100%,0.02); }
+
+/* Dashboard home cards — light mode overrides */
+.dashboard-light .dark-card {
+  background: hsl(0,0%,100%);
+  border-color: hsl(214,20%,90%);
+  box-shadow: 0 1px 3px hsla(215,25%,12%,0.06);
+}
+.dashboard-light .card-label { color: hsl(215,16%,47%); }
+.dashboard-light .card-value { color: hsl(215,25%,12%); }
+.dashboard-light .table-cell-primary { color: hsl(215,25%,20%); }
+.dashboard-light .table-cell-secondary { color: hsl(215,16%,47%); }
+.dashboard-light .table-cell-muted { color: hsl(215,16%,57%); }
+.dashboard-light .table-header-border { border-color: hsl(214,20%,90%); }
+.dashboard-light .table-row-border { border-color: hsl(214,20%,94%); }
+.dashboard-light .table-row-hover:hover { background: hsl(214,20%,97%); }
