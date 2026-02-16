@@ -8,9 +8,6 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Loading from "./pages/Loading";
 import Preview from "./pages/Preview";
-import Claim from "./pages/Claim";
-import Payment from "./pages/Payment";
-import Success from "./pages/Success";
 import Book from "./pages/Book";
 import BookVehicle from "./pages/BookVehicle";
 import BookAddOns from "./pages/BookAddOns";
@@ -42,9 +39,6 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/loading" element={<Loading />} />
             <Route path="/preview" element={<Preview />} />
-            <Route path="/claim" element={<Claim />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/success" element={<Success />} />
             <Route path="/book" element={<Book />} />
             <Route path="/book/vehicle" element={<BookVehicle />} />
             <Route path="/book/options" element={<BookOptions />} />
