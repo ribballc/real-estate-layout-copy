@@ -19,7 +19,7 @@ const SpringBanner = () => (
   }}>
     <span className="inline-flex items-center gap-2">
       <span className="text-base" style={{ animation: 'springBounce 2s ease-in-out infinite' }}>🌸</span>
-      SPRING SALE: Up To 40% OFF + 4 Free Gifts
+      SPRING SALE: 32% OFF + Free Gifts
     </span>
   </div>
 );
