@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar from "./DashboardSidebar";
 import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
+import TrialLockOverlay from "./TrialLockOverlay";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState, useRef } from "react";
@@ -46,6 +47,28 @@ const DashboardLayout = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const chatbotRef = useRef<SupportChatbotHandle>(null);
+  const [trialActive, setTrialActive] = useState<boolean | null>(null);
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
+
+  // Check onboarding + trial status
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("trial_active, onboarding_complete").eq("user_id", user.id).single().then(({ data }) => {
+      setTrialActive(data?.trial_active ?? false);
+      setOnboardingComplete(data?.onboarding_complete ?? false);
+    });
+  }, [user]);
+
+  // Redirect to onboarding if not complete
+  useEffect(() => {
+    if (onboardingComplete === false) {
+      navigate("/onboarding", { replace: true });
+    }
+  }, [onboardingComplete, navigate]);
+
+  // Pages accessible without trial
+  const UNLOCKED_PATHS = ["/dashboard", "/dashboard/business", "/dashboard/account"];
+  const isLocked = trialActive === false && !UNLOCKED_PATHS.includes(location.pathname);
 
   const toggleTheme = () => {
     setDashboardTheme(prev => {
@@ -156,6 +179,8 @@ const DashboardLayout = () => {
           <div className="flex-1 overflow-y-auto p-4 md:p-8">
             <Outlet />
           </div>
+
+          {isLocked && <TrialLockOverlay isDark={isDark} />}
 
           {/* Dashboard Footer */}
           <footer className={`border-t ${borderColor} px-4 md:px-8 py-4 shrink-0`}>

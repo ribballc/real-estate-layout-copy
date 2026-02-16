@@ -24,7 +24,7 @@ const Loading = () => {
     try {
       const data = JSON.parse(localStorage.getItem("leadData") || "{}");
       if (data.businessName) setBusinessName(data.businessName);
-      if (!data.businessName) { navigate("/"); return; }
+      if (!data.businessName) { navigate("/dashboard"); return; }
     } catch { navigate("/"); return; }
   }, [navigate]);
 
@@ -45,7 +45,7 @@ const Loading = () => {
 
       if (pct >= 100) {
         clearInterval(interval);
-        setTimeout(() => navigate("/preview"), 400);
+        setTimeout(() => navigate("/dashboard"), 400);
       }
     }, 50);
     return () => clearInterval(interval);

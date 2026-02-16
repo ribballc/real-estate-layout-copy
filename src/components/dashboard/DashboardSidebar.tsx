@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings, LogOut,
-  Bug, HelpCircle, CalendarDays, Users, Sun, Moon, LayoutDashboard,
+  Bug, HelpCircle, CalendarDays, Users, Sun, Moon, LayoutDashboard, Lock,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,8 +14,8 @@ import {
 import darkerLogo from "@/assets/darker-logo.png";
 
 const items = [
-  { title: "Home", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Business Info", url: "/dashboard/business", icon: Building2 },
+  { title: "Home", url: "/dashboard", icon: LayoutDashboard, alwaysUnlocked: true },
+  { title: "Business Info", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true },
   { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
   { title: "Customers", url: "/dashboard/customers", icon: Users },
   { title: "Services", url: "/dashboard/services", icon: Wrench },
@@ -35,12 +35,14 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
   const navigate = useNavigate();
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [businessName, setBusinessName] = useState<string>("");
+  const [trialActive, setTrialActive] = useState(false);
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("logo_url, business_name").eq("user_id", user.id).single().then(({ data }) => {
+    supabase.from("profiles").select("logo_url, business_name, trial_active").eq("user_id", user.id).single().then(({ data }) => {
       if (data?.logo_url) setLogoUrl(data.logo_url);
       if (data?.business_name) setBusinessName(data.business_name);
+      setTrialActive(data?.trial_active ?? false);
     });
   }, [user]);
 
@@ -61,21 +63,25 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
           <SidebarGroupLabel className="text-white/30 text-[10px] uppercase tracking-widest px-5 mt-2">Manage</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to={item.url}
-                      end={item.url === "/dashboard"}
-                      className="flex items-center gap-3 px-5 py-3.5 text-[15px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all mx-2"
-                      activeClassName="bg-accent/10 text-accent font-medium shadow-[inset_0_0_0_1px_hsla(217,91%,60%,0.15)]"
-                    >
-                      <item.icon className="w-5 h-5 shrink-0" />
-                      <span>{item.title}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map((item) => {
+                const isItemLocked = !trialActive && !("alwaysUnlocked" in item && item.alwaysUnlocked);
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        end={item.url === "/dashboard"}
+                        className="flex items-center gap-3 px-5 py-3.5 text-[15px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all mx-2"
+                        activeClassName="bg-accent/10 text-accent font-medium shadow-[inset_0_0_0_1px_hsla(217,91%,60%,0.15)]"
+                      >
+                        <item.icon className="w-5 h-5 shrink-0" />
+                        <span className="flex-1">{item.title}</span>
+                        {isItemLocked && <Lock className="w-3.5 h-3.5 text-white/20 shrink-0" />}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
