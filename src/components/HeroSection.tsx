@@ -87,12 +87,36 @@ const HeroSection = () => {
               </span>
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
                 System For{' '}
-                <span className="hidden md:inline font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
+                <span className="hidden md:inline-block relative font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
                   Auto Pros
+                  <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.2s forwards' }}>
+                    <path d="M0 8 Q50 0, 100 6 Q150 12, 200 4" fill="none" stroke="url(#greenGlow)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.2s forwards' }} />
+                    <path d="M0 8 Q50 0, 100 6 Q150 12, 200 4" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.2s forwards' }} />
+                    <defs>
+                      <linearGradient id="greenGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#10B981" />
+                        <stop offset="50%" stopColor="#34D399" />
+                        <stop offset="100%" stopColor="#10B981" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
                 </span>
               </span>
-              <span className="block md:hidden font-heading text-[36px] font-semibold italic" style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.7s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
-                Auto Pros
+              <span className="block md:hidden font-heading text-[36px] font-semibold italic relative" style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.7s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
+                <span className="relative inline-block">
+                  Auto Pros
+                  <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.4s forwards' }}>
+                    <path d="M0 8 Q50 0, 100 6 Q150 12, 200 4" fill="none" stroke="url(#greenGlowMobile)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.4s forwards' }} />
+                    <path d="M0 8 Q50 0, 100 6 Q150 12, 200 4" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.4s forwards' }} />
+                    <defs>
+                      <linearGradient id="greenGlowMobile" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#10B981" />
+                        <stop offset="50%" stopColor="#34D399" />
+                        <stop offset="100%" stopColor="#10B981" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </span>
               </span>
             </h1>
 
