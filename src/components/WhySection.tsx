@@ -1,33 +1,6 @@
 import FadeIn from "@/components/FadeIn";
 import { useRef, useCallback } from "react";
 
-const whyIconStyles = `
-@keyframes whyDrawLine {
-  from { stroke-dashoffset: 60; }
-  to { stroke-dashoffset: 0; }
-}
-@keyframes whyPulseRing {
-  0%, 100% { r: 5; opacity: 0.4; }
-  50% { r: 7; opacity: 0.15; }
-}
-@keyframes whyIconFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-@keyframes whyFillIn {
-  from { opacity: 0; transform: scale(0.7); }
-  to { opacity: 1; transform: scale(1); }
-}
-@keyframes whyBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-@keyframes whySlide {
-  0% { transform: translateX(-4px); opacity: 0; }
-  50% { transform: translateX(0); opacity: 1; }
-  100% { transform: translateX(4px); opacity: 0; }
-}
-`;
 
 /* 24/7 Smart Booking Calendar */
 const CalendarBookingIcon = () => (
@@ -198,7 +171,6 @@ const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: n
 const WhySection = () => {
   return (
     <>
-      <style>{whyIconStyles}</style>
       <section
         className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
         style={{ background: "hsl(0, 0%, 100%)" }}

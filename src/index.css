@@ -450,3 +450,21 @@
 @keyframes jarvisDotPulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 hsla(160,84%,39%,0.7); } 50% { transform: scale(1.2); box-shadow: 0 0 0 8px hsla(160,84%,39%,0); } }
 @keyframes jarvisBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 @keyframes phone-float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
+
+/* HowItWorks icons */
+@keyframes drawLine { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+@keyframes fillCheck { 0% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes buildUp { from { transform: scaleY(0); opacity: 0; } to { transform: scaleY(1); opacity: 1; } }
+@keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes stepIconFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+/* WhySection icons */
+@keyframes whyDrawLine { from { stroke-dashoffset: 60; } to { stroke-dashoffset: 0; } }
+@keyframes whyPulseRing { 0%, 100% { r: 5; opacity: 0.4; } 50% { r: 7; opacity: 0.15; } }
+@keyframes whyIconFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes whyFillIn { from { opacity: 0; transform: scale(0.7); } to { opacity: 1; transform: scale(1); } }
+@keyframes whyBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes whySlide { 0% { transform: translateX(-4px); opacity: 0; } 50% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(4px); opacity: 0; } }
+
+/* ValueBreakdown arrow */
+@keyframes pulseArrow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
