@@ -180,7 +180,7 @@ const PricingSection = () => {
                     <h3 className="text-2xl font-bold text-white">{plan.name}</h3>
                     {annual && (
                       <span className="text-[11px] font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
-                        {savingsPercent}% OFF + Free Gifts
+                        Limited Time Offer
                       </span>
                     )}
                   </div>
