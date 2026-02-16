@@ -14,13 +14,13 @@ import {
 import darkerLogo from "@/assets/darker-logo.png";
 
 const items = [
-  { title: "Home", url: "/dashboard", icon: LayoutDashboard, alwaysUnlocked: true },
-  { title: "Business Info", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true },
-  { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
-  { title: "Customers", url: "/dashboard/customers", icon: Users },
-  { title: "Services", url: "/dashboard/services", icon: Wrench },
-  { title: "Photos", url: "/dashboard/photos", icon: Camera },
-  { title: "Testimonials", url: "/dashboard/testimonials", icon: Star },
+  { title: "Home", url: "/dashboard", icon: LayoutDashboard, alwaysUnlocked: true, color: "hsl(217 91% 60%)" },
+  { title: "Business Info", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true, color: "hsl(271 91% 65%)" },
+  { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays, color: "hsl(160 84% 39%)" },
+  { title: "Customers", url: "/dashboard/customers", icon: Users, color: "hsl(45 93% 47%)" },
+  { title: "Services", url: "/dashboard/services", icon: Wrench, color: "hsl(0 72% 51%)" },
+  { title: "Photos", url: "/dashboard/photos", icon: Camera, color: "hsl(280 67% 55%)" },
+  { title: "Testimonials", url: "/dashboard/testimonials", icon: Star, color: "hsl(45 93% 47%)" },
 ];
 
 interface DashboardSidebarProps {
@@ -71,10 +71,19 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
                       <NavLink
                         to={item.url}
                         end={item.url === "/dashboard"}
-                        className="flex items-center gap-3 px-5 py-3.5 text-[15px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all mx-2"
+                        className="group/nav flex items-center gap-3 px-4 py-3 text-[14px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all mx-2"
                         activeClassName="bg-accent/10 text-accent font-medium shadow-[inset_0_0_0_1px_hsla(217,91%,60%,0.15)]"
                       >
-                        <item.icon className="w-5 h-5 shrink-0" />
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 group-hover/nav:scale-110"
+                          style={{
+                            background: `linear-gradient(135deg, ${item.color}15 0%, ${item.color}08 100%)`,
+                            border: `1px solid ${item.color}25`,
+                            boxShadow: `0 0 12px ${item.color}10`,
+                          }}
+                        >
+                          <item.icon className="w-4 h-4 shrink-0 transition-all duration-300" style={{ color: item.color }} />
+                        </div>
                         <span className="flex-1">{item.title}</span>
                         {isItemLocked && <Lock className="w-3.5 h-3.5 text-white/20 shrink-0" />}
                       </NavLink>
