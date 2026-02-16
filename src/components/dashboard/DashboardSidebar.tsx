@@ -14,13 +14,13 @@ import {
 import darkerLogo from "@/assets/darker-logo.png";
 
 const items = [
-  { title: "Home", url: "/dashboard", icon: LayoutDashboard, alwaysUnlocked: true, color: "hsl(217 91% 60%)" },
-  { title: "Business Info", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true, color: "hsl(271 91% 65%)" },
-  { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays, color: "hsl(160 84% 39%)" },
-  { title: "Customers", url: "/dashboard/customers", icon: Users, color: "hsl(45 93% 47%)" },
-  { title: "Services", url: "/dashboard/services", icon: Wrench, color: "hsl(0 72% 51%)" },
-  { title: "Photos", url: "/dashboard/photos", icon: Camera, color: "hsl(280 67% 55%)" },
-  { title: "Testimonials", url: "/dashboard/testimonials", icon: Star, color: "hsl(45 93% 47%)" },
+  { title: "Home", url: "/dashboard", icon: LayoutDashboard, alwaysUnlocked: true },
+  { title: "Business Info", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true },
+  { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
+  { title: "Customers", url: "/dashboard/customers", icon: Users },
+  { title: "Services", url: "/dashboard/services", icon: Wrench },
+  { title: "Photos", url: "/dashboard/photos", icon: Camera },
+  { title: "Testimonials", url: "/dashboard/testimonials", icon: Star },
 ];
 
 interface DashboardSidebarProps {
@@ -71,21 +71,12 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
                       <NavLink
                         to={item.url}
                         end={item.url === "/dashboard"}
-                        className="group/nav flex items-center gap-3 px-4 py-3 text-[14px] text-white/50 hover:text-white hover:bg-white/5 rounded-lg transition-all mx-2"
-                        activeClassName="bg-accent/10 text-accent font-medium shadow-[inset_0_0_0_1px_hsla(217,91%,60%,0.15)]"
+                        className="group/nav flex items-center gap-3 px-4 py-2.5 text-[13px] text-white/45 hover:text-white/90 hover:bg-white/[0.04] rounded-xl transition-all duration-200 mx-2"
+                        activeClassName="bg-white/[0.07] text-white font-medium"
                       >
-                        <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300 group-hover/nav:scale-110"
-                          style={{
-                            background: `linear-gradient(135deg, ${item.color}15 0%, ${item.color}08 100%)`,
-                            border: `1px solid ${item.color}25`,
-                            boxShadow: `0 0 12px ${item.color}10`,
-                          }}
-                        >
-                          <item.icon className="w-4 h-4 shrink-0 transition-all duration-300" style={{ color: item.color }} />
-                        </div>
-                        <span className="flex-1">{item.title}</span>
-                        {isItemLocked && <Lock className="w-3.5 h-3.5 text-white/20 shrink-0" />}
+                        <item.icon className="w-[18px] h-[18px] shrink-0 transition-all duration-200 opacity-60 group-hover/nav:opacity-100" strokeWidth={1.5} />
+                        <span className="flex-1 tracking-tight">{item.title}</span>
+                        {isItemLocked && <Lock className="w-3 h-3 text-white/15 shrink-0" strokeWidth={1.5} />}
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -97,14 +88,14 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
       </SidebarContent>
 
       {/* Bottom section */}
-      <div className="mt-auto border-t border-white/10">
+      <div className="mt-auto border-t border-white/[0.06]">
         {/* Theme toggle */}
         <div className="px-3 pt-3">
           <button
             onClick={onToggleTheme}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-white/40 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+            className="flex items-center gap-3 w-full px-4 py-2 text-[13px] text-white/30 hover:text-white/60 hover:bg-white/[0.04] rounded-xl transition-colors duration-200"
           >
-            {dashboardTheme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {dashboardTheme === "dark" ? <Sun className="w-4 h-4" strokeWidth={1.5} /> : <Moon className="w-4 h-4" strokeWidth={1.5} />}
             <span>{dashboardTheme === "dark" ? "Light Mode" : "Dark Mode"}</span>
           </button>
         </div>
@@ -113,16 +104,16 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
         <div className="p-3 space-y-0.5">
           <button
             onClick={onReportBug}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-white/40 hover:text-amber-400 hover:bg-amber-400/5 rounded-lg transition-colors"
+            className="flex items-center gap-3 w-full px-4 py-2 text-[13px] text-white/30 hover:text-amber-400/80 hover:bg-white/[0.04] rounded-xl transition-colors duration-200"
           >
-            <Bug className="w-4 h-4" />
+            <Bug className="w-4 h-4" strokeWidth={1.5} />
             <span>Report A Bug</span>
           </button>
           <button
             onClick={onNeedHelp}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-white/40 hover:text-accent hover:bg-accent/5 rounded-lg transition-colors"
+            className="flex items-center gap-3 w-full px-4 py-2 text-[13px] text-white/30 hover:text-white/60 hover:bg-white/[0.04] rounded-xl transition-colors duration-200"
           >
-            <HelpCircle className="w-4 h-4" />
+            <HelpCircle className="w-4 h-4" strokeWidth={1.5} />
             <span>Need Help?</span>
           </button>
         </div>
@@ -131,26 +122,26 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
         <div className="px-3 pb-3">
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-white/30 hover:text-red-400 hover:bg-red-400/5 rounded-lg transition-colors"
+            className="flex items-center gap-3 w-full px-4 py-2 text-[13px] text-white/20 hover:text-red-400/70 hover:bg-white/[0.04] rounded-xl transition-colors duration-200"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-4 h-4" strokeWidth={1.5} />
             <span>Sign Out</span>
           </button>
         </div>
 
         {/* Business logo + Account gear */}
-        <div className="px-5 py-4 border-t border-white/10">
+        <div className="px-5 py-4 border-t border-white/[0.06]">
           <div className="flex items-center gap-3">
             {logoUrl && (
-              <img src={logoUrl} alt="Business" className="w-9 h-9 rounded-lg object-cover border border-white/10" />
+              <img src={logoUrl} alt="Business" className="w-8 h-8 rounded-xl object-cover border border-white/[0.06]" />
             )}
-            <span className="text-white/40 text-xs truncate flex-1">{businessName || "Your Business"}</span>
+            <span className="text-white/30 text-[12px] truncate flex-1">{businessName || "Your Business"}</span>
             <button
               onClick={() => navigate("/dashboard/account")}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:text-white hover:bg-white/5 transition-colors shrink-0"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-white/20 hover:text-white/50 hover:bg-white/[0.04] transition-colors duration-200 shrink-0"
               title="Account Settings"
             >
-              <Settings className="w-4 h-4" />
+              <Settings className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>
           </div>
         </div>

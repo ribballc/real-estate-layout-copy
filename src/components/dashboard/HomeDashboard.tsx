@@ -129,7 +129,7 @@ const HomeDashboard = () => {
       value: "—",
       change: null,
       icon: Eye,
-      color: "hsl(271 91% 65%)",
+      color: "hsl(215 16% 47%)",
       chartKey: null,
     },
     {
@@ -143,10 +143,10 @@ const HomeDashboard = () => {
   ];
 
   const quickStats = [
-    { label: "Services", value: stats.services, icon: Wrench, color: "hsl(217 91% 60%)" },
-    { label: "Photos", value: stats.photos, icon: Camera, color: "hsl(271 91% 65%)" },
-    { label: "Reviews", value: stats.testimonials, icon: Star, color: "hsl(45 93% 47%)" },
-    { label: "Page Views", value: "—", icon: Eye, color: "hsl(160 84% 39%)" },
+    { label: "Services", value: stats.services, icon: Wrench },
+    { label: "Photos", value: stats.photos, icon: Camera },
+    { label: "Reviews", value: stats.testimonials, icon: Star },
+    { label: "Page Views", value: "—", icon: Eye },
   ];
 
   const chartConfig = {
@@ -188,21 +188,12 @@ const HomeDashboard = () => {
       {/* Quick stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {quickStats.map((s) => (
-          <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.06] transition-all duration-300 group hover:border-white/20 hover:shadow-lg" style={{ boxShadow: `0 0 0 0 ${s.color}00` }}>
+          <div key={s.label} className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 hover:bg-white/[0.05] transition-all duration-200 group">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-white/40 text-xs font-medium uppercase tracking-wider">{s.label}</span>
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-                style={{
-                  background: `linear-gradient(135deg, ${s.color}20 0%, ${s.color}08 100%)`,
-                  border: `1px solid ${s.color}30`,
-                  boxShadow: `0 0 16px ${s.color}15`,
-                }}
-              >
-                <s.icon className="w-4 h-4 transition-all duration-300 group-hover:drop-shadow-[0_0_6px_currentColor]" style={{ color: s.color }} />
-              </div>
+              <span className="text-white/35 text-[11px] font-medium uppercase tracking-wider">{s.label}</span>
+              <s.icon className="w-4 h-4 text-white/20 group-hover:text-white/40 transition-colors duration-200" strokeWidth={1.5} />
             </div>
-            <p className="text-2xl font-bold text-white">{s.value}</p>
+            <p className="text-2xl font-semibold text-white tracking-tight">{s.value}</p>
           </div>
         ))}
       </div>
@@ -210,22 +201,15 @@ const HomeDashboard = () => {
       {/* Metric cards with sparklines */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {metricCards.map((metric) => (
-          <div key={metric.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-5 space-y-4 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.05]">
+          <div key={metric.label} className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 space-y-4 transition-all duration-200 hover:bg-white/[0.05]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center relative overflow-hidden"
-                  style={{
-                    background: `linear-gradient(135deg, ${metric.color}20 0%, ${metric.color}08 100%)`,
-                    border: `1px solid ${metric.color}30`,
-                    boxShadow: `0 0 20px ${metric.color}15, inset 0 0 12px ${metric.color}08`,
-                  }}
-                >
-                  <metric.icon className="w-5 h-5 relative z-10" style={{ color: metric.color }} />
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white/[0.04]">
+                  <metric.icon className="w-[18px] h-[18px] text-white/30" strokeWidth={1.5} />
                 </div>
                 <div>
-                  <p className="text-white/40 text-xs font-medium uppercase tracking-wider">{metric.label}</p>
-                  <p className="text-2xl font-bold text-white mt-0.5">{metric.value}</p>
+                  <p className="text-white/35 text-[11px] font-medium uppercase tracking-wider">{metric.label}</p>
+                  <p className="text-2xl font-semibold text-white mt-0.5 tracking-tight">{metric.value}</p>
                 </div>
               </div>
               {metric.change !== null && compareMode === "previous" && (
@@ -279,8 +263,8 @@ const HomeDashboard = () => {
       </div>
 
       {/* Recent bookings table */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] overflow-hidden transition-all duration-300 hover:border-white/15">
-        <div className="px-5 py-4 border-b border-white/10 flex items-center gap-3">
+      <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] overflow-hidden">
+        <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-3">
           <h3 className="text-white font-semibold text-sm">Recent Bookings</h3>
         </div>
         <div className="overflow-x-auto">
