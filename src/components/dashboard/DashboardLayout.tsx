@@ -65,6 +65,36 @@ const DashboardLayout = () => {
     });
   }, [user]);
 
+  // After checkout success or on load, verify subscription with Stripe and update trial_active
+  useEffect(() => {
+    if (!user) return;
+    const params = new URLSearchParams(location.search);
+    const isPostCheckout = params.get("checkout") === "success";
+
+    const checkSubscription = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("check-subscription");
+        if (!error && data?.subscribed) {
+          setTrialActive(true);
+          // Clean up URL param
+          if (isPostCheckout) {
+            navigate("/dashboard", { replace: true });
+          }
+        }
+      } catch (e) {
+        console.error("Failed to check subscription:", e);
+      }
+    };
+
+    // Always check on mount; also check if returning from checkout
+    if (isPostCheckout) {
+      checkSubscription();
+    } else {
+      // Light check on every dashboard load
+      checkSubscription();
+    }
+  }, [user, location.search, navigate]);
+
   // Redirect to onboarding if not complete
   useEffect(() => {
     if (onboardingComplete === false) {
