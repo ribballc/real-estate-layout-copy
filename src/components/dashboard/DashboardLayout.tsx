@@ -50,12 +50,18 @@ const DashboardLayout = () => {
   const [trialActive, setTrialActive] = useState<boolean | null>(null);
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
 
-  // Check onboarding + trial status
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check onboarding + trial status + admin role
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("trial_active, onboarding_complete").eq("user_id", user.id).single().then(({ data }) => {
-      setTrialActive(data?.trial_active ?? false);
-      setOnboardingComplete(data?.onboarding_complete ?? false);
+    Promise.all([
+      supabase.from("profiles").select("trial_active, onboarding_complete").eq("user_id", user.id).single(),
+      supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle(),
+    ]).then(([profileRes, roleRes]) => {
+      setTrialActive(profileRes.data?.trial_active ?? false);
+      setOnboardingComplete(profileRes.data?.onboarding_complete ?? false);
+      setIsAdmin(!!roleRes.data);
     });
   }, [user]);
 
@@ -68,7 +74,7 @@ const DashboardLayout = () => {
 
   // Pages accessible without trial
   const UNLOCKED_PATHS = ["/dashboard", "/dashboard/business", "/dashboard/account"];
-  const isLocked = trialActive === false && !UNLOCKED_PATHS.includes(location.pathname);
+  const isLocked = !isAdmin && trialActive === false && !UNLOCKED_PATHS.includes(location.pathname);
 
   const toggleTheme = () => {
     setDashboardTheme(prev => {
