@@ -155,33 +155,48 @@ const ProcessCard = ({ step, index, isActive }: { step: typeof steps[0]; index: 
 
 const HowItWorksSection = () => {
   const { openFunnel } = useSurveyFunnel();
-  const [activeIndex, setActiveIndex] = useState(-1);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const hasAnimated = useRef(false);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          // Stagger activate each card
-          setTimeout(() => setActiveIndex(0), 400);
-          setTimeout(() => setActiveIndex(1), 1200);
-          setTimeout(() => setActiveIndex(2), 2000);
-        }
-      },
-      { threshold: 0.3 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
+    const handleScroll = () => {
+      const container = cardsContainerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      const windowH = window.innerHeight;
+
+      // Start tracing when top of container hits 80% of viewport,
+      // finish when bottom of container hits 40% of viewport
+      const startTrigger = windowH * 0.8;
+      const endTrigger = windowH * 0.35;
+      const totalTravel = (rect.height + startTrigger - endTrigger);
+      const traveled = startTrigger - rect.top;
+
+      const progress = Math.max(0, Math.min(1, traveled / totalTravel));
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Calculate connector line progress (0-100 for each segment)
+  // Map overall progress to per-card activation (0-1 each)
+  const getCardProgress = (index: number) => {
+    const segmentSize = 1 / steps.length;
+    const segmentStart = index * segmentSize;
+    return Math.max(0, Math.min(1, (scrollProgress - segmentStart) / segmentSize));
+  };
+
+  // Connector line between cards: fills as we transition between cards
   const getLineProgress = (segmentIndex: number) => {
-    if (activeIndex < segmentIndex) return 0;
-    if (activeIndex > segmentIndex) return 100;
-    // Currently animating this segment
-    return 100;
+    // Line after card N fills between card N being active and card N+1 starting
+    const segmentSize = 1 / steps.length;
+    const lineStart = (segmentIndex + 0.6) * segmentSize;
+    const lineEnd = (segmentIndex + 1) * segmentSize;
+    return Math.max(0, Math.min(100, ((scrollProgress - lineStart) / (lineEnd - lineStart)) * 100));
   };
 
   return (
@@ -206,28 +221,33 @@ const HowItWorksSection = () => {
             </div>
           </FadeIn>
 
-          <div className="flex flex-col items-center gap-0 mb-16 md:mb-20">
-            {steps.map((step, i) => (
-              <div key={step.step} className="w-full flex flex-col items-center">
-                <FadeIn delay={i * 150}>
-                  <ProcessCard step={step} index={i} isActive={activeIndex >= i} />
-                </FadeIn>
+          <div ref={cardsContainerRef} className="flex flex-col items-center gap-0 mb-16 md:mb-20">
+            {steps.map((step, i) => {
+              const cardProgress = getCardProgress(i);
+              const isActive = cardProgress > 0.3;
 
-                {/* Connector line between cards */}
-                {i < steps.length - 1 && (
-                  <div className="w-[2px] h-12 relative overflow-hidden" style={{ background: "hsl(214, 20%, 90%)" }}>
-                    <div
-                      className="absolute top-0 left-0 w-full"
-                      style={{
-                        height: `${getLineProgress(i)}%`,
-                        background: "hsl(217, 91%, 60%)",
-                        transition: "height 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
-                      }}
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
+              return (
+                <div key={step.step} className="w-full flex flex-col items-center">
+                  <FadeIn delay={i * 150}>
+                    <ProcessCard step={step} index={i} isActive={isActive} />
+                  </FadeIn>
+
+                  {/* Connector line between cards */}
+                  {i < steps.length - 1 && (
+                    <div className="w-[2px] h-12 relative overflow-hidden" style={{ background: "hsl(214, 20%, 90%)" }}>
+                      <div
+                        className="absolute top-0 left-0 w-full will-change-[height]"
+                        style={{
+                          height: `${getLineProgress(i)}%`,
+                          background: "hsl(217, 91%, 60%)",
+                          transition: "height 0.15s linear",
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           <FadeIn delay={500}>
