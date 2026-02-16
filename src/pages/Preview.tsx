@@ -125,7 +125,7 @@ const Preview = () => {
                   {leadData.businessName}
                 </h2>
                 <p className="text-base md:text-lg mb-8" style={{ color: 'rgba(255,255,255,0.6)' }}>
-                  Professional {leadData.serviceType.toLowerCase()} services. Book online 24/7 — fast, easy, and hassle-free.
+                  Professional {(leadData.serviceType || 'auto detailing').toLowerCase()} services. Book online 24/7 — fast, easy, and hassle-free.
                 </p>
                 <div className="flex gap-3 flex-wrap">
                   <div className="h-12 px-8 rounded-xl flex items-center text-sm font-semibold" style={{
