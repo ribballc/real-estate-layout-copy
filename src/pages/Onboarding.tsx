@@ -43,7 +43,7 @@ const Onboarding = () => {
   const [step, setStep] = useState(0);
   const [businessName, setBusinessName] = useState("");
   const [phone, setPhone] = useState("");
-  const [specialty, setSpecialty] = useState("");
+  const [specialties, setSpecialties] = useState<string[]>([]);
   const [goals, setGoals] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
 
@@ -52,7 +52,7 @@ const Onboarding = () => {
 
   const canProceed = () => {
     if (step === 0) return businessName.trim().length > 0 && phone.trim().length > 0;
-    if (step === 1) return specialty.length > 0;
+    if (step === 1) return specialties.length > 0;
     if (step === 2) return goals.length > 0;
     return true;
   };
@@ -66,7 +66,7 @@ const Onboarding = () => {
       .update({
         business_name: businessName.trim(),
         phone: phone.trim(),
-        tagline: specialty,
+        tagline: specialties.join(", "),
         onboarding_complete: true,
       })
       .eq("user_id", user.id);
@@ -173,22 +173,22 @@ const Onboarding = () => {
             {/* Step 2: Specialty */}
             {step === 1 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {SPECIALTIES.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setSpecialty(s)}
-                    className="p-4 rounded-xl text-sm font-medium transition-all duration-200 text-left min-h-[48px]"
-                    style={{
-                      background: specialty === s ? "hsl(217 91% 60%)" : "rgba(255,255,255,0.06)",
-                      color: specialty === s ? "#fff" : "rgba(255,255,255,0.7)",
-                      border: `1px solid ${specialty === s ? "hsl(217 91% 60%)" : "rgba(255,255,255,0.1)"}`,
-                    }}
-                  >
-                    {specialty === s && <Check className="w-4 h-4 inline mr-2" />}
-                    {s}
-                  </button>
-                ))}
+                 {SPECIALTIES.map((s) => (
+                   <button
+                     key={s}
+                     type="button"
+                     onClick={() => setSpecialties((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s])}
+                     className="p-4 rounded-xl text-sm font-medium transition-all duration-200 text-left min-h-[48px]"
+                     style={{
+                       background: specialties.includes(s) ? "hsl(217 91% 60%)" : "rgba(255,255,255,0.06)",
+                       color: specialties.includes(s) ? "#fff" : "rgba(255,255,255,0.7)",
+                       border: `1px solid ${specialties.includes(s) ? "hsl(217 91% 60%)" : "rgba(255,255,255,0.1)"}`,
+                     }}
+                   >
+                     {specialties.includes(s) && <Check className="w-4 h-4 inline mr-2" />}
+                     {s}
+                   </button>
+                 ))}
               </div>
             )}
 
