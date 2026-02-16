@@ -1,6 +1,6 @@
 import HeroSection from "@/components/HeroSection";
 import ValueBreakdown from "@/components/ValueBreakdown";
-import ManifestoSection from "@/components/ManifestoSection";
+
 import HowItWorksSection from "@/components/HowItWorksSection";
 import WhySection from "@/components/WhySection";
 import TestimonialSection from "@/components/TestimonialSection";
@@ -32,7 +32,7 @@ const Index = () => {
         <SpringBanner />
         <HeroSection />
         <ValueBreakdown />
-        <ManifestoSection />
+        
         <HowItWorksSection />
         <TestimonialSection />
         <WhySection />
