@@ -103,15 +103,21 @@ const DashboardLayout = () => {
         />
         <main className="flex-1 flex flex-col min-w-0">
           {/* Header bar */}
-          <header className={`flex flex-col shrink-0 border-b ${borderColor}`}>
+          <header className={`flex flex-col shrink-0 border-b ${borderColor}`} style={{ backdropFilter: "blur(20px)" }}>
             <div className="h-14 flex items-center gap-3 px-4 md:px-8">
               <SidebarTrigger className={triggerClass} />
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-white/[0.04]">
-                  <PageIcon className="w-4 h-4 text-white/30" strokeWidth={1.5} />
+                <div
+                  className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                  style={{
+                    background: "linear-gradient(135deg, hsla(217,91%,60%,0.08), hsla(213,94%,68%,0.04))",
+                    border: "1px solid hsla(217,91%,60%,0.12)",
+                  }}
+                >
+                  <PageIcon className="w-4 h-4 text-accent/60" strokeWidth={1.5} />
                 </div>
                 <div className="min-w-0">
-                  <h1 className={`${textPrimary} font-semibold text-sm truncate`}>{page.title}</h1>
+                  <h1 className={`${textPrimary} font-semibold text-sm truncate tracking-tight`}>{page.title}</h1>
                   <p className={`${textSecondary} text-xs hidden sm:block`}>{page.description}</p>
                 </div>
               </div>
@@ -124,15 +130,16 @@ const DashboardLayout = () => {
                   onFocus={() => setSearchOpen(true)}
                   onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
                   placeholder="Search anything..."
-                  className={`pl-10 h-9 text-sm ${inputBg} focus-visible:ring-accent`}
+                  className={`pl-10 h-9 text-sm rounded-xl ${inputBg} focus-visible:ring-accent`}
+                  style={{ backdropFilter: "blur(10px)" }}
                 />
                 {searchOpen && searchResults.length > 0 && (
-                  <div className={`absolute top-full mt-1 left-0 right-0 rounded-lg border ${borderColor} ${isDark ? "bg-[hsl(215,50%,12%)]" : "bg-white"} shadow-xl z-50 overflow-hidden`}>
+                  <div className={`absolute top-full mt-1 left-0 right-0 rounded-xl border ${borderColor} ${isDark ? "bg-[hsl(215,50%,10%)]" : "bg-white"} shadow-2xl z-50 overflow-hidden`} style={{ backdropFilter: "blur(20px)" }}>
                     {searchResults.map(r => (
                       <button
                         key={r.url}
                         onMouseDown={() => { navigate(r.url); setSearchQuery(""); setSearchOpen(false); }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm ${isDark ? "hover:bg-white/5 text-white/70" : "hover:bg-gray-50 text-gray-700"} transition-colors`}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm ${isDark ? "hover:bg-white/[0.04] text-white/70" : "hover:bg-gray-50 text-gray-700"} transition-colors`}
                       >
                         <r.icon className="w-4 h-4 text-accent" />
                         <div className="text-left">

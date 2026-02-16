@@ -309,6 +309,17 @@
   animation: pulseSlow 8s ease-in-out infinite;
 }
 
+/* Dashboard card transitions */
+.dash-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(16px);
+}
+.dash-card:hover {
+  border-color: hsla(217, 91%, 60%, 0.12) !important;
+  box-shadow: 0 8px 32px hsla(217, 91%, 60%, 0.06), 0 0 0 1px hsla(217, 91%, 60%, 0.06);
+  transform: translateY(-1px);
+}
+
 /* Dashboard light mode overrides */
 .dashboard-light .text-white {
   color: hsl(215 25% 12%) !important;
