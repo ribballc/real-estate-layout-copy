@@ -23,8 +23,7 @@ const pageTitles: Record<string, { title: string; description: string; icon: any
   "/dashboard/account": { title: "Account", description: "Manage your account settings", icon: Settings },
 };
 
-// Extra searchable items that live inside other pages
-  const extraSearchItems = [
+const extraSearchItems = [
   { url: "/dashboard/services#add-ons", title: "Add-ons", description: "Create add-on packages for services", icon: PuzzleIcon },
   { url: "/dashboard/business#social", title: "Social Media", description: "Connect your social profiles", icon: Share2 },
   { url: "/dashboard/business#hours", title: "Business Hours", description: "Set your weekly schedule", icon: Clock },
@@ -49,10 +48,8 @@ const DashboardLayout = () => {
   const chatbotRef = useRef<SupportChatbotHandle>(null);
   const [trialActive, setTrialActive] = useState<boolean | null>(null);
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
-
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Check onboarding + trial status + admin role
   useEffect(() => {
     if (!user) return;
     Promise.all([
@@ -65,44 +62,28 @@ const DashboardLayout = () => {
     });
   }, [user]);
 
-  // After checkout success or on load, verify subscription with Stripe and update trial_active
   useEffect(() => {
     if (!user) return;
     const params = new URLSearchParams(location.search);
     const isPostCheckout = params.get("checkout") === "success";
-
     const checkSubscription = async () => {
       try {
         const { data, error } = await supabase.functions.invoke("check-subscription");
         if (!error && data?.subscribed) {
           setTrialActive(true);
-          // Clean up URL param
-          if (isPostCheckout) {
-            navigate("/dashboard", { replace: true });
-          }
+          if (isPostCheckout) navigate("/dashboard", { replace: true });
         }
       } catch (e) {
         console.error("Failed to check subscription:", e);
       }
     };
-
-    // Always check on mount; also check if returning from checkout
-    if (isPostCheckout) {
-      checkSubscription();
-    } else {
-      // Light check on every dashboard load
-      checkSubscription();
-    }
+    checkSubscription();
   }, [user, location.search, navigate]);
 
-  // Redirect to onboarding if not complete
   useEffect(() => {
-    if (onboardingComplete === false) {
-      navigate("/onboarding", { replace: true });
-    }
+    if (onboardingComplete === false) navigate("/onboarding", { replace: true });
   }, [onboardingComplete, navigate]);
 
-  // Pages accessible without trial
   const UNLOCKED_PATHS = ["/dashboard", "/dashboard/business", "/dashboard/account"];
   const isLocked = !isAdmin && trialActive === false && !UNLOCKED_PATHS.includes(location.pathname);
 
@@ -119,14 +100,13 @@ const DashboardLayout = () => {
     : [];
 
   const isDark = dashboardTheme === "dark";
-  const bg = isDark ? "linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 14%) 100%)" : "linear-gradient(135deg, hsl(210 40% 96%) 0%, hsl(210 40% 98%) 100%)";
-  const textPrimary = isDark ? "text-white" : "text-gray-900";
-  const textSecondary = isDark ? "text-white/40" : "text-gray-500";
-  const textMuted = isDark ? "text-white/30" : "text-gray-400";
-  const borderColor = isDark ? "border-white/10" : "border-gray-200";
-  const cardBg = isDark ? "bg-white/[0.03]" : "bg-white";
-  const inputBg = isDark ? "bg-white/5 border-white/10 text-white" : "bg-white border-gray-200 text-gray-900";
-  const triggerClass = isDark ? "text-white/60 hover:text-white" : "text-gray-500 hover:text-gray-900";
+  const bg = isDark ? "linear-gradient(160deg, hsl(215 50% 6%) 0%, hsl(217 33% 10%) 100%)" : "linear-gradient(135deg, hsl(210 40% 96%) 0%, hsl(210 40% 98%) 100%)";
+  const textPrimary = isDark ? "text-white/90" : "text-gray-900";
+  const textSecondary = isDark ? "text-white/30" : "text-gray-500";
+  const textMuted = isDark ? "text-white/20" : "text-gray-400";
+  const borderColor = isDark ? "border-white/[0.04]" : "border-gray-200";
+  const inputBg = isDark ? "bg-white/[0.03] border-white/[0.06] text-white/70" : "bg-white border-gray-200 text-gray-900";
+  const triggerClass = isDark ? "text-white/40 hover:text-white/70" : "text-gray-500 hover:text-gray-900";
 
   return (
     <SidebarProvider>
@@ -138,49 +118,39 @@ const DashboardLayout = () => {
           onNeedHelp={() => chatbotRef.current?.openWithPrompt("I need help with:")}
         />
         <main className="flex-1 flex flex-col min-w-0">
-          {/* Header bar */}
+          {/* Header */}
           <header className={`flex flex-col shrink-0 border-b ${borderColor}`} style={{ backdropFilter: "blur(20px)" }}>
-            <div className="h-14 flex items-center gap-3 px-4 md:px-8">
+            <div className="h-12 flex items-center gap-3 px-4 md:px-6">
               <SidebarTrigger className={triggerClass} />
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div
-                  className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                  style={{
-                    background: "linear-gradient(135deg, hsla(217,91%,60%,0.08), hsla(213,94%,68%,0.04))",
-                    border: "1px solid hsla(217,91%,60%,0.12)",
-                  }}
-                >
-                  <PageIcon className="w-4 h-4 text-accent/60" strokeWidth={1.5} />
-                </div>
-                <div className="min-w-0">
-                  <h1 className={`${textPrimary} font-semibold text-sm truncate tracking-tight`}>{page.title}</h1>
-                  <p className={`${textSecondary} text-xs hidden sm:block`}>{page.description}</p>
-                </div>
+              <div className="flex items-center gap-2.5 flex-1 min-w-0">
+                <PageIcon className="w-3.5 h-3.5 text-accent/50 shrink-0" strokeWidth={1.5} />
+                <h1 className={`${textPrimary} font-medium text-[13px] truncate tracking-tight`}>{page.title}</h1>
+                <span className={`${textSecondary} text-[11px] hidden sm:block`}>·</span>
+                <p className={`${textSecondary} text-[11px] hidden sm:block truncate`}>{page.description}</p>
               </div>
               {/* Desktop search */}
-              <div className="relative hidden sm:block w-64">
-                <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${textMuted}`} />
+              <div className="relative hidden sm:block w-52">
+                <Search className={`absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 ${textMuted}`} />
                 <Input
                   value={searchQuery}
                   onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
                   onFocus={() => setSearchOpen(true)}
                   onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
-                  placeholder="Search anything..."
-                  className={`pl-10 h-9 text-sm rounded-xl ${inputBg} focus-visible:ring-accent`}
-                  style={{ backdropFilter: "blur(10px)" }}
+                  placeholder="Search..."
+                  className={`pl-8 h-7 text-[11px] rounded-lg ${inputBg} focus-visible:ring-accent/30`}
                 />
                 {searchOpen && searchResults.length > 0 && (
-                  <div className={`absolute top-full mt-1 left-0 right-0 rounded-xl border ${borderColor} ${isDark ? "bg-[hsl(215,50%,10%)]" : "bg-white"} shadow-2xl z-50 overflow-hidden`} style={{ backdropFilter: "blur(20px)" }}>
+                  <div className={`absolute top-full mt-1 left-0 right-0 rounded-lg border ${borderColor} ${isDark ? "bg-[hsl(215,50%,8%)]" : "bg-white"} shadow-2xl z-50 overflow-hidden`}>
                     {searchResults.map(r => (
                       <button
                         key={r.url}
                         onMouseDown={() => { navigate(r.url); setSearchQuery(""); setSearchOpen(false); }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm ${isDark ? "hover:bg-white/[0.04] text-white/70" : "hover:bg-gray-50 text-gray-700"} transition-colors`}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-[11px] ${isDark ? "hover:bg-white/[0.03] text-white/50" : "hover:bg-gray-50 text-gray-600"} transition-colors`}
                       >
-                        <r.icon className="w-4 h-4 text-accent" />
+                        <r.icon className="w-3 h-3 text-accent/60" strokeWidth={1.5} />
                         <div className="text-left">
                           <span className="font-medium">{r.title}</span>
-                          <span className={`block text-xs ${textSecondary}`}>{r.description}</span>
+                          <span className={`block text-[10px] ${textSecondary}`}>{r.description}</span>
                         </div>
                       </button>
                     ))}
@@ -189,29 +159,26 @@ const DashboardLayout = () => {
               </div>
             </div>
             {/* Mobile search */}
-            <div className="sm:hidden px-4 pb-3 relative">
-              <Search className={`absolute left-7 top-1/2 -translate-y-1/2 w-4 h-4 ${textMuted} z-10`} />
+            <div className="sm:hidden px-4 pb-2.5 relative">
+              <Search className={`absolute left-7 top-1/2 -translate-y-1/2 w-3 h-3 ${textMuted} z-10`} />
               <Input
                 value={searchQuery}
                 onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
                 onFocus={() => setSearchOpen(true)}
                 onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
-                placeholder="Search anything..."
-                className={`pl-10 h-11 text-sm ${inputBg} focus-visible:ring-accent`}
+                placeholder="Search..."
+                className={`pl-8 h-9 text-[12px] ${inputBg} focus-visible:ring-accent/30`}
               />
               {searchOpen && searchResults.length > 0 && (
-                <div className={`absolute top-full mt-1 left-4 right-4 rounded-lg border ${borderColor} ${isDark ? "bg-[hsl(215,50%,12%)]" : "bg-white"} shadow-xl z-50 overflow-hidden`}>
+                <div className={`absolute top-full mt-1 left-4 right-4 rounded-lg border ${borderColor} ${isDark ? "bg-[hsl(215,50%,8%)]" : "bg-white"} shadow-xl z-50 overflow-hidden`}>
                   {searchResults.map(r => (
                     <button
                       key={r.url}
                       onMouseDown={() => { navigate(r.url); setSearchQuery(""); setSearchOpen(false); }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm ${isDark ? "hover:bg-white/5 text-white/70" : "hover:bg-gray-50 text-gray-700"} transition-colors`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-[12px] ${isDark ? "hover:bg-white/[0.03] text-white/50" : "hover:bg-gray-50 text-gray-600"} transition-colors`}
                     >
-                      <r.icon className="w-4 h-4 text-accent" />
-                      <div className="text-left">
-                        <span className="font-medium">{r.title}</span>
-                        <span className={`block text-xs ${textSecondary}`}>{r.description}</span>
-                      </div>
+                      <r.icon className="w-3 h-3 text-accent/60" strokeWidth={1.5} />
+                      <span className="font-medium">{r.title}</span>
                     </button>
                   ))}
                 </div>
@@ -219,19 +186,19 @@ const DashboardLayout = () => {
             </div>
           </header>
 
-          <div className="flex-1 overflow-y-auto p-4 md:p-8">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6">
             <Outlet />
           </div>
 
           {isLocked && <TrialLockOverlay isDark={isDark} />}
 
-          {/* Dashboard Footer */}
-          <footer className={`border-t ${borderColor} px-4 md:px-8 py-4 shrink-0`}>
-            <div className={`flex flex-col sm:flex-row items-center justify-between gap-2 ${textMuted} text-xs`}>
-              <span>© {new Date().getFullYear()} Darker. All rights reserved.</span>
-              <div className="flex items-center gap-4">
-                <a href="mailto:support@darker.com" className="hover:opacity-70 transition-colors">Support</a>
-                <a href="mailto:support@darker.com?subject=Feedback" className="hover:opacity-70 transition-colors">Feedback</a>
+          {/* Footer */}
+          <footer className={`border-t ${borderColor} px-4 md:px-6 py-3 shrink-0`}>
+            <div className={`flex items-center justify-between ${textMuted} text-[10px]`}>
+              <span>© {new Date().getFullYear()} Darker</span>
+              <div className="flex items-center gap-3">
+                <a href="mailto:support@darker.com" className="hover:opacity-60 transition-opacity">Support</a>
+                <a href="mailto:support@darker.com?subject=Feedback" className="hover:opacity-60 transition-opacity">Feedback</a>
               </div>
             </div>
           </footer>
