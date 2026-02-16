@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import DemoWebsite from "./DemoWebsite";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -309,6 +310,24 @@ const HomeDashboard = () => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Live Demo Website Preview */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-white font-semibold text-sm">Your Website Preview</h3>
+            <p className="text-white/40 text-xs">This is how your live site looks with your current data</p>
+          </div>
+          <a
+            href="#"
+            className="text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+            style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.6)" }}
+          >
+            Open Full Preview →
+          </a>
+        </div>
+        <DemoWebsite />
       </div>
     </div>
   );
