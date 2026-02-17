@@ -13,6 +13,7 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import darkerLogo from "@/assets/darker-logo.png";
+import darkerLogoDark from "@/assets/darker-logo-dark.png";
 import { cn } from "@/lib/utils";
 
 const items = [
@@ -90,31 +91,11 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
         "px-5 py-5 border-b flex items-center gap-3",
         isDark ? "border-[hsla(215,25%,20%,1)]" : "border-[hsl(214,20%,92%)]"
       )}>
-        {logoUrl ? (
-          <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0" style={{
-            border: `1.5px solid ${isDark ? "hsla(217,91%,60%,0.2)" : "hsl(214,20%,88%)"}`,
-          }}>
-            <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
-          </div>
-        ) : (
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{
-              background: "hsl(217, 91%, 60%)",
-              boxShadow: "0 2px 8px hsla(217,91%,60%,0.3)",
-            }}
-          >
-            <span className="text-white font-bold text-sm">
-              {businessName ? businessName.charAt(0).toUpperCase() : "D"}
-            </span>
-          </div>
-        )}
-        <span className={cn(
-          "text-[15px] font-semibold truncate",
-          isDark ? "text-white" : "text-[hsl(215,25%,12%)]"
-        )}>
-          {businessName || "Darker"}
-        </span>
+        <img
+          src={isDark ? darkerLogoDark : darkerLogo}
+          alt="Darker"
+          className="h-6 object-contain"
+        />
       </div>
 
       <SidebarContent className="px-3 pt-4">
