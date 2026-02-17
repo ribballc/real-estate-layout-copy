@@ -1,74 +1,126 @@
 
 
-# Replicate "Deluxe Detailing" Layout in Demo Website
-
 ## Overview
-Rebuild `DemoWebsite.tsx` to match the full structure and styling of the uploaded "Deluxe Detailing" reference site, while keeping all dynamic data (business name, services, reviews, photos, hours) pulled from the user's CMS.
+
+Your auth and CMS data are **already saving to your backend database** -- every field in Business Info, Services, Hours, Testimonials, Photos, and Customers writes to the database when you hit Save. The missing piece is making that data **readable by your other project** (the public-facing website). Right now, all tables are locked so only the logged-in owner can see their own data.
+
+This plan will:
+1. Open up **read-only public access** on the relevant CMS tables so the other project can fetch the data
+2. Create a **backend function** that bundles all CMS data for a business into a single API call
+3. Replace the **hardcoded data** in the booking pages and sidebar with live database data
+
+---
 
 ## What Changes
 
-### 1. Add Missing Sections to Home Page
-The current demo site has: Hero, Welcome, Services, Why Choose Us, Gallery, Reviews, CTA, Footer. The reference adds:
-- **Add-On Services section** -- pulls from the user's existing add-ons data (if available) or services marked as add-ons
-- **FAQ section** -- with accordion-style expand/collapse using Plus/Minus icons and gold gradient toggle buttons
-- **Contact Form section** -- a two-column layout with contact info (phone, email, hours, social links) on the left and a booking form on the right
+### 1. Add Public Read Policies to CMS Tables
 
-### 2. Enhance Existing Sections to Match Reference Styling
-- **Services/Packages**: Add vehicle type tabs (Sedan vs Truck/SUV) if the user has categorized services, add feature checklists with checkmark icons, and badge labels ("TOP SELLER", etc.) for popular services
-- **Why Choose Us**: Expand from 3 to 6 feature cards with gold-gradient icon containers matching the reference (Shield, Clock, Award, Sparkles, ThumbsUp, Car icons)
-- **Gallery**: Replace static grid with an auto-scrolling Embla carousel (already installed as `embla-carousel-react`) showing 4 items on desktop with hover overlay effects
-- **Testimonials**: Add Quote icon watermark in each card, vehicle info line under author name, border-top separator styling
+Add `SELECT` policies allowing anonymous (public) reads for these tables:
+- `profiles` (business name, tagline, email, phone, address, logo, colors, social links)
+- `services` (title, description, price, image, popularity)
+- `business_hours` (open/close times per day)
+- `testimonials` (author, content, rating, photo)
+- `photos` (url, caption)
+- `service_option_groups` and `service_option_items` (already have public read)
 
-### 3. Styling Refinements
-- Add `card-shine` hover effect CSS (a subtle shimmer on card hover)
-- Use `gold-gradient` utility for icon containers (maps to the user's accent color gradient)
-- Consistent section pattern: uppercase tracking-wide label, large bold heading with gradient text, muted description
-- Contact form inputs: styled with secondary background, border, rounded-lg, focus:border-primary
+The existing owner-only policies stay in place for INSERT/UPDATE/DELETE -- only SELECT gets a public policy.
 
-## Section Order (Home Page)
-1. Hero (existing, no changes needed)
-2. Welcome/About (existing, minor copy tweak)
-3. Services Overview -- image cards linking to packages (new)
-4. Packages/Pricing (enhanced with tabs + checklists)
-5. Add-On Services (new section)
-6. Why Choose Us (expanded to 6 cards)
-7. Gallery (carousel instead of grid)
-8. Testimonials (enhanced with Quote icon + vehicle info)
-9. FAQ (new section)
-10. Contact Form (new two-column section)
-11. CTA Banner (existing)
-12. Footer (existing, no changes needed)
+### 2. Create a "get-business" Backend Function
+
+A single API endpoint that accepts a `user_id` (or a future `slug` parameter) and returns all CMS data in one response:
+
+```text
+GET /get-business?user_id=xxx
+
+Response:
+{
+  profile: { business_name, tagline, email, phone, address, ... },
+  services: [...],
+  hours: [...],
+  testimonials: [...],
+  photos: [...],
+  addOns: [...]
+}
+```
+
+This makes it easy for the other Lovable project to fetch everything with a single call.
+
+### 3. Replace Hardcoded Booking Page Data
+
+Update these files to fetch from the database instead of using hardcoded arrays:
+
+- **BookingSidebar.tsx** -- Replace the hardcoded `businessInfo` object and `tickerServices` with data fetched from `profiles`, `services`, and `business_hours`
+- **Book.tsx** -- Replace the hardcoded `services` array with a database query
+- **BookingLayout.tsx** -- Pass the fetched business data down to child components
+
+These pages are public-facing (no login required), so they'll use the new public read policies.
+
+---
 
 ## Technical Details
 
-### File Modified
-- `src/components/dashboard/DemoWebsite.tsx` -- single file rewrite incorporating all new sections
+### Database Migration (SQL)
 
-### New CSS Utilities (added inline via style props)
-- Card shine effect via CSS pseudo-element or subtle box-shadow on hover
-- Gold gradient backgrounds using the existing `accentGrad` variable
-- All styling remains dynamic, using the user's chosen accent color
+```sql
+-- Public read on profiles (excludes sensitive auth data since profiles only has business info)
+CREATE POLICY "Anyone can view profiles for public site"
+  ON public.profiles FOR SELECT USING (true);
 
-### Data Sources (all existing, no new tables needed)
-- `profiles` -- business info, social links, phone, email
-- `services` -- packages and pricing  
-- `testimonials` -- reviews with author and rating
-- `photos` -- gallery images
-- `business_hours` -- hours for contact section and booking
+-- Public read on services
+CREATE POLICY "Anyone can view services for booking"
+  ON public.services FOR SELECT USING (true);
 
-### Gallery Carousel
-- Uses `embla-carousel-react` (already installed) for auto-scrolling gallery
-- 4 items visible on desktop, 2 on tablet, 1 on mobile
-- Auto-advances every 3 seconds with loop enabled
+-- Public read on business_hours
+CREATE POLICY "Anyone can view business hours"
+  ON public.business_hours FOR SELECT USING (true);
 
-### FAQ Data
-- Hardcoded default FAQ questions relevant to detailing (matching reference) since there's no FAQ table
-- Questions dynamically reference the business name via the `biz` variable
+-- Public read on testimonials
+CREATE POLICY "Anyone can view testimonials"
+  ON public.testimonials FOR SELECT USING (true);
 
-### Contact Form
-- Display-only within the demo preview (not functional submission)
-- Shows phone, email, hours from profile data
-- Shows social media links from profile data
-- Form fields: name, email, phone, vehicle, address, service selection checkboxes, add-on checkboxes, message textarea
-- "Book Now" button styled with accent gradient
+-- Public read on photos
+CREATE POLICY "Anyone can view photos"
+  ON public.photos FOR SELECT USING (true);
+
+-- Public read on add_ons
+CREATE POLICY "Anyone can view add_ons for booking"
+  ON public.add_ons FOR SELECT USING (true);
+```
+
+### Backend Function: `get-business`
+
+- Accepts `user_id` query parameter
+- Uses Supabase service role client to fetch all CMS tables for that user
+- Returns combined JSON payload
+- No auth required (public endpoint)
+
+### Frontend Changes
+
+- **BookingSidebar.tsx**: Accept `userId` prop, fetch `profiles` + `services` + `business_hours` on mount, render dynamically
+- **Book.tsx**: Accept `userId` from URL or context, fetch `services` from database
+- **BookingLayout.tsx**: Coordinate data fetching and pass down to sidebar/content
+
+### How Your Other Project Uses This
+
+Your other Lovable project simply calls the backend function with the business owner's user ID:
+
+```typescript
+const response = await fetch(
+  "https://ibospodoxgumgmjymgtm.supabase.co/functions/v1/get-business?user_id=USER_ID_HERE"
+);
+const data = await response.json();
+// Use data.profile, data.services, data.hours, etc.
+```
+
+---
+
+## File Summary
+
+| File | Action |
+|------|--------|
+| Database migration | Add 6 public SELECT policies |
+| `supabase/functions/get-business/index.ts` | New backend function |
+| `src/components/BookingSidebar.tsx` | Fetch from DB instead of hardcoded |
+| `src/pages/Book.tsx` | Fetch services from DB |
+| `src/components/BookingLayout.tsx` | Add data fetching coordination |
 
