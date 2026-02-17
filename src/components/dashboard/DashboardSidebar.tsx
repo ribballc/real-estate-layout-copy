@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Building2, Wrench, Clock, Camera, Star, Settings, LogOut,
   Bug, HelpCircle, CalendarDays, Users, Sun, Moon, LayoutDashboard, Lock,
-  Bell, Globe,
+  Globe,
 } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -87,9 +87,9 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
       }}
       data-theme={dashboardTheme}
     >
-      {/* Logo block — square icon like Exonad */}
+      {/* Logo block */}
       <div className={cn(
-        "px-5 py-5 border-b flex items-center gap-3",
+        "px-5 pt-5 pb-4 border-b flex flex-col gap-4",
         isDark ? "border-[hsla(215,25%,20%,1)]" : "border-[hsl(214,20%,92%)]"
       )}>
         <img
@@ -97,6 +97,41 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
           alt="Darker"
           className="h-6 object-contain"
         />
+        {/* Business profile card */}
+        <div className={cn(
+          "flex items-center gap-3 p-3 rounded-xl",
+          isDark ? "bg-white/[0.04] border border-white/[0.06]" : "bg-[hsl(214,20%,97%)] border border-[hsl(214,20%,91%)]"
+        )}>
+          {logoUrl ? (
+            <img src={logoUrl} alt={businessName} className="w-9 h-9 rounded-lg object-cover shrink-0" />
+          ) : (
+            <div
+              className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-sm font-bold"
+              style={{ background: "hsla(217,91%,60%,0.15)", color: "hsl(217,91%,60%)" }}
+            >
+              {businessName ? businessName.charAt(0).toUpperCase() : "B"}
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            <p className={cn(
+              "text-[13px] font-semibold truncate tracking-tight",
+              isDark ? "text-white" : "text-[hsl(215,25%,12%)]"
+            )}>
+              {businessName || "My Business"}
+            </p>
+            <p className={cn(
+              "text-[11px] truncate",
+              isDark ? "text-white/35" : "text-[hsl(215,16%,55%)]"
+            )}>
+              {trialActive ? "Pro Plan" : "Free Plan"}
+            </p>
+          </div>
+          <div
+            className="w-2 h-2 rounded-full shrink-0"
+            style={{ background: trialActive ? "hsl(160,84%,45%)" : "hsl(38,92%,47%)" }}
+            title={trialActive ? "Active" : "Trial"}
+          />
+        </div>
       </div>
 
       <SidebarContent className="px-3 pt-4">
@@ -249,6 +284,25 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
         </div>
         {/* Desktop: stacked text buttons */}
         <div className="hidden lg:block space-y-0.5">
+          {/* User email */}
+          {user?.email && (
+            <div className={cn(
+              "flex items-center gap-2.5 px-3 py-2 mb-1",
+            )}>
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[11px] font-semibold"
+                style={{ background: "hsla(217,91%,60%,0.12)", color: "hsl(217,91%,60%)" }}
+              >
+                {user.email.charAt(0).toUpperCase()}
+              </div>
+              <span className={cn(
+                "text-[12px] truncate",
+                isDark ? "text-white/30" : "text-[hsl(215,16%,55%)]"
+              )}>
+                {user.email}
+              </span>
+            </div>
+          )}
           <button
             onClick={onToggleTheme}
             className={cn(

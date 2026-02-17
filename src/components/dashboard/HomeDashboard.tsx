@@ -2,9 +2,11 @@ import { useEffect, useState, useMemo } from "react";
 import DemoWebsite from "./DemoWebsite";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
-  DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, ArrowRight,
-  CalendarDays, Star, MoreHorizontal, Briefcase,
+  DollarSign, ArrowUpRight, ArrowDownRight, ArrowRight,
+  CalendarDays, Star, MoreHorizontal, Briefcase, Users,
+  Plus, Phone, ChevronRight,
 } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -88,10 +90,19 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted }: MetricCar
 /* ─── Main Dashboard ─── */
 const HomeDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<DateRange>("30d");
   const [bookings, setBookings] = useState<any[]>([]);
-  const [stats, setStats] = useState({ services: 0, photos: 0, testimonials: 0 });
+  const [stats, setStats] = useState({ services: 0, photos: 0, testimonials: 0, customers: 0 });
+  const [businessName, setBusinessName] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -100,9 +111,12 @@ const HomeDashboard = () => {
       supabase.from("services").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("photos").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("testimonials").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-    ]).then(([b, s, p, t]) => {
+      supabase.from("customers").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("profiles").select("business_name").eq("user_id", user.id).single(),
+    ]).then(([b, s, p, t, c, prof]) => {
       setBookings(b.data || []);
-      setStats({ services: s.count || 0, photos: p.count || 0, testimonials: t.count || 0 });
+      setStats({ services: s.count || 0, photos: p.count || 0, testimonials: t.count || 0, customers: c.count || 0 });
+      setBusinessName(prof.data?.business_name || "");
       setLoading(false);
     });
   }, [user]);
@@ -177,8 +191,10 @@ const HomeDashboard = () => {
       {/* Greeting + date picker */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h2 className="dash-title text-xl lg:text-2xl font-bold tracking-tight">Dashboard</h2>
-          <p className="dash-subtitle text-xs lg:text-sm mt-0.5">Track your business performance</p>
+          <h2 className="dash-title text-xl lg:text-2xl font-bold tracking-tight">
+            {greeting}{businessName ? `, ${businessName}` : ""}
+          </h2>
+          <p className="dash-subtitle text-xs lg:text-sm mt-0.5">Here's how your business is doing</p>
         </div>
         <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}>
           <SelectTrigger className="h-9 w-[150px] dash-select text-xs rounded-xl">
@@ -210,9 +226,9 @@ const HomeDashboard = () => {
           highlighted
         />
         <MetricCard
-          icon={<Star className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
-          label="Reviews"
-          value={stats.testimonials > 0 ? String(stats.testimonials) : "—"}
+          icon={<Users className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
+          label="Customers"
+          value={stats.customers > 0 ? String(stats.customers) : "—"}
           pct={null}
         />
         <MetricCard
@@ -221,6 +237,61 @@ const HomeDashboard = () => {
           value={currentJobCount > 0 ? formatCurrency(Math.round(currentRevenue / currentJobCount)) : "—"}
           pct={null}
         />
+      </div>
+
+      {/* ═══ Quick Actions ═══ */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {[
+          {
+            label: "New Booking",
+            icon: Plus,
+            color: "hsl(217,91%,60%)",
+            bg: "hsla(217,91%,60%,0.10)",
+            border: "hsla(217,91%,60%,0.18)",
+            path: "/dashboard/calendar",
+          },
+          {
+            label: "Add Customer",
+            icon: Users,
+            color: "hsl(160,84%,39%)",
+            bg: "hsla(160,84%,39%,0.10)",
+            border: "hsla(160,84%,39%,0.18)",
+            path: "/dashboard/customers",
+          },
+          {
+            label: "Quick Follow-up",
+            icon: Phone,
+            color: "hsl(38,92%,47%)",
+            bg: "hsla(38,92%,47%,0.10)",
+            border: "hsla(38,92%,47%,0.18)",
+            path: "/dashboard/customers",
+          },
+          {
+            label: "Get Reviews",
+            icon: Star,
+            color: "hsl(271,91%,65%)",
+            bg: "hsla(271,91%,65%,0.10)",
+            border: "hsla(271,91%,65%,0.18)",
+            path: "/dashboard/testimonials",
+          },
+        ].map((action) => (
+          <button
+            key={action.label}
+            onClick={() => navigate(action.path)}
+            className="alytics-card rounded-2xl p-4 flex flex-col items-start gap-3 text-left hover:scale-[1.02] transition-transform duration-200 active:scale-[0.98] cursor-pointer"
+          >
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+              style={{ background: action.bg, border: `1px solid ${action.border}` }}
+            >
+              <action.icon className="w-4 h-4" style={{ color: action.color }} strokeWidth={1.5} />
+            </div>
+            <div className="flex items-center justify-between w-full">
+              <span className="alytics-card-title text-xs font-semibold leading-tight">{action.label}</span>
+              <ChevronRight className="w-3.5 h-3.5 alytics-card-sub" />
+            </div>
+          </button>
+        ))}
       </div>
 
       {/* ═══ Revenue Bar Chart ═══ */}
@@ -332,8 +403,21 @@ const HomeDashboard = () => {
           </div>
           <div className="alytics-divide">
             {currentBookings.length === 0 ? (
-              <div className="px-5 py-10 text-center">
-                <p className="alytics-card-sub text-sm">No bookings in this period</p>
+              <div className="px-5 py-10 text-center flex flex-col items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: "hsla(217,91%,60%,0.08)", border: "1px solid hsla(217,91%,60%,0.12)" }}>
+                  <CalendarDays className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
+                </div>
+                <div>
+                  <p className="alytics-card-title text-sm font-medium">No bookings yet</p>
+                  <p className="alytics-card-sub text-xs mt-0.5">Bookings from customers will appear here</p>
+                </div>
+                <button
+                  onClick={() => navigate("/dashboard/calendar")}
+                  className="text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+                  style={{ background: "hsla(217,91%,60%,0.10)", color: "hsl(217,91%,60%)" }}
+                >
+                  View Calendar
+                </button>
               </div>
             ) : (
               currentBookings.slice(0, 5).map((b, index) => (
@@ -373,7 +457,7 @@ const HomeDashboard = () => {
           </div>
           {currentBookings.length > 0 && (
             <div className="px-5 py-3">
-              <button className="alytics-link text-xs font-medium inline-flex items-center gap-1">
+              <button onClick={() => navigate("/dashboard/calendar")} className="alytics-link text-xs font-medium inline-flex items-center gap-1">
                 All bookings <ArrowRight className="w-3 h-3" />
               </button>
             </div>

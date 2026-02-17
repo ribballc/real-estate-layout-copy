@@ -738,6 +738,18 @@
 .dashboard-light .dash-grid-stroke line { stroke: hsl(214, 20%, 93%); }
 .dashboard-light .dash-axis-tick text { fill: hsl(215, 16%, 55%); }
 
+/* Mobile bottom nav safe area + scrollbar utilities */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* CTA Footer animations */
 @keyframes ctaRing {
   0% { transform: scale(0.8); opacity: 0.6; }

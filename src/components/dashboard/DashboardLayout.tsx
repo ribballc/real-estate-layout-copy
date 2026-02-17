@@ -2,16 +2,24 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar from "./DashboardSidebar";
 import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import TrialLockOverlay from "./TrialLockOverlay";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
-  TrendingUp, Users, CalendarDays, Search,
+  TrendingUp, Users, CalendarDays, Search, LayoutDashboard,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import darkerLogo from "@/assets/darker-logo.png";
+
+const BOTTOM_NAV_ITEMS = [
+  { title: "Home", url: "/dashboard", icon: LayoutDashboard, exact: true },
+  { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays, exact: false },
+  { title: "Customers", url: "/dashboard/customers", icon: Users, exact: false },
+  { title: "Services", url: "/dashboard/services", icon: Wrench, exact: false },
+  { title: "Account", url: "/dashboard/account", icon: Settings, exact: false },
+];
 
 const pageTitles: Record<string, { title: string; description: string; icon: any }> = {
   "/dashboard": { title: "Dashboard", description: "Overview of your business performance", icon: TrendingUp },
@@ -139,9 +147,22 @@ const DashboardLayout = () => {
             }}
           >
             <div className="h-14 flex items-center gap-3 px-4 md:px-8">
-              {/* Mobile: Logo left, hamburger right */}
+              {/* Mobile: page icon + title center, hamburger right */}
               <div className="flex md:hidden items-center justify-between w-full">
-                <img src={darkerLogo} alt="Darker" className="h-7" />
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div
+                    className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                    style={{
+                      background: isDark ? "hsla(217,91%,60%,0.08)" : "hsl(217,91%,96%)",
+                      border: `1px solid ${isDark ? "hsla(217,91%,60%,0.12)" : "hsl(217,91%,90%)"}`,
+                    }}
+                  >
+                    <PageIcon className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
+                  </div>
+                  <h1 className={`font-semibold text-sm truncate tracking-tight ${isDark ? "text-white" : "text-[hsl(215,25%,12%)]"}`}>
+                    {page.title}
+                  </h1>
+                </div>
                 <SidebarTrigger className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`} />
               </div>
               {/* Desktop: standard header */}
@@ -205,14 +226,14 @@ const DashboardLayout = () => {
             </div>
           </header>
 
-          <div className="flex-1 overflow-y-auto p-4 md:p-8">
+          <div className="flex-1 overflow-y-auto p-4 pb-24 md:pb-8 md:p-8">
             <Outlet />
           </div>
 
           {isLocked && <TrialLockOverlay isDark={isDark} />}
 
-          {/* Dashboard Footer */}
-          <footer className={`border-t px-4 md:px-8 py-4 shrink-0 ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}>
+          {/* Dashboard Footer — desktop only */}
+          <footer className={`hidden md:block border-t px-4 md:px-8 py-4 shrink-0 ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}>
             <div className={`flex flex-col sm:flex-row items-center justify-between gap-2 text-xs ${isDark ? "text-white/30" : "text-[hsl(215,16%,60%)]"}`}>
               <span>© {new Date().getFullYear()} Darker. All rights reserved.</span>
               <div className="flex items-center gap-4">
@@ -221,6 +242,47 @@ const DashboardLayout = () => {
               </div>
             </div>
           </footer>
+
+          {/* Mobile Bottom Navigation */}
+          <nav
+            className={`md:hidden fixed bottom-0 left-0 right-0 z-40 border-t safe-area-pb ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}
+            style={{
+              background: isDark ? "hsla(215,50%,10%,0.95)" : "rgba(255,255,255,0.97)",
+              backdropFilter: "blur(20px)",
+            }}
+          >
+            <div className="flex items-center justify-around px-1 py-1">
+              {BOTTOM_NAV_ITEMS.map((item) => {
+                const isItemActive = item.exact
+                  ? location.pathname === item.url
+                  : location.pathname.startsWith(item.url);
+                return (
+                  <NavLink
+                    key={item.url}
+                    to={item.url}
+                    end={item.exact}
+                    className="flex-1 flex flex-col items-center gap-0.5 py-2 px-1 rounded-xl transition-all duration-150 active:scale-95"
+                    style={{ minWidth: 0 }}
+                  >
+                    <item.icon
+                      className="w-[22px] h-[22px] transition-colors"
+                      strokeWidth={isItemActive ? 2.5 : 1.5}
+                      style={{ color: isItemActive ? "hsl(217,91%,60%)" : isDark ? "hsla(0,0%,100%,0.4)" : "hsl(215,16%,55%)" }}
+                    />
+                    <span
+                      className="text-[10px] font-medium leading-none truncate"
+                      style={{ color: isItemActive ? "hsl(217,91%,60%)" : isDark ? "hsla(0,0%,100%,0.4)" : "hsl(215,16%,55%)" }}
+                    >
+                      {item.title}
+                    </span>
+                    {isItemActive && (
+                      <span className="w-1 h-1 rounded-full" style={{ background: "hsl(217,91%,60%)" }} />
+                    )}
+                  </NavLink>
+                );
+              })}
+            </div>
+          </nav>
 
           <SupportChatbot ref={chatbotRef} />
         </main>

@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   Loader2, Plus, Phone, Mail, Search, User, Car, DollarSign,
-  FileText, X, ChevronDown, Filter, MoreHorizontal, Calendar, Upload, Building2,
+  FileText, X, ChevronDown, MoreHorizontal, Calendar, Upload, Building2,
+  Users, TrendingUp, Crown, UserMinus,
 } from "lucide-react";
 import { format } from "date-fns";
 import CsvImportModal from "./CsvImportModal";
@@ -188,50 +189,112 @@ const CustomersManager = () => {
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         {[
-          { label: "Total Customers", value: stats.total, color: "hsl(217 91% 60%)" },
-          { label: "Active", value: stats.active, color: "hsl(160 84% 39%)" },
-          { label: "VIP", value: stats.vip, color: "hsl(271 91% 65%)" },
-          { label: "Total Revenue", value: `$${stats.totalRevenue.toLocaleString()}`, color: "hsl(45 93% 47%)" },
+          { label: "Total Customers", value: stats.total, color: "hsl(217,91%,60%)", bg: "hsla(217,91%,60%,0.10)", border: "hsla(217,91%,60%,0.15)", Icon: Users },
+          { label: "Active", value: stats.active, color: "hsl(160,84%,39%)", bg: "hsla(160,84%,39%,0.10)", border: "hsla(160,84%,39%,0.15)", Icon: TrendingUp },
+          { label: "VIP", value: stats.vip, color: "hsl(271,91%,65%)", bg: "hsla(271,91%,65%,0.10)", border: "hsla(271,91%,65%,0.15)", Icon: Crown },
+          { label: "Total Revenue", value: `$${stats.totalRevenue.toLocaleString()}`, color: "hsl(45,93%,47%)", bg: "hsla(45,93%,47%,0.10)", border: "hsla(45,93%,47%,0.15)", Icon: DollarSign },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-            <span className="text-white/40 text-xs font-medium uppercase tracking-wider">{s.label}</span>
-            <p className="text-2xl font-bold text-white mt-1">{s.value}</p>
+          <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-3">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: s.bg, border: `1px solid ${s.border}` }}>
+              <s.Icon className="w-4 h-4" style={{ color: s.color }} strokeWidth={1.5} />
+            </div>
+            <div>
+              <span className="text-white/40 text-xs font-medium uppercase tracking-wider">{s.label}</span>
+              <p className="text-2xl font-bold text-white mt-0.5">{s.value}</p>
+            </div>
           </div>
         ))}
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-          <Input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search customers..."
-            className="pl-10 h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent"
-          />
-        </div>
-        <div className="flex gap-2">
-          <select
-            value={filterStatus}
-            onChange={e => setFilterStatus(e.target.value)}
-            className="h-10 rounded-lg bg-white/5 border border-white/10 text-white/70 text-sm px-3 focus:outline-none focus:ring-2 focus:ring-accent"
-          >
-            <option value="all">All Status</option>
-            {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[hsl(215,50%,10%)]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
-          </select>
+      <div className="space-y-3 mb-4">
+        <div className="flex items-stretch gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+            <Input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search by name, email, phone..."
+              className="pl-10 h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent"
+            />
+            {search && (
+              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
           <ImportDropdown onCsv={() => setShowCsvImport(true)} onGmb={() => setShowGmbImport(true)} />
-          <Button onClick={() => { resetForm(); setShowAdd(true); }} size="sm" className="gap-2 h-10 px-4" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
-            <Plus className="w-4 h-4" /> Add
+          <Button onClick={() => { resetForm(); setShowAdd(true); }} size="sm" className="gap-1.5 h-10 px-4 shrink-0" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Add Customer</span><span className="sm:hidden">Add</span>
           </Button>
+        </div>
+        {/* Status filter chips */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-none">
+          {["all", ...STATUS_OPTIONS].map(s => {
+            const label = s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1);
+            const isActive = filterStatus === s;
+            const chipColors: Record<string, { active: string; dot: string }> = {
+              all: { active: "hsl(217,91%,60%)", dot: "hsl(217,91%,60%)" },
+              lead: { active: "hsl(38,92%,47%)", dot: "hsl(38,92%,47%)" },
+              active: { active: "hsl(160,84%,39%)", dot: "hsl(160,84%,39%)" },
+              vip: { active: "hsl(271,91%,65%)", dot: "hsl(271,91%,65%)" },
+              inactive: { active: "hsl(215,16%,55%)", dot: "hsl(215,16%,55%)" },
+            };
+            const cc = chipColors[s] || chipColors.all;
+            return (
+              <button
+                key={s}
+                onClick={() => setFilterStatus(s)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-150 shrink-0 border"
+                style={isActive ? {
+                  background: `${cc.active}1A`,
+                  borderColor: `${cc.active}40`,
+                  color: cc.active,
+                } : {
+                  background: "transparent",
+                  borderColor: "hsla(0,0%,100%,0.10)",
+                  color: "hsla(0,0%,100%,0.45)",
+                }}
+              >
+                {s !== "all" && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: isActive ? cc.dot : "hsla(0,0%,100%,0.25)" }} />}
+                {label}
+                {s !== "all" && (
+                  <span className="ml-0.5 text-[10px] opacity-60">
+                    {s === "lead" ? customers.filter(c => c.status === "lead").length :
+                     s === "active" ? customers.filter(c => c.status === "active").length :
+                     s === "vip" ? customers.filter(c => c.status === "vip").length :
+                     customers.filter(c => c.status === "inactive").length}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Customer list */}
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-12 text-center">
-          <User className="w-10 h-10 text-white/10 mx-auto mb-3" />
-          <p className="text-white/30 text-sm">{search ? "No customers match your search" : "No customers yet. Add your first customer or they'll appear here when someone books."}</p>
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-12 text-center flex flex-col items-center gap-3">
+          <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: "hsla(217,91%,60%,0.08)", border: "1px solid hsla(217,91%,60%,0.12)" }}>
+            <Users className="w-6 h-6" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
+          </div>
+          <div>
+            <p className="text-white font-medium text-sm">
+              {search ? "No customers found" : filterStatus !== "all" ? `No ${filterStatus} customers` : "No customers yet"}
+            </p>
+            <p className="text-white/30 text-xs mt-1">
+              {search ? `No results for "${search}"` : "Add your first customer or they'll appear automatically when someone books."}
+            </p>
+          </div>
+          {!search && filterStatus === "all" && (
+            <button
+              onClick={() => { resetForm(); setShowAdd(true); }}
+              className="text-xs font-medium px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5"
+              style={{ background: "hsla(217,91%,60%,0.10)", color: "hsl(217,91%,60%)" }}
+            >
+              <Plus className="w-3.5 h-3.5" /> Add First Customer
+            </button>
+          )}
         </div>
       ) : (
         <div className="space-y-2">
