@@ -2,6 +2,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar from "./DashboardSidebar";
 import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import TrialLockOverlay from "./TrialLockOverlay";
+import MobileBottomNav from "./MobileBottomNav";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState, useRef } from "react";
@@ -206,14 +207,14 @@ const DashboardLayout = () => {
             </div>
           </header>
 
-          <div className="flex-1 overflow-y-auto p-4 md:p-8">
+          <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
             <Outlet context={{ chatbotRef }} />
           </div>
 
           {isLocked && <TrialLockOverlay isDark={isDark} />}
 
-          {/* Dashboard Footer */}
-          <footer className={`border-t px-4 md:px-8 py-4 shrink-0 ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}>
+          {/* Dashboard Footer — hidden on mobile where bottom nav shows */}
+          <footer className={`hidden md:block border-t px-4 md:px-8 py-4 shrink-0 ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}>
             <div className={`flex flex-col sm:flex-row items-center justify-between gap-2 text-xs ${isDark ? "text-white/30" : "text-[hsl(215,16%,60%)]"}`}>
               <span>© {new Date().getFullYear()} Darker. All rights reserved.</span>
               <div className="flex items-center gap-4">
@@ -222,6 +223,9 @@ const DashboardLayout = () => {
               </div>
             </div>
           </footer>
+
+          {/* Mobile Bottom Navigation */}
+          <MobileBottomNav isDark={isDark} currentPath={location.pathname} onNavigate={navigate} />
 
           <SupportChatbot ref={chatbotRef} />
         </main>
