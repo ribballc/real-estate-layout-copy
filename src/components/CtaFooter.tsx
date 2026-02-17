@@ -2,24 +2,6 @@ import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 import FadeIn from "@/components/FadeIn";
 import darkerLogo from "@/assets/darker-logo.png";
 
-const ctaAnimStyles = `
-@keyframes ctaRing {
-  0% { transform: scale(0.8); opacity: 0.6; }
-  100% { transform: scale(2.2); opacity: 0; }
-}
-@keyframes ctaBell {
-  0%, 100% { transform: rotate(0deg); }
-  10% { transform: rotate(14deg); }
-  20% { transform: rotate(-12deg); }
-  30% { transform: rotate(8deg); }
-  40% { transform: rotate(-4deg); }
-  50% { transform: rotate(0deg); }
-}
-@keyframes ctaFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-`;
 
 const PhoneRingIcon = () => (
   <div className="relative inline-flex items-center justify-center mb-8" style={{ animation: "ctaFloat 3s ease-in-out infinite" }}>
@@ -57,7 +39,6 @@ const CtaFooter = () => {
 
   return (
     <>
-      <style>{ctaAnimStyles}</style>
       {/* CTA */}
       <section
         className="relative py-20 md:py-28 px-5 md:px-8 text-center overflow-hidden"
