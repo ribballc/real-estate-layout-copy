@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { ArrowRight, Check, Plus } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
@@ -56,6 +56,7 @@ const defaultAddOns: AddOn[] = addOnsByService.full;
 
 const BookAddOns = () => {
   const navigate = useNavigate();
+  const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
   const serviceId = searchParams.get("service") || "full";
   const addOns = addOnsByService[serviceId] ?? defaultAddOns;
@@ -136,7 +137,7 @@ const BookAddOns = () => {
       <FadeIn delay={50}>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <button
-            onClick={() => navigate("/book/booking")}
+            onClick={() => navigate(`/site/${slug}/book/booking`)}
             className="inline-flex items-center gap-2 text-sm font-semibold rounded-lg px-6 py-3 min-h-[44px] transition-all duration-300 hover:gap-3"
             style={{
               background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)",

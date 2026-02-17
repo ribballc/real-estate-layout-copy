@@ -811,6 +811,29 @@
   50% { transform: translateY(-6px); }
 }
 
+/* Site dark mode theme — applied to /site/:slug when user selects dark mode */
+.site-dark {
+  --background: 215 50% 6%;
+  --foreground: 0 0% 95%;
+  --card: 215 50% 10%;
+  --card-foreground: 0 0% 95%;
+  --popover: 215 50% 10%;
+  --popover-foreground: 0 0% 95%;
+  --primary: 47 94% 63%;
+  --primary-foreground: 215 50% 6%;
+  --secondary: 217 33% 14%;
+  --secondary-foreground: 0 0% 90%;
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 16% 60%;
+  --accent: 47 94% 63%;
+  --accent-foreground: 215 50% 6%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 215 25% 18%;
+  --input: 215 25% 18%;
+  --ring: 47 94% 63%;
+}
+
 /* Deluxe landing page utilities */
 .gold-gradient {
   background: linear-gradient(135deg, hsl(47 94% 63%) 0%, hsl(41 87% 46%) 100%);

@@ -43,11 +43,11 @@ const App = () => (
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
             <Route path="/loading" element={<ProtectedRoute><Loading /></ProtectedRoute>} />
             <Route path="/preview" element={<Preview />} />
-            <Route path="/book" element={<Book />} />
-            <Route path="/book/vehicle" element={<BookVehicle />} />
-            <Route path="/book/options" element={<BookOptions />} />
-            <Route path="/book/add-ons" element={<BookAddOns />} />
-            <Route path="/book/booking" element={<BookBooking />} />
+            <Route path="/site/:slug/book" element={<Book />} />
+            <Route path="/site/:slug/book/vehicle" element={<BookVehicle />} />
+            <Route path="/site/:slug/book/options" element={<BookOptions />} />
+            <Route path="/site/:slug/book/add-ons" element={<BookAddOns />} />
+            <Route path="/site/:slug/book/booking" element={<BookBooking />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>

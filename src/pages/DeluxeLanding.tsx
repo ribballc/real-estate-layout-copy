@@ -17,8 +17,10 @@ const DeluxeLanding = () => {
   const { slug } = useParams<{ slug: string }>();
   const { profile, services, hours, testimonials, photos, addOns, loading } = useBusinessDataBySlug(slug || null);
 
+  const isDark = profile?.secondary_color !== "#FFFFFF";
+
   return (
-    <main className="min-h-screen bg-background font-montserrat">
+    <main className={`min-h-screen bg-background font-montserrat ${isDark ? "site-dark" : ""}`}>
       <DeluxeNavbar profile={profile} />
       <DeluxeHero profile={profile} />
       <DeluxeServicesOverview services={services} />

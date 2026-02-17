@@ -1,32 +1,33 @@
 import { ReactNode } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import BookingSidebar from "@/components/BookingSidebar";
 import BookingBreadcrumb from "@/components/BookingBreadcrumb";
 import darkerLogo from "@/assets/darker-logo.png";
-import { useBusinessData } from "@/hooks/useBusinessData";
+import { useBusinessDataBySlug, type BusinessData } from "@/hooks/useBusinessData";
 
 interface BookingLayoutProps {
   activeStep: number;
-  children: ReactNode | ((data: ReturnType<typeof useBusinessData>) => ReactNode);
+  children: ReactNode | ((data: BusinessData) => ReactNode);
 }
 
 const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
-  const [searchParams] = useSearchParams();
-  const userId = searchParams.get("uid");
-  const businessData = useBusinessData(userId);
+  const { slug } = useParams<{ slug: string }>();
+  const businessData = useBusinessDataBySlug(slug || null);
+
+  const isDark = businessData.profile?.secondary_color !== "#FFFFFF";
 
   return (
-    <div className="min-h-screen" style={{ background: "hsl(210 40% 98%)" }}>
+    <div className={`min-h-screen bg-background ${isDark ? "site-dark" : ""}`}>
       {/* Top Nav */}
       <header
         className="sticky top-0 z-50 border-b border-border"
         style={{
-          background: "hsla(0, 0%, 100%, 0.85)",
+          background: isDark ? "hsla(215, 50%, 8%, 0.85)" : "hsla(0, 0%, 100%, 0.85)",
           backdropFilter: "blur(16px) saturate(180%)",
         }}
       >
         <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center">
-          <a href="/">
+          <a href={`/site/${slug}`}>
             <img
               src={businessData.profile?.logo_url || darkerLogo}
               alt={businessData.profile?.business_name || "Darker"}

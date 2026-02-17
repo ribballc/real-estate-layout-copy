@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { Calendar, Car, Truck, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
@@ -7,6 +7,7 @@ import { vehicleYears, vehicleMakes, vehicleModels } from "@/data/vehicles";
 
 const BookVehicle = () => {
   const navigate = useNavigate();
+  const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
   const serviceId = searchParams.get("service") || "";
   const serviceName = searchParams.get("name") || "";
@@ -125,14 +126,14 @@ const BookVehicle = () => {
             {/* Back / Continue */}
             <div className="flex items-center gap-3 pt-2">
               <button
-                onClick={() => navigate("/book")}
+                onClick={() => navigate(`/site/${slug}/book`)}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold border border-border text-foreground hover:bg-muted transition-colors min-h-[44px]"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back
               </button>
               <button
-                onClick={() => navigate(`/book/options?service=${serviceId}&name=${encodeURIComponent(serviceName)}`)}
+                onClick={() => navigate(`/site/${slug}/book/options?service=${serviceId}&name=${encodeURIComponent(serviceName)}`)}
                 disabled={!canContinue}
                 className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold min-h-[44px] transition-all ${
                   canContinue
