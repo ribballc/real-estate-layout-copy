@@ -213,7 +213,20 @@ const HowItWorksSection = () => {
                 className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
                 style={{ color: "hsl(222, 47%, 11%)" }}
               >
-                How It Works
+                <span className="relative inline-block">
+                  How It Works
+                  <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'blueUnderlineIn 0.8s ease-out 0.6s forwards' }}>
+                    <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#blueGlow)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 0.6s forwards' }} />
+                    <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#3273DC" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 0.6s forwards' }} />
+                    <defs>
+                      <linearGradient id="blueGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#3273DC" />
+                        <stop offset="50%" stopColor="#5A9BF6" />
+                        <stop offset="100%" stopColor="#3273DC" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </span>
               </h2>
               <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
                 yeah... its pretty darn simple.
