@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, HelpCircle } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
+import SectionPill from "@/components/SectionPill";
 
 const faqs = [
   {
@@ -85,6 +86,7 @@ const FaqSection = () => {
     >
       <div className="max-w-3xl mx-auto relative z-10">
         <FadeIn>
+          <SectionPill icon={<HelpCircle className="w-4 h-4" />} label="FAQ" />
           <h2
             className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3"
             style={{ color: "hsl(222, 47%, 11%)" }}

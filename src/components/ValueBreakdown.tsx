@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Check, ChevronRight } from "lucide-react";
+import { Check, ChevronRight, Gift } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import SectionPill from "@/components/SectionPill";
 
 const tabs = [
   {
@@ -56,6 +57,7 @@ const ValueBreakdown = () => {
       <div className="max-w-[800px] mx-auto relative z-10">
         <FadeIn>
           <div className="text-center mb-12 md:mb-16">
+            <SectionPill icon={<Gift className="w-4 h-4" />} label="Value Breakdown" />
             <h2
               className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
               style={{ color: "hsl(222, 47%, 11%)" }}

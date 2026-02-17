@@ -1,5 +1,7 @@
 import FadeIn from "@/components/FadeIn";
 import { useCountUp } from "@/hooks/useCountUp";
+import SectionPill from "@/components/SectionPill";
+import { Star } from "lucide-react";
 
 const reviews = [
   { initials: "MT", name: "Marcus Thompson", role: "Dallas Mobile Detailing", quote: "I went from chasing texts to having a calendar that fills itself. Got my website in 2 days flat — the deposit thing alone paid for the subscription in the first week.", metric: "+$3,400/mo" },
@@ -73,6 +75,7 @@ const TestimonialSection = () => {
     >
       <div className="relative z-10 max-w-6xl mx-auto text-center px-5 md:px-8">
         <FadeIn>
+          <SectionPill icon={<Star className="w-4 h-4" />} label="Testimonials" highlight="PROOF" />
           <h2
             className="font-heading text-[28px] md:text-[40px] lg:text-[48px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3"
             style={{ color: 'hsl(0, 0%, 100%)' }}

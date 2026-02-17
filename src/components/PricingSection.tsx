@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Check, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock } from "lucide-react";
+import { Check, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock, CreditCard } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import SectionPill from "@/components/SectionPill";
 
 const plan = {
   name: "The 'One' Plan",
@@ -130,6 +131,7 @@ const PricingSection = () => {
     >
       <div className="max-w-6xl mx-auto relative z-10">
         <FadeIn>
+          <SectionPill icon={<CreditCard className="w-4 h-4" />} label="Pricing" highlight="SIMPLE" />
           <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3 text-foreground">
             Simple Pricing
           </h2>
