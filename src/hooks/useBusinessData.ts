@@ -13,6 +13,11 @@ export interface BusinessProfile {
   logo_url: string | null;
   primary_color: string | null;
   secondary_color: string | null;
+  instagram: string;
+  facebook: string;
+  tiktok: string;
+  youtube: string;
+  google_business: string;
 }
 
 export interface BusinessService {
@@ -30,10 +35,37 @@ export interface BusinessHour {
   time: string;
 }
 
+export interface BusinessTestimonial {
+  id: string;
+  author: string;
+  content: string;
+  rating: number;
+  photo_url: string | null;
+}
+
+export interface BusinessPhoto {
+  id: string;
+  url: string;
+  caption: string;
+  sort_order: number;
+}
+
+export interface BusinessAddOn {
+  id: string;
+  service_id: string;
+  title: string;
+  description: string;
+  price: number;
+  image_url: string | null;
+}
+
 export interface BusinessData {
   profile: BusinessProfile | null;
   services: BusinessService[];
   hours: BusinessHour[];
+  testimonials: BusinessTestimonial[];
+  photos: BusinessPhoto[];
+  addOns: BusinessAddOn[];
   loading: boolean;
 }
 
@@ -41,6 +73,9 @@ export function useBusinessData(userId: string | null): BusinessData {
   const [profile, setProfile] = useState<BusinessProfile | null>(null);
   const [services, setServices] = useState<BusinessService[]>([]);
   const [hours, setHours] = useState<BusinessHour[]>([]);
+  const [testimonials, setTestimonials] = useState<BusinessTestimonial[]>([]);
+  const [photos, setPhotos] = useState<BusinessPhoto[]>([]);
+  const [addOns, setAddOns] = useState<BusinessAddOn[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,15 +84,21 @@ export function useBusinessData(userId: string | null): BusinessData {
       return;
     }
 
-    const fetch = async () => {
-      const [profileRes, servicesRes, hoursRes] = await Promise.all([
+    const fetchData = async () => {
+      const [profileRes, servicesRes, hoursRes, testimonialsRes, photosRes, addOnsRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", userId).single(),
         supabase.from("services").select("*").eq("user_id", userId).order("sort_order"),
         supabase.from("business_hours").select("*").eq("user_id", userId).order("day_of_week"),
+        supabase.from("testimonials").select("*").eq("user_id", userId).order("created_at"),
+        supabase.from("photos").select("*").eq("user_id", userId).order("sort_order"),
+        supabase.from("add_ons").select("*").eq("user_id", userId).order("sort_order"),
       ]);
 
       if (profileRes.data) setProfile(profileRes.data as unknown as BusinessProfile);
       if (servicesRes.data) setServices(servicesRes.data as unknown as BusinessService[]);
+      if (testimonialsRes.data) setTestimonials(testimonialsRes.data as unknown as BusinessTestimonial[]);
+      if (photosRes.data) setPhotos(photosRes.data as unknown as BusinessPhoto[]);
+      if (addOnsRes.data) setAddOns(addOnsRes.data as unknown as BusinessAddOn[]);
 
       // Transform hours
       if (hoursRes.data && hoursRes.data.length > 0) {
@@ -81,8 +122,8 @@ export function useBusinessData(userId: string | null): BusinessData {
       setLoading(false);
     };
 
-    fetch();
+    fetchData();
   }, [userId]);
 
-  return { profile, services, hours, loading };
+  return { profile, services, hours, testimonials, photos, addOns, loading };
 }

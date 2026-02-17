@@ -4,26 +4,41 @@ import service1 from '@/assets/deluxe/service-1.jpg';
 import service2 from '@/assets/deluxe/service-2.jpg';
 import service3 from '@/assets/deluxe/service-3.jpg';
 import service4 from '@/assets/deluxe/service-4.jpg';
+import type { BusinessService } from '@/hooks/useBusinessData';
 
-const services = [
+const defaultServices = [
   { image: service1, title: 'Mobile Detailing', description: 'We come to you for convenient on-site service' },
   { image: service2, title: 'Ceramic Coating', description: 'Long-lasting protection for your paint' },
   { image: service3, title: 'Headlight Restoration', description: 'Restore clarity and improve visibility' },
   { image: service4, title: 'Buffing Services', description: 'Remove scratches and restore shine' },
 ];
 
-const DeluxeServicesOverview = () => {
+const defaultImages = [service1, service2, service3, service4];
+
+interface Props {
+  services?: BusinessService[];
+}
+
+const DeluxeServicesOverview = ({ services }: Props) => {
+  const displayServices = services && services.length > 0
+    ? services.slice(0, 4).map((s, i) => ({
+        image: s.image_url || defaultImages[i % defaultImages.length],
+        title: s.title,
+        description: s.description,
+      }))
+    : defaultServices;
+
   return (
     <section id="services" className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <p className="text-primary font-semibold tracking-[0.2em] uppercase mb-4">Welcome to Deluxe Detailing</p>
+          <p className="text-primary font-semibold tracking-[0.2em] uppercase mb-4">Welcome</p>
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Our <span className="gold-gradient-text">Services</span></h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">Professional auto detailing services tailored to your vehicle type</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, index) => (
+          {displayServices.map((service, index) => (
             <div key={index} className="group relative overflow-hidden rounded-xl aspect-[3/4] cursor-pointer">
               <img src={service.image} alt={service.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />

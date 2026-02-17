@@ -1,3 +1,5 @@
+import { useSearchParams } from 'react-router-dom';
+import { useBusinessData } from '@/hooks/useBusinessData';
 import DeluxeNavbar from '@/components/deluxe/DeluxeNavbar';
 import DeluxeHero from '@/components/deluxe/DeluxeHero';
 import DeluxeWhyChooseUs from '@/components/deluxe/DeluxeWhyChooseUs';
@@ -12,20 +14,24 @@ import DeluxeContactForm from '@/components/deluxe/DeluxeContactForm';
 import DeluxeFooter from '@/components/deluxe/DeluxeFooter';
 
 const DeluxeLanding = () => {
+  const [searchParams] = useSearchParams();
+  const userId = searchParams.get('uid');
+  const { profile, services, hours, testimonials, photos, addOns, loading } = useBusinessData(userId);
+
   return (
     <main className="min-h-screen bg-background font-montserrat">
-      <DeluxeNavbar />
-      <DeluxeHero />
-      <DeluxeServicesOverview />
-      <DeluxeWhyChooseUs />
-      <DeluxePackages />
-      <DeluxeAddOnServices />
-      <DeluxeGallery />
-      <DeluxeCTASection />
-      <DeluxeTestimonials />
-      <DeluxeFAQ />
-      <DeluxeContactForm />
-      <DeluxeFooter />
+      <DeluxeNavbar profile={profile} />
+      <DeluxeHero profile={profile} />
+      <DeluxeServicesOverview services={services} />
+      <DeluxeWhyChooseUs profile={profile} />
+      <DeluxePackages services={services} />
+      <DeluxeAddOnServices addOns={addOns} />
+      <DeluxeGallery photos={photos} />
+      <DeluxeCTASection profile={profile} />
+      <DeluxeTestimonials testimonials={testimonials} />
+      <DeluxeFAQ profile={profile} />
+      <DeluxeContactForm profile={profile} services={services} addOns={addOns} hours={hours} />
+      <DeluxeFooter profile={profile} hours={hours} />
     </main>
   );
 };
