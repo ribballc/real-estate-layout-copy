@@ -61,11 +61,7 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted }: MetricCar
   <div className={`rounded-2xl p-5 transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
     <div className="flex items-start justify-between mb-4">
       <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center"
-        style={{
-          background: highlighted ? "hsla(0,0%,100%,0.2)" : "hsla(217,91%,60%,0.08)",
-          border: `1px solid ${highlighted ? "hsla(0,0%,100%,0.15)" : "hsla(217,91%,60%,0.12)"}`,
-        }}
+        className={`w-10 h-10 rounded-xl flex items-center justify-center ${highlighted ? "bg-[hsla(0,0%,100%,0.2)] border border-[hsla(0,0%,100%,0.15)]" : "bg-[hsla(217,91%,60%,0.08)] border border-[hsla(217,91%,60%,0.12)]"}`}
       >
         {icon}
       </div>

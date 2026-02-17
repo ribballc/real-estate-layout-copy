@@ -128,7 +128,7 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
                               ? "text-[hsl(217,91%,60%)]"
                               : "text-[hsl(217,91%,50%)]"
                             : isDark
-                              ? "text-[hsla(0,0%,100%,0.5)] hover:text-[hsla(0,0%,100%,0.8)] hover:bg-[hsla(0,0%,100%,0.04)]"
+                              ? "text-[hsla(0,0%,100%,0.5)] hover:text-[hsl(217,91%,60%)] hover:bg-[hsla(217,91%,60%,0.08)]"
                               : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,20%)] hover:bg-[hsl(214,20%,97%)]"
                         )}
                       >
@@ -138,7 +138,7 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
                             active
                               ? "text-[hsl(217,91%,60%)]"
                               : isDark
-                                ? "text-[hsla(0,0%,100%,0.4)]"
+                                ? "text-[hsla(0,0%,100%,0.4)] group-hover/nav-item:text-[hsl(217,91%,60%)]"
                                 : "text-[hsl(215,16%,60%)]"
                           )}
                           strokeWidth={active ? 2 : 1.5}
