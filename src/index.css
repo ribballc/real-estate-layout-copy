@@ -522,6 +522,31 @@
 }
 
 /* ═══════════════════════════════════════════════════════
+   Dashboard Light Mode — CSS variable overrides
+   ═══════════════════════════════════════════════════════ */
+.dashboard-light {
+  --background: 210 40% 98%;
+  --foreground: 215 25% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 215 25% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 215 25% 12%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 214 20% 93%;
+  --secondary-foreground: 215 25% 12%;
+  --muted: 214 20% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 217 91% 60%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 214 20% 90%;
+  --input: 214 20% 90%;
+  --ring: 217 91% 60%;
+}
+
+/* ═══════════════════════════════════════════════════════
    Dashboard Home — Alytics-inspired clean card system
    ═══════════════════════════════════════════════════════ */
 
@@ -552,33 +577,37 @@
 
 /* --- Light mode overrides --- */
 .dashboard-light .dash-title { color: hsl(215, 25%, 12%); }
-.dashboard-light .dash-subtitle { color: hsl(215, 16%, 55%); }
+.dashboard-light .dash-subtitle { color: hsl(215, 16%, 47%); }
 .dashboard-light .dash-select {
   background: hsl(0, 0%, 100%);
-  border-color: hsl(214, 20%, 90%);
-  color: hsl(215, 25%, 12%);
+  border-color: hsl(214, 20%, 88%);
+  color: hsl(215, 25%, 15%);
 }
 .dashboard-light .dash-card {
   background: hsl(0, 0%, 100%);
-  border-color: hsl(214, 20%, 92%);
-  box-shadow: 0 1px 3px hsla(215, 25%, 12%, 0.04);
+  border-color: hsl(214, 20%, 90%);
+  box-shadow: 0 1px 4px hsla(215, 25%, 12%, 0.05);
+}
+.dashboard-light .dash-card:hover {
+  border-color: hsl(214, 20%, 84%);
+  box-shadow: 0 4px 16px hsla(215, 25%, 12%, 0.07);
 }
 .dashboard-light .dash-card-highlight {
   background: linear-gradient(135deg, hsl(217, 91%, 56%) 0%, hsl(217, 91%, 64%) 100%);
   border-color: hsl(217, 91%, 60%);
   box-shadow: 0 4px 16px hsla(217, 91%, 60%, 0.25);
 }
-.dashboard-light .dash-card-highlight .dash-card-label { color: hsla(0, 0%, 100%, 0.8); }
+.dashboard-light .dash-card-highlight .dash-card-label { color: hsla(0, 0%, 100%, 0.85); }
 .dashboard-light .dash-card-highlight .dash-card-value { color: hsl(0, 0%, 100%); }
-.dashboard-light .dash-card-highlight .dash-card-sublabel { color: hsla(0, 0%, 100%, 0.6); }
+.dashboard-light .dash-card-highlight .dash-card-sublabel { color: hsla(0, 0%, 100%, 0.65); }
 .dashboard-light .dash-card-highlight .dash-menu-btn { color: hsla(0, 0%, 100%, 0.5); }
-.dashboard-light .dash-card-label { color: hsl(215, 16%, 50%); }
+.dashboard-light .dash-card-label { color: hsl(215, 16%, 42%); }
 .dashboard-light .dash-card-value { color: hsl(215, 25%, 12%); }
-.dashboard-light .dash-card-sublabel { color: hsl(215, 16%, 60%); }
-.dashboard-light .dash-menu-btn { color: hsl(215, 16%, 72%); }
-.dashboard-light .dash-menu-btn:hover { background: hsl(214, 20%, 96%); color: hsl(215, 16%, 40%); }
+.dashboard-light .dash-card-sublabel { color: hsl(215, 16%, 55%); }
+.dashboard-light .dash-menu-btn { color: hsl(215, 16%, 68%); }
+.dashboard-light .dash-menu-btn:hover { background: hsl(214, 20%, 95%); color: hsl(215, 16%, 35%); }
 .dashboard-light .dash-card-border-b { border-color: hsl(214, 20%, 92%); }
-.dashboard-light .dash-divide > * + * { border-color: hsl(214, 20%, 94%); }
+.dashboard-light .dash-divide > * + * { border-color: hsl(214, 20%, 93%); }
 .dashboard-light .dash-row-hover:hover { background: hsl(214, 20%, 97%); }
 
 /* ═══════════════════════════════════════════════════════
@@ -607,20 +636,20 @@
 /* Light overrides */
 .dashboard-light .alytics-card {
   background: hsl(0, 0%, 100%);
-  border: 1px solid hsl(214, 20%, 92%);
-  box-shadow: none;
+  border: 1px solid hsl(214, 20%, 90%);
+  box-shadow: 0 1px 4px hsla(215, 25%, 12%, 0.04);
 }
 .dashboard-light .alytics-card:hover {
-  border-color: hsl(214, 20%, 85%);
-  box-shadow: 0 4px 20px hsla(215, 25%, 12%, 0.06);
+  border-color: hsl(214, 20%, 84%);
+  box-shadow: 0 4px 20px hsla(215, 25%, 12%, 0.07);
 }
-.dashboard-light .alytics-card-title { color: hsl(215, 25%, 15%); }
+.dashboard-light .alytics-card-title { color: hsl(215, 25%, 12%); }
 .dashboard-light .alytics-card-big { color: hsl(215, 25%, 12%); }
-.dashboard-light .alytics-card-sub { color: hsl(215, 16%, 55%); }
-.dashboard-light .alytics-link { color: hsl(217, 91%, 55%); }
-.dashboard-light .alytics-link:hover { color: hsl(217, 91%, 45%); }
-.dashboard-light .alytics-divide > * + * { border-top: 1px solid hsl(214, 20%, 94%); }
-.dashboard-light .alytics-row-hover:hover { background: hsl(214, 20%, 98%); }
+.dashboard-light .alytics-card-sub { color: hsl(215, 16%, 50%); }
+.dashboard-light .alytics-link { color: hsl(217, 91%, 52%); }
+.dashboard-light .alytics-link:hover { color: hsl(217, 91%, 42%); }
+.dashboard-light .alytics-divide > * + * { border-top: 1px solid hsl(214, 20%, 93%); }
+.dashboard-light .alytics-row-hover:hover { background: hsl(214, 20%, 97%); }
 .dashboard-light .alytics-row-active { background: hsl(217, 91%, 97%); border-left: 3px solid hsl(217, 91%, 60%); }
 
 /* Grid stroke theming for charts in light mode */
