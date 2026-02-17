@@ -486,6 +486,64 @@
    Dashboard typography system
    ═══════════════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════════════
+   Dashboard unified input system
+   ═══════════════════════════════════════════════════════ */
+
+.dashboard-dark input,
+.dashboard-dark textarea,
+.dashboard-dark select,
+.dashboard-light input,
+.dashboard-light textarea,
+.dashboard-light select {
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+  outline: none;
+}
+.dashboard-dark input:not([type="checkbox"]):not([type="radio"]),
+.dashboard-dark select,
+.dashboard-light input:not([type="checkbox"]):not([type="radio"]),
+.dashboard-light select {
+  height: 2.5rem;
+}
+
+.dashboard-dark input,
+.dashboard-dark textarea,
+.dashboard-dark select {
+  background: hsla(215, 50%, 8%, 0.6);
+  border: 1px solid hsla(0, 0%, 100%, 0.1);
+  color: hsl(0, 0%, 100%);
+}
+.dashboard-dark input::placeholder,
+.dashboard-dark textarea::placeholder {
+  color: hsla(0, 0%, 100%, 0.35);
+}
+.dashboard-dark input:focus,
+.dashboard-dark textarea:focus,
+.dashboard-dark select:focus {
+  border-color: hsl(217, 91%, 60%);
+  box-shadow: 0 0 0 3px hsla(217, 91%, 60%, 0.15);
+}
+
+.dashboard-light input,
+.dashboard-light textarea,
+.dashboard-light select {
+  background: hsl(0, 0%, 100%);
+  border: 1px solid hsl(214, 20%, 88%);
+  color: hsl(215, 25%, 12%);
+}
+.dashboard-light input::placeholder,
+.dashboard-light textarea::placeholder {
+  color: hsl(215, 20%, 60%);
+}
+.dashboard-light input:focus,
+.dashboard-light textarea:focus,
+.dashboard-light select:focus {
+  border-color: hsl(217, 91%, 60%);
+  box-shadow: 0 0 0 3px hsla(217, 91%, 60%, 0.1);
+}
+
 /* Body / paragraph text */
 .dashboard-dark p,
 .dashboard-dark .dash-body {
