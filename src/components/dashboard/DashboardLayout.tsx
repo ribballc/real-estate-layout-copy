@@ -11,6 +11,7 @@ import {
   TrendingUp, Users, CalendarDays, Search,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import darkerLogo from "@/assets/darker-logo.png";
 
 const pageTitles: Record<string, { title: string; description: string; icon: any }> = {
   "/dashboard": { title: "Dashboard", description: "Overview of your business performance", icon: TrendingUp },
@@ -131,15 +132,21 @@ const DashboardLayout = () => {
         <main className="flex-1 flex flex-col min-w-0">
           {/* Header bar */}
           <header
-            className={`flex flex-col shrink-0 border-b ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}
+            className={`shrink-0 border-b ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}
             style={{
               background: isDark ? "hsla(215,50%,10%,0.8)" : "hsl(0, 0%, 100%)",
               backdropFilter: "blur(20px)",
             }}
           >
             <div className="h-14 flex items-center gap-3 px-4 md:px-8">
-              <SidebarTrigger className={isDark ? "text-white/60 hover:text-white" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)]"} />
-              <div className="flex items-center gap-3 flex-1 min-w-0">
+              {/* Mobile: Logo left, hamburger right */}
+              <div className="flex md:hidden items-center justify-between w-full">
+                <img src={darkerLogo} alt="Darker" className="h-7" />
+                <SidebarTrigger className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`} />
+              </div>
+              {/* Desktop: standard header */}
+              <div className="hidden md:flex items-center gap-3 flex-1 min-w-0">
+                <SidebarTrigger className={isDark ? "text-white/60 hover:text-white" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)]"} />
                 <div
                   className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
                   style={{
@@ -153,13 +160,13 @@ const DashboardLayout = () => {
                   <h1 className={`font-semibold text-sm truncate tracking-tight ${isDark ? "text-white" : "text-[hsl(215,25%,12%)]"}`}>
                     {page.title}
                   </h1>
-                  <p className={`text-xs hidden sm:block ${isDark ? "text-white/40" : "text-[hsl(215,16%,55%)]"}`}>
+                  <p className={`text-xs ${isDark ? "text-white/40" : "text-[hsl(215,16%,55%)]"}`}>
                     {page.description}
                   </p>
                 </div>
               </div>
               {/* Desktop search */}
-              <div className="relative hidden sm:block w-64">
+              <div className="relative hidden md:block w-64">
                 <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-white/30" : "text-[hsl(215,16%,65%)]"}`} />
                 <Input
                   value={searchQuery}
@@ -195,41 +202,6 @@ const DashboardLayout = () => {
                   </div>
                 )}
               </div>
-            </div>
-            {/* Mobile search */}
-            <div className="sm:hidden px-4 pb-3 relative">
-              <Search className={`absolute left-7 top-1/2 -translate-y-1/2 w-4 h-4 z-10 ${isDark ? "text-white/30" : "text-[hsl(215,16%,65%)]"}`} />
-              <Input
-                value={searchQuery}
-                onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
-                onFocus={() => setSearchOpen(true)}
-                onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
-                placeholder="Search anything..."
-                className={`pl-10 h-11 text-sm ${
-                  isDark ? "bg-white/5 border-white/10 text-white" : "bg-[hsl(210,40%,98%)] border-[hsl(214,20%,90%)] text-[hsl(215,25%,12%)]"
-                } focus-visible:ring-[hsl(217,91%,60%)]`}
-              />
-              {searchOpen && searchResults.length > 0 && (
-                <div className={`absolute top-full mt-1 left-4 right-4 rounded-lg border shadow-xl z-50 overflow-hidden ${
-                  isDark ? "border-white/10 bg-[hsl(215,50%,12%)]" : "border-[hsl(214,20%,90%)] bg-white"
-                }`}>
-                  {searchResults.map(r => (
-                    <button
-                      key={r.url}
-                      onMouseDown={() => { navigate(r.url); setSearchQuery(""); setSearchOpen(false); }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
-                        isDark ? "hover:bg-white/5 text-white/70" : "hover:bg-[hsl(217,91%,97%)] text-[hsl(215,16%,40%)]"
-                      }`}
-                    >
-                      <r.icon className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} />
-                      <div className="text-left">
-                        <span className="font-medium">{r.title}</span>
-                        <span className={`block text-xs ${isDark ? "text-white/40" : "text-[hsl(215,16%,55%)]"}`}>{r.description}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
             </div>
           </header>
 
