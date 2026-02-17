@@ -27,7 +27,7 @@ const SpringBanner = () => (
 const Index = () => {
   return (
     <SurveyFunnelProvider>
-      <div className="min-h-screen relative">
+      <div className="min-h-screen relative" style={{ background: 'linear-gradient(180deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)' }}>
         <ScrollProgress />
         <SpringBanner />
         <HeroSection />
