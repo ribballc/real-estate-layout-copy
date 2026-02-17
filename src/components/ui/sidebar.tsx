@@ -151,16 +151,24 @@ const Sidebar = React.forwardRef<
   }
 
   if (isMobile) {
+    // Read data-theme from the Sidebar's props to support light/dark mobile drawer
+    const sidebarTheme = props["data-theme" as keyof typeof props] as string | undefined;
+    const mobileIsDark = sidebarTheme !== "light";
     return (
-      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
+      <Sheet open={openMobile} onOpenChange={setOpenMobile}>
         <SheetContent
           data-sidebar="sidebar"
           data-mobile="true"
-          className="w-[--sidebar-width] p-0 text-sidebar-foreground [&>button]:hidden"
+          className={cn(
+            "w-[--sidebar-width] p-0 text-sidebar-foreground [&>button]:hidden",
+            mobileIsDark ? "dashboard-dark" : "dashboard-light"
+          )}
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-              background: "linear-gradient(180deg, hsl(215 50% 10%) 0%, hsl(217 33% 14%) 100%)",
+              background: mobileIsDark
+                ? "linear-gradient(180deg, hsl(215 50% 8%) 0%, hsl(217 33% 12%) 100%)"
+                : "hsl(0, 0%, 100%)",
             } as React.CSSProperties
           }
           side={side}
