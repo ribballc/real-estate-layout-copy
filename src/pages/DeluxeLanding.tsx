@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useBusinessDataBySlug } from '@/hooks/useBusinessData';
 import DeluxeNavbar from '@/components/deluxe/DeluxeNavbar';
@@ -16,6 +17,21 @@ import DeluxeFooter from '@/components/deluxe/DeluxeFooter';
 const DeluxeLanding = () => {
   const { slug } = useParams<{ slug: string }>();
   const { profile, services, hours, testimonials, photos, addOns, loading } = useBusinessDataBySlug(slug || null);
+
+  // When rendered inside the dashboard iframe, intercept "Book Now" clicks
+  // and notify parent to switch to the Booking Page tab
+  useEffect(() => {
+    if (window.self === window.top) return; // not in iframe
+    const handler = (e: MouseEvent) => {
+      const anchor = (e.target as HTMLElement).closest('a.book-now-link');
+      if (anchor) {
+        e.preventDefault();
+        window.parent.postMessage('dd-book-now', '*');
+      }
+    };
+    document.addEventListener('click', handler, true);
+    return () => document.removeEventListener('click', handler, true);
+  }, []);
 
   const isDark = profile?.secondary_color !== "#FFFFFF";
 

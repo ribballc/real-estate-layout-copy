@@ -25,11 +25,11 @@ const DeluxeCTASection = ({ profile, slug }: Props) => {
             Experience the difference professional detailing makes. Your car deserves the best – contact us now to schedule your appointment.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href={phoneHref}>
-              <Button variant="hero" size="xl">Call Now</Button>
+            <a href={slug ? `/site/${slug}/book` : "#contact"} className="book-now-link">
+              <Button variant="hero" size="xl">Book Now</Button>
             </a>
-            <a href={slug ? `/site/${slug}/book` : "#contact"}>
-              <Button variant="goldOutline" size="xl">Book Now</Button>
+            <a href={phoneHref}>
+              <Button variant="goldOutline" size="xl">Call Now</Button>
             </a>
           </div>
         </div>
