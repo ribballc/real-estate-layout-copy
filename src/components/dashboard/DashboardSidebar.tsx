@@ -247,8 +247,27 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
             </button>
           ))}
         </div>
-        {/* Desktop: stacked text buttons */}
+        {/* Desktop: user email + stacked text buttons */}
         <div className="hidden lg:block space-y-0.5">
+          {user?.email && (
+            <div className={cn(
+              "flex items-center gap-2.5 px-3 py-2.5 mb-1 rounded-xl",
+              isDark ? "bg-[hsla(0,0%,100%,0.03)]" : "bg-[hsl(214,20%,97%)]"
+            )}>
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[11px] font-bold"
+                style={{ background: "hsla(217,91%,60%,0.15)", color: "hsl(217,91%,60%)" }}
+              >
+                {user.email.charAt(0).toUpperCase()}
+              </div>
+              <span className={cn(
+                "text-[12px] truncate",
+                isDark ? "text-[hsla(0,0%,100%,0.4)]" : "text-[hsl(215,16%,50%)]"
+              )}>
+                {user.email}
+              </span>
+            </div>
+          )}
           <button
             onClick={onToggleTheme}
             className={cn(
