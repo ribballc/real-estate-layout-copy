@@ -33,7 +33,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
         WebkitBackdropFilter: "blur(20px)",
       }}
     >
-      <div className="flex items-center justify-around px-1 pt-2 pb-1">
+      <div className="flex items-center justify-around px-1 pt-1 pb-1">
         {TABS.map((tab) => {
           const active = isActive(tab.path);
           return (
@@ -41,7 +41,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
               key={tab.path}
               onClick={() => onNavigate(tab.path)}
               className={cn(
-                "flex flex-col items-center gap-0.5 min-w-0 flex-1 py-1 transition-colors duration-200",
+                "flex flex-col items-center gap-1 min-w-0 flex-1 min-h-[48px] justify-center active:scale-95 transition-all duration-150 ease-in-out",
                 active
                   ? "text-[hsl(217,91%,60%)]"
                   : isDark
@@ -49,23 +49,21 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                     : "text-[hsl(215,16%,60%)]"
               )}
             >
-              <tab.icon
-                className="w-[22px] h-[22px]"
-                strokeWidth={active ? 2.2 : 1.5}
-              />
               <span className={cn(
-                "text-[10px] leading-tight tracking-tight",
+                "flex items-center justify-center rounded-full transition-all duration-150 ease-in-out",
+                active ? "bg-[hsla(217,91%,60%,0.15)] px-3 py-1" : "px-3 py-1"
+              )}>
+                <tab.icon
+                  className="w-[22px] h-[22px]"
+                  strokeWidth={active ? 2.2 : 1.5}
+                />
+              </span>
+              <span className={cn(
+                "text-[10px] leading-tight tracking-wide uppercase",
                 active ? "font-semibold" : "font-medium"
               )}>
                 {tab.label}
               </span>
-              {/* Active dot indicator */}
-              <span
-                className={cn(
-                  "w-1 h-1 rounded-full mt-0.5 transition-all duration-200",
-                  active ? "bg-[hsl(217,91%,60%)]" : "bg-transparent"
-                )}
-              />
             </button>
           );
         })}
