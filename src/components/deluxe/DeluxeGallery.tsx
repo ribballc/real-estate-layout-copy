@@ -8,8 +8,9 @@ import gallery5 from '@/assets/deluxe/gallery-5.png';
 import gallery6 from '@/assets/deluxe/gallery-6.png';
 import gallery7 from '@/assets/deluxe/gallery-7.png';
 import gallery8 from '@/assets/deluxe/gallery-8.png';
+import type { BusinessPhoto } from '@/hooks/useBusinessData';
 
-const galleryItems = [
+const defaultGalleryItems = [
   { image: gallery1, title: 'Interior Detail', category: 'Interior' },
   { image: gallery2, title: 'Cadillac CT5', category: 'Exterior' },
   { image: gallery3, title: 'SRT Interior', category: 'Interior' },
@@ -20,8 +21,22 @@ const galleryItems = [
   { image: gallery8, title: 'Lyriq Interior', category: 'Interior' },
 ];
 
-const DeluxeGallery = () => {
+interface Props {
+  photos?: BusinessPhoto[];
+}
+
+const DeluxeGallery = ({ photos }: Props) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' });
+
+  const hasCms = photos && photos.length > 0;
+
+  const galleryItems = hasCms
+    ? photos.map((p) => ({
+        image: p.url,
+        title: p.caption || 'Gallery',
+        category: '',
+      }))
+    : defaultGalleryItems;
 
   const autoplay = useCallback(() => {
     if (!emblaApi) return;
@@ -51,7 +66,7 @@ const DeluxeGallery = () => {
                   <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="text-primary text-sm font-semibold uppercase tracking-wider">{item.category}</span>
+                    {item.category && <span className="text-primary text-sm font-semibold uppercase tracking-wider">{item.category}</span>}
                     <h3 className="text-foreground text-xl font-bold mt-1">{item.title}</h3>
                   </div>
                   <div className="absolute top-4 right-4 w-10 h-10 rounded-full gold-gradient flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">

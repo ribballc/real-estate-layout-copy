@@ -1,4 +1,5 @@
 import { Shield, Clock, Award, Sparkles, ThumbsUp, Car } from 'lucide-react';
+import type { BusinessProfile } from '@/hooks/useBusinessData';
 
 const features = [
   { icon: Shield, title: 'Quality Guaranteed', description: 'We stand behind our work with a 100% satisfaction guarantee on every detail.' },
@@ -9,13 +10,19 @@ const features = [
   { icon: Car, title: 'All Vehicles Welcome', description: 'From daily drivers to luxury vehicles, we detail them all.' },
 ];
 
-const DeluxeWhyChooseUs = () => {
+interface Props {
+  profile?: BusinessProfile | null;
+}
+
+const DeluxeWhyChooseUs = ({ profile }: Props) => {
+  const businessName = profile?.business_name || 'Deluxe';
+
   return (
     <section className="py-20 bg-secondary">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <p className="text-primary font-semibold tracking-[0.2em] uppercase mb-4">Why Choose Us</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">The <span className="gold-gradient-text">Deluxe</span> Difference</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">The <span className="gold-gradient-text">{businessName}</span> Difference</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">Experience the highest standard in auto detailing with our commitment to excellence</p>
         </div>
 
