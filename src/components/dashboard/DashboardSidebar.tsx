@@ -92,7 +92,7 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
         isDark ? "border-[hsla(215,25%,20%,1)]" : "border-[hsl(214,20%,92%)]"
       )}>
         <img
-          src={isDark ? darkerLogoDark : darkerLogo}
+          src={isDark ? darkerLogo : darkerLogoDark}
           alt="Darker"
           className="h-6 object-contain"
         />
