@@ -1,4 +1,3 @@
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar from "./DashboardSidebar";
 import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import TrialLockOverlay from "./TrialLockOverlay";
@@ -9,7 +8,7 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
-  TrendingUp, Users, CalendarDays, Search,
+  TrendingUp, Users, CalendarDays, Search, Menu,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import darkerLogo from "@/assets/darker-logo.png";
@@ -155,11 +154,11 @@ const DashboardLayout = () => {
               {/* Mobile: Logo left, hamburger right */}
               <div className="flex md:hidden items-center justify-between w-full">
                 <img src={isDark ? darkerLogo : darkerLogoDark} alt="Darker" className="h-7" />
-                <SidebarTrigger className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`} />
+                <button className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`}><Menu className="w-5 h-5" /></button>
               </div>
               {/* Desktop: standard header */}
               <div className="hidden md:flex items-center gap-3 flex-1 min-w-0">
-                <SidebarTrigger className={isDark ? "text-white/60 hover:text-white" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)]"} />
+                <button onClick={() => setSidebarCollapsed(prev => { const next = !prev; localStorage.setItem("sidebar-collapsed", String(next)); return next; })} className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`}><Menu className="w-4 h-4" /></button>
                 <div
                   className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
                   style={{
