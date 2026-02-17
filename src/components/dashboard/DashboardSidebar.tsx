@@ -117,60 +117,84 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
 
       {/* Bottom section */}
       <div className={`mt-auto border-t ${isDark ? "border-white/[0.04]" : "border-[hsl(214,20%,92%)]"}`}>
-        {/* Theme toggle */}
-        <div className="px-3 pt-3">
-          <button
-            onClick={onToggleTheme}
-            className={`flex items-center gap-4 lg:gap-3 w-full px-4 py-3.5 lg:py-2 text-[17px] lg:text-[13px] rounded-xl transition-all duration-200 ${
-              isDark
-                ? "text-white/25 hover:text-white/60 hover:bg-white/[0.03]"
-                : "text-[hsl(215,16%,55%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"
-            }`}
-          >
-            {dashboardTheme === "dark" ? <Sun className="w-6 h-6 lg:w-4 lg:h-4" strokeWidth={1.5} /> : <Moon className="w-6 h-6 lg:w-4 lg:h-4" strokeWidth={1.5} />}
-            <span>{dashboardTheme === "dark" ? "Light Mode" : "Dark Mode"}</span>
-          </button>
-        </div>
+        {/* Mobile: 4 horizontal icon buttons | Desktop: stacked with labels */}
+        <div className="px-3 py-3 lg:space-y-0.5">
+          {/* Mobile row */}
+          <div className="flex lg:hidden items-center justify-around">
+            {[
+              { label: dashboardTheme === "dark" ? "Light Mode" : "Dark Mode", icon: dashboardTheme === "dark" ? Sun : Moon, onClick: onToggleTheme, hoverClass: "" },
+              { label: "Report A Bug", icon: Bug, onClick: onReportBug, hoverClass: isDark ? "hover:text-amber-400/80" : "hover:text-amber-600" },
+              { label: "Need Help?", icon: HelpCircle, onClick: onNeedHelp, hoverClass: "" },
+              { label: "Sign Out", icon: LogOut, onClick: handleSignOut, hoverClass: isDark ? "hover:text-red-400/70" : "hover:text-red-500" },
+            ].map((action) => (
+              <div key={action.label} className="relative group/action">
+                <button
+                  onClick={action.onClick}
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 active:scale-95 ${
+                    isDark
+                      ? `text-white/30 hover:text-white/70 hover:bg-white/[0.06] ${action.hoverClass}`
+                      : `text-[hsl(215,16%,55%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)] ${action.hoverClass}`
+                  }`}
+                >
+                  <action.icon className="w-5 h-5" strokeWidth={1.5} />
+                </button>
+                {/* Tooltip */}
+                <span className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 text-[11px] font-medium rounded-lg whitespace-nowrap opacity-0 group-hover/action:opacity-100 pointer-events-none transition-opacity duration-200 ${
+                  isDark ? "bg-white/10 text-white/80 backdrop-blur-sm" : "bg-[hsl(215,25%,20%)] text-white"
+                }`}>
+                  {action.label}
+                </span>
+              </div>
+            ))}
+          </div>
 
-        {/* Help links */}
-        <div className="p-3 space-y-0.5">
-          <button
-            onClick={onReportBug}
-            className={`flex items-center gap-4 lg:gap-3 w-full px-4 py-3.5 lg:py-2 text-[17px] lg:text-[13px] rounded-xl transition-all duration-200 ${
-              isDark
-                ? "text-white/25 hover:text-amber-400/80 hover:bg-white/[0.03]"
-                : "text-[hsl(215,16%,55%)] hover:text-amber-600 hover:bg-[hsl(214,20%,96%)]"
-            }`}
-          >
-            <Bug className="w-6 h-6 lg:w-4 lg:h-4" strokeWidth={1.5} />
-            <span>Report A Bug</span>
-          </button>
-          <button
-            onClick={onNeedHelp}
-            className={`flex items-center gap-4 lg:gap-3 w-full px-4 py-3.5 lg:py-2 text-[17px] lg:text-[13px] rounded-xl transition-all duration-200 ${
-              isDark
-                ? "text-white/25 hover:text-white/60 hover:bg-white/[0.03]"
-                : "text-[hsl(215,16%,55%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"
-            }`}
-          >
-            <HelpCircle className="w-6 h-6 lg:w-4 lg:h-4" strokeWidth={1.5} />
-            <span>Need Help?</span>
-          </button>
-        </div>
-
-        {/* Sign out */}
-        <div className="px-3 pb-3">
-          <button
-            onClick={handleSignOut}
-            className={`flex items-center gap-4 lg:gap-3 w-full px-4 py-3.5 lg:py-2 text-[17px] lg:text-[13px] rounded-xl transition-all duration-200 ${
-              isDark
-                ? "text-white/15 hover:text-red-400/70 hover:bg-white/[0.03]"
-                : "text-[hsl(215,16%,65%)] hover:text-red-500 hover:bg-red-50"
-            }`}
-          >
-            <LogOut className="w-6 h-6 lg:w-4 lg:h-4" strokeWidth={1.5} />
-            <span>Sign Out</span>
-          </button>
+          {/* Desktop: keep original stacked layout */}
+          <div className="hidden lg:block space-y-0.5">
+            <button
+              onClick={onToggleTheme}
+              className={`flex items-center gap-3 w-full px-4 py-2 text-[13px] rounded-xl transition-all duration-200 ${
+                isDark
+                  ? "text-white/25 hover:text-white/60 hover:bg-white/[0.03]"
+                  : "text-[hsl(215,16%,55%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"
+              }`}
+            >
+              {dashboardTheme === "dark" ? <Sun className="w-4 h-4" strokeWidth={1.5} /> : <Moon className="w-4 h-4" strokeWidth={1.5} />}
+              <span>{dashboardTheme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+            </button>
+            <button
+              onClick={onReportBug}
+              className={`flex items-center gap-3 w-full px-4 py-2 text-[13px] rounded-xl transition-all duration-200 ${
+                isDark
+                  ? "text-white/25 hover:text-amber-400/80 hover:bg-white/[0.03]"
+                  : "text-[hsl(215,16%,55%)] hover:text-amber-600 hover:bg-[hsl(214,20%,96%)]"
+              }`}
+            >
+              <Bug className="w-4 h-4" strokeWidth={1.5} />
+              <span>Report A Bug</span>
+            </button>
+            <button
+              onClick={onNeedHelp}
+              className={`flex items-center gap-3 w-full px-4 py-2 text-[13px] rounded-xl transition-all duration-200 ${
+                isDark
+                  ? "text-white/25 hover:text-white/60 hover:bg-white/[0.03]"
+                  : "text-[hsl(215,16%,55%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"
+              }`}
+            >
+              <HelpCircle className="w-4 h-4" strokeWidth={1.5} />
+              <span>Need Help?</span>
+            </button>
+            <button
+              onClick={handleSignOut}
+              className={`flex items-center gap-3 w-full px-4 py-2 text-[13px] rounded-xl transition-all duration-200 ${
+                isDark
+                  ? "text-white/15 hover:text-red-400/70 hover:bg-white/[0.03]"
+                  : "text-[hsl(215,16%,65%)] hover:text-red-500 hover:bg-red-50"
+              }`}
+            >
+              <LogOut className="w-4 h-4" strokeWidth={1.5} />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
 
         {/* Business logo + Account gear */}
