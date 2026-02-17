@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import {
-  Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings, LogOut,
+  Building2, Wrench, Clock, Camera, Star, Settings, LogOut,
   Bug, HelpCircle, CalendarDays, Users, Sun, Moon, LayoutDashboard, Lock,
+  Bell,
 } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import darkerLogo from "@/assets/darker-logo.png";
@@ -38,6 +39,7 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [businessName, setBusinessName] = useState<string>("");
   const [trialActive, setTrialActive] = useState(false);
+  const [newBookingsCount, setNewBookingsCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -45,6 +47,11 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
       if (data?.logo_url) setLogoUrl(data.logo_url);
       if (data?.business_name) setBusinessName(data.business_name);
       setTrialActive(data?.trial_active ?? false);
+    });
+    // Fetch new bookings count (last 24h)
+    const yesterday = new Date(Date.now() - 86400000).toISOString();
+    supabase.from("bookings").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", yesterday).then(({ count }) => {
+      setNewBookingsCount(count ?? 0);
     });
   }, [user]);
 
@@ -60,78 +67,119 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
     return location.pathname.startsWith(url);
   };
 
+  // Badge map — show notification count on specific items
+  const badgeMap: Record<string, number> = {
+    "/dashboard/calendar": newBookingsCount,
+  };
+
   return (
     <Sidebar
-      className={`border-r ${isDark ? "border-white/[0.06]" : "border-[hsl(214,20%,92%)]"}`}
+      className={cn(
+        "border-r",
+        isDark ? "border-[hsla(215,25%,20%,1)]" : "border-[hsl(214,20%,92%)]"
+      )}
       style={{
         background: isDark
           ? "linear-gradient(180deg, hsl(215 50% 8%) 0%, hsl(217 33% 12%) 100%)"
           : "hsl(0, 0%, 100%)",
       }}
+      data-theme={dashboardTheme}
     >
-      {/* Logo */}
-      <div className={`px-5 py-4 lg:py-5 border-b ${isDark ? "border-white/[0.06]" : "border-[hsl(214,20%,92%)]"}`}>
-        <img src={darkerLogo} alt="Darker" className="h-10 lg:h-7" />
+      {/* Logo block — square icon like Exonad */}
+      <div className={cn(
+        "px-5 py-5 border-b flex items-center gap-3",
+        isDark ? "border-[hsla(215,25%,20%,1)]" : "border-[hsl(214,20%,92%)]"
+      )}>
+        {logoUrl ? (
+          <div className="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0" style={{
+            border: `1.5px solid ${isDark ? "hsla(217,91%,60%,0.2)" : "hsl(214,20%,88%)"}`,
+          }}>
+            <img src={logoUrl} alt="Logo" className="w-full h-full object-cover" />
+          </div>
+        ) : (
+          <div
+            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{
+              background: "hsl(217, 91%, 60%)",
+              boxShadow: "0 2px 8px hsla(217,91%,60%,0.3)",
+            }}
+          >
+            <span className="text-white font-bold text-sm">
+              {businessName ? businessName.charAt(0).toUpperCase() : "D"}
+            </span>
+          </div>
+        )}
+        <span className={cn(
+          "text-[15px] font-semibold truncate",
+          isDark ? "text-white" : "text-[hsl(215,25%,12%)]"
+        )}>
+          {businessName || "Darker"}
+        </span>
       </div>
 
-      <SidebarContent>
+      <SidebarContent className="px-3 pt-4">
         <SidebarGroup>
-          <SidebarGroupLabel className={`${isDark ? "text-white/20" : "text-[hsl(215,16%,60%)]"} text-[11px] lg:text-[10px] uppercase tracking-[0.15em] px-5 mt-5 mb-3 lg:mt-4 lg:mb-2 font-semibold`}>
-            Manage
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-0.5">
               {items.map((item, idx) => {
                 const isItemLocked = !trialActive && !("alwaysUnlocked" in item && item.alwaysUnlocked);
                 const active = isActive(item.url);
+                const badge = badgeMap[item.url] || 0;
                 return (
                   <SidebarMenuItem
                     key={item.title}
                     className="animate-fade-in"
-                    style={{ animationDelay: `${idx * 40}ms`, animationFillMode: "both" }}
+                    style={{ animationDelay: `${idx * 50}ms`, animationFillMode: "both" }}
                   >
                     <SidebarMenuButton asChild>
                       <RouterNavLink
                         to={item.url}
                         end={item.url === "/dashboard"}
                         className={cn(
-                          "flex items-center gap-3.5 lg:gap-3 px-4 py-3 lg:py-2.5 rounded-xl mx-2 transition-all duration-200",
+                          "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group/nav-item",
                           active
                             ? isDark
-                              ? "text-[hsl(217,91%,60%)] font-semibold"
-                              : "text-[hsl(217,91%,50%)] font-semibold"
+                              ? "bg-[hsla(217,91%,60%,0.1)]"
+                              : "bg-[hsl(217,91%,96%)]"
+                            : "bg-transparent",
+                          active
+                            ? isDark
+                              ? "text-[hsl(217,91%,60%)]"
+                              : "text-[hsl(217,91%,50%)]"
                             : isDark
-                              ? "text-white/45 hover:text-white/80"
-                              : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,15%)]"
+                              ? "text-[hsla(0,0%,100%,0.5)] hover:text-[hsla(0,0%,100%,0.8)] hover:bg-[hsla(0,0%,100%,0.04)]"
+                              : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,20%)] hover:bg-[hsl(214,20%,97%)]"
                         )}
                       >
-                        {/* Icon: no bg unless active, then accent circle */}
-                        <div
+                        <item.icon
                           className={cn(
-                            "w-9 h-9 lg:w-7 lg:h-7 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300",
+                            "w-[18px] h-[18px] transition-colors duration-200 flex-shrink-0",
                             active
-                              ? isDark
-                                ? "bg-[hsla(217,91%,60%,0.12)]"
-                                : "bg-[hsl(217,91%,94%)]"
-                              : "bg-transparent"
+                              ? "text-[hsl(217,91%,60%)]"
+                              : isDark
+                                ? "text-[hsla(0,0%,100%,0.4)]"
+                                : "text-[hsl(215,16%,60%)]"
                           )}
-                        >
-                          <item.icon
-                            className={cn(
-                              "w-[20px] h-[20px] lg:w-[16px] lg:h-[16px] transition-colors duration-200",
-                              active
-                                ? "text-[hsl(217,91%,60%)]"
-                                : isDark
-                                  ? "text-white/40"
-                                  : "text-[hsl(215,16%,55%)]"
-                            )}
-                            strokeWidth={active ? 2 : 1.5}
-                          />
-                        </div>
-                        <span className="text-[15px] lg:text-[13px] tracking-tight">{item.title}</span>
-                        {isItemLocked && (
+                          strokeWidth={active ? 2 : 1.5}
+                        />
+                        <span className={cn(
+                          "text-[14px] tracking-tight flex-1",
+                          active ? "font-semibold" : "font-medium"
+                        )}>
+                          {item.title}
+                        </span>
+                        {/* Notification badge */}
+                        {badge > 0 && (
+                          <span className="min-w-[20px] h-[20px] px-1.5 rounded-md text-[11px] font-bold flex items-center justify-center bg-[hsl(0,84%,60%)] text-white">
+                            {badge > 9 ? "9+" : badge}
+                          </span>
+                        )}
+                        {isItemLocked && !badge && (
                           <Lock
-                            className={`w-3.5 h-3.5 ml-auto ${isDark ? "text-white/10" : "text-[hsl(215,16%,80%)]"} shrink-0`}
+                            className={cn(
+                              "w-3.5 h-3.5 ml-auto flex-shrink-0",
+                              isDark ? "text-[hsla(0,0%,100%,0.12)]" : "text-[hsl(215,16%,80%)]"
+                            )}
                             strokeWidth={1.5}
                           />
                         )}
@@ -144,50 +192,48 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Settings + Help — same clean style */}
-        <SidebarGroup className="mt-auto">
+        {/* Bottom utilities — pushed to bottom */}
+        <SidebarGroup className="mt-auto pb-2">
           <SidebarGroupContent>
             <SidebarMenu className="space-y-0.5">
+              {/* Settings */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <button
                     onClick={() => navigate("/dashboard/account")}
                     className={cn(
-                      "flex items-center gap-3.5 lg:gap-3 px-4 py-3 lg:py-2.5 rounded-xl mx-2 transition-all duration-200 w-full",
+                      "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 w-full",
                       isActive("/dashboard/account")
-                        ? isDark ? "text-[hsl(217,91%,60%)] font-semibold" : "text-[hsl(217,91%,50%)] font-semibold"
-                        : isDark ? "text-white/35 hover:text-white/70" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,15%)]"
+                        ? isDark
+                          ? "bg-[hsla(217,91%,60%,0.1)] text-[hsl(217,91%,60%)]"
+                          : "bg-[hsl(217,91%,96%)] text-[hsl(217,91%,50%)]"
+                        : isDark
+                          ? "text-[hsla(0,0%,100%,0.4)] hover:text-[hsla(0,0%,100%,0.7)] hover:bg-[hsla(0,0%,100%,0.04)]"
+                          : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,20%)] hover:bg-[hsl(214,20%,97%)]"
                     )}
                   >
-                    <div className={cn(
-                      "w-9 h-9 lg:w-7 lg:h-7 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300",
-                      isActive("/dashboard/account")
-                        ? isDark ? "bg-[hsla(217,91%,60%,0.12)]" : "bg-[hsl(217,91%,94%)]"
-                        : "bg-transparent"
-                    )}>
-                      <Settings className={cn("w-[20px] h-[20px] lg:w-[16px] lg:h-[16px]",
-                        isActive("/dashboard/account") ? "text-[hsl(217,91%,60%)]" : isDark ? "text-white/35" : "text-[hsl(215,16%,55%)]"
-                      )} strokeWidth={isActive("/dashboard/account") ? 2 : 1.5} />
-                    </div>
-                    <span className="text-[15px] lg:text-[13px] tracking-tight">Settings</span>
+                    <Settings className={cn(
+                      "w-[18px] h-[18px]",
+                      isActive("/dashboard/account") ? "text-[hsl(217,91%,60%)]" : isDark ? "text-[hsla(0,0%,100%,0.35)]" : "text-[hsl(215,16%,60%)]"
+                    )} strokeWidth={isActive("/dashboard/account") ? 2 : 1.5} />
+                    <span className={cn("text-[14px] tracking-tight", isActive("/dashboard/account") ? "font-semibold" : "font-medium")}>Settings</span>
                   </button>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              {/* Help */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <button
                     onClick={onNeedHelp}
                     className={cn(
-                      "flex items-center gap-3.5 lg:gap-3 px-4 py-3 lg:py-2.5 rounded-xl mx-2 transition-all duration-200 w-full",
-                      isDark ? "text-white/35 hover:text-white/70" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,15%)]"
+                      "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 w-full",
+                      isDark
+                        ? "text-[hsla(0,0%,100%,0.4)] hover:text-[hsla(0,0%,100%,0.7)] hover:bg-[hsla(0,0%,100%,0.04)]"
+                        : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,20%)] hover:bg-[hsl(214,20%,97%)]"
                     )}
                   >
-                    <div className="w-9 h-9 lg:w-7 lg:h-7 rounded-lg flex items-center justify-center shrink-0 bg-transparent">
-                      <HelpCircle className={cn("w-[20px] h-[20px] lg:w-[16px] lg:h-[16px]",
-                        isDark ? "text-white/35" : "text-[hsl(215,16%,55%)]"
-                      )} strokeWidth={1.5} />
-                    </div>
-                    <span className="text-[15px] lg:text-[13px] tracking-tight">Help</span>
+                    <HelpCircle className={cn("w-[18px] h-[18px]", isDark ? "text-[hsla(0,0%,100%,0.35)]" : "text-[hsl(215,16%,60%)]")} strokeWidth={1.5} />
+                    <span className="text-[14px] tracking-tight font-medium">Help</span>
                   </button>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -196,89 +242,67 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Bottom section */}
-      <div className={`border-t ${isDark ? "border-white/[0.04]" : "border-[hsl(214,20%,92%)]"}`}>
-        {/* Mobile: 4 horizontal icon buttons */}
-        <div className="px-3 py-3 lg:hidden">
-          <div className="flex items-center justify-around">
-            {[
-              { label: dashboardTheme === "dark" ? "Light Mode" : "Dark Mode", icon: dashboardTheme === "dark" ? Sun : Moon, onClick: onToggleTheme },
-              { label: "Report A Bug", icon: Bug, onClick: onReportBug },
-              { label: "Need Help?", icon: HelpCircle, onClick: onNeedHelp },
-              { label: "Sign Out", icon: LogOut, onClick: handleSignOut },
-            ].map((action) => (
-              <div key={action.label} className="relative group/action">
-                <button
-                  onClick={action.onClick}
-                  className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200 active:scale-95 ${
-                    isDark
-                      ? "text-white/30 hover:text-white/70 hover:bg-white/[0.06]"
-                      : "text-[hsl(215,16%,55%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"
-                  }`}
-                >
-                  <action.icon className="w-5 h-5" strokeWidth={1.5} />
-                </button>
-                <span className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 text-[11px] font-medium rounded-lg whitespace-nowrap opacity-0 group-hover/action:opacity-100 pointer-events-none transition-opacity duration-200 ${
-                  isDark ? "bg-white/10 text-white/80 backdrop-blur-sm" : "bg-[hsl(215,25%,20%)] text-white"
-                }`}>
-                  {action.label}
-                </span>
-              </div>
-            ))}
-          </div>
+      {/* Footer actions */}
+      <div className={cn("border-t px-3 py-2", isDark ? "border-[hsla(215,25%,20%,1)]" : "border-[hsl(214,20%,92%)]")}>
+        {/* Mobile: horizontal icon row */}
+        <div className="flex lg:hidden items-center justify-around py-1">
+          {[
+            { label: isDark ? "Light" : "Dark", icon: isDark ? Sun : Moon, onClick: onToggleTheme },
+            { label: "Bug", icon: Bug, onClick: onReportBug },
+            { label: "Sign Out", icon: LogOut, onClick: handleSignOut },
+          ].map((action) => (
+            <button
+              key={action.label}
+              onClick={action.onClick}
+              className={cn(
+                "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 active:scale-95",
+                isDark
+                  ? "text-[hsla(0,0%,100%,0.3)] hover:text-[hsla(0,0%,100%,0.7)] hover:bg-[hsla(0,0%,100%,0.06)]"
+                  : "text-[hsl(215,16%,55%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"
+              )}
+            >
+              <action.icon className="w-[18px] h-[18px]" strokeWidth={1.5} />
+            </button>
+          ))}
         </div>
-
-        {/* Desktop: stacked utility buttons */}
-        <div className="hidden lg:block px-3 py-2 space-y-0.5">
+        {/* Desktop: stacked text buttons */}
+        <div className="hidden lg:block space-y-0.5">
           <button
             onClick={onToggleTheme}
-            className={`flex items-center gap-3 w-full px-4 py-2 text-[13px] rounded-xl transition-all duration-200 ${
-              isDark ? "text-white/25 hover:text-white/60 hover:bg-white/[0.03]" : "text-[hsl(215,16%,55%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"
-            }`}
+            className={cn(
+              "flex items-center gap-3 w-full px-3 py-2 text-[13px] rounded-xl transition-all duration-200",
+              isDark
+                ? "text-[hsla(0,0%,100%,0.3)] hover:text-[hsla(0,0%,100%,0.6)] hover:bg-[hsla(0,0%,100%,0.04)]"
+                : "text-[hsl(215,16%,55%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,97%)]"
+            )}
           >
-            {dashboardTheme === "dark" ? <Sun className="w-4 h-4" strokeWidth={1.5} /> : <Moon className="w-4 h-4" strokeWidth={1.5} />}
-            <span>{dashboardTheme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+            {isDark ? <Sun className="w-4 h-4" strokeWidth={1.5} /> : <Moon className="w-4 h-4" strokeWidth={1.5} />}
+            <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
           </button>
           <button
             onClick={onReportBug}
-            className={`flex items-center gap-3 w-full px-4 py-2 text-[13px] rounded-xl transition-all duration-200 ${
-              isDark ? "text-white/25 hover:text-amber-400/80 hover:bg-white/[0.03]" : "text-[hsl(215,16%,55%)] hover:text-amber-600 hover:bg-[hsl(214,20%,96%)]"
-            }`}
+            className={cn(
+              "flex items-center gap-3 w-full px-3 py-2 text-[13px] rounded-xl transition-all duration-200",
+              isDark
+                ? "text-[hsla(0,0%,100%,0.3)] hover:text-amber-400/80 hover:bg-[hsla(0,0%,100%,0.04)]"
+                : "text-[hsl(215,16%,55%)] hover:text-amber-600 hover:bg-[hsl(214,20%,97%)]"
+            )}
           >
             <Bug className="w-4 h-4" strokeWidth={1.5} />
             <span>Report A Bug</span>
           </button>
           <button
             onClick={handleSignOut}
-            className={`flex items-center gap-3 w-full px-4 py-2 text-[13px] rounded-xl transition-all duration-200 ${
-              isDark ? "text-white/15 hover:text-red-400/70 hover:bg-white/[0.03]" : "text-[hsl(215,16%,65%)] hover:text-red-500 hover:bg-red-50"
-            }`}
+            className={cn(
+              "flex items-center gap-3 w-full px-3 py-2 text-[13px] rounded-xl transition-all duration-200",
+              isDark
+                ? "text-[hsla(0,0%,100%,0.2)] hover:text-red-400/70 hover:bg-[hsla(0,0%,100%,0.04)]"
+                : "text-[hsl(215,16%,65%)] hover:text-red-500 hover:bg-red-50"
+            )}
           >
             <LogOut className="w-4 h-4" strokeWidth={1.5} />
             <span>Sign Out</span>
           </button>
-        </div>
-
-        {/* Business branding */}
-        <div className={`px-5 py-3.5 border-t ${isDark ? "border-white/[0.04]" : "border-[hsl(214,20%,92%)]"}`}>
-          <div className="flex items-center gap-3">
-            {logoUrl ? (
-              <img src={logoUrl} alt="Business" className="w-9 h-9 lg:w-7 lg:h-7 rounded-lg object-cover" style={{ border: `1px solid ${isDark ? "hsla(217,91%,60%,0.15)" : "hsl(214,20%,90%)"}` }} />
-            ) : (
-              <div
-                className="w-9 h-9 lg:w-7 lg:h-7 rounded-lg flex items-center justify-center"
-                style={{
-                  background: isDark ? "hsla(217,91%,60%,0.08)" : "hsl(217,91%,96%)",
-                  border: `1px solid ${isDark ? "hsla(217,91%,60%,0.15)" : "hsl(214,20%,90%)"}`,
-                }}
-              >
-                <Building2 className={`w-4 h-4 lg:w-3.5 lg:h-3.5 ${isDark ? "text-accent/50" : "text-[hsl(217,91%,60%)]"}`} strokeWidth={1.5} />
-              </div>
-            )}
-            <span className={`text-[14px] lg:text-[12px] truncate flex-1 font-medium ${isDark ? "text-white/30" : "text-[hsl(215,16%,45%)]"}`}>
-              {businessName || "Your Business"}
-            </span>
-          </div>
         </div>
       </div>
     </Sidebar>
