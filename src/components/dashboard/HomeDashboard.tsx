@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Wrench, Camera, Star, Eye, CalendarDays, DollarSign,
-  TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, MoreHorizontal,
+  TrendingUp, ArrowUpRight, ArrowDownRight, ArrowRight,
 } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -12,7 +12,7 @@ import {
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent,
 } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, AreaChart, Area } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, AreaChart, Area } from "recharts";
 import { format, subDays, startOfDay, endOfDay, startOfYear, eachDayOfInterval, isWithinInterval, parseISO } from "date-fns";
 
 type DateRange = "7d" | "14d" | "30d" | "90d" | "ytd";
@@ -106,45 +106,6 @@ const HomeDashboard = () => {
   const revenuePct = pctChange(currentRevenue, previousRevenue);
   const jobsPct = pctChange(currentJobCount, previousJobCount);
 
-  const metricCards = [
-    {
-      label: "TOTAL REVENUE",
-      value: formatCurrency(currentRevenue),
-      change: revenuePct,
-      icon: DollarSign,
-      iconBg: "hsla(217, 91%, 60%, 0.12)",
-      iconColor: "hsl(217, 91%, 60%)",
-      highlighted: false,
-    },
-    {
-      label: "BOOKED JOBS",
-      value: currentJobCount,
-      change: jobsPct,
-      icon: CalendarDays,
-      iconBg: "hsla(217, 91%, 60%, 1)",
-      iconColor: "hsl(0, 0%, 100%)",
-      highlighted: true,
-    },
-    {
-      label: "PAGE VIEWS",
-      value: "—",
-      change: null,
-      icon: Eye,
-      iconBg: "hsla(217, 91%, 60%, 0.12)",
-      iconColor: "hsl(217, 91%, 60%)",
-      highlighted: false,
-    },
-    {
-      label: "REVIEWS",
-      value: stats.testimonials,
-      change: null,
-      icon: Star,
-      iconBg: "hsla(45, 93%, 47%, 0.12)",
-      iconColor: "hsl(45, 93%, 47%)",
-      highlighted: false,
-    },
-  ];
-
   const chartConfig = {
     revenue: { label: "Revenue", color: "hsl(217 91% 60%)" },
     bookings: { label: "Bookings", color: "hsl(217 91% 60%)" },
@@ -181,93 +142,221 @@ const HomeDashboard = () => {
         </div>
       </div>
 
-      {/* Metric cards row — Exonad style */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-        {metricCards.map((metric) => (
-          <div
-            key={metric.label}
-            className={`dash-card rounded-2xl p-4 lg:p-5 relative group transition-all duration-200 ${
-              metric.highlighted ? "dash-card-highlight" : ""
-            }`}
-          >
-            {/* Top row: icon + menu */}
-            <div className="flex items-start justify-between mb-3 lg:mb-4">
-              <div
-                className="w-10 h-10 lg:w-11 lg:h-11 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                style={{ background: metric.iconBg }}
-              >
-                <metric.icon
-                  className="w-5 h-5 lg:w-[18px] lg:h-[18px]"
-                  style={{ color: metric.iconColor }}
-                  strokeWidth={1.5}
-                />
-              </div>
-              <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <MoreHorizontal className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Label */}
-            <p className="dash-card-label text-[10px] lg:text-[11px] font-semibold uppercase tracking-wider mb-1">
-              {metric.label}
-            </p>
-
-            {/* Value */}
-            <p className="dash-card-value text-xl lg:text-2xl font-bold tracking-tight mb-1">
-              {metric.value}
-            </p>
-
-            {/* Change indicator */}
-            {metric.change !== null && compareMode === "previous" ? (
-              <div className="flex items-center gap-1 mt-1">
-                {metric.change >= 0 ? (
-                  <ArrowUpRight className="w-3.5 h-3.5 text-emerald-500" />
-                ) : (
-                  <ArrowDownRight className="w-3.5 h-3.5 text-red-500" />
-                )}
-                <span className={`text-xs font-semibold ${metric.change >= 0 ? "text-emerald-500" : "text-red-500"}`}>
-                  {Math.abs(metric.change)}%
-                </span>
-                <span className="dash-card-sublabel text-[10px]">vs last period</span>
-              </div>
-            ) : (
-              <div className="h-4" />
+      {/* Metric cards — Alytics clean style */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Revenue */}
+        <div className="alytics-card rounded-2xl p-5 lg:p-6">
+          <h3 className="alytics-card-title text-sm font-semibold mb-3">Revenues</h3>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="alytics-card-big text-3xl lg:text-4xl font-bold tracking-tight">
+              {currentRevenue > 0 ? formatCurrency(currentRevenue) : "—"}
+            </span>
+            {revenuePct !== null && compareMode === "previous" && (
+              <span className={`inline-flex items-center gap-0.5 text-sm font-semibold ${revenuePct >= 0 ? "text-[hsl(217,91%,60%)]" : "text-red-500"}`}>
+                {revenuePct >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+              </span>
             )}
           </div>
-        ))}
+          {revenuePct !== null && compareMode === "previous" && (
+            <p className="alytics-card-sub text-xs">
+              {revenuePct >= 0 ? `${Math.abs(revenuePct)}% increase` : `${Math.abs(revenuePct)}% decrease`} compared to last period
+            </p>
+          )}
+          <button className="alytics-link mt-4 text-xs font-medium inline-flex items-center gap-1 transition-colors">
+            Revenues report <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+
+        {/* Booked Jobs */}
+        <div className="alytics-card rounded-2xl p-5 lg:p-6">
+          <h3 className="alytics-card-title text-sm font-semibold mb-3">Booked Jobs</h3>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="alytics-card-big text-3xl lg:text-4xl font-bold tracking-tight">
+              {currentJobCount || "—"}
+            </span>
+            {jobsPct !== null && compareMode === "previous" && (
+              <span className={`inline-flex items-center gap-0.5 text-sm font-semibold ${jobsPct >= 0 ? "text-[hsl(217,91%,60%)]" : "text-red-500"}`}>
+                {jobsPct >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+              </span>
+            )}
+          </div>
+          {jobsPct !== null && compareMode === "previous" && (
+            <p className="alytics-card-sub text-xs">
+              {currentJobCount} out of {currentJobCount + previousJobCount} total
+            </p>
+          )}
+          <button className="alytics-link mt-4 text-xs font-medium inline-flex items-center gap-1 transition-colors">
+            All bookings <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+
+        {/* Page Views */}
+        <div className="alytics-card rounded-2xl p-5 lg:p-6">
+          <h3 className="alytics-card-title text-sm font-semibold mb-3">Page Views</h3>
+          <span className="alytics-card-big text-3xl lg:text-4xl font-bold tracking-tight">—</span>
+          <p className="alytics-card-sub text-xs mt-1.5">Coming soon</p>
+          <button className="alytics-link mt-4 text-xs font-medium inline-flex items-center gap-1 transition-colors">
+            All views <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+
+        {/* Reviews */}
+        <div className="alytics-card rounded-2xl p-5 lg:p-6">
+          <h3 className="alytics-card-title text-sm font-semibold mb-3">Reviews</h3>
+          <span className="alytics-card-big text-3xl lg:text-4xl font-bold tracking-tight">{stats.testimonials || "—"}</span>
+          <p className="alytics-card-sub text-xs mt-1.5">{stats.testimonials} customer review{stats.testimonials !== 1 ? "s" : ""}</p>
+          <button className="alytics-link mt-4 text-xs font-medium inline-flex items-center gap-1 transition-colors">
+            All reviews <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
       </div>
 
-      {/* Revenue bar chart — Exonad style */}
-      {chartData.length > 1 && (
-        <div className="dash-card rounded-2xl p-5 lg:p-6">
-          <div className="flex items-center justify-between mb-4 lg:mb-6">
-            <h3 className="dash-card-value font-semibold text-base lg:text-lg">Revenue Overview</h3>
-            <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center">
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
+      {/* Two-column layout for Recent Bookings + Growth chart */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Recent bookings list — Alytics style */}
+        <div className="alytics-card rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 flex items-center justify-between">
+            <h3 className="alytics-card-title text-sm font-semibold">Recent Bookings</h3>
+            <Select defaultValue="newest">
+              <SelectTrigger className="h-7 w-[130px] dash-select text-xs rounded-lg border-0 shadow-none">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Sort by Newest</SelectItem>
+                <SelectItem value="oldest">Sort by Oldest</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="h-[200px] lg:h-[280px]">
+          <div className="alytics-divide">
+            {currentBookings.length === 0 ? (
+              <div className="px-5 py-8 text-center">
+                <p className="alytics-card-sub text-sm">No bookings in this period</p>
+              </div>
+            ) : (
+              currentBookings.slice(0, 6).map((b, index) => (
+                <div
+                  key={b.id}
+                  className={`flex items-center justify-between px-5 py-3.5 alytics-row-hover transition-all duration-200 ${
+                    index === 0 ? "alytics-row-active" : ""
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-sm font-semibold"
+                      style={{
+                        background: `hsl(${(index * 40 + 200) % 360}, 70%, 95%)`,
+                        color: `hsl(${(index * 40 + 200) % 360}, 60%, 45%)`,
+                      }}
+                    >
+                      {(b.customer_name || "?").charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="alytics-card-title text-sm font-medium truncate">{b.customer_name || "—"}</p>
+                      <p className="alytics-card-sub text-xs">{b.service_title || "—"}</p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0 ml-3">
+                    <p className="alytics-card-title text-sm font-semibold font-mono">{formatCurrency(Number(b.service_price) || 0)}</p>
+                    <span className={`text-[10px] font-semibold uppercase tracking-wide ${
+                      b.status === "confirmed" ? "text-emerald-500" :
+                      b.status === "completed" ? "text-[hsl(217,91%,60%)]" :
+                      b.status === "cancelled" ? "text-red-500" :
+                      "text-amber-500"
+                    }`}>
+                      {b.status}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+          {currentBookings.length > 0 && (
+            <div className="px-5 py-3">
+              <button className="alytics-link text-xs font-medium inline-flex items-center gap-1">
+                All bookings <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Growth / Revenue Chart — Alytics style */}
+        {chartData.length > 1 && (
+          <div className="alytics-card rounded-2xl p-5 lg:p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="alytics-card-title text-sm font-semibold">Growth</h3>
+              <Select defaultValue="monthly">
+                <SelectTrigger className="h-7 w-[100px] dash-select text-xs rounded-lg border-0 shadow-none">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="h-[220px] lg:h-[260px]">
+              <ChartContainer config={chartConfig} className="h-full w-full">
+                <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
+                  <defs>
+                    <linearGradient id="revenueGradientAlytics" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0.15} />
+                      <stop offset="100%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 93%)" vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fontSize: 11, fill: "hsl(215, 16%, 55%)" }}
+                    interval="preserveStartEnd"
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fontSize: 11, fill: "hsl(215, 16%, 55%)" }}
+                    tickFormatter={(v) => `$${v}`}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Area
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="hsl(217, 91%, 60%)"
+                    strokeWidth={2.5}
+                    fill="url(#revenueGradientAlytics)"
+                  />
+                </AreaChart>
+              </ChartContainer>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Booking Activity bar chart — full width */}
+      {chartData.length > 1 && (
+        <div className="alytics-card rounded-2xl p-5 lg:p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="alytics-card-title text-sm font-semibold">Booking Activity</h3>
+          </div>
+          <div className="h-[200px] lg:h-[240px]">
             <ChartContainer config={chartConfig} className="h-full w-full">
               <BarChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
-                <CartesianGrid strokeDasharray="3 3" className="dash-grid-stroke" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(214, 20%, 93%)" vertical={false} />
                 <XAxis
                   dataKey="date"
                   tickLine={false}
                   axisLine={false}
-                  className="dash-axis-tick"
-                  tick={{ fontSize: 11 }}
+                  tick={{ fontSize: 11, fill: "hsl(215, 16%, 55%)" }}
                   interval="preserveStartEnd"
                 />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
-                  className="dash-axis-tick"
-                  tick={{ fontSize: 11 }}
-                  tickFormatter={(v) => `$${v}`}
+                  tick={{ fontSize: 11, fill: "hsl(215, 16%, 55%)" }}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Bar
-                  dataKey="revenue"
+                  dataKey="bookings"
                   fill="hsl(217, 91%, 60%)"
                   radius={[6, 6, 0, 0]}
                   maxBarSize={40}
@@ -278,112 +367,18 @@ const HomeDashboard = () => {
         </div>
       )}
 
-      {/* Bookings activity chart */}
-      {chartData.length > 1 && (
-        <div className="dash-card rounded-2xl p-5 lg:p-6">
-          <div className="flex items-center justify-between mb-4 lg:mb-6">
-            <h3 className="dash-card-value font-semibold text-base lg:text-lg">Booking Activity</h3>
-            <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center">
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
-          </div>
-          <div className="h-[180px] lg:h-[220px]">
-            <ChartContainer config={chartConfig} className="h-full w-full">
-              <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
-                <defs>
-                  <linearGradient id="bookingGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0.2} />
-                    <stop offset="100%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" className="dash-grid-stroke" vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tickLine={false}
-                  axisLine={false}
-                  className="dash-axis-tick"
-                  tick={{ fontSize: 11 }}
-                  interval="preserveStartEnd"
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  className="dash-axis-tick"
-                  tick={{ fontSize: 11 }}
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Area
-                  type="monotone"
-                  dataKey="bookings"
-                  stroke="hsl(217, 91%, 60%)"
-                  strokeWidth={2}
-                  fill="url(#bookingGradient)"
-                />
-              </AreaChart>
-            </ChartContainer>
-          </div>
-        </div>
-      )}
-
-      {/* Recent bookings list — Exonad style */}
-      <div className="dash-card rounded-2xl overflow-hidden">
-        <div className="px-5 py-4 flex items-center justify-between dash-card-border-b">
-          <h3 className="dash-card-value font-semibold text-base">Recent Bookings</h3>
-          <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center">
-            <MoreHorizontal className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="divide-y dash-divide">
-          {currentBookings.length === 0 ? (
-            <div className="px-5 py-8 text-center">
-              <p className="dash-card-sublabel text-sm">No bookings in this period</p>
-            </div>
-          ) : (
-            currentBookings.slice(0, 8).map((b) => (
-              <div key={b.id} className="flex items-center justify-between px-5 py-3.5 dash-row-hover transition-colors">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "hsla(217, 91%, 60%, 0.1)" }}>
-                    <CalendarDays className="w-4 h-4" style={{ color: "hsl(217, 91%, 60%)" }} strokeWidth={1.5} />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="dash-card-value text-sm font-medium truncate">{b.customer_name || "—"}</p>
-                    <p className="dash-card-sublabel text-xs">{b.service_title || "—"} · {b.booking_date}</p>
-                  </div>
-                </div>
-                <div className="text-right shrink-0 ml-3">
-                  <p className="dash-card-value text-sm font-semibold font-mono">{formatCurrency(Number(b.service_price) || 0)}</p>
-                  <span className={`text-[10px] font-semibold uppercase tracking-wide ${
-                    b.status === "confirmed" ? "text-emerald-500" :
-                    b.status === "completed" ? "text-accent" :
-                    b.status === "cancelled" ? "text-red-500" :
-                    "text-amber-500"
-                  }`}>
-                    {b.status}
-                  </span>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-
       {/* Live Demo Website Preview */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="dash-card-value font-semibold text-sm">Your Website Preview</h3>
-            <p className="dash-card-sublabel text-xs">This is how your live site looks with your current data</p>
+            <h3 className="alytics-card-title font-semibold text-sm">Your Website Preview</h3>
+            <p className="alytics-card-sub text-xs">This is how your live site looks with your current data</p>
           </div>
           <a
             href="#"
-            className="text-xs font-medium px-4 py-2 rounded-xl transition-all duration-300 hover:scale-105"
-            style={{
-              background: "linear-gradient(135deg, hsla(217,91%,60%,0.1), hsla(213,94%,68%,0.05))",
-              border: "1px solid hsla(217,91%,60%,0.2)",
-              color: "hsl(217,91%,60%)",
-            }}
+            className="alytics-link text-xs font-medium inline-flex items-center gap-1"
           >
-            Open Full Preview →
+            Open Full Preview <ArrowRight className="w-3 h-3" />
           </a>
         </div>
         <DemoWebsite />
