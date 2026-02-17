@@ -1,7 +1,8 @@
 import { Lightbulb, Shield, Wrench, CircleDot, Dog, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import type { BusinessAddOn } from '@/hooks/useBusinessData';
 
-const addons = [
+const defaultAddons = [
   { icon: Lightbulb, title: 'Headlight Restoration', price: '$85', description: 'Headlights, Taillights & Fog Lights' },
   { icon: Shield, title: 'Ceramic Coating', price: '$875', description: 'Long-lasting protection and shine' },
   { icon: Wrench, title: 'Buffing Services', price: '$140', description: 'Scratches, Paint Correction' },
@@ -10,7 +11,24 @@ const addons = [
   { icon: AlertTriangle, title: 'Mold, Blood, Urine & Body Fluids', price: 'Contact for Quote', description: 'Specialized cleaning service' },
 ];
 
-const DeluxeAddOnServices = () => {
+const defaultIcons = [Lightbulb, Shield, Wrench, CircleDot, Dog, AlertTriangle];
+
+interface Props {
+  addOns?: BusinessAddOn[];
+}
+
+const DeluxeAddOnServices = ({ addOns }: Props) => {
+  const hasCms = addOns && addOns.length > 0;
+
+  const displayAddons = hasCms
+    ? addOns.map((a, i) => ({
+        icon: defaultIcons[i % defaultIcons.length],
+        title: a.title,
+        price: `$${a.price}`,
+        description: a.description,
+      }))
+    : defaultAddons;
+
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -21,7 +39,7 @@ const DeluxeAddOnServices = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {addons.map((addon, index) => (
+          {displayAddons.map((addon, index) => (
             <div key={index} className="bg-card p-6 rounded-xl border border-border hover:border-primary/50 transition-all duration-300 group card-shine">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0 group-hover:gold-gradient transition-all duration-300">
