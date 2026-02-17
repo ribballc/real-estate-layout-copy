@@ -1,7 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
@@ -225,9 +224,9 @@ const CustomersManager = () => {
             />
           </div>
           <ImportDropdown onCsv={() => setShowCsvImport(true)} onGmb={() => setShowGmbImport(true)} />
-          <Button onClick={() => { resetForm(); setShowAdd(true); }} size="sm" className="gap-2 h-10 px-4" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+          <button onClick={() => { resetForm(); setShowAdd(true); }} className="dash-btn dash-btn-primary dash-btn-sm">
             <Plus className="w-4 h-4" /> Add
-          </Button>
+          </button>
         </div>
 
         {/* Status filter chips */}
@@ -358,9 +357,9 @@ const CustomersManager = () => {
                 <Input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="Prefers weekday mornings..." />
               </div>
             </div>
-            <Button onClick={handleSave} className="w-full h-11" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+            <button onClick={handleSave} className="dash-btn dash-btn-primary dash-btn-lg w-full">
               {editingId ? "Update Customer" : "Add Customer"}
-            </Button>
+            </button>
           </div>
         </div>
       )}
@@ -386,9 +385,9 @@ const CustomersManager = () => {
             <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
               <p className="text-amber-400 text-xs">⚠️ Google My Business integration requires API credentials to be configured. Please contact support to enable this feature.</p>
             </div>
-            <Button disabled className="w-full h-11 gap-2 opacity-50" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+            <button disabled className="dash-btn dash-btn-primary dash-btn-lg w-full opacity-50">
               <Building2 className="w-4 h-4" /> Connect Google My Business
-            </Button>
+            </button>
           </div>
         </div>
       )}
@@ -404,7 +403,7 @@ const CustomersManager = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="bg-white/5 border-white/10 text-white hover:bg-white/10 hover:text-white">Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-red-500 hover:bg-red-600 text-white">Remove</AlertDialogAction>
+            <AlertDialogAction onClick={confirmDelete} className="dash-btn dash-btn-destructive">Remove</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
