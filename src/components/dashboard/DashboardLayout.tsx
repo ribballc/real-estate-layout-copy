@@ -1,4 +1,4 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar from "./DashboardSidebar";
 import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import TrialLockOverlay from "./TrialLockOverlay";
@@ -45,6 +45,9 @@ const DashboardLayout = () => {
   const PageIcon = page.icon;
   const [dashboardTheme, setDashboardTheme] = useState<"dark" | "light">(() => {
     return (localStorage.getItem("dashboard-theme") as "dark" | "light") || "light";
+  });
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
+    return localStorage.getItem("sidebar-collapsed") === "true";
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -116,7 +119,7 @@ const DashboardLayout = () => {
   const isDark = dashboardTheme === "dark";
 
   return (
-    <SidebarProvider>
+    <>
       <div
         className={`min-h-screen flex w-full ${isDark ? "dashboard-dark" : "dashboard-light"}`}
         style={{
@@ -130,6 +133,14 @@ const DashboardLayout = () => {
           onToggleTheme={toggleTheme}
           onReportBug={() => chatbotRef.current?.openWithPrompt("I'd like to report a bug I found:")}
           onNeedHelp={() => chatbotRef.current?.openWithPrompt("I need help with:")}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => {
+            setSidebarCollapsed(prev => {
+              const next = !prev;
+              localStorage.setItem("sidebar-collapsed", String(next));
+              return next;
+            });
+          }}
         />
         <main className="flex-1 flex flex-col min-w-0">
           {/* Header bar */}
@@ -230,7 +241,7 @@ const DashboardLayout = () => {
           <SupportChatbot ref={chatbotRef} />
         </main>
       </div>
-    </SidebarProvider>
+    </>
   );
 };
 
