@@ -12,7 +12,7 @@ import {
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent,
 } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell, AreaChart, Area, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
 import { format, subDays, startOfDay, endOfDay, startOfYear, eachDayOfInterval, isWithinInterval, parseISO } from "date-fns";
 
 type DateRange = "7d" | "14d" | "30d" | "90d" | "ytd";
@@ -283,7 +283,7 @@ const HomeDashboard = () => {
           {serviceBreakdown.length > 0 ? (
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="w-[160px] h-[160px] shrink-0">
-                <ResponsiveContainer width="100%" height="100%">
+                <ChartContainer config={{ value: { label: "Revenue", color: "hsl(217 91% 60%)" } }} className="h-full w-full">
                   <PieChart>
                     <Pie
                       data={serviceBreakdown}
@@ -302,7 +302,7 @@ const HomeDashboard = () => {
                     </Pie>
                     <ChartTooltip content={<ChartTooltipContent />} />
                   </PieChart>
-                </ResponsiveContainer>
+                </ChartContainer>
               </div>
               <div className="flex-1 space-y-3 w-full">
                 {serviceBreakdown.map((item, idx) => (
