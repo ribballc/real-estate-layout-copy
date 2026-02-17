@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import WebsitePage from "./WebsitePage";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -90,6 +90,7 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted }: MetricCar
 const HomeDashboard = () => {
   const { user } = useAuth();
   const outletContext = useOutletContext<{ chatbotRef?: any } | null>();
+  const navigate = useNavigate();
   const [dateRange, setDateRange] = useState<DateRange>("30d");
   const [bookings, setBookings] = useState<any[]>([]);
   const [stats, setStats] = useState({ services: 0, photos: 0, testimonials: 0 });
@@ -346,8 +347,27 @@ const HomeDashboard = () => {
           </div>
           <div className="alytics-divide">
             {currentBookings.length === 0 ? (
-              <div className="px-5 py-10 text-center">
-                <p className="alytics-card-sub text-sm">No bookings in this period</p>
+              <div className="px-5 py-10 flex flex-col items-center text-center gap-3">
+                <div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center"
+                  style={{
+                    background: "hsla(217,91%,60%,0.1)",
+                    border: "1px solid hsla(217,91%,60%,0.15)",
+                  }}
+                >
+                  <CalendarDays className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} />
+                </div>
+                <div>
+                  <p className="alytics-card-title text-sm font-semibold">No bookings yet</p>
+                  <p className="alytics-card-sub text-xs mt-0.5">Bookings from customers will appear here</p>
+                </div>
+                <button
+                  onClick={() => navigate("/dashboard/calendar")}
+                  className="mt-1 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+                  style={{ color: "hsl(217,91%,60%)", background: "hsla(217,91%,60%,0.08)" }}
+                >
+                  View Calendar
+                </button>
               </div>
             ) : (
               currentBookings.slice(0, 5).map((b, index) => (
@@ -387,7 +407,7 @@ const HomeDashboard = () => {
           </div>
           {currentBookings.length > 0 && (
             <div className="px-5 py-3">
-              <button className="alytics-link text-xs font-medium inline-flex items-center gap-1">
+              <button onClick={() => navigate("/dashboard/calendar")} className="alytics-link text-xs font-medium inline-flex items-center gap-1">
                 All bookings <ArrowRight className="w-3 h-3" />
               </button>
             </div>
