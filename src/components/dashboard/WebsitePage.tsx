@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Globe, Pencil, Mail, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { SupportChatbotHandle } from "./SupportChatbot";
 
 const TABS = [
   { id: "website", label: "Website" },
@@ -11,7 +12,11 @@ const TABS = [
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
-const WebsitePage = () => {
+interface WebsitePageProps {
+  chatbotRef?: React.RefObject<SupportChatbotHandle>;
+}
+
+const WebsitePage = ({ chatbotRef }: WebsitePageProps = {}) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [slug, setSlug] = useState<string | null>(null);
@@ -167,7 +172,7 @@ const WebsitePage = () => {
           {/* Action buttons at bottom */}
           <div className="flex flex-wrap items-center gap-3 px-4 py-3 border-t border-border bg-muted/20">
             <Button
-              onClick={() => navigate("/dashboard/business")}
+              onClick={() => chatbotRef?.current?.openWithPrompt("I'd like to make changes to my website:")}
               className="gap-2 bg-[hsl(217,91%,60%)] hover:bg-[hsl(217,91%,50%)] text-white"
             >
               <Pencil className="w-4 h-4" />

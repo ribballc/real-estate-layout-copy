@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
-import DemoWebsite from "./DemoWebsite";
+import { useOutletContext } from "react-router-dom";
+import WebsitePage from "./WebsitePage";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -88,6 +89,7 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted }: MetricCar
 /* ─── Main Dashboard ─── */
 const HomeDashboard = () => {
   const { user } = useAuth();
+  const outletContext = useOutletContext<{ chatbotRef?: any } | null>();
   const [dateRange, setDateRange] = useState<DateRange>("30d");
   const [bookings, setBookings] = useState<any[]>([]);
   const [stats, setStats] = useState({ services: 0, photos: 0, testimonials: 0 });
@@ -426,18 +428,15 @@ const HomeDashboard = () => {
         </div>
       )}
 
-      {/* Live Demo Website Preview */}
+      {/* Live Website Preview — same tabbed view as /dashboard/website */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="alytics-card-title font-semibold text-sm">Your Website Preview</h3>
             <p className="alytics-card-sub text-xs">This is how your live site looks with your current data</p>
           </div>
-          <a href="#" className="alytics-link text-xs font-medium inline-flex items-center gap-1">
-            Open Full Preview <ArrowRight className="w-3 h-3" />
-          </a>
         </div>
-        <DemoWebsite />
+        <WebsitePage chatbotRef={outletContext?.chatbotRef} />
       </div>
     </div>
   );
