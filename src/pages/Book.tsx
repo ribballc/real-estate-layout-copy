@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowRight, Loader2 } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
@@ -7,8 +7,7 @@ import type { BusinessData } from "@/hooks/useBusinessData";
 
 const Book = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const uid = searchParams.get("uid") || "";
+  const { slug } = useParams<{ slug: string }>();
   const [selectedService, setSelectedService] = useState<string | null>(null);
 
   const handleSelect = (id: string, title: string) => {
@@ -16,7 +15,7 @@ const Book = () => {
     setTimeout(
       () =>
         navigate(
-          `/book/vehicle?service=${id}&name=${encodeURIComponent(title)}${uid ? `&uid=${uid}` : ""}`
+          `/site/${slug}/book/vehicle?service=${id}&name=${encodeURIComponent(title)}`
         ),
       300
     );
@@ -56,15 +55,11 @@ const Book = () => {
                 <FadeIn key={service.id} delay={100 + i * 80}>
                   <button
                     onClick={() => handleSelect(service.id, service.title)}
-                    className={`group relative w-full text-left rounded-2xl p-6 md:p-7 min-h-[200px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
+                    className={`group relative w-full text-left rounded-2xl p-6 md:p-7 min-h-[200px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 bg-card border border-border ${
                       selectedService === service.id
-                        ? "ring-2 ring-accent shadow-[0_12px_32px_hsla(217,91%,60%,0.2)]"
-                        : "hover:shadow-[0_12px_32px_hsla(217,91%,60%,0.12)]"
+                        ? "ring-2 ring-accent shadow-lg"
+                        : "hover:shadow-lg"
                     }`}
-                    style={{
-                      background:
-                        "linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)",
-                    }}
                   >
                     {service.popular && (
                       <span className="absolute -top-3 right-4 text-[11px] font-semibold px-3 py-1 rounded-md uppercase tracking-[0.06em] bg-accent text-accent-foreground">
@@ -73,25 +68,17 @@ const Book = () => {
                     )}
 
                     <div>
-                      <h3 className="text-lg font-semibold text-primary-foreground mb-2">
+                      <h3 className="text-lg font-semibold text-foreground mb-2">
                         {service.title}
                       </h3>
-                      <p className="text-sm text-primary-foreground/60 leading-relaxed">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
                         {service.description}
                         {service.price > 0 ? ` — starting at $${service.price}.` : ""}
                       </p>
                     </div>
 
                     <div className="mt-5">
-                      <span
-                        className="inline-flex items-center gap-2 text-sm font-semibold rounded-lg px-5 py-2.5 min-h-[44px] transition-all duration-300 group-hover:gap-3"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)",
-                          color: "hsl(0 0% 100%)",
-                          boxShadow: "0 4px 12px hsla(217, 91%, 60%, 0.3)",
-                        }}
-                      >
+                      <span className="inline-flex items-center gap-2 text-sm font-semibold rounded-lg px-5 py-2.5 min-h-[44px] transition-all duration-300 group-hover:gap-3 bg-accent text-accent-foreground">
                         Continue
                         <ArrowRight className="w-4 h-4" />
                       </span>

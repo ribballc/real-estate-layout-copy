@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
@@ -31,6 +31,7 @@ interface OptionGroup {
 
 const BookOptions = () => {
   const navigate = useNavigate();
+  const { slug } = useParams<{ slug: string }>();
   const [searchParams] = useSearchParams();
   const serviceId = searchParams.get("service") || "";
   const serviceName = searchParams.get("name") || "your service";
@@ -54,7 +55,7 @@ const BookOptions = () => {
       if (!groupsData || groupsData.length === 0) {
         setLoading(false);
         // No options configured — skip to add-ons
-        navigate(`/book/add-ons?service=${serviceId}`, { replace: true });
+        navigate(`/site/${slug}/book/add-ons?service=${serviceId}`, { replace: true });
         return;
       }
 
@@ -221,14 +222,14 @@ const BookOptions = () => {
       <FadeIn delay={50}>
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate("/book/vehicle")}
+            onClick={() => navigate(`/site/${slug}/book/vehicle`)}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold border border-border text-foreground hover:bg-muted transition-colors min-h-[44px]"
           >
             <ArrowLeft className="w-4 h-4" />
             Back
           </button>
           <button
-            onClick={() => navigate(`/book/add-ons?service=${serviceId}`)}
+            onClick={() => navigate(`/site/${slug}/book/add-ons?service=${serviceId}`)}
             disabled={!canContinue}
             className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold min-h-[44px] transition-all ${
               canContinue

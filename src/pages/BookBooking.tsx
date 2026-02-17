@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowRight, Clock, Ban } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
@@ -14,6 +14,7 @@ const timeSlots = [
 
 const BookBooking = () => {
   const navigate = useNavigate();
+  const { slug } = useParams<{ slug: string }>();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [blockedDates, setBlockedDates] = useState<Set<string>>(new Set());
@@ -36,7 +37,7 @@ const BookBooking = () => {
 
   const handleContinue = () => {
     if (selectedDate && selectedTime) {
-      navigate("/book/checkout");
+      navigate(`/site/${slug}/book/checkout`);
     }
   };
 
