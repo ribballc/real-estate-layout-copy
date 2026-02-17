@@ -3,9 +3,10 @@ import type { BusinessProfile } from '@/hooks/useBusinessData';
 
 interface Props {
   profile?: BusinessProfile | null;
+  slug?: string;
 }
 
-const DeluxeCTASection = ({ profile }: Props) => {
+const DeluxeCTASection = ({ profile, slug }: Props) => {
   const businessName = profile?.business_name || 'Deluxe';
   const phone = profile?.phone || '+12148822029';
   const phoneHref = `tel:${phone.replace(/[^\d+]/g, '')}`;
@@ -27,8 +28,8 @@ const DeluxeCTASection = ({ profile }: Props) => {
             <a href={phoneHref}>
               <Button variant="hero" size="xl">Call Now</Button>
             </a>
-            <a href="#contact">
-              <Button variant="goldOutline" size="xl">Get In Touch</Button>
+            <a href={slug ? `/site/${slug}/book` : "#contact"}>
+              <Button variant="goldOutline" size="xl">Book Now</Button>
             </a>
           </div>
         </div>
