@@ -37,6 +37,10 @@ const BookBooking = () => {
 
   const handleContinue = () => {
     if (selectedDate && selectedTime) {
+      sessionStorage.setItem("booking_datetime", JSON.stringify({
+        date: format(selectedDate, "yyyy-MM-dd"),
+        time: selectedTime,
+      }));
       navigate(`/site/${slug}/book/checkout`);
     }
   };

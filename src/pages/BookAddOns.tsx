@@ -137,7 +137,11 @@ const BookAddOns = () => {
       <FadeIn delay={50}>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <button
-            onClick={() => navigate(`/site/${slug}/book/booking`)}
+            onClick={() => {
+              const selectedAddOns = addOns.filter(a => selected.has(a.id)).map(a => ({ id: a.id, title: a.title, price: a.price }));
+              sessionStorage.setItem("booking_addons", JSON.stringify(selectedAddOns));
+              navigate(`/site/${slug}/book/booking`);
+            }}
             className="inline-flex items-center gap-2 text-sm font-semibold rounded-lg px-6 py-3 min-h-[44px] transition-all duration-300 hover:gap-3"
             style={{
               background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)",
