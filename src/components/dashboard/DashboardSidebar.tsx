@@ -30,6 +30,7 @@ interface DashboardSidebarProps {
   onNeedHelp?: () => void;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  mobile?: boolean;
 }
 
 const DashboardSidebar = ({
@@ -39,6 +40,7 @@ const DashboardSidebar = ({
   onNeedHelp,
   collapsed = false,
   onToggleCollapse,
+  mobile = false,
 }: DashboardSidebarProps) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -80,7 +82,8 @@ const DashboardSidebar = ({
   return (
     <aside
       className={cn(
-        "hidden lg:flex flex-col shrink-0 border-r relative h-screen sticky top-0",
+        "flex flex-col shrink-0 border-r relative h-screen sticky top-0",
+        mobile ? "" : "hidden lg:flex",
         isDark ? "border-[hsla(215,25%,20%,1)]" : "border-[hsl(214,20%,92%)]"
       )}
       style={{
@@ -91,8 +94,8 @@ const DashboardSidebar = ({
           : "hsl(0, 0%, 100%)",
       }}
     >
-      {/* Collapse toggle */}
-      <button
+      {/* Collapse toggle — hidden in mobile sheet */}
+      {!mobile && <button
         onClick={onToggleCollapse}
         className={cn(
           "absolute -right-3 top-1/2 -translate-y-1/2 z-50 w-6 h-6 rounded-full flex items-center justify-center border shadow-sm transition-colors duration-150",
@@ -106,7 +109,7 @@ const DashboardSidebar = ({
           ? <ChevronRight className="w-3.5 h-3.5" strokeWidth={2} />
           : <ChevronLeft className="w-3.5 h-3.5" strokeWidth={2} />
         }
-      </button>
+      </button>}
 
       {/* Logo */}
       <div className={cn(
