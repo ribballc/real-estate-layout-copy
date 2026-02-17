@@ -495,6 +495,31 @@
 @keyframes pulseArrow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
 /* ═══════════════════════════════════════════════════════
+   Dashboard Dark Mode — CSS variable overrides
+   ═══════════════════════════════════════════════════════ */
+.dashboard-dark {
+  --background: 215 50% 10%;
+  --foreground: 0 0% 95%;
+  --card: 215 45% 12%;
+  --card-foreground: 0 0% 95%;
+  --popover: 215 45% 12%;
+  --popover-foreground: 0 0% 95%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 215 30% 18%;
+  --secondary-foreground: 0 0% 90%;
+  --muted: 215 30% 16%;
+  --muted-foreground: 215 16% 60%;
+  --accent: 217 91% 60%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 215 25% 20%;
+  --input: 215 25% 20%;
+  --ring: 217 91% 60%;
+}
+
+/* ═══════════════════════════════════════════════════════
    Dashboard Home — Alytics-inspired clean card system
    ═══════════════════════════════════════════════════════ */
 
