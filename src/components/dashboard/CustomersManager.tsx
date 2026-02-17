@@ -12,6 +12,7 @@ import {
 import {
   Loader2, Plus, Phone, Mail, Search, User, Car, DollarSign,
   FileText, X, ChevronDown, MoreHorizontal, Calendar, Upload, Building2,
+  Users, TrendingUp, Crown,
 } from "lucide-react";
 import { format } from "date-fns";
 import CsvImportModal from "./CsvImportModal";
@@ -188,16 +189,27 @@ const CustomersManager = () => {
       {/* Stats cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         {[
-          { label: "Total Customers", value: stats.total, color: "hsl(217 91% 60%)" },
-          { label: "Active", value: stats.active, color: "hsl(160 84% 39%)" },
-          { label: "VIP", value: stats.vip, color: "hsl(271 91% 65%)" },
-          { label: "Total Revenue", value: `$${stats.totalRevenue.toLocaleString()}`, color: "hsl(45 93% 47%)" },
-        ].map(s => (
-          <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-            <span className="text-white/40 text-xs font-medium uppercase tracking-wider">{s.label}</span>
-            <p className="text-2xl font-bold text-white mt-1">{s.value}</p>
-          </div>
-        ))}
+          { label: "Total Customers", value: stats.total, color: "hsl(217,91%,60%)", icon: Users },
+          { label: "Active", value: stats.active, color: "hsl(160,84%,39%)", icon: TrendingUp },
+          { label: "VIP", value: stats.vip, color: "hsl(271,91%,65%)", icon: Crown },
+          { label: "Total Revenue", value: `$${stats.totalRevenue.toLocaleString()}`, color: "hsl(45,93%,47%)", icon: DollarSign },
+        ].map(s => {
+          const Icon = s.icon;
+          return (
+            <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-3">
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center"
+                style={{ background: `${s.color.replace(")", ",0.1)")}`, border: `1px solid ${s.color.replace(")", ",0.2)")}` }}
+              >
+                <Icon className="w-4 h-4" style={{ color: s.color }} />
+              </div>
+              <div>
+                <span className="text-white/40 text-xs font-medium uppercase tracking-wider">{s.label}</span>
+                <p className="text-2xl font-bold text-white mt-0.5">{s.value}</p>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Toolbar */}
