@@ -84,6 +84,17 @@ const DashboardLayout = () => {
     if (onboardingComplete === false) navigate("/onboarding", { replace: true });
   }, [onboardingComplete, navigate]);
 
+  // Set html background for overscroll matching
+  useEffect(() => {
+    const color = dashboardTheme === "dark" ? "hsl(215, 50%, 10%)" : "hsl(210, 40%, 98%)";
+    document.documentElement.style.backgroundColor = color;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", color);
+    return () => {
+      document.documentElement.style.backgroundColor = "";
+    };
+  }, [dashboardTheme]);
+
   const UNLOCKED_PATHS = ["/dashboard", "/dashboard/business", "/dashboard/account"];
   const isLocked = !isAdmin && trialActive === false && !UNLOCKED_PATHS.includes(location.pathname);
 
