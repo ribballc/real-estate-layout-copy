@@ -118,24 +118,19 @@ const DashboardSidebar = ({ dashboardTheme = "dark", onToggleTheme, onReportBug,
                         to={item.url}
                         end={item.url === "/dashboard"}
                         className={cn(
-                          "flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group/nav-item",
+                          "flex items-center gap-3 px-3 py-2.5 rounded-xl group/nav-item transition-all duration-150 ease-in-out",
                           active
                             ? isDark
-                              ? "bg-[hsla(217,91%,60%,0.1)]"
-                              : "bg-[hsl(217,91%,96%)]"
-                            : "bg-transparent",
-                          active
-                            ? isDark
-                              ? "text-[hsl(217,91%,60%)]"
-                              : "text-[hsl(217,91%,50%)]"
+                              ? "bg-[hsla(217,91%,60%,0.12)] border-l-[3px] border-l-[hsl(217,91%,60%)] text-[hsl(217,91%,60%)]"
+                              : "bg-[hsla(217,91%,60%,0.08)] border-l-[3px] border-l-[hsl(217,91%,60%)] text-[hsl(217,91%,60%)]"
                             : isDark
-                              ? "text-[hsla(0,0%,100%,0.5)] hover:text-[hsl(217,91%,60%)] hover:bg-[hsla(217,91%,60%,0.08)]"
-                              : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,20%)] hover:bg-[hsl(214,20%,97%)]"
+                              ? "border-l-[3px] border-l-transparent text-[hsla(0,0%,100%,0.5)] hover:text-[hsl(217,91%,60%)] hover:bg-[hsla(255,255,255,0.06)]"
+                              : "border-l-[3px] border-l-transparent text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,20%)] hover:bg-[hsla(0,0%,0%,0.04)]"
                         )}
                       >
                         <item.icon
                           className={cn(
-                            "w-[18px] h-[18px] transition-colors duration-200 flex-shrink-0",
+                            "w-[18px] h-[18px] transition-colors duration-150 ease-in-out flex-shrink-0",
                             active
                               ? "text-[hsl(217,91%,60%)]"
                               : isDark
