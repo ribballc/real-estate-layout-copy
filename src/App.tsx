@@ -59,7 +59,7 @@ const App = () => (
               <Route path="testimonials" element={<TestimonialsManager />} />
               <Route path="account" element={<AccountSettings />} />
             </Route>
-            <Route path="/deluxe" element={<DeluxeLanding />} />
+            <Route path="/site/:slug" element={<DeluxeLanding />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

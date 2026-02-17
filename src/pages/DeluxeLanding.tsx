@@ -1,5 +1,5 @@
-import { useSearchParams } from 'react-router-dom';
-import { useBusinessData } from '@/hooks/useBusinessData';
+import { useParams } from 'react-router-dom';
+import { useBusinessDataBySlug } from '@/hooks/useBusinessData';
 import DeluxeNavbar from '@/components/deluxe/DeluxeNavbar';
 import DeluxeHero from '@/components/deluxe/DeluxeHero';
 import DeluxeWhyChooseUs from '@/components/deluxe/DeluxeWhyChooseUs';
@@ -14,9 +14,8 @@ import DeluxeContactForm from '@/components/deluxe/DeluxeContactForm';
 import DeluxeFooter from '@/components/deluxe/DeluxeFooter';
 
 const DeluxeLanding = () => {
-  const [searchParams] = useSearchParams();
-  const userId = searchParams.get('uid');
-  const { profile, services, hours, testimonials, photos, addOns, loading } = useBusinessData(userId);
+  const { slug } = useParams<{ slug: string }>();
+  const { profile, services, hours, testimonials, photos, addOns, loading } = useBusinessDataBySlug(slug || null);
 
   return (
     <main className="min-h-screen bg-background font-montserrat">

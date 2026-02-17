@@ -262,6 +262,7 @@ export type Database = {
           primary_color: string | null
           secondary_color: string | null
           service_areas: string[] | null
+          slug: string | null
           tagline: string
           tiktok: string
           trial_active: boolean
@@ -286,6 +287,7 @@ export type Database = {
           primary_color?: string | null
           secondary_color?: string | null
           service_areas?: string[] | null
+          slug?: string | null
           tagline?: string
           tiktok?: string
           trial_active?: boolean
@@ -310,6 +312,7 @@ export type Database = {
           primary_color?: string | null
           secondary_color?: string | null
           service_areas?: string[] | null
+          slug?: string | null
           tagline?: string
           tiktok?: string
           trial_active?: boolean
