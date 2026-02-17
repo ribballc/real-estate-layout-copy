@@ -1,62 +1,155 @@
-import { useRef, useCallback, useEffect, useState } from "react";
+import { useRef, useCallback } from "react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
+/* ── Large Card Animations ── */
 
-const FormIcon = () => (
-  <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style={{ animation: "stepIconFloat 3s ease-in-out infinite" }}>
-    <rect x="16" y="12" width="40" height="52" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.06)" />
-    <rect x="26" y="6" width="20" height="12" rx="4" stroke="hsl(217, 91%, 60%)" strokeWidth="2.5" fill="hsl(210, 40%, 98%)" />
-    <line x1="26" y1="30" x2="46" y2="30" stroke="hsl(213, 94%, 68%)" strokeWidth="2" strokeLinecap="round"
-      strokeDasharray="20" strokeDashoffset="0" style={{ animation: "drawLine 1.5s ease-out infinite", animationDelay: "0s" }} />
-    <line x1="26" y1="38" x2="42" y2="38" stroke="hsl(213, 94%, 68%)" strokeWidth="2" strokeLinecap="round"
-      strokeDasharray="16" strokeDashoffset="0" style={{ animation: "drawLine 1.5s ease-out infinite", animationDelay: "0.3s" }} />
-    <line x1="26" y1="46" x2="38" y2="46" stroke="hsl(213, 94%, 68%)" strokeWidth="2" strokeLinecap="round"
-      strokeDasharray="12" strokeDashoffset="0" style={{ animation: "drawLine 1.5s ease-out infinite", animationDelay: "0.6s" }} />
-    <circle cx="48" cy="52" r="8" fill="hsl(217, 91%, 60%)" style={{ animation: "fillCheck 2s ease-out infinite", transformOrigin: "48px 52px" }} />
-    <path d="M44 52 L47 55 L53 49" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
+const FormAnimation = () => (
+  <div className="relative w-full h-[200px] flex items-center justify-center overflow-hidden">
+    {/* Floating form elements */}
+    <svg width="220" height="180" viewBox="0 0 220 180" fill="none" className="relative z-10">
+      {/* Main clipboard */}
+      <rect x="50" y="20" width="120" height="140" rx="12" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,88%)" strokeWidth="1.5" />
+      <rect x="75" y="10" width="70" height="20" rx="8" fill="hsl(217,91%,96%)" stroke="hsl(217,91%,80%)" strokeWidth="1.5" />
+
+      {/* Form lines animating in */}
+      <rect x="68" y="50" width="84" height="10" rx="5" fill="hsl(214,20%,94%)">
+        <animate attributeName="width" values="0;84" dur="1.5s" repeatCount="indefinite" />
+      </rect>
+      <rect x="68" y="70" width="65" height="10" rx="5" fill="hsl(214,20%,92%)">
+        <animate attributeName="width" values="0;65" dur="1.5s" begin="0.3s" repeatCount="indefinite" />
+      </rect>
+      <rect x="68" y="90" width="74" height="10" rx="5" fill="hsl(214,20%,94%)">
+        <animate attributeName="width" values="0;74" dur="1.5s" begin="0.6s" repeatCount="indefinite" />
+      </rect>
+
+      {/* Check circle */}
+      <circle cx="110" cy="130" r="14" fill="hsl(217,91%,60%)">
+        <animate attributeName="r" values="0;14" dur="0.5s" begin="1.2s" fill="freeze" repeatCount="indefinite" />
+      </circle>
+      <path d="M103 130 L108 135 L118 125" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0">
+        <animate attributeName="opacity" values="0;0;1" dur="1.5s" begin="0.3s" repeatCount="indefinite" />
+      </path>
+
+      {/* Floating icons */}
+      <circle cx="28" cy="60" r="16" fill="hsl(217,91%,96%)" stroke="hsl(217,91%,85%)" strokeWidth="1.5">
+        <animate attributeName="cy" values="60;52;60" dur="3s" repeatCount="indefinite" />
+      </circle>
+      <path d="M23 60 L28 55 L33 60" stroke="hsl(217,91%,60%)" strokeWidth="2" strokeLinecap="round" fill="none" />
+
+      <circle cx="192" cy="80" r="14" fill="hsl(160,84%,95%)" stroke="hsl(160,84%,70%)" strokeWidth="1.5">
+        <animate attributeName="cy" values="80;74;80" dur="3.5s" repeatCount="indefinite" />
+      </circle>
+      <path d="M187 80 L190 83 L197 77" stroke="hsl(160,84%,39%)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+
+      <circle cx="38" cy="120" r="12" fill="hsl(45,93%,95%)" stroke="hsl(45,93%,70%)" strokeWidth="1.5">
+        <animate attributeName="cy" values="120;115;120" dur="2.8s" repeatCount="indefinite" />
+      </circle>
+      <text x="34" y="124" fontSize="12" fill="hsl(45,93%,47%)">✦</text>
+    </svg>
+  </div>
 );
 
-const BuildIcon = () => (
-  <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style={{ animation: "stepIconFloat 3s ease-in-out infinite", animationDelay: "0.4s" }}>
-    <rect x="10" y="14" width="52" height="44" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.06)" />
-    <rect x="10" y="14" width="52" height="14" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.1)" />
-    <circle cx="20" cy="21" r="2" fill="hsl(0, 84%, 60%)" />
-    <circle cx="27" cy="21" r="2" fill="hsl(45, 93%, 60%)" />
-    <circle cx="34" cy="21" r="2" fill="hsl(142, 71%, 45%)" />
-    <rect x="16" y="34" width="18" height="8" rx="2" fill="hsl(217, 91%, 60%)" opacity="0.8"
-      style={{ animation: "buildUp 2s ease-out infinite", transformOrigin: "bottom", animationDelay: "0s" }} />
-    <rect x="16" y="45" width="40" height="4" rx="1.5" fill="hsl(213, 94%, 68%)" opacity="0.5"
-      style={{ animation: "buildUp 2s ease-out infinite", transformOrigin: "bottom", animationDelay: "0.3s" }} />
-    <rect x="38" y="34" width="18" height="8" rx="2" fill="hsl(213, 94%, 68%)" opacity="0.6"
-      style={{ animation: "buildUp 2s ease-out infinite", transformOrigin: "bottom", animationDelay: "0.6s" }} />
-    <rect x="18" y="52" width="2" height="4" fill="hsl(217, 91%, 60%)" style={{ animation: "cursorBlink 1s step-end infinite" }} />
-  </svg>
+const BuildAnimation = () => (
+  <div className="relative w-full h-[200px] flex items-center justify-center overflow-hidden">
+    <svg width="220" height="180" viewBox="0 0 220 180" fill="none" className="relative z-10">
+      {/* Browser frame */}
+      <rect x="20" y="15" width="180" height="150" rx="12" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,88%)" strokeWidth="1.5" />
+      <rect x="20" y="15" width="180" height="28" rx="12" fill="hsl(214,20%,96%)" stroke="hsl(214,20%,88%)" strokeWidth="1.5" />
+      <circle cx="36" cy="29" r="4" fill="hsl(0,84%,70%)" />
+      <circle cx="48" cy="29" r="4" fill="hsl(45,93%,65%)" />
+      <circle cx="60" cy="29" r="4" fill="hsl(142,71%,55%)" />
+      <rect x="80" y="25" width="80" height="8" rx="4" fill="hsl(214,20%,90%)" />
+
+      {/* Content blocks building up */}
+      <rect x="32" y="52" width="70" height="18" rx="4" fill="hsl(217,91%,60%)" opacity="0.9">
+        <animate attributeName="width" values="0;70" dur="1s" fill="freeze" repeatCount="indefinite" />
+      </rect>
+      <rect x="32" y="76" width="156" height="6" rx="3" fill="hsl(214,20%,92%)">
+        <animate attributeName="width" values="0;156" dur="1s" begin="0.3s" fill="freeze" repeatCount="indefinite" />
+      </rect>
+      <rect x="32" y="88" width="120" height="6" rx="3" fill="hsl(214,20%,94%)">
+        <animate attributeName="width" values="0;120" dur="1s" begin="0.5s" fill="freeze" repeatCount="indefinite" />
+      </rect>
+
+      {/* Image placeholder */}
+      <rect x="32" y="102" width="72" height="48" rx="6" fill="hsl(217,91%,96%)" stroke="hsl(217,91%,85%)" strokeWidth="1" strokeDasharray="4 2">
+        <animate attributeName="opacity" values="0;1" dur="0.5s" begin="0.7s" fill="freeze" repeatCount="indefinite" />
+      </rect>
+      <rect x="112" y="102" width="76" height="22" rx="6" fill="hsl(217,91%,60%)" opacity="0.15">
+        <animate attributeName="opacity" values="0;0.15" dur="0.5s" begin="0.9s" fill="freeze" repeatCount="indefinite" />
+      </rect>
+      <rect x="112" y="130" width="76" height="20" rx="6" fill="hsl(160,84%,39%)" opacity="0.12">
+        <animate attributeName="opacity" values="0;0.12" dur="0.5s" begin="1.1s" fill="freeze" repeatCount="indefinite" />
+      </rect>
+
+      {/* Sparkle */}
+      <circle cx="200" cy="50" r="6" fill="hsl(217,91%,96%)" stroke="hsl(217,91%,80%)" strokeWidth="1">
+        <animate attributeName="r" values="4;7;4" dur="2s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite" />
+      </circle>
+    </svg>
+  </div>
 );
 
-const CalendarIcon = () => (
-  <svg width="72" height="72" viewBox="0 0 72 72" fill="none" style={{ animation: "stepIconFloat 3s ease-in-out infinite", animationDelay: "0.8s" }}>
-    <rect x="12" y="18" width="48" height="44" rx="6" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" fill="hsla(217, 91%, 60%, 0.06)" />
-    <rect x="12" y="18" width="48" height="14" rx="6" fill="hsl(217, 91%, 60%)" />
-    <line x1="26" y1="12" x2="26" y2="24" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" strokeLinecap="round" />
-    <line x1="46" y1="12" x2="46" y2="24" stroke="hsl(213, 94%, 68%)" strokeWidth="2.5" strokeLinecap="round" />
-    {[0,1,2,3].map((row) =>
-      [0,1,2,3].map((col) => (
-        <rect key={`${row}-${col}`} x={18 + col * 10} y={36 + row * 6} width="7" height="4" rx="1"
-          fill="hsl(217, 91%, 60%)"
-          opacity={0.3 + (row * 4 + col) * 0.04}
-          style={{
-            animation: "fillCheck 3s ease-out infinite",
-            animationDelay: `${(row * 4 + col) * 0.15}s`,
-            transformOrigin: `${21.5 + col * 10}px ${38 + row * 6}px`,
-          }} />
-      ))
-    )}
-  </svg>
+const CalendarAnimation = () => (
+  <div className="relative w-full h-[200px] flex items-center justify-center overflow-hidden">
+    <svg width="220" height="180" viewBox="0 0 220 180" fill="none" className="relative z-10">
+      {/* Calendar card */}
+      <rect x="30" y="15" width="160" height="135" rx="12" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,88%)" strokeWidth="1.5" />
+      <rect x="30" y="15" width="160" height="32" rx="12" fill="hsl(217,91%,60%)" />
+      <text x="110" y="36" textAnchor="middle" fontSize="13" fontWeight="600" fill="white">February 2026</text>
+
+      {/* Calendar pegs */}
+      <line x1="70" y1="8" x2="70" y2="22" stroke="hsl(214,20%,80%)" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1="150" y1="8" x2="150" y2="22" stroke="hsl(214,20%,80%)" strokeWidth="2.5" strokeLinecap="round" />
+
+      {/* Day headers */}
+      {["S","M","T","W","T","F","S"].map((d, i) => (
+        <text key={i} x={48 + i * 20} y="62" textAnchor="middle" fontSize="9" fontWeight="600" fill="hsl(215,16%,55%)">{d}</text>
+      ))}
+
+      {/* Date grid - animated highlights */}
+      {[0,1,2,3].map(r => [0,1,2,3,4,5,6].map(c => {
+        const day = r * 7 + c + 1;
+        if (day > 28) return null;
+        const isHighlighted = [5, 12, 18, 23].includes(day);
+        return (
+          <g key={`${r}-${c}`}>
+            {isHighlighted && (
+              <rect x={39 + c * 20} y={68 + r * 18} width="18" height="16" rx="6" fill="hsl(217,91%,60%)" opacity="0.12">
+                <animate attributeName="opacity" values="0;0.12" dur="0.4s" begin={`${day * 0.05}s`} fill="freeze" repeatCount="indefinite" />
+              </rect>
+            )}
+            <text
+              x={48 + c * 20} y={80 + r * 18}
+              textAnchor="middle" fontSize="10"
+              fontWeight={isHighlighted ? "700" : "400"}
+              fill={isHighlighted ? "hsl(217,91%,55%)" : "hsl(215,16%,45%)"}
+            >
+              {day}
+            </text>
+          </g>
+        );
+      }))}
+
+      {/* Notification badge */}
+      <circle cx="186" cy="22" r="10" fill="hsl(160,84%,39%)">
+        <animate attributeName="r" values="8;10;8" dur="2s" repeatCount="indefinite" />
+      </circle>
+      <text x="186" y="26" textAnchor="middle" fontSize="10" fontWeight="700" fill="white">3</text>
+
+      {/* Floating notification */}
+      <g>
+        <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
+        <rect x="135" y="155" width="80" height="24" rx="8" fill="hsl(217,91%,60%)" />
+        <text x="175" y="170" textAnchor="middle" fontSize="9" fontWeight="500" fill="white">New Booking!</text>
+      </g>
+    </svg>
+  </div>
 );
 
-const stepIcons = [FormIcon, BuildIcon, CalendarIcon];
+const stepAnimations = [FormAnimation, BuildAnimation, CalendarAnimation];
 
 const steps = [
   {
@@ -76,9 +169,9 @@ const steps = [
   },
 ];
 
-const ProcessCard = ({ step, index, isActive }: { step: typeof steps[0]; index: number; isActive: boolean }) => {
+const StepCard = ({ step, index }: { step: typeof steps[0]; index: number }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const IconComponent = stepIcons[index];
+  const Animation = stepAnimations[index];
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const card = cardRef.current;
@@ -94,60 +187,46 @@ const ProcessCard = ({ step, index, isActive }: { step: typeof steps[0]; index: 
     <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
-      className="group relative rounded-3xl p-8 md:p-10 overflow-hidden z-10 cursor-pointer"
+      className="group relative rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer"
       style={{
         background: "hsl(0, 0%, 100%)",
-        border: isActive ? "2px solid hsl(217, 91%, 60%)" : "2px solid hsl(214, 20%, 90%)",
-        boxShadow: isActive
-          ? "0 4px 24px hsla(217, 91%, 60%, 0.15), 0 0 0 4px hsla(217, 91%, 60%, 0.06)"
-          : "0 4px 24px hsla(0, 0%, 0%, 0.06)",
-        transition: "border-color 0.6s ease, box-shadow 0.6s ease",
+        border: "1px solid hsl(214, 20%, 90%)",
+        boxShadow: "0 1px 3px hsla(0, 0%, 0%, 0.04)",
       }}
     >
+      {/* Spotlight follow */}
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-0"
         style={{
-          background:
-            "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(217, 71%, 53%, 0.06), transparent 40%)",
+          background: "radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsla(217, 71%, 53%, 0.04), transparent 40%)",
         }}
       />
 
-      <span
-        className="absolute top-5 right-5 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold transition-all duration-300 group-hover:scale-105"
-        style={{
-          background: "hsl(217, 71%, 53%)",
-          color: "hsl(0, 0%, 100%)",
-        }}
-      >
-        <span className="relative z-10">{step.step}</span>
-      </span>
+      {/* Text content */}
+      <div className="relative z-10 p-6 pb-4">
+        <p className="text-xs font-semibold uppercase tracking-wider mb-2" style={{ color: "hsl(215, 16%, 65%)" }}>
+          Step {step.step}
+        </p>
+        <h3
+          className="text-lg font-bold mb-2 transition-colors duration-300"
+          style={{ color: "hsl(222, 47%, 11%)" }}
+        >
+          {step.title}
+        </h3>
+        <p
+          className="text-[13px] leading-[1.6] transition-colors duration-300"
+          style={{ color: "hsl(215, 16%, 47%)" }}
+        >
+          {step.description}
+        </p>
+      </div>
 
-      <div className="flex items-start gap-6 relative z-10">
-        <div className="flex-shrink-0">
-          <div
-            className="w-[72px] h-[72px] rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110"
-            style={{
-              background: "hsla(217, 71%, 53%, 0.08)",
-              border: "1px solid hsla(217, 71%, 53%, 0.15)",
-            }}
-          >
-            <IconComponent />
-          </div>
-        </div>
-        <div className="flex-1 min-w-0">
-          <h3
-            className="text-[22px] font-semibold mb-3 transition-colors duration-300"
-            style={{ color: "hsl(222, 47%, 11%)" }}
-          >
-            {step.title}
-          </h3>
-          <p
-            className="text-[15px] leading-[1.7] transition-colors duration-300"
-            style={{ color: "hsl(215, 16%, 47%)" }}
-          >
-            {step.description}
-          </p>
-        </div>
+      {/* Large animation area */}
+      <div
+        className="relative z-10"
+        style={{ background: "hsl(210, 40%, 98%)", borderTop: "1px solid hsl(214, 20%, 93%)" }}
+      >
+        <Animation />
       </div>
     </div>
   );
@@ -155,144 +234,92 @@ const ProcessCard = ({ step, index, isActive }: { step: typeof steps[0]; index: 
 
 const HowItWorksSection = () => {
   const { openFunnel } = useSurveyFunnel();
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const cardsContainerRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const container = cardsContainerRef.current;
-      if (!container) return;
-
-      const rect = container.getBoundingClientRect();
-      const windowH = window.innerHeight;
-
-      // Start tracing when top of container hits 80% of viewport,
-      // finish when bottom of container hits 40% of viewport
-      const startTrigger = windowH * 0.8;
-      const endTrigger = windowH * 0.35;
-      const totalTravel = (rect.height + startTrigger - endTrigger);
-      const traveled = startTrigger - rect.top;
-
-      const progress = Math.max(0, Math.min(1, traveled / totalTravel));
-      setScrollProgress(progress);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Map overall progress to per-card activation (0-1 each)
-  const getCardProgress = (index: number) => {
-    const segmentSize = 1 / steps.length;
-    const segmentStart = index * segmentSize;
-    return Math.max(0, Math.min(1, (scrollProgress - segmentStart) / segmentSize));
-  };
-
-  // Connector line between cards: fills as we transition between cards
-  const getLineProgress = (segmentIndex: number) => {
-    // Line after card N fills between card N being active and card N+1 starting
-    const segmentSize = 1 / steps.length;
-    const lineStart = (segmentIndex + 0.6) * segmentSize;
-    const lineEnd = (segmentIndex + 1) * segmentSize;
-    return Math.max(0, Math.min(100, ((scrollProgress - lineStart) / (lineEnd - lineStart)) * 100));
-  };
 
   return (
-    <>
-      <section
-        ref={sectionRef}
-        className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
-        style={{ background: "hsl(210, 40%, 98%)" }}
-      >
-        <div className="max-w-[700px] mx-auto relative z-10">
-          <FadeIn>
-            <div className="text-center mb-16 md:mb-20">
-              <h2
-                className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
-                style={{ color: "hsl(222, 47%, 11%)" }}
-              >
-                <span className="relative inline-block">
-                  How It Works
-                  <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'blueUnderlineIn 0.8s ease-out 0.6s forwards' }}>
-                    <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#blueGlow)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 0.6s forwards' }} />
-                    <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#3273DC" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 0.6s forwards' }} />
-                    <defs>
-                      <linearGradient id="blueGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#3273DC" />
-                        <stop offset="50%" stopColor="#5A9BF6" />
-                        <stop offset="100%" stopColor="#3273DC" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </span>
-              </h2>
-              <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
-                yeah... its pretty darn simple.
-              </p>
-            </div>
-          </FadeIn>
-
-          <div ref={cardsContainerRef} className="flex flex-col items-center gap-0 mb-16 md:mb-20">
-            {steps.map((step, i) => {
-              const cardProgress = getCardProgress(i);
-              const isActive = cardProgress > 0.3;
-
-              return (
-                <div key={step.step} className="w-full flex flex-col items-center">
-                  <FadeIn delay={i * 150}>
-                    <ProcessCard step={step} index={i} isActive={isActive} />
-                  </FadeIn>
-
-                  {/* Connector line between cards */}
-                  {i < steps.length - 1 && (
-                    <div className="w-[2px] h-12 relative overflow-hidden" style={{ background: "hsl(214, 20%, 90%)" }}>
-                      <div
-                        className="absolute top-0 left-0 w-full will-change-[height]"
-                        style={{
-                          height: `${getLineProgress(i)}%`,
-                          background: "hsl(217, 91%, 60%)",
-                          transition: "height 0.15s linear",
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          <FadeIn delay={500}>
-            <div className="text-center">
-              <button
-                onClick={openFunnel}
-                className="group relative inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+    <section
+      className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
+      style={{ background: "hsl(210, 40%, 98%)" }}
+    >
+      <div className="max-w-[1100px] mx-auto relative z-10">
+        <FadeIn>
+          <div className="text-center mb-14 md:mb-18">
+            {/* Blue pill tag */}
+            <div className="flex justify-center mb-5">
+              <span
+                className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide"
                 style={{
-                  color: "hsl(0, 0%, 100%)",
-                  background: "linear-gradient(135deg, hsl(217, 71%, 53%) 0%, hsl(217, 71%, 43%) 100%)",
-                  boxShadow: "0 4px 16px hsla(217, 71%, 53%, 0.3)",
+                  background: "hsl(217, 91%, 96%)",
+                  color: "hsl(217, 91%, 50%)",
+                  border: "1px solid hsl(217, 91%, 88%)",
                 }}
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  Get Started Free →
-                </span>
-                <span
-                  className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, transparent 0%, hsla(0, 0%, 100%, 0.2) 50%, transparent 100%)",
-                  }}
-                />
-              </button>
-              <p className="text-sm mt-4" style={{ color: "hsl(215, 16%, 47%)" }}>
-                Free for 14 days · No credit card required
-              </p>
+                How It Works
+              </span>
             </div>
-          </FadeIn>
+            <h2
+              className="font-heading text-[32px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.15] mb-4"
+              style={{ color: "hsl(222, 47%, 11%)" }}
+            >
+              <span className="relative inline-block">
+                Get Started In{" "}
+                <br className="hidden md:block" />
+                3 Simple Steps
+                <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'blueUnderlineIn 0.8s ease-out 0.6s forwards' }}>
+                  <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#blueGlow)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 0.6s forwards' }} />
+                  <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#3273DC" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 0.6s forwards' }} />
+                  <defs>
+                    <linearGradient id="blueGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#3273DC" />
+                      <stop offset="50%" stopColor="#5A9BF6" />
+                      <stop offset="100%" stopColor="#3273DC" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </span>
+            </h2>
+            <p className="text-base md:text-lg max-w-lg mx-auto" style={{ color: "hsl(215, 16%, 47%)" }}>
+              yeah... its pretty darn simple.
+            </p>
+          </div>
+        </FadeIn>
+
+        {/* 3-column card grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14 md:mb-18">
+          {steps.map((step, i) => (
+            <FadeIn key={step.step} delay={i * 150}>
+              <StepCard step={step} index={i} />
+            </FadeIn>
+          ))}
         </div>
-      </section>
-    </>
+
+        <FadeIn delay={500}>
+          <div className="text-center">
+            <button
+              onClick={openFunnel}
+              className="group relative inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
+              style={{
+                color: "hsl(0, 0%, 100%)",
+                background: "linear-gradient(135deg, hsl(217, 71%, 53%) 0%, hsl(217, 71%, 43%) 100%)",
+                boxShadow: "0 4px 16px hsla(217, 71%, 53%, 0.3)",
+              }}
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                Get Started Free →
+              </span>
+              <span
+                className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"
+                style={{
+                  background: "linear-gradient(90deg, transparent 0%, hsla(0, 0%, 100%, 0.2) 50%, transparent 100%)",
+                }}
+              />
+            </button>
+            <p className="text-sm mt-4" style={{ color: "hsl(215, 16%, 47%)" }}>
+              Free for 14 days · No credit card required
+            </p>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
   );
 };
 
