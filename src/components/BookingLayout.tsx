@@ -1,41 +1,53 @@
 import { ReactNode } from "react";
+import { useSearchParams } from "react-router-dom";
 import BookingSidebar from "@/components/BookingSidebar";
 import BookingBreadcrumb from "@/components/BookingBreadcrumb";
 import darkerLogo from "@/assets/darker-logo.png";
+import { useBusinessData } from "@/hooks/useBusinessData";
 
 interface BookingLayoutProps {
   activeStep: number;
-  children: ReactNode;
+  children: ReactNode | ((data: ReturnType<typeof useBusinessData>) => ReactNode);
 }
 
-const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => (
-  <div className="min-h-screen" style={{ background: "hsl(210 40% 98%)" }}>
-    {/* Top Nav */}
-    <header
-      className="sticky top-0 z-50 border-b border-border"
-      style={{
-        background: "hsla(0, 0%, 100%, 0.85)",
-        backdropFilter: "blur(16px) saturate(180%)",
-      }}
-    >
-      <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center">
-        <a href="/">
-          <img src={darkerLogo} alt="Darker" className="h-8" />
-        </a>
-      </div>
-    </header>
+const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
+  const [searchParams] = useSearchParams();
+  const userId = searchParams.get("uid");
+  const businessData = useBusinessData(userId);
 
-    <div className="max-w-7xl mx-auto px-5 md:px-8 py-8 md:py-12">
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-        <main className="flex-1 min-w-0 order-1">
-          <BookingBreadcrumb activeStep={activeStep} />
-          {children}
-        </main>
+  return (
+    <div className="min-h-screen" style={{ background: "hsl(210 40% 98%)" }}>
+      {/* Top Nav */}
+      <header
+        className="sticky top-0 z-50 border-b border-border"
+        style={{
+          background: "hsla(0, 0%, 100%, 0.85)",
+          backdropFilter: "blur(16px) saturate(180%)",
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center">
+          <a href="/">
+            <img
+              src={businessData.profile?.logo_url || darkerLogo}
+              alt={businessData.profile?.business_name || "Darker"}
+              className="h-8"
+            />
+          </a>
+        </div>
+      </header>
 
-        <BookingSidebar />
+      <div className="max-w-7xl mx-auto px-5 md:px-8 py-8 md:py-12">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+          <main className="flex-1 min-w-0 order-1">
+            <BookingBreadcrumb activeStep={activeStep} />
+            {typeof children === "function" ? children(businessData) : children}
+          </main>
+
+          <BookingSidebar businessData={businessData} />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default BookingLayout;
