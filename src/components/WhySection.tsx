@@ -1,5 +1,7 @@
 import FadeIn from "@/components/FadeIn";
 import { useRef, useCallback } from "react";
+import SectionPill from "@/components/SectionPill";
+import { Sparkles } from "lucide-react";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span style={{ color: "hsl(217, 71%, 53%)", fontWeight: 700 }}>{children}</span>
@@ -273,20 +275,8 @@ const WhySection = () => {
     >
       <div className="max-w-[1100px] mx-auto relative z-10">
         <FadeIn>
-          <div className="text-center mb-12 md:mb-16">
-            {/* Blue pill tag */}
-            <div className="flex justify-center mb-5">
-              <span
-                className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide"
-                style={{
-                  background: "hsl(217, 91%, 96%)",
-                  color: "hsl(217, 91%, 50%)",
-                  border: "1px solid hsl(217, 91%, 88%)",
-                }}
-              >
-                Why It Works
-              </span>
-            </div>
+           <div className="text-center mb-12 md:mb-16">
+              <SectionPill icon={<Sparkles className="w-4 h-4" />} label="Why It Works" />
             <h2
               className="font-heading text-[32px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.15] mb-4"
               style={{ color: "hsl(222, 47%, 11%)" }}
