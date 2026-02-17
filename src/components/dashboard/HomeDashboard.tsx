@@ -363,8 +363,7 @@ const HomeDashboard = () => {
                 </div>
                 <button
                   onClick={() => navigate("/dashboard/calendar")}
-                  className="mt-1 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
-                  style={{ color: "hsl(217,91%,60%)", background: "hsla(217,91%,60%,0.08)" }}
+                  className="dash-btn dash-btn-primary dash-btn-sm mt-1"
                 >
                   View Calendar
                 </button>

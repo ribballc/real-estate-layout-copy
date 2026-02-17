@@ -1,7 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
@@ -206,9 +205,9 @@ const CalendarManager = () => {
           <button onClick={() => setShowSyncModal(true)} className="text-sm text-accent underline underline-offset-2 hover:text-accent/80 transition-colors whitespace-nowrap flex items-center gap-1.5">
             <RefreshCw className="w-3.5 h-3.5" /> Sync Google Calendar
           </button>
-          <Button onClick={() => { setShowAddModal(true); setNewBooking(prev => ({ ...prev, booking_date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd") })); }} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+          <button onClick={() => { setShowAddModal(true); setNewBooking(prev => ({ ...prev, booking_date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd") })); }} className="dash-btn dash-btn-primary dash-btn-sm">
             <Plus className="w-4 h-4" /> Add Booking
-          </Button>
+          </button>
         </div>
       </div>
 
@@ -396,7 +395,7 @@ const CalendarManager = () => {
       <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-6 text-center">
         <h3 className="text-white font-semibold text-lg mb-2">Need Help Getting Bookings?</h3>
         <p className="text-white/40 text-sm mb-4">Let our team help you attract more customers and fill your calendar.</p>
-        <a href="mailto:marketing@darker.com?subject=Marketing Help" className="inline-flex items-center justify-center h-11 px-6 rounded-lg text-sm font-medium text-white transition-colors" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+        <a href="mailto:marketing@darker.com?subject=Marketing Help" className="dash-btn dash-btn-primary dash-btn-lg">
           Contact Our Marketing Team
         </a>
       </div>
@@ -443,9 +442,9 @@ const CalendarManager = () => {
                 <Input value={newBooking.notes} onChange={e => setNewBooking({ ...newBooking, notes: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="Any additional notes..." />
               </div>
             </div>
-            <Button onClick={handleAdd} className="w-full h-11" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+            <button onClick={handleAdd} className="dash-btn dash-btn-primary dash-btn-lg w-full">
               Add Booking
-            </Button>
+            </button>
           </div>
         </div>
       )}
@@ -463,9 +462,9 @@ const CalendarManager = () => {
               <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
                 <p className="text-amber-400 text-xs">⚠️ Google Calendar integration requires API credentials to be configured. Please contact support to enable this feature.</p>
               </div>
-              <Button disabled className="w-full h-11 gap-2 opacity-50" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
+              <button disabled className="dash-btn dash-btn-primary dash-btn-lg w-full opacity-50">
                 <RefreshCw className="w-4 h-4" /> Connect Google Calendar
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -481,7 +480,7 @@ const CalendarManager = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel className="bg-white/5 border-white/10 text-white hover:bg-white/10">Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteBooking} className="bg-red-500 hover:bg-red-600 text-white">Delete</AlertDialogAction>
+            <AlertDialogAction onClick={handleDeleteBooking} className="dash-btn dash-btn-destructive">Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

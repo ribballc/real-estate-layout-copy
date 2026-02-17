@@ -403,6 +403,86 @@
 }
 
 /* ═══════════════════════════════════════════════════════
+   Dashboard button system — 3 sizes, 3 variants
+   ═══════════════════════════════════════════════════════ */
+
+/* Base */
+.dash-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms ease, filter 150ms ease;
+  white-space: nowrap;
+  /* Default: md */
+  height: 2.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: 0.875rem;
+}
+.dash-btn:active {
+  transform: scale(0.97);
+}
+.dash-btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Sizes */
+.dash-btn-sm {
+  height: 2rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.75rem;
+}
+.dash-btn-lg {
+  height: 2.75rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.75rem;
+}
+
+/* Primary */
+.dash-btn-primary {
+  background-color: hsl(217, 91%, 60%);
+  color: hsl(0, 0%, 100%);
+  border: none;
+}
+.dash-btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+/* Ghost */
+.dash-btn-ghost {
+  background-color: transparent;
+  border: 1px solid currentColor;
+  border-color: hsla(0, 0%, 100%, 0.2);
+}
+.dashboard-light .dash-btn-ghost {
+  border-color: hsla(215, 25%, 15%, 0.2);
+}
+.dash-btn-ghost:hover {
+  background-color: hsla(0, 0%, 100%, 0.06);
+}
+.dashboard-light .dash-btn-ghost:hover {
+  background-color: hsla(215, 25%, 15%, 0.06);
+}
+
+/* Destructive */
+.dash-btn-destructive {
+  background-color: hsl(0, 84%, 60%);
+  color: hsl(0, 0%, 100%);
+  border: none;
+}
+.dash-btn-destructive:hover {
+  filter: brightness(1.1);
+}
+
+/* ═══════════════════════════════════════════════════════
    Dashboard typography system
    ═══════════════════════════════════════════════════════ */
 
