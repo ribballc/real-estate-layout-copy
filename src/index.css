@@ -338,10 +338,22 @@
   animation: pulseSlow 8s ease-in-out infinite;
 }
 
+/* Dashboard theme transition — smooth surface switching, no SVG jitter */
+.dashboard-dark,
+.dashboard-light {
+  transition: background-color 250ms ease, color 250ms ease, border-color 250ms ease;
+}
+
 /* Dashboard card transitions */
 .dash-card {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 250ms ease, color 250ms ease, border-color 250ms ease, box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(16px);
+}
+
+.dash-sidebar,
+.dash-header,
+.dash-bottom-nav {
+  transition: background-color 250ms ease, color 250ms ease, border-color 250ms ease;
 }
 .dashboard-light .dash-card {
   background: hsl(0, 0%, 100%);
