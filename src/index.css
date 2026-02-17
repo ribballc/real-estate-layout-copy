@@ -599,13 +599,3 @@
 /* Grid stroke theming for charts in light mode */
 .dashboard-light .dash-grid-stroke line { stroke: hsl(214, 20%, 93%); }
 .dashboard-light .dash-axis-tick text { fill: hsl(215, 16%, 55%); }
-
-/* Section Pill animations */
-@keyframes pillFadeIn {
-  0% { opacity: 0; transform: translateY(8px) scale(0.95); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes pillIconSpin {
-  0% { opacity: 0; transform: rotate(-90deg) scale(0.5); }
-  100% { opacity: 1; transform: rotate(0deg) scale(1); }
-}

@@ -1,8 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import FadeIn from "@/components/FadeIn";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
-import SectionPill from "@/components/SectionPill";
-import { Layers } from "lucide-react";
 
 
 const FormIcon = () => (
@@ -206,7 +204,6 @@ const HowItWorksSection = () => {
         <div className="max-w-[700px] mx-auto relative z-10">
           <FadeIn>
             <div className="text-center mb-16 md:mb-20">
-              <SectionPill icon={<Layers className="w-4 h-4" />} label="How It Works" highlight="3 STEPS" />
               <h2
                 className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
                 style={{ color: "hsl(222, 47%, 11%)" }}
