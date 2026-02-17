@@ -25,6 +25,7 @@ import TestimonialsManager from "./components/dashboard/TestimonialsManager";
 import CalendarManager from "./components/dashboard/CalendarManager";
 import AccountSettings from "./components/dashboard/AccountSettings";
 import CustomersManager from "./components/dashboard/CustomersManager";
+import WebsitePage from "./components/dashboard/WebsitePage";
 import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
 
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
               <Route index element={<HomeDashboard />} />
               <Route path="business" element={<BusinessInfoForm />} />
+              <Route path="website" element={<WebsitePage />} />
               <Route path="calendar" element={<CalendarManager />} />
               <Route path="customers" element={<CustomersManager />} />
               <Route path="services" element={<ServicesManager />} />
