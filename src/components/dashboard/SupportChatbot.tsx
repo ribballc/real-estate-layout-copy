@@ -224,7 +224,7 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
       {/* FAB */}
       <button
         onClick={() => setOpen(!open)}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-105 ${
+        className={`fixed bottom-20 md:bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-105 ${
           open ? "bg-white/10 backdrop-blur-xl border border-white/20" : ""
         }`}
         style={
@@ -242,7 +242,7 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
       {/* Chat panel */}
       {open && (
         <div
-          className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-48px)] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+          className="fixed bottom-[8.5rem] md:bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-48px)] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
           style={{
             background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)",
             height: "min(560px, calc(100vh - 140px))",

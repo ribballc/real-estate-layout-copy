@@ -94,6 +94,14 @@ const HomeDashboard = () => {
   const [bookings, setBookings] = useState<any[]>([]);
   const [stats, setStats] = useState({ services: 0, photos: 0, testimonials: 0 });
   const [loading, setLoading] = useState(true);
+  const [businessName, setBusinessName] = useState("");
+
+  const greeting = useMemo(() => {
+    const h = new Date().getHours();
+    if (h < 12) return "Good morning";
+    if (h < 18) return "Good afternoon";
+    return "Good evening";
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -102,9 +110,11 @@ const HomeDashboard = () => {
       supabase.from("services").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("photos").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("testimonials").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-    ]).then(([b, s, p, t]) => {
+      supabase.from("profiles").select("business_name").eq("user_id", user.id).single(),
+    ]).then(([b, s, p, t, profile]) => {
       setBookings(b.data || []);
       setStats({ services: s.count || 0, photos: p.count || 0, testimonials: t.count || 0 });
+      setBusinessName(profile.data?.business_name || "");
       setLoading(false);
     });
   }, [user]);
@@ -179,8 +189,10 @@ const HomeDashboard = () => {
       {/* Greeting + date picker */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h2 className="dash-title text-xl lg:text-2xl font-bold tracking-tight">Dashboard</h2>
-          <p className="dash-subtitle text-xs lg:text-sm mt-0.5">Track your business performance</p>
+          <h2 className="dash-title text-xl lg:text-2xl font-bold tracking-tight">
+            {greeting}{businessName ? `, ${businessName}` : ""}
+          </h2>
+          <p className="dash-subtitle text-xs lg:text-sm mt-0.5">Here's how your business is doing</p>
         </div>
         <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}>
           <SelectTrigger className="h-9 w-[150px] dash-select text-xs rounded-xl">
