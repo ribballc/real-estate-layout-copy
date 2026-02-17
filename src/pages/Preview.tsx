@@ -165,7 +165,7 @@ const MockupSite = ({ biz, svc, slug }: { biz: string; svc: string; slug: string
         </p>
         <div className="flex gap-4 flex-wrap">
           <div className="h-12 px-8 rounded-lg flex items-center text-sm font-bold" style={{ background: goldGrad, color: "#000" }}>Call Now</div>
-          <div className="h-12 px-8 rounded-lg flex items-center text-sm font-bold" style={{ border: `2px solid ${gold}`, color: gold }}>Get In Touch</div>
+          <div className="h-12 px-8 rounded-lg flex items-center text-sm font-bold" style={{ border: `2px solid ${gold}`, color: gold }}>Book Now</div>
         </div>
       </div>
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
@@ -297,7 +297,7 @@ const MockupSite = ({ biz, svc, slug }: { biz: string; svc: string; slug: string
         <p className="mb-8" style={{ color: mutedFg }}>Experience the difference professional detailing makes.</p>
         <div className="flex gap-4 justify-center flex-wrap">
           <div className="h-12 px-8 rounded-lg flex items-center text-sm font-bold" style={{ background: goldGrad, color: "#000" }}>Call Now</div>
-          <div className="h-12 px-8 rounded-lg flex items-center text-sm font-bold" style={{ border: `2px solid ${gold}`, color: gold }}>Get In Touch</div>
+          <div className="h-12 px-8 rounded-lg flex items-center text-sm font-bold" style={{ border: `2px solid ${gold}`, color: gold }}>Book Now</div>
         </div>
       </div>
     </section>

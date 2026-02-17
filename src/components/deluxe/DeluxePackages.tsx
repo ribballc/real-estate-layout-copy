@@ -36,9 +36,10 @@ const icons = [Flame, Zap, Sparkles];
 
 interface Props {
   services?: BusinessService[];
+  slug?: string;
 }
 
-const DeluxePackages = ({ services }: Props) => {
+const DeluxePackages = ({ services, slug }: Props) => {
   const [activeTab, setActiveTab] = useState<VehicleType>('sedan');
 
   const hasCmsServices = services && services.length > 0;
@@ -108,8 +109,8 @@ const DeluxePackages = ({ services }: Props) => {
                     </ul>
                   </div>
                 )}
-                <a href="#contact">
-                  <Button variant={pkg.popular ? 'gold' : 'goldOutline'} className="w-full">Get In Touch</Button>
+                <a href={slug ? `/site/${slug}/book` : "#contact"}>
+                  <Button variant={pkg.popular ? 'gold' : 'goldOutline'} className="w-full">Book Now</Button>
                 </a>
               </div>
             </div>

@@ -22,13 +22,13 @@ const DeluxeLanding = () => {
   return (
     <main className={`min-h-screen bg-background font-montserrat ${isDark ? "site-dark" : ""}`}>
       <DeluxeNavbar profile={profile} />
-      <DeluxeHero profile={profile} />
+      <DeluxeHero profile={profile} slug={slug} />
       <DeluxeServicesOverview services={services} />
       <DeluxeWhyChooseUs profile={profile} />
-      <DeluxePackages services={services} />
+      <DeluxePackages services={services} slug={slug} />
       <DeluxeAddOnServices addOns={addOns} />
       <DeluxeGallery photos={photos} />
-      <DeluxeCTASection profile={profile} />
+      <DeluxeCTASection profile={profile} slug={slug} />
       <DeluxeTestimonials testimonials={testimonials} />
       <DeluxeFAQ profile={profile} />
       <DeluxeContactForm profile={profile} services={services} addOns={addOns} hours={hours} />

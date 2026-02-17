@@ -5,9 +5,10 @@ import type { BusinessProfile } from '@/hooks/useBusinessData';
 
 interface Props {
   profile?: BusinessProfile | null;
+  slug?: string;
 }
 
-const DeluxeHero = ({ profile }: Props) => {
+const DeluxeHero = ({ profile, slug }: Props) => {
   const businessName = profile?.business_name || 'Deluxe';
   const tagline = profile?.tagline || 'Your Go-To For Professional Car Detailing, Ceramic Coating, and Interior Restoration Services';
   const phone = profile?.phone || '+12148822029';
@@ -38,8 +39,8 @@ const DeluxeHero = ({ profile }: Props) => {
             <a href={phoneHref}>
               <Button variant="hero" size="xl">Call Now</Button>
             </a>
-            <a href="#contact">
-              <Button variant="goldOutline" size="xl">Get In Touch</Button>
+            <a href={slug ? `/site/${slug}/book` : "#contact"}>
+              <Button variant="goldOutline" size="xl">Book Now</Button>
             </a>
           </div>
         </div>
