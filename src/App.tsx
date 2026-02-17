@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
+import DeluxeLanding from "./pages/DeluxeLanding";
 import Loading from "./pages/Loading";
 import Preview from "./pages/Preview";
 import Book from "./pages/Book";
@@ -58,6 +59,7 @@ const App = () => (
               <Route path="testimonials" element={<TestimonialsManager />} />
               <Route path="account" element={<AccountSettings />} />
             </Route>
+            <Route path="/deluxe" element={<DeluxeLanding />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

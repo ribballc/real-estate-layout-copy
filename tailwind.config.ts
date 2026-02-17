@@ -17,6 +17,7 @@ export default {
         sans: ["Inter", "system-ui", "sans-serif"],
         heading: ["Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "Courier New", "monospace"],
+        montserrat: ['Montserrat', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
