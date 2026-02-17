@@ -104,7 +104,7 @@ const DashboardLayout = () => {
   return (
     <SidebarProvider>
       <div
-        className={`min-h-screen flex w-full ${isDark ? "" : "dashboard-light"}`}
+        className={`min-h-screen flex w-full ${isDark ? "dashboard-dark" : "dashboard-light"}`}
         style={{
           background: isDark
             ? "linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 14%) 100%)"
