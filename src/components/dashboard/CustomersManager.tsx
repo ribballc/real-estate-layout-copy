@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   Loader2, Plus, Phone, Mail, Search, User, Car, DollarSign,
-  FileText, X, ChevronDown, Filter, MoreHorizontal, Calendar, Upload, Building2,
+  FileText, X, ChevronDown, MoreHorizontal, Calendar, Upload, Building2,
 } from "lucide-react";
 import { format } from "date-fns";
 import CsvImportModal from "./CsvImportModal";
@@ -201,29 +201,50 @@ const CustomersManager = () => {
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-          <Input
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Search customers..."
-            className="pl-10 h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent"
-          />
-        </div>
-        <div className="flex gap-2">
-          <select
-            value={filterStatus}
-            onChange={e => setFilterStatus(e.target.value)}
-            className="h-10 rounded-lg bg-white/5 border border-white/10 text-white/70 text-sm px-3 focus:outline-none focus:ring-2 focus:ring-accent"
-          >
-            <option value="all">All Status</option>
-            {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[hsl(215,50%,10%)]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
-          </select>
+      <div className="flex flex-col gap-3 mb-4">
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+            <Input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search customers..."
+              className="pl-10 h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent"
+            />
+          </div>
           <ImportDropdown onCsv={() => setShowCsvImport(true)} onGmb={() => setShowGmbImport(true)} />
           <Button onClick={() => { resetForm(); setShowAdd(true); }} size="sm" className="gap-2 h-10 px-4" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
             <Plus className="w-4 h-4" /> Add
           </Button>
+        </div>
+
+        {/* Status filter chips */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
+          {([
+            { value: "all", label: "All", dot: "hsl(217,91%,60%)", activeBg: "hsla(217,91%,60%,0.12)", activeBorder: "hsla(217,91%,60%,0.3)" },
+            { value: "lead", label: "Lead", dot: "hsl(45,93%,47%)", activeBg: "hsla(45,93%,47%,0.12)", activeBorder: "hsla(45,93%,47%,0.3)" },
+            { value: "active", label: "Active", dot: "hsl(160,84%,39%)", activeBg: "hsla(160,84%,39%,0.12)", activeBorder: "hsla(160,84%,39%,0.3)" },
+            { value: "vip", label: "VIP", dot: "hsl(271,91%,65%)", activeBg: "hsla(271,91%,65%,0.12)", activeBorder: "hsla(271,91%,65%,0.3)" },
+            { value: "inactive", label: "Inactive", dot: "hsl(215,16%,55%)", activeBg: "hsla(215,16%,55%,0.12)", activeBorder: "hsla(215,16%,55%,0.3)" },
+          ] as const).map(chip => {
+            const isActive = filterStatus === chip.value;
+            const count = chip.value === "all" ? customers.length : customers.filter(c => c.status === chip.value).length;
+            return (
+              <button
+                key={chip.value}
+                onClick={() => setFilterStatus(chip.value)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap border transition-all duration-200 shrink-0"
+                style={{
+                  background: isActive ? chip.activeBg : "transparent",
+                  borderColor: isActive ? chip.activeBorder : "hsla(0,0%,100%,0.1)",
+                  color: isActive ? chip.dot : "hsla(0,0%,100%,0.5)",
+                }}
+              >
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ background: chip.dot }} />
+                {chip.label} {count}
+              </button>
+            );
+          })}
         </div>
       </div>
 
