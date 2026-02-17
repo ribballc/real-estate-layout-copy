@@ -1,6 +1,6 @@
 import HeroSection from "@/components/HeroSection";
 import ValueBreakdown from "@/components/ValueBreakdown";
-
+import LogoTicker from "@/components/LogoTicker";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import WhySection from "@/components/WhySection";
 import TestimonialSection from "@/components/TestimonialSection";
@@ -31,6 +31,7 @@ const Index = () => {
         <ScrollProgress />
         <SpringBanner />
         <HeroSection />
+        <LogoTicker />
         <HowItWorksSection />
         <ValueBreakdown />
         <TestimonialSection />
