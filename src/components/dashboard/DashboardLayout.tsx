@@ -11,6 +11,7 @@ import {
   TrendingUp, Users, CalendarDays, Search, Menu,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import darkerLogo from "@/assets/darker-logo.png";
 import darkerLogoDark from "@/assets/darker-logo-dark.png";
 
@@ -50,10 +51,16 @@ const DashboardLayout = () => {
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const chatbotRef = useRef<SupportChatbotHandle>(null);
   const [trialActive, setTrialActive] = useState<boolean | null>(null);
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!user) return;
@@ -154,7 +161,7 @@ const DashboardLayout = () => {
               {/* Mobile: Logo left, hamburger right */}
               <div className="flex md:hidden items-center justify-between w-full">
                 <img src={isDark ? darkerLogo : darkerLogoDark} alt="Darker" className="h-7" />
-                <button className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`}><Menu className="w-5 h-5" /></button>
+                <button onClick={() => setMobileOpen(true)} className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`}><Menu className="w-5 h-5" /></button>
               </div>
               {/* Desktop: standard header */}
               <div className="hidden md:flex items-center gap-3 flex-1 min-w-0">
@@ -240,6 +247,25 @@ const DashboardLayout = () => {
           <SupportChatbot ref={chatbotRef} />
         </main>
       </div>
+
+      {/* Mobile slide-out sidebar */}
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent side="left" className="p-0 w-[280px] border-none" style={{
+          background: isDark
+            ? "linear-gradient(180deg, hsl(215 50% 8%) 0%, hsl(217 33% 12%) 100%)"
+            : "hsl(0, 0%, 100%)",
+        }}>
+          <DashboardSidebar
+            dashboardTheme={dashboardTheme}
+            onToggleTheme={toggleTheme}
+            onReportBug={() => { setMobileOpen(false); chatbotRef.current?.openWithPrompt("I'd like to report a bug I found:"); }}
+            onNeedHelp={() => { setMobileOpen(false); chatbotRef.current?.openWithPrompt("I need help with:"); }}
+            collapsed={false}
+            onToggleCollapse={() => setMobileOpen(false)}
+            mobile
+          />
+        </SheetContent>
+      </Sheet>
     </>
   );
 };
