@@ -343,32 +343,39 @@
    Chatbot excluded via .support-chatbot scoping at the end.
    ═══════════════════════════════════════════════════════ */
 
-/* --- Text colors --- */
-.dashboard-light .text-white {
+/* --- Text colors (exclude highlighted cards which need white text on blue bg) --- */
+.dashboard-light :not(.dash-card-highlight) > .text-white,
+.dashboard-light .text-white:not(.dash-card-highlight *) {
   color: hsl(215 25% 12%) !important;
 }
-.dashboard-light .text-white\/80 {
+.dashboard-light .dash-card-highlight .text-white { color: hsl(0 0% 100%) !important; }
+.dashboard-light .dash-card-highlight .text-white\/80 { color: hsla(0, 0%, 100%, 0.8) !important; }
+.dashboard-light .dash-card-highlight .text-white\/70 { color: hsla(0, 0%, 100%, 0.7) !important; }
+.dashboard-light .dash-card-highlight .text-white\/60 { color: hsla(0, 0%, 100%, 0.6) !important; }
+.dashboard-light .dash-card-highlight .text-white\/50 { color: hsla(0, 0%, 100%, 0.5) !important; }
+
+.dashboard-light *:not(.dash-card-highlight *).text-white\/80 {
   color: hsl(215 16% 25%) !important;
 }
-.dashboard-light .text-white\/70 {
+.dashboard-light *:not(.dash-card-highlight *).text-white\/70 {
   color: hsl(215 16% 32%) !important;
 }
-.dashboard-light .text-white\/60 {
+.dashboard-light *:not(.dash-card-highlight *).text-white\/60 {
   color: hsl(215 16% 38%) !important;
 }
-.dashboard-light .text-white\/50 {
+.dashboard-light *:not(.dash-card-highlight *).text-white\/50 {
   color: hsl(215 16% 45%) !important;
 }
-.dashboard-light .text-white\/40 {
+.dashboard-light *:not(.dash-card-highlight *).text-white\/40 {
   color: hsl(215 16% 52%) !important;
 }
-.dashboard-light .text-white\/30 {
+.dashboard-light *:not(.dash-card-highlight *).text-white\/30 {
   color: hsl(215 16% 62%) !important;
 }
-.dashboard-light .text-white\/20 {
+.dashboard-light *:not(.dash-card-highlight *).text-white\/20 {
   color: hsl(215 16% 72%) !important;
 }
-.dashboard-light .text-white\/10 {
+.dashboard-light *:not(.dash-card-highlight *).text-white\/10 {
   color: hsl(215 16% 82%) !important;
 }
 
