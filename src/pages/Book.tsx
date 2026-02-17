@@ -10,8 +10,9 @@ const Book = () => {
   const { slug } = useParams<{ slug: string }>();
   const [selectedService, setSelectedService] = useState<string | null>(null);
 
-  const handleSelect = (id: string, title: string) => {
+  const handleSelect = (id: string, title: string, price: number) => {
     setSelectedService(id);
+    sessionStorage.setItem("booking_service", JSON.stringify({ id, title, price }));
     setTimeout(
       () =>
         navigate(
@@ -54,7 +55,7 @@ const Book = () => {
               {services.map((service, i) => (
                 <FadeIn key={service.id} delay={100 + i * 80}>
                   <button
-                    onClick={() => handleSelect(service.id, service.title)}
+                    onClick={() => handleSelect(service.id, service.title, service.price)}
                     className={`group relative w-full text-left rounded-2xl p-6 md:p-7 min-h-[200px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 bg-card border border-border ${
                       selectedService === service.id
                         ? "ring-2 ring-accent shadow-lg"

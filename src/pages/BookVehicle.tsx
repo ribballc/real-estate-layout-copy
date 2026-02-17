@@ -133,7 +133,10 @@ const BookVehicle = () => {
                 Back
               </button>
               <button
-                onClick={() => navigate(`/site/${slug}/book/options?service=${serviceId}&name=${encodeURIComponent(serviceName)}`)}
+                onClick={() => {
+                  sessionStorage.setItem("booking_vehicle", JSON.stringify({ year, make, model }));
+                  navigate(`/site/${slug}/book/options?service=${serviceId}&name=${encodeURIComponent(serviceName)}`);
+                }}
                 disabled={!canContinue}
                 className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold min-h-[44px] transition-all ${
                   canContinue

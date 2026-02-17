@@ -14,6 +14,7 @@ import BookVehicle from "./pages/BookVehicle";
 import BookAddOns from "./pages/BookAddOns";
 import BookOptions from "./pages/BookOptions";
 import BookBooking from "./pages/BookBooking";
+import BookCheckout from "./pages/BookCheckout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/site/:slug/book/options" element={<BookOptions />} />
             <Route path="/site/:slug/book/add-ons" element={<BookAddOns />} />
             <Route path="/site/:slug/book/booking" element={<BookBooking />} />
+            <Route path="/site/:slug/book/checkout" element={<BookCheckout />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
