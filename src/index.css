@@ -343,10 +343,51 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(16px);
 }
+.dashboard-light .dash-card {
+  background: hsl(0, 0%, 100%);
+  border: 1px solid hsl(214, 20%, 90%);
+  box-shadow: 0 1px 4px hsla(215, 30%, 15%, 0.06);
+  backdrop-filter: none;
+}
 .dash-card:hover {
   border-color: hsla(217, 91%, 60%, 0.12) !important;
   box-shadow: 0 8px 32px hsla(217, 91%, 60%, 0.06), 0 0 0 1px hsla(217, 91%, 60%, 0.06);
   transform: translateY(-1px);
+}
+
+/* Dashboard card label / value / sublabel */
+.dashboard-dark .dash-card-label {
+  color: hsla(0, 0%, 100%, 0.55);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.dashboard-dark .dash-card-value {
+  color: hsl(0, 0%, 100%);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.dashboard-dark .dash-card-sublabel {
+  color: hsla(0, 0%, 100%, 0.4);
+  font-size: 0.75rem;
+}
+
+.dashboard-light .dash-card-label {
+  color: hsl(215, 20%, 45%);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.dashboard-light .dash-card-value {
+  color: hsl(215, 30%, 12%);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.dashboard-light .dash-card-sublabel {
+  color: hsl(215, 20%, 55%);
+  font-size: 0.75rem;
 }
 
 /* ═══════════════════════════════════════════════════════
