@@ -350,6 +350,78 @@
 }
 
 /* ═══════════════════════════════════════════════════════
+   Dashboard typography system
+   ═══════════════════════════════════════════════════════ */
+
+/* Body / paragraph text */
+.dashboard-dark p,
+.dashboard-dark .dash-body {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: hsla(0, 0%, 100%, 0.85);
+}
+.dashboard-light p,
+.dashboard-light .dash-body {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: hsl(215, 25%, 15%);
+}
+
+/* Labels / captions */
+.dashboard-dark .dash-label,
+.dashboard-dark label,
+.dashboard-dark caption {
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  color: hsla(0, 0%, 100%, 0.5);
+}
+.dashboard-light .dash-label,
+.dashboard-light label,
+.dashboard-light caption {
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  color: hsla(215, 25%, 15%, 0.5);
+}
+
+/* Card values / big numbers */
+.dashboard-dark .dash-value,
+.dashboard-light .dash-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Page titles */
+.dashboard-dark .dash-title,
+.dashboard-light .dash-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+@media (min-width: 768px) {
+  .dashboard-dark .dash-title,
+  .dashboard-light .dash-title {
+    font-size: 1.5rem;
+  }
+}
+
+/* Section headings inside cards */
+.dashboard-dark .dash-section-heading {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: hsla(0, 0%, 100%, 0.6);
+}
+.dashboard-light .dash-section-heading {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: hsla(215, 25%, 15%, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════
    Dashboard light mode — comprehensive utility overrides
    Covers all text-white/*, bg-white/*, border-white/* patterns
    used across dashboard content components.
