@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 const pageTitles: Record<string, { title: string; description: string; icon: any }> = {
-  "/dashboard": { title: "Home", description: "Overview of your business performance", icon: TrendingUp },
+  "/dashboard": { title: "Dashboard", description: "Overview of your business performance", icon: TrendingUp },
   "/dashboard/business": { title: "Business Info", description: "Manage your brand, address and service areas", icon: Building2 },
   "/dashboard/calendar": { title: "Calendar", description: "View and manage your bookings", icon: CalendarDays },
   "/dashboard/customers": { title: "Customers", description: "Manage your customer relationships", icon: Users },
@@ -23,8 +23,7 @@ const pageTitles: Record<string, { title: string; description: string; icon: any
   "/dashboard/account": { title: "Account", description: "Manage your account settings", icon: Settings },
 };
 
-// Extra searchable items that live inside other pages
-  const extraSearchItems = [
+const extraSearchItems = [
   { url: "/dashboard/services#add-ons", title: "Add-ons", description: "Create add-on packages for services", icon: PuzzleIcon },
   { url: "/dashboard/business#social", title: "Social Media", description: "Connect your social profiles", icon: Share2 },
   { url: "/dashboard/business#hours", title: "Business Hours", description: "Set your weekly schedule", icon: Clock },
@@ -42,17 +41,15 @@ const DashboardLayout = () => {
   const page = pageTitles[location.pathname] || pageTitles["/dashboard"];
   const PageIcon = page.icon;
   const [dashboardTheme, setDashboardTheme] = useState<"dark" | "light">(() => {
-    return (localStorage.getItem("dashboard-theme") as "dark" | "light") || "dark";
+    return (localStorage.getItem("dashboard-theme") as "dark" | "light") || "light";
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const chatbotRef = useRef<SupportChatbotHandle>(null);
   const [trialActive, setTrialActive] = useState<boolean | null>(null);
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
-
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Check onboarding + trial status + admin role
   useEffect(() => {
     if (!user) return;
     Promise.all([
@@ -65,44 +62,28 @@ const DashboardLayout = () => {
     });
   }, [user]);
 
-  // After checkout success or on load, verify subscription with Stripe and update trial_active
   useEffect(() => {
     if (!user) return;
     const params = new URLSearchParams(location.search);
     const isPostCheckout = params.get("checkout") === "success";
-
     const checkSubscription = async () => {
       try {
         const { data, error } = await supabase.functions.invoke("check-subscription");
         if (!error && data?.subscribed) {
           setTrialActive(true);
-          // Clean up URL param
-          if (isPostCheckout) {
-            navigate("/dashboard", { replace: true });
-          }
+          if (isPostCheckout) navigate("/dashboard", { replace: true });
         }
       } catch (e) {
         console.error("Failed to check subscription:", e);
       }
     };
-
-    // Always check on mount; also check if returning from checkout
-    if (isPostCheckout) {
-      checkSubscription();
-    } else {
-      // Light check on every dashboard load
-      checkSubscription();
-    }
+    checkSubscription();
   }, [user, location.search, navigate]);
 
-  // Redirect to onboarding if not complete
   useEffect(() => {
-    if (onboardingComplete === false) {
-      navigate("/onboarding", { replace: true });
-    }
+    if (onboardingComplete === false) navigate("/onboarding", { replace: true });
   }, [onboardingComplete, navigate]);
 
-  // Pages accessible without trial
   const UNLOCKED_PATHS = ["/dashboard", "/dashboard/business", "/dashboard/account"];
   const isLocked = !isAdmin && trialActive === false && !UNLOCKED_PATHS.includes(location.pathname);
 
@@ -119,18 +100,17 @@ const DashboardLayout = () => {
     : [];
 
   const isDark = dashboardTheme === "dark";
-  const bg = isDark ? "linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 14%) 100%)" : "linear-gradient(135deg, hsl(210 40% 96%) 0%, hsl(210 40% 98%) 100%)";
-  const textPrimary = isDark ? "text-white" : "text-gray-900";
-  const textSecondary = isDark ? "text-white/40" : "text-gray-500";
-  const textMuted = isDark ? "text-white/30" : "text-gray-400";
-  const borderColor = isDark ? "border-white/10" : "border-gray-200";
-  const cardBg = isDark ? "bg-white/[0.03]" : "bg-white";
-  const inputBg = isDark ? "bg-white/5 border-white/10 text-white" : "bg-white border-gray-200 text-gray-900";
-  const triggerClass = isDark ? "text-white/60 hover:text-white" : "text-gray-500 hover:text-gray-900";
 
   return (
     <SidebarProvider>
-      <div className={`min-h-screen flex w-full ${isDark ? "" : "dashboard-light"}`} style={{ background: bg }}>
+      <div
+        className={`min-h-screen flex w-full ${isDark ? "" : "dashboard-light"}`}
+        style={{
+          background: isDark
+            ? "linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 14%) 100%)"
+            : "hsl(210, 40%, 98%)",
+        }}
+      >
         <DashboardSidebar
           dashboardTheme={dashboardTheme}
           onToggleTheme={toggleTheme}
@@ -139,48 +119,65 @@ const DashboardLayout = () => {
         />
         <main className="flex-1 flex flex-col min-w-0">
           {/* Header bar */}
-          <header className={`flex flex-col shrink-0 border-b ${borderColor}`} style={{ backdropFilter: "blur(20px)" }}>
+          <header
+            className={`flex flex-col shrink-0 border-b ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}
+            style={{
+              background: isDark ? "hsla(215,50%,10%,0.8)" : "hsl(0, 0%, 100%)",
+              backdropFilter: "blur(20px)",
+            }}
+          >
             <div className="h-14 flex items-center gap-3 px-4 md:px-8">
-              <SidebarTrigger className={triggerClass} />
+              <SidebarTrigger className={isDark ? "text-white/60 hover:text-white" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)]"} />
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div
                   className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
                   style={{
-                    background: "linear-gradient(135deg, hsla(217,91%,60%,0.08), hsla(213,94%,68%,0.04))",
-                    border: "1px solid hsla(217,91%,60%,0.12)",
+                    background: isDark ? "hsla(217,91%,60%,0.08)" : "hsl(217,91%,96%)",
+                    border: `1px solid ${isDark ? "hsla(217,91%,60%,0.12)" : "hsl(217,91%,90%)"}`,
                   }}
                 >
-                  <PageIcon className="w-4 h-4 text-accent/60" strokeWidth={1.5} />
+                  <PageIcon className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
                 </div>
                 <div className="min-w-0">
-                  <h1 className={`${textPrimary} font-semibold text-sm truncate tracking-tight`}>{page.title}</h1>
-                  <p className={`${textSecondary} text-xs hidden sm:block`}>{page.description}</p>
+                  <h1 className={`font-semibold text-sm truncate tracking-tight ${isDark ? "text-white" : "text-[hsl(215,25%,12%)]"}`}>
+                    {page.title}
+                  </h1>
+                  <p className={`text-xs hidden sm:block ${isDark ? "text-white/40" : "text-[hsl(215,16%,55%)]"}`}>
+                    {page.description}
+                  </p>
                 </div>
               </div>
               {/* Desktop search */}
               <div className="relative hidden sm:block w-64">
-                <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${textMuted}`} />
+                <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-white/30" : "text-[hsl(215,16%,65%)]"}`} />
                 <Input
                   value={searchQuery}
                   onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
                   onFocus={() => setSearchOpen(true)}
                   onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
                   placeholder="Search anything..."
-                  className={`pl-10 h-9 text-sm rounded-xl ${inputBg} focus-visible:ring-accent`}
-                  style={{ backdropFilter: "blur(10px)" }}
+                  className={`pl-10 h-9 text-sm rounded-xl ${
+                    isDark
+                      ? "bg-white/5 border-white/10 text-white"
+                      : "bg-[hsl(210,40%,98%)] border-[hsl(214,20%,90%)] text-[hsl(215,25%,12%)]"
+                  } focus-visible:ring-[hsl(217,91%,60%)]`}
                 />
                 {searchOpen && searchResults.length > 0 && (
-                  <div className={`absolute top-full mt-1 left-0 right-0 rounded-xl border ${borderColor} ${isDark ? "bg-[hsl(215,50%,10%)]" : "bg-white"} shadow-2xl z-50 overflow-hidden`} style={{ backdropFilter: "blur(20px)" }}>
+                  <div className={`absolute top-full mt-1 left-0 right-0 rounded-xl border shadow-xl z-50 overflow-hidden ${
+                    isDark ? "border-white/10 bg-[hsl(215,50%,10%)]" : "border-[hsl(214,20%,90%)] bg-white"
+                  }`}>
                     {searchResults.map(r => (
                       <button
                         key={r.url}
                         onMouseDown={() => { navigate(r.url); setSearchQuery(""); setSearchOpen(false); }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm ${isDark ? "hover:bg-white/[0.04] text-white/70" : "hover:bg-gray-50 text-gray-700"} transition-colors`}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
+                          isDark ? "hover:bg-white/[0.04] text-white/70" : "hover:bg-[hsl(217,91%,97%)] text-[hsl(215,16%,40%)]"
+                        }`}
                       >
-                        <r.icon className="w-4 h-4 text-accent" />
+                        <r.icon className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} />
                         <div className="text-left">
                           <span className="font-medium">{r.title}</span>
-                          <span className={`block text-xs ${textSecondary}`}>{r.description}</span>
+                          <span className={`block text-xs ${isDark ? "text-white/40" : "text-[hsl(215,16%,55%)]"}`}>{r.description}</span>
                         </div>
                       </button>
                     ))}
@@ -190,27 +187,33 @@ const DashboardLayout = () => {
             </div>
             {/* Mobile search */}
             <div className="sm:hidden px-4 pb-3 relative">
-              <Search className={`absolute left-7 top-1/2 -translate-y-1/2 w-4 h-4 ${textMuted} z-10`} />
+              <Search className={`absolute left-7 top-1/2 -translate-y-1/2 w-4 h-4 z-10 ${isDark ? "text-white/30" : "text-[hsl(215,16%,65%)]"}`} />
               <Input
                 value={searchQuery}
                 onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
                 onFocus={() => setSearchOpen(true)}
                 onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
                 placeholder="Search anything..."
-                className={`pl-10 h-11 text-sm ${inputBg} focus-visible:ring-accent`}
+                className={`pl-10 h-11 text-sm ${
+                  isDark ? "bg-white/5 border-white/10 text-white" : "bg-[hsl(210,40%,98%)] border-[hsl(214,20%,90%)] text-[hsl(215,25%,12%)]"
+                } focus-visible:ring-[hsl(217,91%,60%)]`}
               />
               {searchOpen && searchResults.length > 0 && (
-                <div className={`absolute top-full mt-1 left-4 right-4 rounded-lg border ${borderColor} ${isDark ? "bg-[hsl(215,50%,12%)]" : "bg-white"} shadow-xl z-50 overflow-hidden`}>
+                <div className={`absolute top-full mt-1 left-4 right-4 rounded-lg border shadow-xl z-50 overflow-hidden ${
+                  isDark ? "border-white/10 bg-[hsl(215,50%,12%)]" : "border-[hsl(214,20%,90%)] bg-white"
+                }`}>
                   {searchResults.map(r => (
                     <button
                       key={r.url}
                       onMouseDown={() => { navigate(r.url); setSearchQuery(""); setSearchOpen(false); }}
-                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm ${isDark ? "hover:bg-white/5 text-white/70" : "hover:bg-gray-50 text-gray-700"} transition-colors`}
+                      className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
+                        isDark ? "hover:bg-white/5 text-white/70" : "hover:bg-[hsl(217,91%,97%)] text-[hsl(215,16%,40%)]"
+                      }`}
                     >
-                      <r.icon className="w-4 h-4 text-accent" />
+                      <r.icon className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} />
                       <div className="text-left">
                         <span className="font-medium">{r.title}</span>
-                        <span className={`block text-xs ${textSecondary}`}>{r.description}</span>
+                        <span className={`block text-xs ${isDark ? "text-white/40" : "text-[hsl(215,16%,55%)]"}`}>{r.description}</span>
                       </div>
                     </button>
                   ))}
@@ -226,8 +229,8 @@ const DashboardLayout = () => {
           {isLocked && <TrialLockOverlay isDark={isDark} />}
 
           {/* Dashboard Footer */}
-          <footer className={`border-t ${borderColor} px-4 md:px-8 py-4 shrink-0`}>
-            <div className={`flex flex-col sm:flex-row items-center justify-between gap-2 ${textMuted} text-xs`}>
+          <footer className={`border-t px-4 md:px-8 py-4 shrink-0 ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}>
+            <div className={`flex flex-col sm:flex-row items-center justify-between gap-2 text-xs ${isDark ? "text-white/30" : "text-[hsl(215,16%,60%)]"}`}>
               <span>© {new Date().getFullYear()} Darker. All rights reserved.</span>
               <div className="flex items-center gap-4">
                 <a href="mailto:support@darker.com" className="hover:opacity-70 transition-colors">Support</a>
