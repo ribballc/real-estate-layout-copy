@@ -144,7 +144,7 @@ const WebsiteCopyEditor = () => {
   return (
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-white">Website Copy</h2>
+        <h2 className="dash-page-title text-white">Website Copy</h2>
         <Button
           onClick={handleSave}
           disabled={saving}

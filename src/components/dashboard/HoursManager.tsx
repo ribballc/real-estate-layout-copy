@@ -57,7 +57,7 @@ const HoursManager = () => {
 
   return (
     <div className="max-w-2xl">
-      <h2 className="text-2xl font-bold text-white mb-6">Business Hours</h2>
+      <h2 className="dash-page-title text-white mb-6">Business Hours</h2>
       <div className="space-y-3">
         {hours.map((h, i) => (
           <div key={i} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">

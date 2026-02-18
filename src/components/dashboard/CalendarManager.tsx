@@ -321,7 +321,7 @@ const CalendarManager = () => {
     <div className="max-w-5xl">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white">Calendar</h2>
+          <h2 className="dash-page-title text-white">Calendar</h2>
           <p className="text-white/40 text-sm mt-1">View and manage your bookings</p>
         </div>
         <div className="flex items-center gap-3">
@@ -336,7 +336,7 @@ const CalendarManager = () => {
 
       {/* Today's Schedule Summary */}
       <Collapsible open={todayOpen} onOpenChange={setTodayOpen} className="mb-6">
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] overflow-hidden">
+        <div className="rounded-[14px] border border-white/10 bg-white/[0.03] overflow-hidden">
           <CollapsibleTrigger className="w-full">
             {isMobile && !todayOpen ? (
               <div className="flex items-center justify-between px-4 py-3">
@@ -521,7 +521,7 @@ const CalendarManager = () => {
               ) : (
                 <div className="space-y-3">
                   {selectedBookings.map(b => (
-                    <div key={b.id} className={`rounded-lg border p-3.5 space-y-2.5 transition-colors ${statusCardColors[b.status] || statusCardColors.confirmed}`}>
+                    <div key={b.id} className={`rounded-lg border p-3 space-y-2 transition-colors ${statusCardColors[b.status] || statusCardColors.confirmed}`}>
                       {/* Header: Name - Time, status dropdown, X */}
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0 flex-1">
@@ -529,7 +529,7 @@ const CalendarManager = () => {
                             {b.customer_name || "Booking"} — {formatTimeShort(b.booking_time)}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 shrink-0">
+                        <div className="flex items-center gap-2 shrink-0">
                           {/* Status dropdown */}
                           <div className="relative" onClick={e => e.stopPropagation()}>
                             <button
@@ -553,7 +553,6 @@ const CalendarManager = () => {
                           </button>
                         </div>
                       </div>
-                      {/* Details */}
                       <div className="space-y-1 text-xs">
                         <div className="flex items-center gap-2 text-white/50"><Clock className="w-3 h-3" /> {formatTimeShort(b.booking_time)} · {b.duration_minutes}min{b.service_title && <> · {b.service_title}</>}</div>
                         {b.notes && b.notes.startsWith("Vehicle:") && (
@@ -564,15 +563,14 @@ const CalendarManager = () => {
                         {b.service_price > 0 && <div className="flex items-center gap-2 text-white/50"><DollarSign className="w-3 h-3" /> ${b.service_price}</div>}
                         {b.notes && <div className="flex items-start gap-2 text-white/40"><FileText className="w-3 h-3 mt-0.5" /> {b.notes.startsWith("Vehicle:") ? b.notes.split("\n").slice(1).join("\n") : b.notes}</div>}
                       </div>
-                      {/* Contact buttons */}
-                      <div className="flex gap-2 pt-0.5">
+                      <div className="flex gap-2 pt-1">
                         {b.customer_phone && (
-                          <a href={`tel:${b.customer_phone}`} className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/25 transition-colors">
+                          <a href={`tel:${b.customer_phone}`} className="flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/25 transition-colors">
                             <PhoneCall className="w-3 h-3" /> Call
                           </a>
                         )}
                         {b.customer_email && (
-                          <a href={`mailto:${b.customer_email}`} className="flex items-center gap-1.5 text-[11px] px-3 py-1.5 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/20 hover:bg-blue-500/25 transition-colors">
+                          <a href={`mailto:${b.customer_email}`} className="flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/20 hover:bg-blue-500/25 transition-colors">
                             <Mail className="w-3 h-3" /> Email
                           </a>
                         )}
@@ -596,8 +594,8 @@ const CalendarManager = () => {
       </div>
 
       {/* Marketing CTA */}
-      <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-6 text-center">
-        <h3 className="text-white font-semibold text-lg mb-2">Need Help Getting Bookings?</h3>
+      <div className="mt-6 dash-card p-6 text-center">
+        <h3 className="dash-card-title text-white mb-2">Need Help Getting Bookings?</h3>
         <p className="text-white/40 text-sm mb-4">Let our team help you attract more customers and fill your calendar.</p>
         <a href="mailto:marketing@darker.com?subject=Marketing Help" className="dash-btn dash-btn-primary dash-btn-lg">
           Contact Our Marketing Team

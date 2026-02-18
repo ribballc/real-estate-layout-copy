@@ -286,7 +286,7 @@ const JobsManager = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white">Jobs</h2>
+          <h2 className="dash-page-title text-white">Jobs</h2>
           <p className="text-white/40 text-sm mt-1">Manage your work orders</p>
         </div>
         <button onClick={() => setShowAddModal(true)} className="dash-btn dash-btn-primary dash-btn-sm">
@@ -302,12 +302,12 @@ const JobsManager = () => {
               key={col.id}
               onDragOver={handleDragOver}
               onDrop={e => handleDrop(e, col.id)}
-              className="flex flex-col rounded-xl border min-h-[400px]"
+              className="flex flex-col rounded-[14px] border min-h-[400px]"
               style={{ borderColor: "hsla(0, 0%, 100%, 0.08)", background: "hsla(215, 50%, 8%, 0.3)" }}
             >
               {/* Column header */}
               <div
-                className="flex items-center justify-between px-4 py-3 rounded-t-xl border-b"
+                className="flex items-center justify-between px-4 py-3 rounded-t-[14px] border-b"
                 style={{ background: col.bg, borderColor: col.border }}
               >
                 <span className="font-semibold text-sm" style={{ color: col.color }}>{col.label}</span>
@@ -353,7 +353,7 @@ const JobsManager = () => {
                 {columnBookings[COLUMNS[mobileCol].id].length}
               </span>
               {/* Dots */}
-              <div className="flex items-center justify-center gap-1.5 mt-2">
+              <div className="flex items-center justify-center gap-2 mt-2">
                 {COLUMNS.map((_, i) => (
                   <button
                     key={i}
@@ -412,7 +412,7 @@ const JobsManager = () => {
                   <div>
                     <h3 className="text-white font-bold text-lg">{selectedJob.customer_name || "Job"}</h3>
                     <span
-                      className="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                     className="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full"
                       style={{ background: col.bg, color: col.color, border: `1px solid ${col.border}` }}
                     >
                       {col.label}
@@ -424,7 +424,7 @@ const JobsManager = () => {
                 </div>
 
                 {/* Details */}
-                <div className="space-y-2.5">
+                <div className="space-y-2">
                   <DetailRow icon={<FileText className="w-3.5 h-3.5" />} label={selectedJob.service_title} />
                   {vehicle && <DetailRow icon={<User className="w-3.5 h-3.5" />} label={vehicle} />}
                   <DetailRow

@@ -106,20 +106,20 @@ const AccountSettings = () => {
 
   return (
     <div className="max-w-md">
-      <h2 className="text-2xl font-bold text-white mb-6">Account Settings</h2>
+      <h2 className="dash-page-title text-white mb-6">Account Settings</h2>
 
       <div className="flex flex-col gap-4">
       {/* Current Email */}
       <div className="dash-card space-y-4">
         <div>
-          <Label className="text-white/50 text-xs">Current Email</Label>
+          <Label className="text-sm font-medium text-white/75">Current Email</Label>
           <p className="text-white text-sm mt-1">{user?.email}</p>
         </div>
       </div>
 
       {/* Manage Subscription */}
       <div className="dash-card">
-        <h3 className="text-lg font-semibold text-white mb-2">Subscription & Billing</h3>
+        <h3 className="dash-card-title text-white mb-2">Subscription & Billing</h3>
         <p className="text-white/50 text-sm mb-4">Manage your plan, payment method, and invoices.</p>
         <div className="flex items-center gap-3">
           <Button
@@ -150,7 +150,7 @@ const AccountSettings = () => {
       <div className="dash-card">
         <div className="flex items-center gap-3 mb-3">
           <Globe className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} />
-          <h3 className="text-lg font-semibold text-white">Custom Domain</h3>
+          <h3 className="dash-card-title text-white">Custom Domain</h3>
           <span className="dash-badge" style={{ background: "hsla(217,91%,60%,0.15)", color: "hsl(217,91%,60%)" }}>
             COMING SOON
           </span>
@@ -174,7 +174,7 @@ const AccountSettings = () => {
       {/* Coming Soon Features */}
       {!flagsLoading && comingSoonFlags.length > 0 && (
         <div className="dash-card">
-          <h3 className="text-lg font-semibold text-white mb-4">Upcoming Features</h3>
+          <h3 className="dash-card-title text-white mb-4">Upcoming Features</h3>
           <div className="space-y-3">
             {comingSoonFlags.map(flag => {
               const isOn = waitlistToggles[flag.flag_name] ?? false;
@@ -209,10 +209,10 @@ const AccountSettings = () => {
 
       {/* Change Email */}
       <div className="dash-card">
-        <h3 className="text-lg font-semibold text-white mb-4">Change Email</h3>
+        <h3 className="dash-card-title text-white mb-4">Change Email</h3>
         <form onSubmit={handleChangeEmail} className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-white/70 text-sm">New Email Address</Label>
+            <Label className="text-sm font-medium text-white/75">New Email Address</Label>
             <Input
               type="email"
               value={newEmail}
@@ -230,10 +230,10 @@ const AccountSettings = () => {
 
       {/* Change Password */}
       <div className="dash-card">
-        <h3 className="text-lg font-semibold text-white mb-4">Change Password</h3>
+        <h3 className="dash-card-title text-white mb-4">Change Password</h3>
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div className="space-y-2">
-            <Label className="text-white/70 text-sm">New Password</Label>
+            <Label className="text-sm font-medium text-white/75">New Password</Label>
             <Input
               type="password"
               value={newPassword}
@@ -254,14 +254,14 @@ const AccountSettings = () => {
       <div className="dash-card" style={{ borderColor: "hsla(0, 84%, 60%, 0.2)", background: "hsla(0, 84%, 60%, 0.05)" }}>
         <div className="flex items-center gap-2 mb-3">
           <AlertTriangle className="w-5 h-5 text-red-400" />
-          <h3 className="text-lg font-semibold text-red-400">Delete My Account</h3>
+          <h3 className="dash-card-title text-red-400">Delete My Account</h3>
         </div>
         <p className="text-white/50 text-sm mb-4">
           This will cancel your subscription, anonymize your data, and sign you out. Your data will be permanently purged after 30 days. This action cannot be undone.
         </p>
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label className="text-white/50 text-xs">Type DELETE to confirm</Label>
+            <Label className="text-sm font-medium text-white/75">Type DELETE to confirm</Label>
             <Input
               value={deleteConfirm}
               onChange={(e) => setDeleteConfirm(e.target.value)}

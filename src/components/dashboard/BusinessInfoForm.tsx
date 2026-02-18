@@ -101,14 +101,14 @@ const BusinessInfoForm = () => {
 
   const field = (label: string, key: keyof typeof form, type = "text", placeholder = "") => (
     <div className="space-y-2">
-      <Label className="text-white/70 text-sm">{label}</Label>
+      <Label className="text-sm font-medium text-white/75">{label}</Label>
       <Input type={type} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} className="h-11 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent" />
     </div>
   );
 
   const AccentPicker = () => (
     <div className="space-y-3">
-      <Label className="text-white/70 text-sm">Accent Color</Label>
+      <Label className="text-sm font-medium text-white/75">Accent Color</Label>
       <div className="flex items-center gap-3 flex-wrap">
         {ACCENT_COLORS.map(c => (
           <button
@@ -134,14 +134,14 @@ const BusinessInfoForm = () => {
 
   return (
     <div className="max-w-2xl">
-      <h2 className="text-2xl font-bold text-white mb-1">Business Info</h2>
+      <h2 className="dash-page-title text-white mb-1">Business Info</h2>
       <p className="text-white/40 text-sm mb-6">Manage your business details and branding</p>
       <div className="space-y-5">
         {/* Logo */}
         <div className="space-y-2">
-          <Label className="text-white/70 text-sm">Logo</Label>
+          <Label className="text-sm font-medium text-white/75">Logo</Label>
           <div className="flex items-center gap-4">
-            {logoUrl && <img src={logoUrl} alt="Logo" className="w-16 h-16 rounded-xl object-cover border border-white/10" />}
+            {logoUrl && <img src={logoUrl} alt="Logo" className="w-16 h-16 rounded-lg object-cover border border-white/10" />}
             <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 transition-colors">
               <Upload className="w-4 h-4" /> Upload Logo
               <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
@@ -157,14 +157,14 @@ const BusinessInfoForm = () => {
 
         {field("Business Name", "business_name", "text", "Your Business Name")}
         <div className="space-y-2">
-          <Label className="text-white/70 text-sm">Tagline</Label>
-          <Textarea value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} placeholder="A short description of your business" className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent" />
+          <Label className="text-sm font-medium text-white/75">Tagline</Label>
+          <Textarea value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} placeholder="A short description of your business" className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent min-h-[80px]" />
         </div>
         {field("Email", "email", "email", "contact@business.com")}
         {field("Phone", "phone", "tel", "(555) 123-4567")}
 
         {/* Brand Colors & Theme */}
-        <div className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-5">
+        <div className="rounded-[14px] border border-white/10 bg-white/5 p-5 space-y-5">
           <div className="flex items-center gap-2">
             <Palette className="w-5 h-5 text-accent" />
             <div>
@@ -175,13 +175,13 @@ const BusinessInfoForm = () => {
 
           {/* Theme Mode */}
           <div className="space-y-3">
-            <Label className="text-white/70 text-sm">Theme Mode</Label>
+            <Label className="text-sm font-medium text-white/75">Theme Mode</Label>
             <div className="grid grid-cols-2 gap-3">
               {(["light", "dark"] as const).map(mode => (
                 <button
                   key={mode}
                   onClick={() => setThemeMode(mode)}
-                  className={`rounded-xl border p-4 text-left transition-all ${themeMode === mode ? "border-accent bg-accent/10 ring-1 ring-accent/30" : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"}`}
+                  className={`rounded-[14px] border p-4 text-left transition-all ${themeMode === mode ? "border-accent bg-accent/10 ring-1 ring-accent/30" : "border-white/10 bg-white/[0.03] hover:bg-white/[0.06]"}`}
                 >
                   <div className={`w-full h-16 rounded-lg mb-3 border ${mode === "light" ? "bg-white border-gray-200" : "bg-[hsl(215,50%,10%)] border-white/10"}`}>
                     <div className="p-2 flex gap-1.5">

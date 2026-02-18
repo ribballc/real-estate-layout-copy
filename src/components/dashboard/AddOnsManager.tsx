@@ -150,7 +150,7 @@ const AddOnsManager = () => {
 
   return (
     <div className="max-w-2xl">
-      <h2 className="text-2xl font-bold text-white mb-6">Add-ons</h2>
+      <h2 className="dash-page-title text-white mb-6">Add-ons</h2>
       {services.length === 0 ? (
         <p className="text-white/30 text-sm">Create services first to add add-ons.</p>
       ) : (
