@@ -80,14 +80,14 @@ const HeroSection = () => {
             {/* Headline */}
             <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em]">
               <span className="block font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
-                Stop Losing Bookings
+                Your Shop Is Built Different.
               </span>
               <span className="block font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.5s forwards' }}>
-                To a Phone You Can't
+                Your Booking System
               </span>
               <span className="block font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
                 <span className="hidden md:inline-block relative font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
-                  Always Answer.
+                  Should Be Too. Free.
                   <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.2s forwards' }}>
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#greenGlow)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.2s forwards' }} />
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.2s forwards' }} />
@@ -103,7 +103,7 @@ const HeroSection = () => {
               </span>
               <span className="block md:hidden font-heading text-[30px] font-semibold italic relative" style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.7s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
                 <span className="relative inline-block">
-                  Always Answer.
+                  Should Be Too. Free.
                   <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.4s forwards' }}>
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#greenGlowMobile)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.4s forwards' }} />
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.4s forwards' }} />
@@ -124,7 +124,7 @@ const HeroSection = () => {
               className="mt-5 text-[15px] md:text-xl leading-[1.7] max-w-[560px]"
               style={{ color: 'hsla(0, 0%, 100%, 0.7)', opacity: 0, animation: 'heroBlurIn 0.5s ease-out 1.0s forwards' }}
             >
-              Get a done-for-you website and 24/7 booking system built for your shop. Customers book, pay deposits, and get automatic reminders — while you stay under the hood.
+              Drop your email, fill in your shop info, and your booking site is live in minutes — collecting appointments, deposits, and sending auto-reminders while you stay in the bay. No tech skills. No card. Car guys don't leave money in the lot.
             </p>
 
             {/* Email form + CTA */}
