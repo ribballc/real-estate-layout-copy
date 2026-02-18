@@ -3,6 +3,7 @@ import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import TrialLockOverlay from "./TrialLockOverlay";
 import MobileBottomNav from "./MobileBottomNav";
 import CommandBar from "./CommandBar";
+import NotificationBell from "./NotificationBell";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState, useRef } from "react";
@@ -170,7 +171,10 @@ const DashboardLayout = () => {
               {/* Mobile: Logo left, hamburger right */}
               <div className="flex md:hidden items-center justify-between w-full">
                 <img src={isDark ? darkerLogo : darkerLogoDark} alt="Darker" className="h-7" />
-                <button onClick={() => setMobileOpen(true)} className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`}><Menu className="w-5 h-5" /></button>
+                <div className="flex items-center gap-1">
+                  <NotificationBell isDark={isDark} />
+                  <button onClick={() => setMobileOpen(true)} className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`}><Menu className="w-5 h-5" /></button>
+                </div>
               </div>
               {/* Desktop: standard header */}
               <div className="hidden md:flex items-center gap-3 flex-1 min-w-0">
@@ -208,6 +212,7 @@ const DashboardLayout = () => {
                   ⌘K
                 </kbd>
               </button>
+              <NotificationBell isDark={isDark} />
             </div>
           </header>
 
