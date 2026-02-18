@@ -1,6 +1,5 @@
 // Meta Pixel utility — safe wrapper for browser-side events
-// TODO: Replace with your actual Meta Pixel ID
-export const PIXEL_ID = 'PIXEL_ID_HERE'
+export const PIXEL_ID = '686595997751957'
 
 /**
  * Safe fbq wrapper — never throws if pixel not loaded or blocked
