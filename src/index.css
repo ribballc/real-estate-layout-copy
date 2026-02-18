@@ -1271,3 +1271,9 @@
 .intro-banner-out {
   animation: introBannerOut 0.3s ease-in forwards;
 }
+
+/* Locked page pulse */
+@keyframes lockedPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}

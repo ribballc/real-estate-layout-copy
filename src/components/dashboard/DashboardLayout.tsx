@@ -1,6 +1,6 @@
 import DashboardSidebar from "./DashboardSidebar";
 import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
-import TrialLockOverlay from "./TrialLockOverlay";
+import LockedPageOverlay from "./LockedPageOverlay";
 import MobileBottomNav from "./MobileBottomNav";
 import CommandBar from "./CommandBar";
 import WelcomeModal from "./WelcomeModal";
@@ -227,10 +227,12 @@ const DashboardLayout = () => {
 
           <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
             <PageIntroBanner path={location.pathname} />
-            <Outlet context={{ chatbotRef }} />
+            {isLocked ? (
+              <LockedPageOverlay path={location.pathname} isDark={isDark} />
+            ) : (
+              <Outlet context={{ chatbotRef }} />
+            )}
           </div>
-
-          {isLocked && <TrialLockOverlay isDark={isDark} />}
 
           {/* Dashboard Footer — hidden on mobile where bottom nav shows */}
           <footer className={`hidden md:block border-t px-4 md:px-8 py-4 shrink-0 ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}>
