@@ -39,8 +39,8 @@ const queryClient = new QueryClient();
 
 // Wrapper to pass outlet context (chatbotRef) as prop to WebsitePage
 const WebsitePageRoute = () => {
-  const ctx = useOutletContext<{ chatbotRef?: any } | null>();
-  return <WebsitePage chatbotRef={ctx?.chatbotRef} />;
+  const ctx = useOutletContext<{ chatbotRef?: any; isDark?: boolean } | null>();
+  return <WebsitePage chatbotRef={ctx?.chatbotRef} isDark={ctx?.isDark ?? false} />;
 };
 
 const App = () => (
