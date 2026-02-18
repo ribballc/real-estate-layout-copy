@@ -11,10 +11,41 @@ import {
 import {
   Loader2, Plus, Phone, Mail, Search, User, Car, DollarSign,
   FileText, X, ChevronDown, MoreHorizontal, Calendar, Upload, Building2,
-  Users, TrendingUp, Crown,
+  Users, TrendingUp, Crown, Trash2,
 } from "lucide-react";
 import { format } from "date-fns";
 import CsvImportModal from "./CsvImportModal";
+
+interface VehicleEntry {
+  year: string;
+  make: string;
+  model: string;
+  color: string;
+  plate: string;
+}
+
+const emptyVehicle = (): VehicleEntry => ({ year: "", make: "", model: "", color: "", plate: "" });
+
+function parseVehicles(raw: string): VehicleEntry[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+  } catch { /* legacy plain text */ }
+  // Legacy: plain text like "2024 BMW X5"
+  return raw ? [{ year: "", make: "", model: raw, color: "", plate: "" }] : [];
+}
+
+function serializeVehicles(vehicles: VehicleEntry[]): string {
+  const valid = vehicles.filter(v => v.make || v.model || v.year);
+  return valid.length > 0 ? JSON.stringify(valid) : "";
+}
+
+function formatVehicleShort(v: VehicleEntry): string {
+  const parts = [v.year, v.make, v.model].filter(Boolean);
+  const label = parts.join(" ") || "Unknown";
+  return v.color ? `${label} · ${v.color}` : label;
+}
 
 interface Customer {
   id: string;
@@ -86,7 +117,8 @@ const CustomersManager = () => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showCsvImport, setShowCsvImport] = useState(false);
   const [showGmbImport, setShowGmbImport] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", vehicle: "", notes: "", status: "lead" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", notes: "", status: "lead" });
+  const [formVehicles, setFormVehicles] = useState<VehicleEntry[]>([emptyVehicle()]);
 
   const fetchCustomers = async () => {
     if (!user) return;
@@ -118,12 +150,14 @@ const CustomersManager = () => {
 
   const handleSave = async () => {
     if (!user || !form.name) return;
+    const vehicleStr = serializeVehicles(formVehicles);
+    const payload = { ...form, vehicle: vehicleStr };
     if (editingId) {
-      const { error } = await supabase.from("customers").update(form).eq("id", editingId);
+      const { error } = await supabase.from("customers").update(payload).eq("id", editingId);
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
       toast({ title: "Customer updated!" });
     } else {
-      const { error } = await supabase.from("customers").insert({ user_id: user.id, ...form });
+      const { error } = await supabase.from("customers").insert({ user_id: user.id, ...payload });
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
       toast({ title: "Customer added!" });
     }
@@ -134,13 +168,24 @@ const CustomersManager = () => {
   const resetForm = () => {
     setShowAdd(false);
     setEditingId(null);
-    setForm({ name: "", email: "", phone: "", vehicle: "", notes: "", status: "lead" });
+    setForm({ name: "", email: "", phone: "", notes: "", status: "lead" });
+    setFormVehicles([emptyVehicle()]);
   };
 
   const startEdit = (c: Customer) => {
-    setForm({ name: c.name, email: c.email, phone: c.phone, vehicle: c.vehicle, notes: c.notes, status: c.status });
+    setForm({ name: c.name, email: c.email, phone: c.phone, notes: c.notes, status: c.status });
+    const vehicles = parseVehicles(c.vehicle);
+    setFormVehicles(vehicles.length > 0 ? vehicles : [emptyVehicle()]);
     setEditingId(c.id);
     setShowAdd(true);
+  };
+
+  const updateVehicle = (index: number, field: keyof VehicleEntry, value: string) => {
+    setFormVehicles(prev => prev.map((v, i) => i === index ? { ...v, [field]: value } : v));
+  };
+
+  const removeVehicle = (index: number) => {
+    setFormVehicles(prev => prev.length <= 1 ? [emptyVehicle()] : prev.filter((_, i) => i !== index));
   };
 
   const updateStatus = async (id: string, status: string) => {
@@ -267,64 +312,82 @@ const CustomersManager = () => {
         </div>
       ) : (
         <div className="space-y-2">
-          {filtered.map(c => (
-            <div key={c.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-white/20 transition-colors">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-                    <span className="text-accent font-semibold text-sm">{c.name.charAt(0).toUpperCase()}</span>
+          {filtered.map(c => {
+            const vehicles = parseVehicles(c.vehicle);
+            return (
+              <div key={c.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-white/20 transition-colors">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                      <span className="text-accent font-semibold text-sm">{c.name.charAt(0).toUpperCase()}</span>
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-medium text-sm truncate">{c.name}</span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full border ${statusStyles[c.status] || statusStyles.lead}`}>
+                          {c.status}
+                        </span>
+                      </div>
+                      {/* Vehicle pills */}
+                      {vehicles.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                          {vehicles.length <= 2 ? (
+                            vehicles.map((v, i) => (
+                              <span key={i} className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-white/50">
+                                <Car className="w-3 h-3" /> {formatVehicleShort(v)}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-white/50">
+                              <Car className="w-3 h-3" /> {vehicles.length} vehicles
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
+                        {c.total_bookings > 0 && <span className="text-white/40 text-xs flex items-center gap-1"><Calendar className="w-3 h-3" /> {c.total_bookings} bookings</span>}
+                        {c.total_spent > 0 && <span className="text-white/40 text-xs flex items-center gap-1"><DollarSign className="w-3 h-3" /> ${c.total_spent}</span>}
+                        {c.last_service_date && <span className="text-white/40 text-xs">Last: {format(new Date(c.last_service_date), "MMM d, yyyy")}</span>}
+                      </div>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-white font-medium text-sm truncate">{c.name}</span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full border ${statusStyles[c.status] || statusStyles.lead}`}>
-                        {c.status}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
-                      {c.vehicle && <span className="text-white/40 text-xs flex items-center gap-1"><Car className="w-3 h-3" /> {c.vehicle}</span>}
-                      {c.total_bookings > 0 && <span className="text-white/40 text-xs flex items-center gap-1"><Calendar className="w-3 h-3" /> {c.total_bookings} bookings</span>}
-                      {c.total_spent > 0 && <span className="text-white/40 text-xs flex items-center gap-1"><DollarSign className="w-3 h-3" /> ${c.total_spent}</span>}
-                      {c.last_service_date && <span className="text-white/40 text-xs">Last: {format(new Date(c.last_service_date), "MMM d, yyyy")}</span>}
-                    </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {c.phone && (
+                      <a href={`tel:${c.phone}`} className="w-9 h-9 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 flex items-center justify-center text-emerald-400 transition-colors" title="Call">
+                        <Phone className="w-4 h-4" />
+                      </a>
+                    )}
+                    {c.email && (
+                      <a href={`mailto:${c.email}`} className="w-9 h-9 rounded-lg bg-accent/10 hover:bg-accent/20 flex items-center justify-center text-accent transition-colors" title="Email">
+                        <Mail className="w-4 h-4" />
+                      </a>
+                    )}
+                    <select
+                      value={c.status}
+                      onChange={e => updateStatus(c.id, e.target.value)}
+                      className="h-9 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs px-2 focus:outline-none focus:ring-1 focus:ring-accent"
+                    >
+                      {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[hsl(215,50%,10%)]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
+                    </select>
+                    <button onClick={() => startEdit(c)} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors" title="Edit">
+                      <FileText className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => setDeleteId(c.id)} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-red-500/10 flex items-center justify-center text-white/40 hover:text-red-400 transition-colors" title="Delete">
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 shrink-0">
-                  {c.phone && (
-                    <a href={`tel:${c.phone}`} className="w-9 h-9 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 flex items-center justify-center text-emerald-400 transition-colors" title="Call">
-                      <Phone className="w-4 h-4" />
-                    </a>
-                  )}
-                  {c.email && (
-                    <a href={`mailto:${c.email}`} className="w-9 h-9 rounded-lg bg-accent/10 hover:bg-accent/20 flex items-center justify-center text-accent transition-colors" title="Email">
-                      <Mail className="w-4 h-4" />
-                    </a>
-                  )}
-                  <select
-                    value={c.status}
-                    onChange={e => updateStatus(c.id, e.target.value)}
-                    className="h-9 rounded-lg bg-white/5 border border-white/10 text-white/60 text-xs px-2 focus:outline-none focus:ring-1 focus:ring-accent"
-                  >
-                    {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[hsl(215,50%,10%)]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
-                  </select>
-                  <button onClick={() => startEdit(c)} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors" title="Edit">
-                    <FileText className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => setDeleteId(c.id)} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-red-500/10 flex items-center justify-center text-white/40 hover:text-red-400 transition-colors" title="Delete">
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
+                {c.notes && <p className="text-white/30 text-xs mt-2 pl-[52px] line-clamp-1">{c.notes}</p>}
               </div>
-              {c.notes && <p className="text-white/30 text-xs mt-2 pl-[52px] line-clamp-1">{c.notes}</p>}
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
       {/* Add/Edit Modal */}
       {showAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">{editingId ? "Edit Customer" : "Add Customer"}</h3>
               <button onClick={resetForm} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>
@@ -343,20 +406,68 @@ const CustomersManager = () => {
                 <Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="(555) 123-4567" />
               </div>
               <div className="space-y-1">
-                <Label className="text-white/60 text-xs">Vehicle</Label>
-                <Input value={form.vehicle} onChange={e => setForm({ ...form, vehicle: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="2024 BMW X5" />
-              </div>
-              <div className="space-y-1">
                 <Label className="text-white/60 text-xs">Status</Label>
                 <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="w-full h-10 rounded-md bg-white/5 border border-white/10 text-white text-sm px-3 focus:outline-none focus:ring-2 focus:ring-accent">
                   {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[hsl(215,50%,10%)]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
                 </select>
               </div>
-              <div className="col-span-2 space-y-1">
+              <div className="space-y-1">
                 <Label className="text-white/60 text-xs">Notes</Label>
                 <Input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="Prefers weekday mornings..." />
               </div>
             </div>
+
+            {/* Vehicles section */}
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-white/70 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                  <Car className="w-3.5 h-3.5" /> Vehicles
+                </Label>
+              </div>
+              {formVehicles.map((v, i) => (
+                <div key={i} className="rounded-xl border border-white/10 bg-white/[0.03] p-3 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/40 text-[11px] font-medium">Vehicle {i + 1}</span>
+                    {formVehicles.length > 1 && (
+                      <button onClick={() => removeVehicle(i)} className="text-white/20 hover:text-red-400 transition-colors">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-white/40 text-[10px]">Year</Label>
+                      <Input type="number" value={v.year} onChange={e => updateVehicle(i, "year", e.target.value)} className="h-9 text-sm bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="2024" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-white/40 text-[10px]">Make</Label>
+                      <Input value={v.make} onChange={e => updateVehicle(i, "make", e.target.value)} className="h-9 text-sm bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="BMW" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-white/40 text-[10px]">Model</Label>
+                      <Input value={v.model} onChange={e => updateVehicle(i, "model", e.target.value)} className="h-9 text-sm bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="X5" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-white/40 text-[10px]">Color (optional)</Label>
+                      <Input value={v.color} onChange={e => updateVehicle(i, "color", e.target.value)} className="h-9 text-sm bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="Black" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-white/40 text-[10px]">License Plate (optional)</Label>
+                      <Input value={v.plate} onChange={e => updateVehicle(i, "plate", e.target.value)} className="h-9 text-sm bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="ABC-1234" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button
+                onClick={() => setFormVehicles(prev => [...prev, emptyVehicle()])}
+                className="text-xs text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
+              >
+                <Plus className="w-3 h-3" /> Add another vehicle
+              </button>
+            </div>
+
             <button onClick={handleSave} className="dash-btn dash-btn-primary dash-btn-lg w-full">
               {editingId ? "Update Customer" : "Add Customer"}
             </button>
