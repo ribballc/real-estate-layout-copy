@@ -1189,6 +1189,35 @@
 }
 
 /* Onboarding input shake */
+@keyframes dashboardShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.ghost-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.ghost-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, hsla(217,91%,70%,0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: dashboardShimmer 2s ease-in-out infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+@keyframes ghostPillIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes ghostPillOut {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+}
+
 @keyframes inputShake {
   0%, 100% { transform: translateX(0); }
   15% { transform: translateX(-6px); }

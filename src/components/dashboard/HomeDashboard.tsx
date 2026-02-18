@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -133,6 +133,112 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+/* ─── Ghost Metrics Intro ─── */
+const INTRO_FLAG = "darker_dashboard_intro_seen";
+
+const GHOST_METRICS = {
+  revenue: 6840,
+  jobsCompleted: 47,
+  avgTicket: 145,
+  vehiclesServiced: 9,
+};
+
+const GHOST_SPARKLINE = [120, 340, 280, 510, 390, 620, 580, 710, 490, 840, 760, 650, 920, 880];
+
+const GHOST_CHART_DATA = [
+  { date: "Feb 14", revenue: 420, bookings: 3 },
+  { date: "Feb 15", revenue: 650, bookings: 4 },
+  { date: "Feb 16", revenue: 180, bookings: 1 },
+  { date: "Feb 17", revenue: 890, bookings: 5 },
+  { date: "Feb 18", revenue: 340, bookings: 2 },
+  { date: "Feb 19", revenue: 1120, bookings: 6 },
+  { date: "Feb 20", revenue: 760, bookings: 4 },
+  { date: "Feb 21", revenue: 980, bookings: 5 },
+  { date: "Feb 22", revenue: 500, bookings: 3 },
+  { date: "Feb 23", revenue: 1000, bookings: 6 },
+];
+
+const GHOST_PIE = [
+  { name: "Full Detail", value: 2400, pct: 35 },
+  { name: "Ceramic Coating", value: 1950, pct: 29 },
+  { name: "Interior Only", value: 1200, pct: 18 },
+  { name: "Paint Correction", value: 850, pct: 12 },
+  { name: "Express Wash", value: 440, pct: 6 },
+];
+
+const GHOST_TOP_SERVICES = [
+  { name: "Full Detail", jobs: 16, revenue: 2400, avg: 150 },
+  { name: "Ceramic Coating", jobs: 3, revenue: 1950, avg: 650 },
+  { name: "Interior Only", jobs: 10, revenue: 1200, avg: 120 },
+  { name: "Paint Correction", jobs: 3, revenue: 850, avg: 283 },
+  { name: "Express Wash", jobs: 11, revenue: 440, avg: 40 },
+];
+
+const GHOST_BOOKINGS = [
+  { id: "g1", customer_name: "Marcus T.", service_title: "Full Detail", booking_date: "2026-02-21", booking_time: "10:00", service_price: 180, status: "confirmed", notes: "" },
+  { id: "g2", customer_name: "Sarah K.", service_title: "Ceramic Coating", booking_date: "2026-02-22", booking_time: "09:00", service_price: 650, status: "confirmed", notes: "" },
+  { id: "g3", customer_name: "James R.", service_title: "Interior Only", booking_date: "2026-02-23", booking_time: "13:00", service_price: 120, status: "pending", notes: "" },
+  { id: "g4", customer_name: "Trey M.", service_title: "Paint Correction", booking_date: "2026-02-24", booking_time: "11:00", service_price: 340, status: "confirmed", notes: "" },
+];
+
+const GHOST_HEATMAP = [
+  { label: "Sun", avg: 1.2, intensity: 0.24 },
+  { label: "Mon", avg: 2.8, intensity: 0.56 },
+  { label: "Tue", avg: 3.5, intensity: 0.70 },
+  { label: "Wed", avg: 4.1, intensity: 0.82 },
+  { label: "Thu", avg: 5.0, intensity: 1.0 },
+  { label: "Fri", avg: 4.3, intensity: 0.86 },
+  { label: "Sat", avg: 3.9, intensity: 0.78 },
+];
+
+type IntroPhase = "hidden" | "fadeIn" | "visible" | "fadeOut" | "done";
+
+function useGhostIntro() {
+  const [phase, setPhase] = useState<IntroPhase>(() =>
+    localStorage.getItem(INTRO_FLAG) ? "done" : "fadeIn"
+  );
+
+  useEffect(() => {
+    if (phase === "done") return;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    // Phase 1: fade in 0-400ms
+    timers.push(setTimeout(() => setPhase("visible"), 400));
+    // Phase 2→3: visible until 4500ms then fade out
+    timers.push(setTimeout(() => setPhase("fadeOut"), 4500));
+    // Phase 4: done at 6000ms
+    timers.push(setTimeout(() => {
+      setPhase("done");
+      localStorage.setItem(INTRO_FLAG, "1");
+    }, 6000));
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  const isIntro = phase !== "done";
+  const showShimmer = phase === "visible";
+  const opacity = phase === "fadeIn" ? 0 : phase === "fadeOut" ? 0.3 : 1;
+  return { phase, isIntro, showShimmer, opacity };
+}
+
+/* ─── Animated Counter for countdown ─── */
+function useCountdown(target: number, active: boolean, duration = 800) {
+  const [val, setVal] = useState(target);
+  const rafRef = useRef<number>(0);
+  useEffect(() => {
+    if (!active) { setVal(target); return; }
+    const startTime = performance.now();
+    const startVal = target;
+    const animate = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      setVal(Math.round(startVal * (1 - progress)));
+      if (progress < 1) rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [active, target, duration]);
+  return val;
+}
+
 /* ─── Main Dashboard ─── */
 const HomeDashboard = () => {
   const { user } = useAuth();
@@ -144,7 +250,14 @@ const HomeDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [businessName, setBusinessName] = useState("");
   const isDark = (localStorage.getItem("dashboard-theme") || "light") === "dark";
+  const ghost = useGhostIntro();
 
+  // Ghost countdown values
+  const isFadingOut = ghost.phase === "fadeOut";
+  const gRevenue = useCountdown(GHOST_METRICS.revenue, isFadingOut);
+  const gJobs = useCountdown(GHOST_METRICS.jobsCompleted, isFadingOut);
+  const gAvg = useCountdown(GHOST_METRICS.avgTicket, isFadingOut);
+  const gVehicles = useCountdown(GHOST_METRICS.vehiclesServiced, isFadingOut);
   // Onboarding state
   const [onboardingData, setOnboardingData] = useState<OnboardingData | null>(null);
   const [onboardingDismissed, setOnboardingDismissed] = useState(() => localStorage.getItem(ONBOARDING_DISMISSED_KEY) === "true");
@@ -349,7 +462,13 @@ const HomeDashboard = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div
+      className="space-y-5"
+      style={{
+        opacity: ghost.phase === "fadeIn" ? 0 : 1,
+        transition: "opacity 0.4s ease-out",
+      }}
+    >
       {/* ═══ Onboarding Checklist ═══ */}
       {showOnboarding && (
         celebrating && allComplete ? (
@@ -435,41 +554,49 @@ const HomeDashboard = () => {
 
       {/* ═══ KPI Cards — 2x2 mobile, 4-col desktop ═══ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-        <MetricCard
-          icon={<DollarSign className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
-          label="Revenue"
-          value={currentRevenue > 0 ? formatCurrency(currentRevenue) : "—"}
-          pct={revenuePct}
-          subtext={periodLabel}
-          sparklineData={revenueSparkline}
-        />
-        <MetricCard
-          icon={<Briefcase className="w-5 h-5 text-white" strokeWidth={1.5} />}
-          label="Jobs Completed"
-          value={currentCompleted.length > 0 ? String(currentCompleted.length) : "—"}
-          pct={completedPct}
-          subtext={periodLabel}
-          highlighted
-        />
-        <MetricCard
-          icon={<TrendingUp className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
-          label="Avg. Ticket"
-          value={avgTicket > 0 ? formatCurrency(avgTicket) : "—"}
-          pct={avgTicketPct}
-          subtext={periodLabel}
-        />
-        <MetricCard
-          icon={<Car className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
-          label="Vehicles Serviced"
-          value={vehiclesCurrent > 0 ? String(vehiclesCurrent) : "—"}
-          pct={vehiclesPct}
-          subtext={periodLabel}
-        />
+        <div className={ghost.showShimmer ? "ghost-shimmer rounded-2xl" : ""}>
+          <MetricCard
+            icon={<DollarSign className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
+            label="Revenue"
+            value={ghost.isIntro ? formatCurrency(gRevenue) : (currentRevenue > 0 ? formatCurrency(currentRevenue) : "—")}
+            pct={ghost.isIntro ? 18 : revenuePct}
+            subtext={periodLabel}
+            sparklineData={ghost.isIntro ? GHOST_SPARKLINE : revenueSparkline}
+          />
+        </div>
+        <div className={ghost.showShimmer ? "ghost-shimmer rounded-2xl" : ""}>
+          <MetricCard
+            icon={<Briefcase className="w-5 h-5 text-white" strokeWidth={1.5} />}
+            label="Jobs Completed"
+            value={ghost.isIntro ? String(gJobs) : (currentCompleted.length > 0 ? String(currentCompleted.length) : "—")}
+            pct={ghost.isIntro ? 12 : completedPct}
+            subtext={periodLabel}
+            highlighted
+          />
+        </div>
+        <div className={ghost.showShimmer ? "ghost-shimmer rounded-2xl" : ""}>
+          <MetricCard
+            icon={<TrendingUp className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
+            label="Avg. Ticket"
+            value={ghost.isIntro ? formatCurrency(gAvg) : (avgTicket > 0 ? formatCurrency(avgTicket) : "—")}
+            pct={ghost.isIntro ? 8 : avgTicketPct}
+            subtext={periodLabel}
+          />
+        </div>
+        <div className={ghost.showShimmer ? "ghost-shimmer rounded-2xl" : ""}>
+          <MetricCard
+            icon={<Car className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
+            label="Vehicles Serviced"
+            value={ghost.isIntro ? String(gVehicles) : (vehiclesCurrent > 0 ? String(vehiclesCurrent) : "—")}
+            pct={ghost.isIntro ? 15 : vehiclesPct}
+            subtext={periodLabel}
+          />
+        </div>
       </div>
 
       {/* ═══ Top Services Table ═══ */}
-      {topServices.length > 0 && (
-        <div className="alytics-card rounded-2xl overflow-hidden">
+      {(ghost.isIntro ? GHOST_TOP_SERVICES : topServices).length > 0 && (
+        <div className={`alytics-card rounded-2xl overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="px-5 py-4 flex items-center justify-between">
             <h3 className="alytics-card-title text-sm font-semibold">Top Services</h3>
           </div>
@@ -485,7 +612,7 @@ const HomeDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {topServices.map((svc, i) => (
+                {(ghost.isIntro ? GHOST_TOP_SERVICES : topServices).map((svc, i) => (
                   <tr
                     key={svc.name}
                     className="border-b border-[hsla(217,91%,60%,0.05)] last:border-b-0 alytics-row-hover transition-colors"
@@ -505,14 +632,14 @@ const HomeDashboard = () => {
       )}
 
       {/* ═══ Revenue Bar Chart ═══ */}
-      {chartData.length > 1 && (
-        <div className="alytics-card rounded-2xl p-5 lg:p-6">
+      {(ghost.isIntro ? GHOST_CHART_DATA : chartData).length > 1 && (
+        <div className={`alytics-card rounded-2xl p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="alytics-card-title text-sm font-semibold">Revenue Breakdown</h3>
           </div>
           <div className="h-[220px] lg:h-[260px]">
             <ChartContainer config={chartConfig} className="h-full w-full">
-              <BarChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
+              <BarChart data={ghost.isIntro ? GHOST_CHART_DATA : chartData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "hsla(214,20%,50%,0.15)" : "hsla(214,20%,40%,0.12)"} vertical={false} />
                 <XAxis
                   dataKey="date"
@@ -547,17 +674,17 @@ const HomeDashboard = () => {
       {/* ═══ Two-column: Pie Chart + Recent Bookings ═══ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Report Overview — Pie chart */}
-        <div className="alytics-card rounded-2xl p-5 lg:p-6">
+        <div className={`alytics-card rounded-2xl p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="alytics-card-title text-sm font-semibold">Report Overview</h3>
           </div>
-          {serviceBreakdown.length > 0 ? (
+          {(ghost.isIntro ? GHOST_PIE : serviceBreakdown).length > 0 ? (
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="w-[160px] h-[160px] shrink-0">
                 <ChartContainer config={{ value: { label: "Revenue", color: "hsl(217 91% 60%)" } }} className="h-full w-full">
                   <PieChart>
                     <Pie
-                      data={serviceBreakdown}
+                      data={ghost.isIntro ? GHOST_PIE : serviceBreakdown}
                       cx="50%"
                       cy="50%"
                       innerRadius={45}
@@ -567,7 +694,7 @@ const HomeDashboard = () => {
                       strokeWidth={0}
                       animationDuration={600}
                     >
-                      {serviceBreakdown.map((_, idx) => (
+                      {(ghost.isIntro ? GHOST_PIE : serviceBreakdown).map((_, idx) => (
                         <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
                       ))}
                     </Pie>
@@ -576,7 +703,7 @@ const HomeDashboard = () => {
                 </ChartContainer>
               </div>
               <div className="flex-1 space-y-3 w-full">
-                {serviceBreakdown.map((item, idx) => (
+                {(ghost.isIntro ? GHOST_PIE : serviceBreakdown).map((item, idx) => (
                   <div key={idx} className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PIE_COLORS[idx % PIE_COLORS.length] }} />
@@ -598,38 +725,42 @@ const HomeDashboard = () => {
         </div>
 
         {/* Recent Bookings */}
-        <div className="alytics-card rounded-2xl overflow-hidden">
+        <div className={`alytics-card rounded-2xl overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="px-5 py-4 flex items-center justify-between">
             <h3 className="alytics-card-title text-sm font-semibold">Recent Bookings</h3>
           </div>
           <div className="alytics-divide">
-            {currentBookings.length === 0 ? (
-              <div className="px-5 py-10 flex flex-col items-center text-center gap-3">
-                <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center"
-                  style={{
-                    background: "hsla(217,91%,60%,0.1)",
-                    border: "1px solid hsla(217,91%,60%,0.15)",
-                  }}
-                >
-                  <CalendarDays className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} />
-                </div>
-                <div>
-                  <p className="alytics-card-title text-sm font-semibold">No bookings yet</p>
-                  <p className="alytics-card-sub text-xs mt-0.5">Bookings from customers will appear here</p>
-                </div>
-                <button
-                  onClick={() => navigate("/dashboard/calendar")}
-                  className="dash-btn dash-btn-primary dash-btn-sm mt-1"
-                >
-                  View Calendar
-                </button>
-              </div>
-            ) : (
-              currentBookings.slice(0, 5).map((b, index) => (
+            {(() => {
+              const displayBookings = ghost.isIntro ? GHOST_BOOKINGS : currentBookings;
+              if (displayBookings.length === 0) {
+                return (
+                  <div className="px-5 py-10 flex flex-col items-center text-center gap-3">
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center"
+                      style={{
+                        background: "hsla(217,91%,60%,0.1)",
+                        border: "1px solid hsla(217,91%,60%,0.15)",
+                      }}
+                    >
+                      <CalendarDays className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} />
+                    </div>
+                    <div>
+                      <p className="alytics-card-title text-sm font-semibold">No bookings yet</p>
+                      <p className="alytics-card-sub text-xs mt-0.5">Bookings from customers will appear here</p>
+                    </div>
+                    <button
+                      onClick={() => navigate("/dashboard/calendar")}
+                      className="dash-btn dash-btn-primary dash-btn-sm mt-1"
+                    >
+                      View Calendar
+                    </button>
+                  </div>
+                );
+              }
+              return displayBookings.slice(0, 5).map((b: any, index: number) => (
                 <div
                   key={b.id}
-                  className="flex items-center justify-between px-5 py-3.5 alytics-row-hover transition-all duration-200"
+                  className={`flex items-center justify-between px-5 py-3.5 alytics-row-hover transition-all duration-200 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div
@@ -647,10 +778,7 @@ const HomeDashboard = () => {
                     </div>
                     <div className="min-w-0">
                       <p className="alytics-card-title text-sm font-medium truncate">{b.customer_name || "—"}</p>
-                      <p className="alytics-card-sub text-xs truncate">{b.service_title || "—"}</p>
-                      {b.notes && b.notes.startsWith("Vehicle:") && (
-                        <p className="text-[11px] alytics-card-sub truncate">{b.notes.split("\n")[0].replace("Vehicle: ", "")}</p>
-                      )}
+                      <p className="alytics-card-sub text-xs truncate">{b.service_title || "—"} — {formatCurrency(Number(b.service_price) || 0)}</p>
                     </div>
                   </div>
                   <div className="text-right shrink-0 ml-3">
@@ -665,10 +793,10 @@ const HomeDashboard = () => {
                     </span>
                   </div>
                 </div>
-              ))
-            )}
+              ));
+            })()}
           </div>
-          {currentBookings.length > 0 && (
+          {!ghost.isIntro && currentBookings.length > 0 && (
             <div className="px-5 py-3">
               <button onClick={() => navigate("/dashboard/calendar")} className="alytics-link text-xs font-medium inline-flex items-center gap-1">
                 All bookings <ArrowRight className="w-3 h-3" />
@@ -679,10 +807,10 @@ const HomeDashboard = () => {
       </div>
 
       {/* ═══ Busiest Days Heatmap ═══ */}
-      <div className="alytics-card rounded-2xl p-5 lg:p-6">
+      <div className={`alytics-card rounded-2xl p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
         <h3 className="alytics-card-title text-sm font-semibold mb-4">Busiest Days</h3>
         <div className="grid grid-cols-7 gap-2 lg:gap-3">
-          {busiestDays.map(d => (
+          {(ghost.isIntro ? GHOST_HEATMAP : busiestDays).map(d => (
             <div key={d.label} className="flex flex-col items-center gap-1.5">
               <div
                 className="w-full aspect-square rounded-xl flex items-center justify-center transition-colors"
@@ -706,6 +834,28 @@ const HomeDashboard = () => {
         </div>
         <p className="text-[11px] alytics-card-sub mt-3">Average bookings per day of week</p>
       </div>
+
+      {/* ═══ Ghost Intro Floating Pill ═══ */}
+      {ghost.isIntro && ghost.phase !== "fadeIn" && (
+        <div
+          className="fixed bottom-6 left-1/2 z-50 flex items-center gap-2 px-5 py-2.5"
+          style={{
+            transform: "translateX(-50%)",
+            background: "hsla(217,91%,60%,0.12)",
+            border: "1px solid hsla(217,91%,60%,0.3)",
+            backdropFilter: "blur(12px)",
+            borderRadius: "99px",
+            animation: ghost.phase === "fadeOut"
+              ? "ghostPillOut 0.4s ease-in forwards"
+              : "ghostPillIn 0.4s ease-out forwards",
+          }}
+        >
+          <Sparkles className="w-4 h-4 shrink-0" style={{ color: "hsl(217,91%,60%)" }} />
+          <span className="text-white text-[13px] font-medium whitespace-nowrap">
+            This is a preview of your future dashboard — activate your trial to see real data
+          </span>
+        </div>
+      )}
     </div>
   );
 };
