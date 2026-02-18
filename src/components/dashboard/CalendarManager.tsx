@@ -4,6 +4,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
@@ -11,7 +13,7 @@ import {
 import {
   Loader2, ChevronLeft, ChevronRight, Plus, Clock, User, Mail, Phone,
   DollarSign, FileText, X, Calendar as CalendarIcon, Ban, RefreshCw,
-  Trash2, ChevronDown, PhoneCall,
+  Trash2, ChevronDown, PhoneCall, Play,
 } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isToday, isSameDay } from "date-fns";
 
@@ -70,6 +72,7 @@ const formatTimeShort = (time: string) => {
 const CalendarManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [blockedDays, setBlockedDays] = useState<BlockedDay[]>([]);
@@ -79,6 +82,7 @@ const CalendarManager = () => {
   const [showSyncModal, setShowSyncModal] = useState(false);
   const [deleteBookingId, setDeleteBookingId] = useState<string | null>(null);
   const [openStatusDropdown, setOpenStatusDropdown] = useState<string | null>(null);
+  const [todayOpen, setTodayOpen] = useState(true);
   const [newBooking, setNewBooking] = useState({
     customer_name: "", customer_email: "", customer_phone: "",
     service_title: "", service_price: 0, booking_date: "",
@@ -129,6 +133,23 @@ const CalendarManager = () => {
   const isSelectedBlocked = selectedDate
     ? blockedDatesSet.has(format(selectedDate, "yyyy-MM-dd"))
     : false;
+
+  const todayStr = format(new Date(), "yyyy-MM-dd");
+  const todayBookings = useMemo(() => bookings.filter(b => b.booking_date === todayStr), [bookings, todayStr]);
+  const todayRevenue = useMemo(() => todayBookings.filter(b => b.status === "confirmed" || b.status === "pending").reduce((s, b) => s + (b.service_price || 0), 0), [todayBookings]);
+
+  const getInitials = (name: string) => {
+    const parts = name.trim().split(/\s+/);
+    return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : (parts[0]?.[0] || "?").toUpperCase();
+  };
+
+  const handleStartDay = () => {
+    if (todayBookings.length > 0) {
+      const sorted = [...todayBookings].sort((a, b) => a.booking_time.localeCompare(b.booking_time));
+      setCurrentMonth(new Date());
+      setSelectedDate(new Date());
+    }
+  };
 
   const toggleBlockDay = async () => {
     if (!user || !selectedDate) return;
@@ -205,11 +226,81 @@ const CalendarManager = () => {
           <button onClick={() => setShowSyncModal(true)} className="text-sm text-accent underline underline-offset-2 hover:text-accent/80 transition-colors whitespace-nowrap flex items-center gap-1.5">
             <RefreshCw className="w-3.5 h-3.5" /> Sync Google Calendar
           </button>
-          <button onClick={() => { setShowAddModal(true); setNewBooking(prev => ({ ...prev, booking_date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd") })); }} className="dash-btn dash-btn-primary dash-btn-sm">
+          <button onClick={() => { setShowAddModal(true); setNewBooking(prev => ({ ...prev, booking_date: selectedDate ? format(selectedDate, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd") })); }} className="dash-btn dash-btn-primary dash-btn-sm hidden sm:flex">
             <Plus className="w-4 h-4" /> Add Booking
           </button>
         </div>
       </div>
+
+      {/* Today's Schedule Summary */}
+      <Collapsible open={todayOpen} onOpenChange={setTodayOpen} className="mb-6">
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] overflow-hidden">
+          <CollapsibleTrigger className="w-full">
+            {isMobile && !todayOpen ? (
+              <div className="flex items-center justify-between px-4 py-3">
+                <span className="text-white/80 text-sm font-medium">
+                  {todayBookings.length} job{todayBookings.length !== 1 ? "s" : ""} today · <span className="text-emerald-400">${todayRevenue.toFixed(0)} expected</span>
+                </span>
+                <ChevronDown className="w-4 h-4 text-white/40" />
+              </div>
+            ) : (
+              <div className="flex items-center justify-between px-4 md:px-5 py-3">
+                <div className="flex items-center gap-3">
+                  <CalendarIcon className="w-4 h-4 text-accent" />
+                  <h3 className="text-white font-semibold text-sm">{format(new Date(), "EEEE, MMMM d")}</h3>
+                  <span className="text-white/40 text-xs">·</span>
+                  <span className="text-white/60 text-sm">{todayBookings.length} job{todayBookings.length !== 1 ? "s" : ""} today</span>
+                </div>
+                <ChevronDown className={`w-4 h-4 text-white/40 transition-transform ${todayOpen ? "rotate-180" : ""}`} />
+              </div>
+            )}
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="px-4 md:px-5 pb-4 space-y-3">
+              {/* Booking chips row */}
+              {todayBookings.length > 0 ? (
+                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                  {[...todayBookings].sort((a, b) => a.booking_time.localeCompare(b.booking_time)).map(b => (
+                    <button
+                      key={b.id}
+                      onClick={() => { setSelectedDate(new Date()); setCurrentMonth(new Date()); }}
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors shrink-0"
+                    >
+                      <div className={`w-2 h-2 rounded-full shrink-0 ${statusDotColors[b.status] || "bg-accent"}`} />
+                      <div className="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center">
+                        <span className="text-accent text-[10px] font-bold">{getInitials(b.customer_name || "?")}</span>
+                      </div>
+                      <div className="text-left">
+                        <div className="text-white text-xs font-medium whitespace-nowrap">{formatTimeShort(b.booking_time)}</div>
+                        <div className="text-white/40 text-[10px] whitespace-nowrap">{b.service_title || "Service"}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-white/30 text-sm">No bookings scheduled for today.</p>
+              )}
+
+              {/* Revenue + Start Day */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="w-4 h-4 text-emerald-400" />
+                  <span className="text-emerald-400 font-semibold text-sm">${todayRevenue.toFixed(0)}</span>
+                  <span className="text-white/40 text-xs">expected revenue</span>
+                </div>
+                {todayBookings.length > 0 && (
+                  <button
+                    onClick={handleStartDay}
+                    className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-accent/15 text-accent border border-accent/20 hover:bg-accent/25 transition-colors"
+                  >
+                    <Play className="w-3 h-3" /> Start Day
+                  </button>
+                )}
+              </div>
+            </div>
+          </CollapsibleContent>
+        </div>
+      </Collapsible>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
         {/* Calendar grid */}
@@ -484,6 +575,15 @@ const CalendarManager = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      {/* Floating Action Button */}
+      <button
+        onClick={() => { setShowAddModal(true); setNewBooking(prev => ({ ...prev, booking_date: format(new Date(), "yyyy-MM-dd") })); }}
+        className="fixed z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-[hsl(217,91%,60%)]/30 hover:shadow-xl hover:shadow-[hsl(217,91%,60%)]/40 hover:scale-105 active:scale-95 transition-all"
+        style={{ background: "hsl(217, 91%, 60%)", bottom: isMobile ? "5rem" : "2rem", right: "1.5rem" }}
+        aria-label="Add Booking"
+      >
+        <Plus className="w-6 h-6 text-white" />
+      </button>
     </div>
   );
 };
