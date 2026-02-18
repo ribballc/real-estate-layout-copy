@@ -11,8 +11,7 @@ import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import darkerLogo from "@/assets/darker-logo.png";
 import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
-import { fbqEvent, generateEventId, setPixelUserData } from "@/lib/pixel";
-import { sendCapiEvent } from "@/lib/capiEvent";
+import { trackEvent, setPixelUserData } from "@/lib/tracking";
 
 const Signup = () => {
   const { toast } = useToast();
@@ -39,32 +38,18 @@ const Signup = () => {
     } else if (data.session) {
       // Fire CompleteRegistration event
       setPixelUserData({ email, firstName: name });
-      const eventId = generateEventId();
-      fbqEvent('track', 'CompleteRegistration', {
-        content_name: 'Account Created',
-        status: true,
-        currency: 'USD',
-        value: 0,
-      }, eventId);
-      sendCapiEvent({
+      trackEvent({
         eventName: 'CompleteRegistration',
-        eventId,
+        customData: { content_name: 'Account Created', status: true, currency: 'USD', value: 0 },
         userData: { email, firstName: name },
       });
       window.location.href = "/onboarding";
     } else {
       // Fire CompleteRegistration event
       setPixelUserData({ email, firstName: name });
-      const eventId = generateEventId();
-      fbqEvent('track', 'CompleteRegistration', {
-        content_name: 'Account Created',
-        status: true,
-        currency: 'USD',
-        value: 0,
-      }, eventId);
-      sendCapiEvent({
+      trackEvent({
         eventName: 'CompleteRegistration',
-        eventId,
+        customData: { content_name: 'Account Created', status: true, currency: 'USD', value: 0 },
         userData: { email, firstName: name },
       });
       toast({ title: "Account created!", description: "Taking you to set up your business…" });

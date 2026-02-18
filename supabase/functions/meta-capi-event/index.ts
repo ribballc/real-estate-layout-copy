@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -49,20 +48,31 @@ serve(async (req) => {
       });
     }
 
+    // Extract client IP from request headers
+    const clientIp =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("cf-connecting-ip") ||
+      req.headers.get("x-real-ip") ||
+      undefined;
+
     // Build user_data with hashed PII
     const user_data: Record<string, any> = {};
     if (userData.email) user_data.em = [await hashValue(userData.email)];
     if (userData.firstName) user_data.fn = [await hashValue(userData.firstName)];
+    if (userData.lastName) user_data.ln = [await hashValue(userData.lastName)];
     if (userData.phone) {
       const cleaned = userData.phone.replace(/\D/g, "");
       if (cleaned) user_data.ph = [await hashValue(cleaned)];
     }
-    if (userData.clientIpAddress) user_data.client_ip_address = userData.clientIpAddress;
+    if (userData.externalId) user_data.external_id = [await hashValue(userData.externalId)];
+
+    // Non-hashed fields
+    if (clientIp) user_data.client_ip_address = clientIp;
     if (userData.clientUserAgent) user_data.client_user_agent = userData.clientUserAgent;
     if (userData.fbp) user_data.fbp = userData.fbp;
     if (userData.fbc) user_data.fbc = userData.fbc;
 
-    const payload = {
+    const payload: Record<string, any> = {
       data: [
         {
           event_name: eventName,
@@ -74,9 +84,13 @@ serve(async (req) => {
           custom_data: customData,
         },
       ],
-      // TODO: Uncomment during testing, remove for production
-      // test_event_code: 'TEST12345',
     };
+
+    // Include test event code if set (remove for production)
+    const testCode = Deno.env.get("META_TEST_EVENT_CODE");
+    if (testCode) {
+      payload.test_event_code = testCode;
+    }
 
     const response = await fetch(
       `https://graph.facebook.com/v19.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_ACCESS_TOKEN}`,
