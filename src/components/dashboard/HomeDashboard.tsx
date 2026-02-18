@@ -143,6 +143,7 @@ const HomeDashboard = () => {
   const [stats, setStats] = useState({ services: 0, photos: 0, testimonials: 0 });
   const [loading, setLoading] = useState(true);
   const [businessName, setBusinessName] = useState("");
+  const isDark = (localStorage.getItem("dashboard-theme") || "light") === "dark";
 
   // Onboarding state
   const [onboardingData, setOnboardingData] = useState<OnboardingData | null>(null);
@@ -512,18 +513,18 @@ const HomeDashboard = () => {
           <div className="h-[220px] lg:h-[260px]">
             <ChartContainer config={chartConfig} className="h-full w-full">
               <BarChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsla(214, 20%, 50%, 0.15)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "hsla(214,20%,50%,0.15)" : "hsla(214,20%,40%,0.12)"} vertical={false} />
                 <XAxis
                   dataKey="date"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 11, fill: "hsl(215, 16%, 55%)" }}
+                  tick={{ fontSize: 11, fill: isDark ? "hsl(215, 16%, 55%)" : "hsl(215, 20%, 45%)" }}
                   interval="preserveStartEnd"
                 />
                 <YAxis
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fontSize: 11, fill: "hsl(215, 16%, 55%)" }}
+                  tick={{ fontSize: 11, fill: isDark ? "hsl(215, 16%, 55%)" : "hsl(215, 20%, 45%)" }}
                   tickFormatter={(v) => `$${v}`}
                 />
                 <ChartTooltip
@@ -634,8 +635,12 @@ const HomeDashboard = () => {
                     <div
                       className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-xs font-semibold"
                       style={{
-                        background: `hsl(${(index * 50 + 200) % 360}, 70%, 95%)`,
-                        color: `hsl(${(index * 50 + 200) % 360}, 60%, 40%)`,
+                        background: isDark
+                          ? `hsl(${(index * 50 + 200) % 360}, 55%, 22%)`
+                          : `hsl(${(index * 50 + 200) % 360}, 70%, 92%)`,
+                        color: isDark
+                          ? `hsl(${(index * 50 + 200) % 360}, 80%, 70%)`
+                          : `hsl(${(index * 50 + 200) % 360}, 60%, 35%)`,
                       }}
                     >
                       {(b.customer_name || "?").charAt(0).toUpperCase()}
