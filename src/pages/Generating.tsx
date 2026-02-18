@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
@@ -125,6 +126,7 @@ const Generating = () => {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4">
+      <SEOHead title="Generating" noIndex />
       {/* Background */}
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${dashboardPreview})` }} />
       <div className="absolute inset-0" style={{ background: "hsla(215,50%,10%,0.85)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }} />

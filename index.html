@@ -2,23 +2,34 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" href="/favicon.png" type="image/png" />
-    <title>Darker Digital — Professional Websites & 24/7 Booking for Mobile Detailers</title>
+    <title>Darker — Professional Websites & 24/7 Booking for Mobile Detailers</title>
     <meta name="description" content="Darker Digital: Done-for-you websites with smart booking, SMS reminders, and deposit collection. Built for mobile detailers in 48 hours. Start free.">
-    <meta name="theme-color" content="hsl(215, 50%, 10%)" />
+    <meta name="theme-color" content="hsl(215, 50%, 10%)" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="author" content="Darker Digital" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/540fa61c-c494-4f13-9a32-ec963753c3b4/id-preview-5601c841--aeac09cc-c2e5-4bd7-bb0b-8da87a99af5e.lovable.app-1771004084500.png">
+    <meta property="og:image" content="https://darkerdigital.com/og-default.jpg">
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@darkerdigital" />
-    <meta name="twitter:image" content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/540fa61c-c494-4f13-9a32-ec963753c3b4/id-preview-5601c841--aeac09cc-c2e5-4bd7-bb0b-8da87a99af5e.lovable.app-1771004084500.png">
-    <meta property="og:title" content="Darker Digital — Websites & Booking for Mobile Detailers">
-    <meta name="twitter:title" content="Darker Digital — Websites & Booking for Mobile Detailers">
+    <meta name="twitter:image" content="https://darkerdigital.com/og-default.jpg">
+    <meta property="og:title" content="Darker — Websites & Booking for Mobile Detailers">
+    <meta name="twitter:title" content="Darker — Websites & Booking for Mobile Detailers">
     <meta property="og:description" content="Darker Digital: Done-for-you websites with smart booking, SMS reminders, and deposit collection. Built for mobile detailers in 48 hours.">
     <meta name="twitter:description" content="Darker Digital: Done-for-you websites with smart booking, SMS reminders, and deposit collection. Built for mobile detailers in 48 hours.">
+
+    <!-- DNS prefetch & preconnect for external resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//connect.facebook.net">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://ibospodoxgumgmjymgtm.supabase.co">
+
+    <!-- Non-blocking font loading -->
+    <link rel="preload" as="image" href="/og-default.jpg" fetchpriority="low">
+
     <script>
       // Meta Pixel — only loads when cookie consent is given
       function initMetaPixel() {
@@ -31,7 +42,6 @@
         t.src=v;s=b.getElementsByTagName(e)[0];
         s.parentNode.insertBefore(t,s)}(window,document,'script',
         'https://connect.facebook.net/en_US/fbevents.js');
-        // TODO: Replace PIXEL_ID_HERE with your Meta Pixel ID
         fbq('init','686595997751957',{
           em:window.__darker_user_email||'',
           fn:window.__darker_user_first_name||'',

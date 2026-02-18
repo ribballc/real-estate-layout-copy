@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import SEOHead from "@/components/SEOHead";
 
 const Cookies = () => (
+  <>
+    <SEOHead title="Cookie Policy" description="Cookie Policy for Darker — learn how we use cookies on our website and booking platform." canonicalUrl="https://darkerdigital.com/cookies" />
   <div className="min-h-screen" style={{ background: "hsl(215, 50%, 10%)", color: "hsl(0, 0%, 100%)" }}>
     <div className="max-w-3xl mx-auto px-6 py-16">
       <Link to="/" className="inline-flex items-center gap-2 text-sm mb-8 hover:opacity-70 transition-opacity" style={{ color: "hsla(0,0%,100%,0.5)" }}>
@@ -43,6 +46,7 @@ const Cookies = () => (
       </div>
     </div>
   </div>
+  </>
 );
 
 export default Cookies;
