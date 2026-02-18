@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import WebsitePage from "./WebsitePage";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, ArrowRight,
   CalendarDays, Star, MoreHorizontal, Briefcase,
+  CheckCircle2, Circle, Store, Wrench, Clock, Users, Sparkles, ChevronDown, X,
 } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
 import { format, subDays, startOfDay, endOfDay, startOfYear, eachDayOfInterval, isWithinInterval, parseISO } from "date-fns";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 type DateRange = "7d" | "14d" | "30d" | "90d" | "ytd";
 
@@ -86,6 +88,34 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted }: MetricCar
   </div>
 );
 
+/* ─── Onboarding Checklist Constants ─── */
+const ONBOARDING_DISMISSED_KEY = "dashboard-onboarding-dismissed";
+
+interface OnboardingStep {
+  id: string;
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  route: string;
+  check: (d: OnboardingData) => boolean;
+}
+
+interface OnboardingData {
+  hasBusinessInfo: boolean;
+  servicesCount: number;
+  hasHours: boolean;
+  customersCount: number;
+  bookingsCount: number;
+}
+
+const ONBOARDING_STEPS: OnboardingStep[] = [
+  { id: "business", icon: Store, title: "Add your business info", description: "Name, phone, and address", route: "/dashboard/business", check: d => d.hasBusinessInfo },
+  { id: "services", icon: Wrench, title: "Add your services", description: "List what you offer with prices", route: "/dashboard/services", check: d => d.servicesCount > 0 },
+  { id: "hours", icon: Clock, title: "Set your business hours", description: "So customers can book the right times", route: "/dashboard/hours", check: d => d.hasHours },
+  { id: "customer", icon: Users, title: "Add your first customer", description: "Build your customer database", route: "/dashboard/customers", check: d => d.customersCount > 0 },
+  { id: "booking", icon: CalendarDays, title: "Create your first booking", description: "Schedule your first job", route: "/dashboard/calendar", check: d => d.bookingsCount > 0 },
+];
+
 /* ─── Main Dashboard ─── */
 const HomeDashboard = () => {
   const { user } = useAuth();
@@ -96,6 +126,12 @@ const HomeDashboard = () => {
   const [stats, setStats] = useState({ services: 0, photos: 0, testimonials: 0 });
   const [loading, setLoading] = useState(true);
   const [businessName, setBusinessName] = useState("");
+
+  // Onboarding state
+  const [onboardingData, setOnboardingData] = useState<OnboardingData | null>(null);
+  const [onboardingDismissed, setOnboardingDismissed] = useState(() => localStorage.getItem(ONBOARDING_DISMISSED_KEY) === "true");
+  const [onboardingOpen, setOnboardingOpen] = useState(true);
+  const [celebrating, setCelebrating] = useState(false);
 
   const greeting = useMemo(() => {
     const h = new Date().getHours();
@@ -111,11 +147,23 @@ const HomeDashboard = () => {
       supabase.from("services").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("photos").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("testimonials").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-      supabase.from("profiles").select("business_name").eq("user_id", user.id).single(),
-    ]).then(([b, s, p, t, profile]) => {
+      supabase.from("profiles").select("business_name, phone").eq("user_id", user.id).single(),
+      supabase.from("business_hours").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("customers").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    ]).then(([b, s, p, t, profile, hours, customers]) => {
       setBookings(b.data || []);
-      setStats({ services: s.count || 0, photos: p.count || 0, testimonials: t.count || 0 });
+      const servicesCount = s.count || 0;
+      setStats({ services: servicesCount, photos: p.count || 0, testimonials: t.count || 0 });
       setBusinessName(profile.data?.business_name || "");
+
+      setOnboardingData({
+        hasBusinessInfo: !!(profile.data?.business_name && profile.data?.phone),
+        servicesCount,
+        hasHours: (hours.count || 0) > 0,
+        customersCount: customers.count || 0,
+        bookingsCount: (b.data || []).length,
+      });
+
       setLoading(false);
     });
   }, [user]);
@@ -185,8 +233,96 @@ const HomeDashboard = () => {
     bookings: { label: "Bookings", color: "hsl(217 91% 60%)" },
   };
 
+  // Onboarding completion logic
+  const completedSteps = onboardingData ? ONBOARDING_STEPS.filter(s => s.check(onboardingData)).length : 0;
+  const allComplete = completedSteps === ONBOARDING_STEPS.length;
+  const showOnboarding = !onboardingDismissed && onboardingData && (
+    (onboardingData.servicesCount < 2) || (onboardingData.bookingsCount === 0) ||
+    !onboardingData.hasBusinessInfo
+  );
+
+  // Auto-dismiss celebration after 5 seconds
+  useEffect(() => {
+    if (allComplete && showOnboarding && !celebrating) {
+      setCelebrating(true);
+      const timer = setTimeout(() => {
+        localStorage.setItem(ONBOARDING_DISMISSED_KEY, "true");
+        setOnboardingDismissed(true);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [allComplete, showOnboarding, celebrating]);
+
+  const handleDismissOnboarding = () => {
+    localStorage.setItem(ONBOARDING_DISMISSED_KEY, "true");
+    setOnboardingDismissed(true);
+  };
+
   return (
     <div className="space-y-5">
+      {/* ═══ Onboarding Checklist ═══ */}
+      {showOnboarding && (
+        celebrating && allComplete ? (
+          <div className="rounded-2xl p-6 text-center animate-in fade-in duration-500" style={{ background: "linear-gradient(135deg, hsl(217,91%,60%), hsl(200,85%,55%))" }}>
+            <Sparkles className="w-8 h-8 text-white mx-auto mb-2" />
+            <h3 className="text-lg font-bold text-white">🎉 You're all set!</h3>
+            <p className="text-white/70 text-sm mt-1">Your shop is ready to go. Start booking customers!</p>
+          </div>
+        ) : !allComplete ? (
+          <div className="rounded-2xl overflow-hidden alytics-card" style={{ border: "1px solid hsla(217,91%,60%,0.2)" }}>
+            {/* Header */}
+            <div className="px-5 py-4 flex items-center justify-between" style={{ background: "linear-gradient(135deg, hsl(217,91%,60%), hsl(230,80%,55%))" }}>
+              <div>
+                <h3 className="text-white font-bold text-sm">Get your shop ready — 5 quick steps</h3>
+                <p className="text-white/60 text-xs mt-0.5">{completedSteps}/5 complete</p>
+              </div>
+              <button onClick={handleDismissOnboarding} className="w-7 h-7 rounded-lg flex items-center justify-center text-white/40 hover:text-white/80 hover:bg-white/10 transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            {/* Progress bar */}
+            <div className="h-1 w-full" style={{ background: "hsla(217,91%,60%,0.15)" }}>
+              <div className="h-full transition-all duration-500" style={{ width: `${(completedSteps / 5) * 100}%`, background: "hsl(160,84%,39%)" }} />
+            </div>
+            {/* Steps */}
+            <Collapsible open={onboardingOpen} onOpenChange={setOnboardingOpen}>
+              <CollapsibleTrigger asChild>
+                <button className="w-full px-5 py-2.5 flex items-center justify-between text-xs font-medium alytics-card-sub hover:bg-[hsla(217,91%,60%,0.04)] transition-colors">
+                  <span>{onboardingOpen ? "Hide steps" : "Show steps"}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${onboardingOpen ? "rotate-180" : ""}`} />
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="px-5 pb-4 space-y-1">
+                  {ONBOARDING_STEPS.map(step => {
+                    const done = onboardingData ? step.check(onboardingData) : false;
+                    const Icon = step.icon;
+                    return (
+                      <div key={step.id} className="flex items-center gap-3 py-2.5 group">
+                        {done ? (
+                          <CheckCircle2 className="w-5 h-5 shrink-0" style={{ color: "hsl(160,84%,39%)" }} />
+                        ) : (
+                          <Circle className="w-5 h-5 shrink-0 alytics-card-sub" />
+                        )}
+                        <Icon className={`w-4 h-4 shrink-0 ${done ? "alytics-card-sub" : ""}`} style={done ? {} : { color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm font-medium ${done ? "line-through alytics-card-sub" : "alytics-card-title"}`}>{step.title}</p>
+                          <p className="text-xs alytics-card-sub">{step.description}</p>
+                        </div>
+                        {!done && (
+                          <button onClick={() => navigate(step.route)} className="text-[11px] font-semibold shrink-0 transition-colors" style={{ color: "hsl(217,91%,60%)" }}>
+                            Do it now →
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+        ) : null
+      )}
       {/* Greeting + date picker */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
