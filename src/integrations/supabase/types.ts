@@ -324,9 +324,15 @@ export type Database = {
           secondary_color: string | null
           service_areas: string[] | null
           slug: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_ends_at: string | null
+          subscription_plan: string | null
+          subscription_status: string
           tagline: string
           tiktok: string
           trial_active: boolean
+          trial_ends_at: string | null
           updated_at: string
           user_id: string
           youtube: string
@@ -350,9 +356,15 @@ export type Database = {
           secondary_color?: string | null
           service_areas?: string[] | null
           slug?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_ends_at?: string | null
+          subscription_plan?: string | null
+          subscription_status?: string
           tagline?: string
           tiktok?: string
           trial_active?: boolean
+          trial_ends_at?: string | null
           updated_at?: string
           user_id: string
           youtube?: string
@@ -376,9 +388,15 @@ export type Database = {
           secondary_color?: string | null
           service_areas?: string[] | null
           slug?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_ends_at?: string | null
+          subscription_plan?: string | null
+          subscription_status?: string
           tagline?: string
           tiktok?: string
           trial_active?: boolean
+          trial_ends_at?: string | null
           updated_at?: string
           user_id?: string
           youtube?: string
