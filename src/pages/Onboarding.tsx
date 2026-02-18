@@ -4,28 +4,46 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import FadeIn from "@/components/FadeIn";
 import darkerLogo from "@/assets/darker-logo.png";
 import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
 import {
   toTitleCase,
-  capitalizeFirst,
   formatPhone,
   validateShopName,
-  validateFirstName,
   validatePhone,
-  validateLocation,
 } from "@/lib/onboarding-validation";
-import { MapPin, Loader2 } from "lucide-react";
+import { Loader2, Check, Sparkles, Store, Scissors, Target } from "lucide-react";
 import { trackEvent } from "@/lib/tracking";
 
+/* ── Service data with benefit copy ── */
 const SERVICES = [
-  "Full Detail", "Interior Only", "Exterior Only", "Paint Correction",
-  "Ceramic Coating", "PPF (Paint Protection Film)", "Window Tint",
-  "Mobile Detailing", "Fleet / Commercial",
+  { name: "Auto Detailing", benefit: "Books 3x more jobs with online scheduling" },
+  { name: "Interior Only", benefit: "Upsell add-ons at checkout automatically" },
+  { name: "Exterior Only", benefit: "Package builder for quick quotes" },
+  { name: "Paint Correction", benefit: "Showcase before & after galleries" },
+  { name: "Ceramic Coating", benefit: "High-ticket booking flows included" },
+  { name: "PPF (Paint Protection)", benefit: "Deposit collection built in" },
+  { name: "Window Tint", benefit: "Quick-quote calculator included" },
+  { name: "Mobile Detailing", benefit: "Route & schedule management" },
+  { name: "Fleet / Commercial", benefit: "Multi-vehicle booking support" },
 ];
-const BUSINESS_TYPES = ["Shop Location", "Mobile Only", "Both"];
-const TOTAL_STEPS = 6;
+
+const PAIN_POINTS = [
+  "No-shows & last-minute cancels",
+  "Missing calls while I'm working",
+  "No professional website",
+  "Losing jobs to competitors online",
+  "Too much texting back and forth",
+  "Can't collect deposits upfront",
+];
+
+const TOTAL_STEPS = 3;
+
+const STEP_META = [
+  { icon: Store, label: "Your Shop" },
+  { icon: Scissors, label: "Services" },
+  { icon: Target, label: "Goals" },
+];
 
 const inputBase: React.CSSProperties = {
   background: "hsla(0,0%,100%,0.06)",
@@ -42,13 +60,14 @@ const focusHandler = (e: React.FocusEvent<HTMLInputElement>) => {
   e.currentTarget.style.borderColor = "hsl(217,91%,60%)";
   e.currentTarget.style.boxShadow = "0 0 0 3px hsla(217,91%,60%,0.2)";
 };
-const blurHandlerStyle = (e: React.FocusEvent<HTMLInputElement>) => {
+const blurStyle = (e: React.FocusEvent<HTMLInputElement>) => {
   e.currentTarget.style.borderColor = "hsla(0,0%,100%,0.12)";
   e.currentTarget.style.boxShadow = "none";
 };
 
-/* ── Location autocomplete via Nominatim ── */
-interface NomSuggestion { display_name: string; place_id: number; address?: Record<string, string> }
+/* ── Slug generation ── */
+const toSlug = (name: string) =>
+  name.toLowerCase().replace(/[^a-z0-9]/g, "").substring(0, 30);
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -58,51 +77,46 @@ const Onboarding = () => {
 
   const [step, setStep] = useState(1);
   const [shopName, setShopName] = useState("");
-  const [firstName, setFirstName] = useState("");
   const [phone, setPhone] = useState("");
-  const [location, setLocation] = useState("");
-  const [services, setServices] = useState<string[]>([]);
-  const [businessType, setBusinessType] = useState("");
+  const [primaryService, setPrimaryService] = useState("");
+  const [secondaryServices, setSecondaryServices] = useState<string[]>([]);
+  const [showMore, setShowMore] = useState(false);
+  const [goals, setGoals] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+  const [exiting, setExiting] = useState(false);
+
+  // Slug preview
+  const [showSlug, setShowSlug] = useState(false);
+  const slugTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (slugTimer.current) clearTimeout(slugTimer.current);
+    if (shopName.trim().length >= 3) {
+      slugTimer.current = setTimeout(() => setShowSlug(true), 300);
+    } else {
+      setShowSlug(false);
+    }
+    return () => { if (slugTimer.current) clearTimeout(slugTimer.current); };
+  }, [shopName]);
 
   // Validation
   const [error, setError] = useState<string | null>(null);
   const [shaking, setShaking] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Location autocomplete
-  const [locSuggestions, setLocSuggestions] = useState<NomSuggestion[]>([]);
-  const [locDropdown, setLocDropdown] = useState(false);
-  const [geoLoading, setGeoLoading] = useState(false);
-  const [geoError, setGeoError] = useState<string | null>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const locContainerRef = useRef<HTMLDivElement>(null);
-
-  // Close location dropdown on outside click
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (locContainerRef.current && !locContainerRef.current.contains(e.target as Node))
-        setLocDropdown(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  // Clear error when step changes
   useEffect(() => { setError(null); }, [step]);
 
-  // ── Validation per step ──
   const getStepError = useCallback((): string | null => {
     switch (step) {
-      case 1: return validateShopName(shopName);
-      case 2: return validateFirstName(firstName);
-      case 3: return validatePhone(phone);
-      case 4: return validateLocation(location);
-      case 5: return services.length === 0 ? "Select at least one service you offer" : null;
-      case 6: return businessType.length === 0 ? "Select one option" : null;
+      case 1: {
+        const nameErr = validateShopName(shopName);
+        if (nameErr) return nameErr;
+        return validatePhone(phone);
+      }
+      case 2: return !primaryService ? "Pick your main service to continue" : null;
+      case 3: return goals.length === 0 ? "Select at least one to continue" : null;
       default: return null;
     }
-  }, [step, shopName, firstName, phone, location, services, businessType]);
+  }, [step, shopName, phone, primaryService, goals]);
 
   const canContinue = useCallback(() => getStepError() === null, [getStepError]);
 
@@ -111,116 +125,29 @@ const Onboarding = () => {
     setTimeout(() => setShaking(false), 350);
   };
 
-  // ── Location search via Nominatim ──
-  const fetchLocSuggestions = useCallback(async (q: string) => {
-    if (q.length < 2) { setLocSuggestions([]); return; }
-    try {
-      const params = new URLSearchParams({
-        q, format: "json", addressdetails: "1", limit: "6", countrycodes: "us",
-        featuretype: "city",
-      });
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
-        headers: { "Accept-Language": "en" },
-      });
-      const data: any[] = await res.json();
-      const mapped = data.map((item) => {
-        const city = item.address?.city || item.address?.town || item.address?.village || item.display_name.split(",")[0];
-        const state = item.address?.state || "";
-        const abbr = state.length > 2 ? "" : state; // Use short state if available
-        return { display_name: abbr ? `${city}, ${abbr}` : city, place_id: item.place_id, address: item.address };
-      });
-      // Deduplicate
-      const seen = new Set<string>();
-      setLocSuggestions(mapped.filter((s) => { if (seen.has(s.display_name)) return false; seen.add(s.display_name); return true; }));
-    } catch { setLocSuggestions([]); }
-  }, []);
-
-  const handleLocInput = (val: string) => {
-    setLocation(val);
-    setLocDropdown(true);
-    setGeoError(null);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => fetchLocSuggestions(val), 300);
-  };
-
-  const selectLocSuggestion = (s: NomSuggestion) => {
-    setLocation(s.display_name);
-    setLocDropdown(false);
-    setLocSuggestions([]);
+  // ── Toggle helpers ──
+  const toggleGoal = (g: string) => {
+    setGoals((prev) => prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]);
     setError(null);
   };
 
-  const handleGeolocate = () => {
-    if (!navigator.geolocation) {
-      setGeoError("Couldn't detect location — type your city above");
-      return;
-    }
-    setGeoLoading(true);
-    setGeoError(null);
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&addressdetails=1`,
-            { headers: { "Accept-Language": "en" } }
-          );
-          const data = await res.json();
-          const city = data.address?.city || data.address?.town || data.address?.village || "";
-          const state = data.address?.state || "";
-          const short = state.length <= 2 ? state : "";
-          setLocation(short ? `${city}, ${short}` : city);
-          setError(null);
-        } catch {
-          setGeoError("Couldn't detect location — type your city above");
-        }
-        setGeoLoading(false);
-      },
-      () => {
-        setGeoError("Couldn't detect location — type your city above");
-        setGeoLoading(false);
-      },
-      { timeout: 8000 }
-    );
-  };
-
-  // ── Blur handlers per step ──
-  const handleBlurStep1 = () => {
-    setShopName((v) => toTitleCase(v.trim()));
-    const err = validateShopName(shopName);
-    if (err) setError(err);
-  };
-  const handleBlurStep2 = () => {
-    setFirstName((v) => capitalizeFirst(v.trim()));
-    const err = validateFirstName(firstName);
-    if (err) setError(err);
-  };
-  const handleBlurStep3 = () => {
-    const err = validatePhone(phone);
-    if (err) setError(err);
-  };
-  const handleBlurStep4 = () => {
-    setLocation((v) => toTitleCase(v.trim()));
-    const err = validateLocation(location);
-    if (err) setError(err);
-  };
-
-  // ── Toggle service ──
-  const toggleService = (s: string) => {
-    setServices((prev) => (prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]));
-    setError(null);
+  const toggleSecondary = (s: string) => {
+    setSecondaryServices((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
   };
 
   // ── Submit ──
   const handleSubmit = async () => {
     if (!user) return;
     setSubmitting(true);
+
+    const allServices = [primaryService, ...secondaryServices.filter((s) => s !== primaryService)];
+
     const { error: dbErr } = await supabase
       .from("profiles")
       .update({
         business_name: shopName.trim(),
         phone: phone.trim(),
-        tagline: services.join(", "),
-        address: location.trim(),
+        tagline: allServices.join(", "),
         onboarding_complete: true,
       })
       .eq("user_id", user.id);
@@ -230,66 +157,55 @@ const Onboarding = () => {
       setSubmitting(false);
       return;
     }
-    // Event 5: SubmitApplication — Onboarding Completed
+
     trackEvent({
-      eventName: 'SubmitApplication',
-      type: 'trackCustom',
-      userData: { email: user.email || undefined, firstName, phone },
-      customData: { shop_name: shopName, city: location, services: services.join(','), business_type: businessType, num_services: services.length },
+      eventName: "SubmitApplication",
+      type: "trackCustom",
+      userData: { email: user.email || undefined, phone },
+      customData: {
+        shop_name: shopName,
+        services: allServices.join(","),
+        num_services: allServices.length,
+        goals: goals.join(","),
+      },
     });
-    localStorage.setItem("leadData", JSON.stringify({
-      businessName: shopName.trim(),
-      ownerFirstName: firstName.trim(),
-      city: location.trim(),
-      services,
-      businessType: businessType === "Shop Location" ? "shop" : businessType === "Mobile Only" ? "mobile" : "both",
-    }));
-    navigate("/generating");
+    localStorage.setItem(
+      "leadData",
+      JSON.stringify({
+        businessName: shopName.trim(),
+        services: allServices,
+      })
+    );
+
+    // Exit transition
+    setExiting(true);
+    setTimeout(() => navigate("/generating"), 450);
   };
 
   // ── Continue ──
   const handleContinue = () => {
     const err = getStepError();
-    if (err) {
-      setError(err);
-      triggerShake();
-      return;
-    }
+    if (err) { setError(err); triggerShake(); return; }
     setError(null);
 
-    // Event 3: Onboarding step events with CAPI
-    const stepEventMap: Record<number, { name: string; customData?: Record<string, unknown>; userData?: { firstName?: string; phone?: string } }> = {
-      1: { name: 'OnboardingStep1_ShopName', customData: { shop_name: shopName } },
-      2: { name: 'OnboardingStep2_Name', userData: { firstName } },
-      3: { name: 'OnboardingStep3_Phone', userData: { firstName, phone } },
-      4: { name: 'OnboardingStep4_Location', customData: { city: location } },
-      5: { name: 'OnboardingStep5_Services', customData: { services: services.join(','), num_services: services.length } },
+    const stepEventMap: Record<number, { name: string; customData?: Record<string, unknown> }> = {
+      1: { name: "OnboardingStep1_ShopPhone", customData: { shop_name: shopName } },
+      2: { name: "OnboardingStep2_Services", customData: { primary: primaryService, secondary: secondaryServices.join(",") } },
     };
-    const stepEvent = stepEventMap[step];
-    if (stepEvent) {
-      trackEvent({
-        eventName: stepEvent.name,
-        type: 'trackCustom',
-        userData: stepEvent.userData,
-        customData: stepEvent.customData,
-      });
-    }
+    const ev = stepEventMap[step];
+    if (ev) trackEvent({ eventName: ev.name, type: "trackCustom", customData: ev.customData });
 
     if (step < TOTAL_STEPS) {
       setStep((s) => s + 1);
-      // Mobile: scroll card to top
       setTimeout(() => cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
     } else {
       handleSubmit();
     }
   };
 
-  // ── Enter key ──
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") { e.preventDefault(); handleContinue(); }
   };
-
-  const progressPercent = (step / TOTAL_STEPS) * 100;
 
   const errorEl = error && (
     <p className="error-fade-in" style={{ color: "hsl(0,85%,60%)", fontSize: 13, marginTop: 6 }}>
@@ -297,275 +213,359 @@ const Onboarding = () => {
     </p>
   );
 
+  const slug = toSlug(shopName);
+
+  const CTA_TEXT: Record<number, string> = {
+    1: "Build My Site →",
+    2: "Add These Services →",
+    3: "Build My Website Now →",
+  };
+
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-12">
-      <SEOHead title="Onboarding" noIndex />
+      <SEOHead title="Set Up Your Site" noIndex />
       {/* Background */}
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${dashboardPreview})` }} />
       <div className="absolute inset-0" style={{ background: "hsla(215,50%,10%,0.85)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }} />
 
-      <FadeIn key={step}>
-        <div
-          ref={cardRef}
-          className="relative z-10 w-full"
-          style={{
-            maxWidth: 480,
-            background: "hsla(215,50%,10%,0.85)",
-            border: "1px solid hsla(0,0%,100%,0.1)",
-            borderRadius: 16,
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
-            padding: 40,
-          }}
-          onKeyDown={handleKeyDown}
-        >
-          {/* Progress bar */}
-          <div className="w-full mb-6" style={{ height: 4, borderRadius: 2, background: "hsla(0,0%,100%,0.08)" }}>
-            <div style={{ height: "100%", borderRadius: 2, background: "hsl(217,91%,60%)", width: `${progressPercent}%`, transition: "width 0.3s ease" }} />
-          </div>
+      <div
+        ref={cardRef}
+        className="relative z-10 w-full"
+        style={{
+          maxWidth: 520,
+          background: "hsla(215,50%,10%,0.85)",
+          border: "1px solid hsla(0,0%,100%,0.1)",
+          borderRadius: 16,
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          padding: "36px 36px 32px",
+          transform: exiting ? "scale(0.95)" : "scale(1)",
+          opacity: exiting ? 0 : 1,
+          transition: "transform 0.4s ease, opacity 0.4s ease",
+        }}
+        onKeyDown={handleKeyDown}
+      >
+        {/* Logo */}
+        <div className="flex items-center justify-between mb-5">
+          <img src={darkerLogo} alt="Darker" className="h-7" />
+          <span style={{ color: "hsla(0,0%,100%,0.45)", fontSize: 12 }}>Takes about 60 seconds</span>
+        </div>
 
-          {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <img src={darkerLogo} alt="Darker" className="h-8" />
-            <span style={{ color: "hsla(0,0%,100%,0.4)", fontSize: 12 }}>Step {step} of {TOTAL_STEPS}</span>
-          </div>
+        {/* ── Progress indicator: labeled dots ── */}
+        <div className="flex items-center justify-between mb-8 px-2">
+          {STEP_META.map((meta, i) => {
+            const stepNum = i + 1;
+            const completed = step > stepNum;
+            const current = step === stepNum;
+            const Icon = meta.icon;
+            return (
+              <div key={stepNum} className="flex flex-col items-center gap-1.5 flex-1 relative">
+                {/* Connector line */}
+                {i < STEP_META.length - 1 && (
+                  <div
+                    className="absolute top-[14px] left-[calc(50%+14px)] h-[2px]"
+                    style={{
+                      width: "calc(100% - 28px)",
+                      background: completed ? "hsl(217,91%,60%)" : "hsla(0,0%,100%,0.1)",
+                      transition: "background 0.3s ease",
+                    }}
+                  />
+                )}
+                {/* Dot/icon */}
+                <div
+                  className="relative z-10 flex items-center justify-center rounded-full transition-all duration-300"
+                  style={{
+                    width: 28,
+                    height: 28,
+                    background: completed
+                      ? "hsl(217,91%,60%)"
+                      : current
+                        ? "hsla(217,91%,60%,0.2)"
+                        : "hsla(0,0%,100%,0.06)",
+                    border: current ? "2px solid hsl(217,91%,60%)" : "2px solid transparent",
+                    boxShadow: current ? "0 0 12px hsla(217,91%,60%,0.4)" : "none",
+                  }}
+                >
+                  {completed ? (
+                    <Check className="w-3.5 h-3.5 text-white" />
+                  ) : (
+                    <Icon
+                      className="w-3.5 h-3.5 transition-colors"
+                      style={{ color: current ? "hsl(217,91%,60%)" : "hsla(0,0%,100%,0.3)" }}
+                    />
+                  )}
+                </div>
+                <span
+                  className="text-xs font-medium transition-colors"
+                  style={{ color: current || completed ? "white" : "hsla(0,0%,100%,0.35)" }}
+                >
+                  {meta.label}
+                </span>
+              </div>
+            );
+          })}
+        </div>
 
-          {/* ═══ STEP 1 — Shop Name ═══ */}
-          {step === 1 && (
-            <div>
-              <h2 className="text-white font-semibold mb-2" style={{ fontSize: 20 }}>What's your shop called?</h2>
-              <input
-                ref={inputRef}
-                type="text"
-                value={shopName}
-                onChange={(e) => { setShopName(toTitleCase(e.target.value)); setError(null); }}
-                onBlur={(e) => { blurHandlerStyle(e); handleBlurStep1(); }}
-                onFocus={focusHandler}
-                placeholder="e.g. Elite Auto Detailing"
-                maxLength={60}
-                autoFocus
-                autoComplete="organization"
-                className={`h-12 ${shaking ? "shake-input" : ""}`}
-                style={inputBase}
-              />
-              {errorEl}
+        {/* ═══ STEP 1 — Shop Name + Phone ═══ */}
+        {step === 1 && (
+          <div className="animate-fade-in">
+            <h2 className="text-white font-bold mb-1" style={{ fontSize: 22 }}>What's your shop called?</h2>
+            <p className="mb-5" style={{ color: "hsla(0,0%,100%,0.5)", fontSize: 14 }}>
+              We'll use this to build your website right now.
+            </p>
+
+            {/* Business name */}
+            <input
+              type="text"
+              value={shopName}
+              onChange={(e) => { setShopName(toTitleCase(e.target.value)); setError(null); }}
+              onFocus={focusHandler}
+              onBlur={(e) => { blurStyle(e); }}
+              placeholder="e.g. King's Detail Co."
+              maxLength={60}
+              autoFocus
+              autoComplete="organization"
+              className={`h-12 ${shaking ? "shake-input" : ""}`}
+              style={inputBase}
+            />
+
+            {/* Live slug preview */}
+            <div
+              className="overflow-hidden transition-all duration-300"
+              style={{
+                maxHeight: showSlug && slug.length >= 3 ? 52 : 0,
+                opacity: showSlug && slug.length >= 3 ? 1 : 0,
+                marginTop: showSlug && slug.length >= 3 ? 8 : 0,
+              }}
+            >
+              <div
+                className="flex items-center gap-2 px-3 py-2.5 rounded-lg"
+                style={{ background: "hsla(217,91%,60%,0.08)", border: "1px solid hsla(217,91%,60%,0.15)" }}
+              >
+                <span style={{ color: "hsla(0,0%,100%,0.5)", fontSize: 13 }}>Your site will be:</span>
+                <span className="font-medium" style={{ color: "hsl(217,91%,60%)", fontSize: 13 }}>
+                  ✦ {slug}.darker.digital
+                </span>
+              </div>
             </div>
-          )}
 
-          {/* ═══ STEP 2 — First Name ═══ */}
-          {step === 2 && (
-            <div>
-              <h2 className="text-white font-semibold mb-2" style={{ fontSize: 20 }}>What's your first name?</h2>
+            {/* Phone */}
+            <div className="mt-4">
               <input
-                ref={inputRef}
-                type="text"
-                value={firstName}
-                onChange={(e) => { setFirstName(e.target.value); setError(null); }}
-                onBlur={(e) => { blurHandlerStyle(e); handleBlurStep2(); }}
-                onFocus={focusHandler}
-                placeholder="First name"
-                maxLength={40}
-                autoFocus
-                autoComplete="given-name"
-                className={`h-12 ${shaking ? "shake-input" : ""}`}
-                style={inputBase}
-              />
-              {errorEl}
-            </div>
-          )}
-
-          {/* ═══ STEP 3 — Phone ═══ */}
-          {step === 3 && (
-            <div>
-              <h2 className="text-white font-semibold mb-2" style={{ fontSize: 20 }}>Best phone number for your shop?</h2>
-              <input
-                ref={inputRef}
                 type="tel"
                 value={phone}
                 onChange={(e) => { setPhone(formatPhone(e.target.value)); setError(null); }}
-                onBlur={(e) => { blurHandlerStyle(e); handleBlurStep3(); }}
                 onFocus={focusHandler}
-                placeholder="(555) 000-0000"
-                autoFocus
+                onBlur={blurStyle}
+                placeholder="(555) 123-4567"
                 autoComplete="tel"
                 className={`h-12 ${shaking ? "shake-input" : ""}`}
                 style={inputBase}
               />
-              {errorEl}
+              <p style={{ color: "hsla(0,0%,100%,0.35)", fontSize: 12, marginTop: 6 }}>
+                For booking notifications — never shared
+              </p>
             </div>
-          )}
+            {errorEl}
+          </div>
+        )}
 
-          {/* ═══ STEP 4 — Location ═══ */}
-          {step === 4 && (
-            <div>
-              <h2 className="text-white font-semibold mb-2" style={{ fontSize: 20 }}>What city or area do you serve?</h2>
-              {/* TODO: add Google Places API key for enhanced autocomplete */}
-              <div ref={locContainerRef} className="relative">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={location}
-                  onChange={(e) => { handleLocInput(e.target.value); setError(null); }}
-                  onBlur={(e) => { blurHandlerStyle(e); handleBlurStep4(); }}
-                  onFocus={(e) => { focusHandler(e); if (locSuggestions.length) setLocDropdown(true); }}
-                  placeholder="e.g. Miami, FL"
-                  maxLength={100}
-                  autoFocus
-                  autoComplete="address-level2"
-                  className={`h-12 ${shaking ? "shake-input" : ""}`}
-                  style={inputBase}
-                />
-                {/* Dropdown */}
-                {locDropdown && locSuggestions.length > 0 && (
-                  <div
-                    className="absolute z-50 top-full mt-1 w-full max-h-48 overflow-y-auto"
-                    style={{ background: "hsl(215,50%,12%)", border: "1px solid hsla(0,0%,100%,0.1)", borderRadius: 8 }}
+        {/* ═══ STEP 2 — Service Specialty ═══ */}
+        {step === 2 && (
+          <div className="animate-fade-in">
+            <h2 className="text-white font-bold mb-1" style={{ fontSize: 22 }}>What's your main service?</h2>
+            <p className="mb-5" style={{ color: "hsla(0,0%,100%,0.5)", fontSize: 14 }}>
+              Pick one to start — you can add more later.
+            </p>
+
+            <div className="grid grid-cols-1 gap-2.5">
+              {SERVICES.map((svc) => {
+                const selected = primaryService === svc.name;
+                return (
+                  <button
+                    key={svc.name}
+                    type="button"
+                    onClick={() => { setPrimaryService(svc.name); setError(null); }}
+                    className="relative flex items-start gap-3 px-4 py-3.5 rounded-xl text-left transition-all duration-200 min-h-[52px]"
+                    style={{
+                      border: selected ? "1.5px solid hsl(217,91%,60%)" : "1px solid hsla(0,0%,100%,0.1)",
+                      background: selected ? "hsla(217,91%,60%,0.1)" : "hsla(0,0%,100%,0.03)",
+                      transform: selected ? "scale(1.01)" : "scale(1)",
+                    }}
                   >
-                    {locSuggestions.map((s) => (
-                      <button
-                        key={s.place_id}
-                        type="button"
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => selectLocSuggestion(s)}
-                        className="w-full text-left px-4 py-3 text-sm text-white/70 hover:text-white transition-colors flex items-center gap-2 cursor-pointer"
-                        style={{ background: "transparent" }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = "hsla(217,91%,60%,0.12)"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                    <div className="flex-1">
+                      <span className="text-white font-medium text-sm block">{svc.name}</span>
+                      <span style={{ color: "hsla(0,0%,100%,0.45)", fontSize: 12 }}>{svc.benefit}</span>
+                    </div>
+                    {selected && (
+                      <div
+                        className="absolute top-2.5 right-2.5 w-5 h-5 rounded-full flex items-center justify-center"
+                        style={{ background: "hsl(217,91%,60%)" }}
                       >
-                        <MapPin className="w-3.5 h-3.5 text-white/30 flex-shrink-0" />
-                        <span className="truncate">{s.display_name}</span>
-                      </button>
-                    ))}
+                        <Check className="w-3 h-3 text-white" />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Expand for secondary services */}
+            {primaryService && (
+              <div className="mt-4">
+                {!showMore ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowMore(true)}
+                    className="text-sm font-medium transition-colors"
+                    style={{ color: "hsl(217,91%,60%)" }}
+                  >
+                    + Want to add more?
+                  </button>
+                ) : (
+                  <div className="animate-fade-in">
+                    <p className="text-xs font-medium mb-2" style={{ color: "hsla(0,0%,100%,0.5)" }}>
+                      Also offer:
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {SERVICES.filter((s) => s.name !== primaryService).map((svc) => {
+                        const checked = secondaryServices.includes(svc.name);
+                        return (
+                          <button
+                            key={svc.name}
+                            type="button"
+                            onClick={() => toggleSecondary(svc.name)}
+                            className="px-3 py-2 rounded-full text-xs font-medium transition-all min-h-[36px]"
+                            style={{
+                              border: checked ? "1px solid hsl(217,91%,60%)" : "1px solid hsla(0,0%,100%,0.12)",
+                              background: checked ? "hsla(217,91%,60%,0.15)" : "transparent",
+                              color: checked ? "white" : "hsla(0,0%,100%,0.55)",
+                            }}
+                          >
+                            {checked && <Check className="w-3 h-3 inline mr-1 -mt-0.5" />}
+                            {svc.name}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
-              {/* Use my location button */}
-              <button
-                type="button"
-                onClick={handleGeolocate}
-                disabled={geoLoading}
-                className="mt-3 flex items-center gap-2 text-sm font-medium transition-all"
-                style={{
-                  color: "hsl(217,91%,60%)",
-                  border: "1px solid hsla(217,91%,60%,0.3)",
-                  borderRadius: 8,
-                  padding: "8px 14px",
-                  fontSize: 13,
-                  background: "transparent",
-                  opacity: geoLoading ? 0.6 : 1,
-                }}
+            )}
+            {errorEl}
+          </div>
+        )}
+
+        {/* ═══ STEP 3 — Pain Points / Goals ═══ */}
+        {step === 3 && (
+          <div className="animate-fade-in">
+            <h2 className="text-white font-bold mb-1" style={{ fontSize: 22 }}>What's costing you money right now?</h2>
+            <p className="mb-5" style={{ color: "hsla(0,0%,100%,0.5)", fontSize: 14 }}>
+              Select everything that applies — we'll build solutions for each one into your site.
+            </p>
+
+            <div className="grid grid-cols-1 gap-2.5">
+              {PAIN_POINTS.map((p) => {
+                const selected = goals.includes(p);
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => toggleGoal(p)}
+                    className="flex items-center gap-3 px-4 py-3.5 rounded-xl text-left text-sm font-medium transition-all duration-200 min-h-[48px]"
+                    style={{
+                      border: selected ? "1.5px solid hsl(217,91%,60%)" : "1px solid hsla(0,0%,100%,0.1)",
+                      background: selected ? "hsla(217,91%,60%,0.1)" : "hsla(0,0%,100%,0.03)",
+                      color: selected ? "white" : "hsla(0,0%,100%,0.6)",
+                    }}
+                  >
+                    <div
+                      className="w-5 h-5 rounded flex items-center justify-center shrink-0 transition-all"
+                      style={{
+                        background: selected ? "hsl(217,91%,60%)" : "transparent",
+                        border: selected ? "none" : "1.5px solid hsla(0,0%,100%,0.2)",
+                      }}
+                    >
+                      {selected && <Check className="w-3 h-3 text-white" />}
+                    </div>
+                    {p}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Running tally */}
+            {goals.length > 0 && (
+              <div
+                className="mt-4 text-center animate-fade-in"
+                style={{ color: "hsl(217,91%,60%)", fontSize: 14, fontWeight: 600 }}
               >
-                {geoLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <MapPin className="w-3.5 h-3.5" />}
-                Use my location →
-              </button>
-              {geoError && (
-                <p className="error-fade-in" style={{ color: "hsla(0,0%,100%,0.5)", fontSize: 13, marginTop: 6 }}>
-                  {geoError}
-                </p>
-              )}
-              {errorEl}
-            </div>
-          )}
-
-          {/* ═══ STEP 5 — Services ═══ */}
-          {step === 5 && (
-            <div>
-              <h2 className="text-white font-semibold mb-4" style={{ fontSize: 20 }}>Which services do you offer?</h2>
-              <div className="flex flex-wrap gap-2">
-                {SERVICES.map((s) => {
-                  const selected = services.includes(s);
-                  return (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => toggleService(s)}
-                      className="px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 min-h-[44px]"
-                      style={{
-                        border: selected ? "1px solid hsl(217,91%,60%)" : "1px solid hsla(0,0%,100%,0.15)",
-                        background: selected ? "hsla(217,91%,60%,0.15)" : "transparent",
-                        color: selected ? "white" : "hsla(0,0%,100%,0.6)",
-                      }}
-                    >
-                      {s}
-                    </button>
-                  );
-                })}
+                We'll set up {goals.length} {goals.length === 1 ? "fix" : "fixes"} for you →
               </div>
-              {errorEl}
-            </div>
-          )}
+            )}
+            {errorEl}
+          </div>
+        )}
 
-          {/* ═══ STEP 6 — Business Type ═══ */}
-          {step === 6 && (
-            <div>
-              <h2 className="text-white font-semibold mb-4" style={{ fontSize: 20 }}>How do you operate?</h2>
-              <div className="flex flex-wrap gap-3">
-                {BUSINESS_TYPES.map((t) => {
-                  const selected = businessType === t;
-                  return (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => { setBusinessType(t); setError(null); }}
-                      className="px-6 py-3 rounded-full text-sm font-medium transition-all duration-200 min-h-[48px]"
-                      style={{
-                        border: selected ? "1px solid hsl(217,91%,60%)" : "1px solid hsla(0,0%,100%,0.15)",
-                        background: selected ? "hsla(217,91%,60%,0.15)" : "transparent",
-                        color: selected ? "white" : "hsla(0,0%,100%,0.6)",
-                      }}
-                    >
-                      {t}
-                    </button>
-                  );
-                })}
-              </div>
-              {errorEl}
-            </div>
+        {/* ── Continue button ── */}
+        <button
+          onClick={handleContinue}
+          disabled={submitting || exiting}
+          className="w-full font-semibold transition-all duration-200 disabled:opacity-50 mt-7 flex items-center justify-center gap-2"
+          style={{
+            height: 50,
+            borderRadius: 12,
+            background: canContinue()
+              ? "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,80%,55%) 100%)"
+              : "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,80%,55%) 100%)",
+            color: "white",
+            fontSize: 15,
+            opacity: canContinue() && !submitting ? 1 : 0.4,
+            cursor: canContinue() && !submitting ? "pointer" : "not-allowed",
+          }}
+          onMouseEnter={(e) => {
+            if (canContinue() && !submitting) {
+              e.currentTarget.style.filter = "brightness(1.08)";
+              e.currentTarget.style.boxShadow = "0 4px 20px hsla(217,91%,60%,0.4)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.filter = "none";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        >
+          {submitting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Building {shopName.trim()}'s site...
+            </>
+          ) : (
+            <>
+              {step === 3 && goals.length > 0 && <Sparkles className="w-4 h-4" />}
+              {CTA_TEXT[step]}
+            </>
           )}
+        </button>
 
-          {/* Continue button */}
+        {/* Disabled tooltip */}
+        {!canContinue() && step === 3 && (
+          <p className="text-center mt-2" style={{ color: "hsla(0,0%,100%,0.3)", fontSize: 12 }}>
+            Select at least one to continue
+          </p>
+        )}
+
+        {/* Back link */}
+        {step > 1 && (
           <button
-            onClick={handleContinue}
-            disabled={submitting}
-            className="w-full font-semibold transition-all duration-200 disabled:opacity-50 mt-8"
-            style={{
-              height: 48,
-              borderRadius: 10,
-              background: canContinue()
-                ? "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(224,91%,54%) 100%)"
-                : "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(224,91%,54%) 100%)",
-              color: "white",
-              fontSize: 15,
-              opacity: canContinue() && !submitting ? 1 : 0.5,
-              cursor: canContinue() && !submitting ? "pointer" : "not-allowed",
-            }}
-            onMouseEnter={(e) => {
-              if (canContinue() && !submitting) {
-                e.currentTarget.style.filter = "brightness(1.08)";
-                e.currentTarget.style.boxShadow = "0 4px 16px hsla(217,91%,60%,0.4)";
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.filter = "none";
-              e.currentTarget.style.boxShadow = "none";
-            }}
+            type="button"
+            onClick={() => setStep((s) => s - 1)}
+            className="w-full text-center mt-3 text-sm font-medium transition-colors"
+            style={{ color: "hsla(0,0%,100%,0.4)" }}
           >
-            {submitting ? "Saving..." : step < TOTAL_STEPS ? "Continue →" : "Build My Site →"}
+            ← Back
           </button>
-
-          {/* Back link */}
-          {step > 1 && (
-            <button
-              type="button"
-              onClick={() => setStep((s) => s - 1)}
-              className="w-full text-center mt-4 text-sm font-medium transition-colors"
-              style={{ color: "hsla(0,0%,100%,0.4)" }}
-            >
-              ← Back
-            </button>
-          )}
-        </div>
-      </FadeIn>
+        )}
+      </div>
     </div>
   );
 };
