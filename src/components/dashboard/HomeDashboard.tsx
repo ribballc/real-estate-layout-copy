@@ -523,6 +523,9 @@ const HomeDashboard = () => {
                     <div className="min-w-0">
                       <p className="alytics-card-title text-sm font-medium truncate">{b.customer_name || "—"}</p>
                       <p className="alytics-card-sub text-xs truncate">{b.service_title || "—"}</p>
+                      {b.notes && b.notes.startsWith("Vehicle:") && (
+                        <p className="text-[11px] text-muted-foreground/60 truncate">{b.notes.split("\n")[0].replace("Vehicle: ", "")}</p>
+                      )}
                     </div>
                   </div>
                   <div className="text-right shrink-0 ml-3">

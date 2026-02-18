@@ -13,7 +13,7 @@ import {
 import {
   Loader2, ChevronLeft, ChevronRight, Plus, Clock, User, Mail, Phone,
   DollarSign, FileText, X, Calendar as CalendarIcon, Ban, RefreshCw,
-  Trash2, ChevronDown, PhoneCall, Play,
+  Trash2, ChevronDown, PhoneCall, Play, Car,
 } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isToday, isSameDay } from "date-fns";
 
@@ -88,6 +88,8 @@ const CalendarManager = () => {
     service_title: "", service_price: 0, booking_date: "",
     booking_time: "10:00", duration_minutes: 60, notes: "",
   });
+  const [customerVehicles, setCustomerVehicles] = useState<{year:string;make:string;model:string;color:string;plate:string}[]>([]);
+  const [selectedVehicle, setSelectedVehicle] = useState("");
 
   const fetchBookings = async () => {
     if (!user) return;
@@ -176,15 +178,33 @@ const CalendarManager = () => {
 
   const handleAdd = async () => {
     if (!user || !newBooking.customer_name || !newBooking.booking_date) return;
-    const { error } = await supabase.from("bookings").insert({ user_id: user.id, ...newBooking });
+    const notesWithVehicle = selectedVehicle
+      ? `Vehicle: ${selectedVehicle}${newBooking.notes ? "\n" + newBooking.notes : ""}`
+      : newBooking.notes;
+    const { error } = await supabase.from("bookings").insert({ user_id: user.id, ...newBooking, notes: notesWithVehicle });
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Booking added!" });
       setShowAddModal(false);
       setNewBooking({ customer_name: "", customer_email: "", customer_phone: "", service_title: "", service_price: 0, booking_date: "", booking_time: "10:00", duration_minutes: 60, notes: "" });
+      setCustomerVehicles([]);
+      setSelectedVehicle("");
       fetchBookings();
     }
+  };
+
+  // Lookup customer vehicles by email
+  const lookupCustomerVehicles = async (email: string) => {
+    if (!user || !email) { setCustomerVehicles([]); return; }
+    const { data } = await supabase.from("customers").select("vehicle").eq("user_id", user.id).eq("email", email).limit(1);
+    if (data && data[0]?.vehicle) {
+      try {
+        const parsed = JSON.parse(data[0].vehicle);
+        if (Array.isArray(parsed)) { setCustomerVehicles(parsed); return; }
+      } catch {}
+    }
+    setCustomerVehicles([]);
   };
 
   const updateStatus = async (id: string, status: string) => {
@@ -450,10 +470,13 @@ const CalendarManager = () => {
                       {/* Details */}
                       <div className="space-y-1 text-xs">
                         <div className="flex items-center gap-2 text-white/50"><Clock className="w-3 h-3" /> {formatTimeShort(b.booking_time)} · {b.duration_minutes}min{b.service_title && <> · {b.service_title}</>}</div>
+                        {b.notes && b.notes.startsWith("Vehicle:") && (
+                          <div className="flex items-center gap-2 text-accent/70"><Car className="w-3 h-3" /> {b.notes.split("\n")[0].replace("Vehicle: ", "")}</div>
+                        )}
                         {b.customer_email && <div className="flex items-center gap-2 text-white/50"><Mail className="w-3 h-3" /> {b.customer_email}</div>}
                         {b.customer_phone && <div className="flex items-center gap-2 text-white/50"><Phone className="w-3 h-3" /> {b.customer_phone}</div>}
                         {b.service_price > 0 && <div className="flex items-center gap-2 text-white/50"><DollarSign className="w-3 h-3" /> ${b.service_price}</div>}
-                        {b.notes && <div className="flex items-start gap-2 text-white/40"><FileText className="w-3 h-3 mt-0.5" /> {b.notes}</div>}
+                        {b.notes && <div className="flex items-start gap-2 text-white/40"><FileText className="w-3 h-3 mt-0.5" /> {b.notes.startsWith("Vehicle:") ? b.notes.split("\n").slice(1).join("\n") : b.notes}</div>}
                       </div>
                       {/* Contact buttons */}
                       <div className="flex gap-2 pt-0.5">
@@ -506,12 +529,34 @@ const CalendarManager = () => {
               </div>
               <div className="space-y-1">
                 <Label className="text-white/60 text-xs">Email</Label>
-                <Input value={newBooking.customer_email} onChange={e => setNewBooking({ ...newBooking, customer_email: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="john@email.com" />
+                <Input value={newBooking.customer_email} onChange={e => { setNewBooking({ ...newBooking, customer_email: e.target.value }); lookupCustomerVehicles(e.target.value); }} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="john@email.com" />
               </div>
               <div className="space-y-1">
                 <Label className="text-white/60 text-xs">Phone</Label>
                 <Input value={newBooking.customer_phone} onChange={e => setNewBooking({ ...newBooking, customer_phone: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="(555) 123-4567" />
               </div>
+              {/* Vehicle dropdown */}
+              {customerVehicles.length > 0 && (
+                <div className="col-span-2 space-y-1">
+                  <Label className="text-white/60 text-xs flex items-center gap-1"><Car className="w-3 h-3" /> Vehicle</Label>
+                  <select
+                    value={selectedVehicle}
+                    onChange={e => setSelectedVehicle(e.target.value)}
+                    className="w-full h-10 rounded-md bg-white/5 border border-white/10 text-white text-sm px-3 focus:outline-none focus:ring-2 focus:ring-accent"
+                  >
+                    <option value="" className="bg-[hsl(215,50%,10%)]">Select a vehicle</option>
+                    {customerVehicles.map((v, i) => {
+                      const label = [v.year, v.make, v.model].filter(Boolean).join(" ");
+                      return <option key={i} value={label + (v.color ? ` · ${v.color}` : "")} className="bg-[hsl(215,50%,10%)]">{label}{v.color ? ` · ${v.color}` : ""}</option>;
+                    })}
+                  </select>
+                  {selectedVehicle && (
+                    <div className="flex items-center gap-1.5 mt-1 text-xs text-accent">
+                      <Car className="w-3 h-3" /> {selectedVehicle}
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="space-y-1">
                 <Label className="text-white/60 text-xs">Service</Label>
                 <Input value={newBooking.service_title} onChange={e => setNewBooking({ ...newBooking, service_title: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="Full Detail" />
