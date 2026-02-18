@@ -253,7 +253,7 @@ const AddOnsManager = () => {
                   <span className="text-white/40 text-sm">$</span>
                   <Input type="number" value={addon.price} onChange={(e) => updateAddOn(addon.id, { price: parseFloat(e.target.value) || 0 })} className="w-24 h-9 bg-white/5 border-white/10 text-white focus-visible:ring-accent" />
                 </div>
-                <button onClick={() => deleteAddOn(addon.id)} className="text-white/30 hover:text-red-400 p-1"><Trash2 className="w-4 h-4" /></button>
+                <button onClick={() => deleteAddOn(addon.id)} aria-label="Delete add-on" className="text-white/50 hover:text-red-400 p-1"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
             {filtered.length === 0 && <p className="text-white/30 text-sm text-center py-6">No add-ons for this service yet.</p>}

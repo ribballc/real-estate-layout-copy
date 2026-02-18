@@ -429,7 +429,7 @@ const CustomersManager = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-white/40 text-[11px] font-medium">Vehicle {i + 1}</span>
                     {formVehicles.length > 1 && (
-                      <button onClick={() => removeVehicle(i)} className="text-white/20 hover:text-red-400 transition-colors">
+                      <button onClick={() => removeVehicle(i)} aria-label="Remove vehicle" className="text-white/40 hover:text-red-400 transition-colors">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     )}

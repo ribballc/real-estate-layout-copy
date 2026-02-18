@@ -189,14 +189,14 @@ const NotificationBell = ({ isDark }: NotificationBellProps) => {
       <div className={`flex items-center justify-between px-4 pb-2 border-b ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}>
         <span className={`text-sm font-semibold ${isDark ? "text-white" : "text-[hsl(215,25%,12%)]"}`}>Notifications</span>
         {visibleAlerts.length > 0 && (
-          <button onClick={handleMarkAllRead} className="text-[11px] font-medium transition-colors" style={{ color: "hsl(217,91%,60%)" }}>
+          <button onClick={handleMarkAllRead} className="text-xs font-medium transition-colors" style={{ color: "hsl(217,91%,60%)" }}>
             <CheckCheck className="w-3.5 h-3.5 inline mr-1" />Mark all read
           </button>
         )}
       </div>
 
       {visibleAlerts.length === 0 ? (
-        <div className={`px-4 py-8 text-center text-sm ${isDark ? "text-white/30" : "text-[hsl(215,16%,55%)]"}`}>
+        <div className={`px-4 py-8 text-center text-sm ${isDark ? "text-white/60" : "text-[hsl(215,16%,55%)]"}`}>
           All caught up! No new notifications.
         </div>
       ) : (
@@ -220,7 +220,7 @@ const NotificationBell = ({ isDark }: NotificationBellProps) => {
                   </p>
                   <button
                     onClick={() => handleAction(alert)}
-                    className="text-[11px] font-medium mt-1 transition-colors"
+                    className="text-xs font-medium mt-1 transition-colors"
                     style={{ color: "hsl(217,91%,60%)" }}
                   >
                     {alert.actionLabel} →

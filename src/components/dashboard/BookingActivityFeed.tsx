@@ -158,7 +158,7 @@ const BookingActivityFeed = ({ onNewBooking }: BookingActivityFeedProps) => {
               <div className="min-w-0">
                 <p className="alytics-card-title text-sm font-medium truncate">
                   {b.customer_name || "—"}
-                  {b._isNew && <span className="ml-2 text-[10px] font-semibold text-emerald-400">NEW</span>}
+                  {b._isNew && <span className="ml-2 text-xs font-semibold text-emerald-400">NEW</span>}
                 </p>
                 <p className="alytics-card-sub text-xs truncate">
                   {b.service_title || "—"} · {b.booking_date ? format(parseISO(b.booking_date), "MMM d") : ""}
@@ -170,14 +170,14 @@ const BookingActivityFeed = ({ onNewBooking }: BookingActivityFeedProps) => {
                 {formatCurrency(Number(b.service_price) || 0)}
               </p>
               <span
-                className={`text-[10px] font-semibold uppercase tracking-wide ${
+                className={`text-xs font-semibold uppercase tracking-wide ${
                   b.status === "confirmed"
-                    ? "text-emerald-500"
+                    ? "text-emerald-400"
                     : b.status === "completed"
                     ? "text-[hsl(217,91%,60%)]"
                     : b.status === "cancelled"
-                    ? "text-red-500"
-                    : "text-amber-500"
+                    ? "text-rose-400"
+                    : "text-amber-400"
                 }`}
               >
                 {b.status}

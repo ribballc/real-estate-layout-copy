@@ -15,6 +15,32 @@
   .scrollbar-none::-webkit-scrollbar {
     display: none;
   }
+
+  /* ═══ Typography Scale ═══ */
+  .type-display {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .type-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .type-body {
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+  .type-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
 }
 
 @layer base {
@@ -35,7 +61,7 @@
     --secondary-foreground: 215 25% 12%;
 
     --muted: 214 20% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted-foreground: 215 16% 42%;
 
     --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
@@ -369,7 +395,7 @@
 
 /* Dashboard card label / value / sublabel */
 .dashboard-dark .dash-card-label {
-  color: hsla(0, 0%, 100%, 0.55);
+  color: hsla(0, 0%, 100%, 0.6);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -381,7 +407,7 @@
   letter-spacing: -0.02em;
 }
 .dashboard-dark .dash-card-sublabel {
-  color: hsla(0, 0%, 100%, 0.4);
+  color: hsla(0, 0%, 100%, 0.5);
   font-size: 0.75rem;
 }
 
@@ -523,7 +549,7 @@
 }
 .dashboard-dark input::placeholder,
 .dashboard-dark textarea::placeholder {
-  color: hsla(0, 0%, 100%, 0.35);
+  color: hsla(0, 0%, 100%, 0.45);
 }
 .dashboard-dark input:focus,
 .dashboard-dark textarea:focus,
@@ -570,7 +596,7 @@
 .dashboard-dark caption {
   font-size: 0.75rem;
   letter-spacing: 0.03em;
-  color: hsla(0, 0%, 100%, 0.5);
+  color: hsla(0, 0%, 100%, 0.6);
 }
 .dashboard-light .dash-label,
 .dashboard-light label,
@@ -620,7 +646,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: hsla(0, 0%, 100%, 0.6);
+  color: hsla(0, 0%, 100%, 0.7);
 }
 .dashboard-light .dash-section-heading {
   font-size: 0.8125rem;
@@ -965,7 +991,7 @@
   --secondary: 215 30% 18%;
   --secondary-foreground: 0 0% 90%;
   --muted: 215 30% 16%;
-  --muted-foreground: 215 16% 60%;
+  --muted-foreground: 215 20% 65%;
   --accent: 217 91% 60%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
@@ -990,7 +1016,7 @@
   --secondary: 214 20% 93%;
   --secondary-foreground: 215 25% 12%;
   --muted: 214 20% 96%;
-  --muted-foreground: 215 16% 47%;
+  --muted-foreground: 215 16% 42%;
   --accent: 217 91% 60%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
@@ -1006,7 +1032,7 @@
 
 /* --- Dark mode defaults --- */
 .dash-title { color: hsl(0, 0%, 100%); }
-.dash-subtitle { color: hsla(0, 0%, 100%, 0.4); }
+.dash-subtitle { color: hsla(0, 0%, 100%, 0.6); }
 .dash-select {
   background: hsla(0, 0%, 100%, 0.04);
   border-color: hsla(0, 0%, 100%, 0.08);
@@ -1020,9 +1046,9 @@
   background: linear-gradient(135deg, hsla(217, 91%, 60%, 0.18) 0%, hsla(217, 91%, 60%, 0.06) 100%);
   border-color: hsla(217, 91%, 60%, 0.25);
 }
-.dash-card-label { color: hsla(0, 0%, 100%, 0.4); }
+.dash-card-label { color: hsla(0, 0%, 100%, 0.6); }
 .dash-card-value { color: hsl(0, 0%, 100%); }
-.dash-card-sublabel { color: hsla(0, 0%, 100%, 0.3); }
+.dash-card-sublabel { color: hsla(0, 0%, 100%, 0.5); }
 .dash-menu-btn { color: hsla(0, 0%, 100%, 0.25); }
 .dash-menu-btn:hover { background: hsla(0, 0%, 100%, 0.06); color: hsla(0, 0%, 100%, 0.6); }
 .dash-card-border-b { border-bottom: 1px solid hsla(0, 0%, 100%, 0.06); }
@@ -1080,7 +1106,7 @@
 }
 .alytics-card-title { color: hsl(0, 0%, 100%); }
 .alytics-card-big { color: hsl(0, 0%, 100%); }
-.alytics-card-sub { color: hsla(0, 0%, 100%, 0.4); }
+.alytics-card-sub { color: hsla(0, 0%, 100%, 0.6); }
 .alytics-link { color: hsl(217, 91%, 60%); }
 .alytics-link:hover { color: hsl(217, 91%, 50%); }
 .alytics-divide > * + * { border-top: 1px solid hsla(0, 0%, 100%, 0.06); }
@@ -1100,7 +1126,7 @@
 }
 .dashboard-light .alytics-card-title { color: hsl(215, 25%, 12%); }
 .dashboard-light .alytics-card-big { color: hsl(215, 25%, 12%); }
-.dashboard-light .alytics-card-sub { color: hsl(215, 16%, 50%); }
+.dashboard-light .alytics-card-sub { color: hsl(215, 16% , 45%); }
 .dashboard-light .alytics-link { color: hsl(217, 91%, 52%); }
 .dashboard-light .alytics-link:hover { color: hsl(217, 91%, 42%); }
 .dashboard-light .alytics-divide > * + * { border-top: 1px solid hsl(214, 20%, 93%); }

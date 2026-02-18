@@ -186,7 +186,7 @@ const DashboardSidebar = ({
                         {item.title}
                       </span>
                       {badge > 0 && (
-                        <span className="min-w-[20px] h-[20px] px-1.5 rounded-md text-[11px] font-bold flex items-center justify-center bg-[hsl(0,84%,60%)] text-white">
+                        <span className="min-w-[20px] h-[20px] px-1.5 rounded-md text-xs font-bold flex items-center justify-center bg-[hsl(0,84%,60%)] text-white">
                           {badge > 9 ? "9+" : badge}
                         </span>
                       )}
@@ -315,7 +315,7 @@ const DashboardSidebar = ({
                 isDark ? "bg-[hsla(0,0%,100%,0.03)]" : "bg-[hsl(214,20%,97%)]"
               )}>
                 <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[11px] font-bold"
+                  className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
                   style={{ background: "hsla(217,91%,60%,0.15)", color: "hsl(217,91%,60%)" }}
                 >
                   {user.email.charAt(0).toUpperCase()}

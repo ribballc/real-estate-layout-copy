@@ -55,7 +55,7 @@ const statusConfig: Record<string, { label: string; bg: string; text: string }> 
 const StatusBadge = ({ status }: { status: string }) => {
   const cfg = statusConfig[status] || statusConfig.none;
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold" style={{ background: cfg.bg, color: cfg.text }}>
+    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style={{ background: cfg.bg, color: cfg.text }}>
       {cfg.label}
     </span>
   );
@@ -220,7 +220,7 @@ const AdminDashboard = () => {
 
         {/* Row 3: MRR Chart */}
         <div className="rounded-xl p-5" style={{ background: "hsla(0,0%,100%,0.03)", border: "1px solid hsla(0,0%,100%,0.07)" }}>
-          <h3 className="text-sm font-semibold mb-4" style={{ color: "hsla(0,0%,100%,0.7)" }}>MRR Growth (Last 12 Months)</h3>
+          <h3 className="text-sm font-semibold mb-4" style={{ color: "hsla(0,0%,100%,0.8)" }}>MRR Growth (Last 12 Months)</h3>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={data.mrrHistory}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsla(0,0%,100%,0.06)" />
@@ -240,9 +240,9 @@ const AdminDashboard = () => {
         {/* Row 4: User table */}
         <div className="rounded-xl overflow-hidden" style={{ background: "hsla(0,0%,100%,0.03)", border: "1px solid hsla(0,0%,100%,0.07)" }}>
           <div className="p-4 flex items-center justify-between gap-4" style={{ borderBottom: "1px solid hsla(0,0%,100%,0.07)" }}>
-            <h3 className="text-sm font-semibold" style={{ color: "hsla(0,0%,100%,0.7)" }}>Recent Users ({filteredUsers.length})</h3>
+            <h3 className="text-sm font-semibold" style={{ color: "hsla(0,0%,100%,0.8)" }}>Recent Users ({filteredUsers.length})</h3>
             <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2" style={{ color: "hsla(0,0%,100%,0.3)" }} />
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2" style={{ color: "hsla(0,0%,100%,0.45)" }} />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -257,7 +257,7 @@ const AdminDashboard = () => {
               <thead>
                 <tr style={{ borderBottom: "1px solid hsla(0,0%,100%,0.07)" }}>
                   {["Email", "Name", "Signed Up", "Status", "Plan", "Trial Ends", "Activated", "Onboarded"].map(h => (
-                    <th key={h} className="text-left px-4 py-2.5 text-[11px] font-semibold uppercase tracking-wider" style={{ color: "hsla(0,0%,100%,0.35)" }}>{h}</th>
+                    <th key={h} className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: "hsla(0,0%,100%,0.5)" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -268,13 +268,13 @@ const AdminDashboard = () => {
                     onMouseEnter={e => (e.currentTarget.style.background = "hsla(0,0%,100%,0.03)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
                     <td className="px-4 py-2.5 font-mono text-xs" style={{ color: "hsla(0,0%,100%,0.8)" }}>{u.email}</td>
-                    <td className="px-4 py-2.5 text-xs" style={{ color: "hsla(0,0%,100%,0.6)" }}>{u.name || "—"}</td>
-                    <td className="px-4 py-2.5 text-xs" style={{ color: "hsla(0,0%,100%,0.4)" }}>
+                    <td className="px-4 py-2.5 text-xs" style={{ color: "hsla(0,0%,100%,0.7)" }}>{u.name || "—"}</td>
+                    <td className="px-4 py-2.5 text-xs" style={{ color: "hsla(0,0%,100%,0.55)" }}>
                       {new Date(u.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "2-digit" })}
                     </td>
                     <td className="px-4 py-2.5"><StatusBadge status={u.status} /></td>
-                    <td className="px-4 py-2.5 text-xs capitalize" style={{ color: "hsla(0,0%,100%,0.5)" }}>{u.plan || "—"}</td>
-                    <td className="px-4 py-2.5 text-xs" style={{ color: "hsla(0,0%,100%,0.4)" }}>
+                    <td className="px-4 py-2.5 text-xs capitalize" style={{ color: "hsla(0,0%,100%,0.65)" }}>{u.plan || "—"}</td>
+                    <td className="px-4 py-2.5 text-xs" style={{ color: "hsla(0,0%,100%,0.55)" }}>
                       {u.trialEndsAt ? new Date(u.trialEndsAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
                     </td>
                     <td className="px-4 py-2.5">
@@ -297,7 +297,7 @@ const AdminDashboard = () => {
           <div className="w-full max-w-md rounded-xl p-6" style={{ background: "hsl(222,47%,10%)", border: "1px solid hsla(0,0%,100%,0.1)" }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold">User Detail</h3>
-              <button onClick={() => setSelectedUser(null)}><X className="w-4 h-4" style={{ color: "hsla(0,0%,100%,0.4)" }} /></button>
+              <button onClick={() => setSelectedUser(null)}><X className="w-4 h-4" style={{ color: "hsla(0,0%,100%,0.6)" }} /></button>
             </div>
             <div className="space-y-3 text-sm">
               <DetailRow label="Email" value={selectedUser.email} />
@@ -322,23 +322,23 @@ const MetricCard = ({ icon, label, value, sub }: { icon: React.ReactNode; label:
   <div className="rounded-xl p-4" style={{ background: "hsla(0,0%,100%,0.03)", border: "1px solid hsla(0,0%,100%,0.07)" }}>
     <div className="flex items-center gap-2 mb-2">
       <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "hsla(217,91%,60%,0.1)", color: "hsl(217,91%,60%)" }}>{icon}</div>
-      <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: "hsla(0,0%,100%,0.4)" }}>{label}</span>
+      <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "hsla(0,0%,100%,0.55)" }}>{label}</span>
     </div>
-    <div className="text-2xl font-bold tracking-tight">{value}</div>
-    {sub && <p className="text-[11px] mt-1" style={{ color: "hsla(0,0%,100%,0.35)" }}>{sub}</p>}
+    <div className="text-3xl font-bold tracking-tight">{value}</div>
+    {sub && <p className="text-xs mt-1" style={{ color: "hsla(0,0%,100%,0.5)" }}>{sub}</p>}
   </div>
 );
 
 const FunnelCard = ({ label, value, alert }: { label: string; value: string; alert?: boolean }) => (
   <div className="rounded-xl p-4" style={{ background: "hsla(0,0%,100%,0.03)", border: `1px solid ${alert ? "hsla(0,84%,60%,0.25)" : "hsla(0,0%,100%,0.07)"}` }}>
-    <div className="text-[11px] font-semibold uppercase tracking-wider mb-1" style={{ color: "hsla(0,0%,100%,0.4)" }}>{label}</div>
+    <div className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "hsla(0,0%,100%,0.55)" }}>{label}</div>
     <div className="text-xl font-bold" style={{ color: alert ? "hsl(0,84%,60%)" : "white" }}>{value}</div>
   </div>
 );
 
 const DetailRow = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div className="flex items-start justify-between gap-4">
-    <span style={{ color: "hsla(0,0%,100%,0.4)" }}>{label}</span>
+    <span style={{ color: "hsla(0,0%,100%,0.55)" }}>{label}</span>
     <span className="text-right" style={{ color: "hsla(0,0%,100%,0.8)" }}>{value}</span>
   </div>
 );
