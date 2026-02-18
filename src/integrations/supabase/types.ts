@@ -217,6 +217,66 @@ export type Database = {
         }
         Relationships: []
       }
+      estimates: {
+        Row: {
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          discount_amount: number
+          discount_type: string
+          id: string
+          notes: string
+          services: Json
+          status: string
+          subtotal: number
+          tax_rate: number
+          total: number
+          updated_at: string
+          user_id: string
+          valid_until: string | null
+          vehicle: string
+        }
+        Insert: {
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          discount_amount?: number
+          discount_type?: string
+          id?: string
+          notes?: string
+          services?: Json
+          status?: string
+          subtotal?: number
+          tax_rate?: number
+          total?: number
+          updated_at?: string
+          user_id: string
+          valid_until?: string | null
+          vehicle?: string
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          discount_amount?: number
+          discount_type?: string
+          id?: string
+          notes?: string
+          services?: Json
+          status?: string
+          subtotal?: number
+          tax_rate?: number
+          total?: number
+          updated_at?: string
+          user_id?: string
+          valid_until?: string | null
+          vehicle?: string
+        }
+        Relationships: []
+      }
       photos: {
         Row: {
           caption: string

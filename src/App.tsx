@@ -25,6 +25,8 @@ import PhotosManager from "./components/dashboard/PhotosManager";
 import TestimonialsManager from "./components/dashboard/TestimonialsManager";
 import CalendarManager from "./components/dashboard/CalendarManager";
 import JobsManager from "./components/dashboard/JobsManager";
+import EstimatesManager from "./components/dashboard/EstimatesManager";
+import PublicEstimate from "./pages/PublicEstimate";
 import AccountSettings from "./components/dashboard/AccountSettings";
 import CustomersManager from "./components/dashboard/CustomersManager";
 import WebsitePage from "./components/dashboard/WebsitePage";
@@ -57,6 +59,7 @@ const App = () => (
             <Route path="/site/:slug/book/add-ons" element={<BookAddOns />} />
             <Route path="/site/:slug/book/booking" element={<BookBooking />} />
             <Route path="/site/:slug/book/checkout" element={<BookCheckout />} />
+            <Route path="/estimate/:id" element={<PublicEstimate />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
@@ -65,6 +68,7 @@ const App = () => (
               <Route path="website" element={<WebsitePageRoute />} />
               <Route path="calendar" element={<CalendarManager />} />
               <Route path="jobs" element={<JobsManager />} />
+              <Route path="estimates" element={<EstimatesManager />} />
               <Route path="customers" element={<CustomersManager />} />
               <Route path="services" element={<ServicesManager />} />
               <Route path="photos" element={<PhotosManager />} />
