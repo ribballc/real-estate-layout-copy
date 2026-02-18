@@ -260,7 +260,7 @@ const DashboardLayout = () => {
           {/* Past due warning banner */}
           {subscription.isPastDue && <PastDueBanner isDark={isDark} />}
 
-          <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
+          <div className="dash-content">
             <PageIntroBanner path={location.pathname} />
             {isLocked ? (
               <LockedPageOverlay path={location.pathname} isDark={isDark} />

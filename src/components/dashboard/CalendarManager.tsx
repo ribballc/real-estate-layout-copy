@@ -534,7 +534,7 @@ const CalendarManager = () => {
                           <div className="relative" onClick={e => e.stopPropagation()}>
                             <button
                               onClick={() => setOpenStatusDropdown(openStatusDropdown === b.id ? null : b.id)}
-                              className={`text-[10px] px-2 py-0.5 rounded-full border flex items-center gap-1 ${statusBadgeColors[b.status] || statusBadgeColors.confirmed}`}
+                              className={`dash-badge flex items-center gap-1 ${statusBadgeColors[b.status] || statusBadgeColors.confirmed}`}
                             >
                               {b.status} <ChevronDown className="w-2.5 h-2.5" />
                             </button>
@@ -607,7 +607,7 @@ const CalendarManager = () => {
       {/* Add Booking Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+          <div className="w-full max-w-md dash-card p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">Add Booking</h3>
               <button onClick={() => setShowAddModal(false)} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>
@@ -678,7 +678,7 @@ const CalendarManager = () => {
       {/* Google Calendar Sync Modal */}
       {showSyncModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+          <div className="w-full max-w-sm dash-card p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">Sync Google Calendar</h3>
               <button onClick={() => setShowSyncModal(false)} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>

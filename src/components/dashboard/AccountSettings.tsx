@@ -150,7 +150,7 @@ const AccountSettings = () => {
         <div className="flex items-center gap-3 mb-3">
           <Globe className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} />
           <h3 className="text-lg font-semibold text-white">Custom Domain</h3>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "hsla(217,91%,60%,0.15)", color: "hsl(217,91%,60%)" }}>
+          <span className="dash-badge" style={{ background: "hsla(217,91%,60%,0.15)", color: "hsl(217,91%,60%)" }}>
             COMING SOON
           </span>
         </div>
@@ -181,7 +181,7 @@ const AccountSettings = () => {
                 <div key={flag.flag_name} className="flex items-center justify-between gap-3">
                   <div>
                     <p className="text-sm text-white/80 font-medium">{flag.description}</p>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: "hsla(45,93%,47%,0.15)", color: "hsl(45,93%,47%)" }}>
+                    <span className="dash-badge" style={{ background: "hsla(45,93%,47%,0.15)", color: "hsl(45,93%,47%)" }}>
                       COMING SOON
                     </span>
                   </div>
