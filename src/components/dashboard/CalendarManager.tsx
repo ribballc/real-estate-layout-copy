@@ -408,9 +408,9 @@ const CalendarManager = () => {
         </div>
       </Collapsible>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4 items-start lg:items-stretch">
         {/* Calendar grid */}
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4 md:p-5">
+        <div className="dash-card">
           <div className="flex items-center justify-between mb-5">
             <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-white transition-colors">
               <ChevronLeft className="w-4 h-4" />
@@ -481,7 +481,7 @@ const CalendarManager = () => {
         </div>
 
         {/* Day detail panel */}
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+        <div className="dash-card lg:overflow-y-auto">
           {selectedDate ? (
             <>
               <div className="flex items-center justify-between mb-4">

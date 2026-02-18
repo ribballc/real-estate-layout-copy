@@ -339,14 +339,14 @@ const ServicesManager = () => {
 
       <div className="space-y-4">
         {services.map((service) => (
-          <div key={service.id} className="rounded-xl border border-border bg-card p-5 space-y-4">
+          <div key={service.id} className="dash-card min-h-[200px] flex flex-col gap-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 space-y-3">
                 {/* Image upload */}
                 <div className="flex items-center gap-3">
                   {service.image_url ? (
                     <div className="relative group">
-                      <img src={service.image_url} alt={service.title} className="w-16 h-16 rounded-lg object-cover border border-border" />
+                      <img src={service.image_url} alt={service.title} className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-border" />
                       <button
                         onClick={() => updateService(service.id, { image_url: null } as any)}
                         className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -355,7 +355,7 @@ const ServicesManager = () => {
                       </button>
                     </div>
                   ) : (
-                    <label className="w-16 h-16 rounded-lg border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/40 transition-colors shrink-0">
+                    <label className="w-14 h-14 rounded-lg border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/40 transition-colors flex-shrink-0">
                       <ImageIcon className="w-5 h-5 text-muted-foreground/40" />
                       <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
                         const file = e.target.files?.[0];
@@ -374,11 +374,11 @@ const ServicesManager = () => {
                     className="h-10 text-foreground font-semibold"
                   />
                 </div>
-                <Textarea
+                 <Textarea
                   value={service.description}
                   onChange={(e) => updateService(service.id, { description: e.target.value })}
                   placeholder="Description…"
-                  className="text-foreground placeholder:text-muted-foreground/40 min-h-[60px]"
+                  className="text-foreground placeholder:text-muted-foreground/40 min-h-[60px] flex-1"
                 />
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="flex items-center gap-2">

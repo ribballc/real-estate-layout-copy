@@ -248,17 +248,17 @@ const CustomersManager = () => {
         ].map(s => {
           const Icon = s.icon;
           return (
-            <div key={s.label} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 flex flex-col gap-3">
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center"
-                style={{ background: `${s.color.replace(")", ",0.1)")}`, border: `1px solid ${s.color.replace(")", ",0.2)")}` }}
-              >
-                <Icon className="w-4 h-4" style={{ color: s.color }} />
+            <div key={s.label} className="dash-card min-h-[100px] flex flex-col justify-between">
+              <div className="flex items-center justify-between">
+                <span className="dash-label text-white/40">{s.label}</span>
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  style={{ background: `${s.color.replace(")", ",0.1)")}`, border: `1px solid ${s.color.replace(")", ",0.2)")}` }}
+                >
+                  <Icon className="w-4 h-4" style={{ color: s.color }} />
+                </div>
               </div>
-              <div>
-                <span className="text-white/40 text-xs font-medium uppercase tracking-wider">{s.label}</span>
-                <p className="text-2xl font-bold text-white mt-0.5">{s.value}</p>
-              </div>
+              <p className="dash-metric text-white mt-auto pt-2">{s.value}</p>
             </div>
           );
         })}

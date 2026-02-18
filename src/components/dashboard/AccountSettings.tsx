@@ -108,8 +108,9 @@ const AccountSettings = () => {
     <div className="max-w-md">
       <h2 className="text-2xl font-bold text-white mb-6">Account Settings</h2>
 
+      <div className="flex flex-col gap-4">
       {/* Current Email */}
-      <div className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-4 mb-6">
+      <div className="dash-card space-y-4">
         <div>
           <Label className="text-white/50 text-xs">Current Email</Label>
           <p className="text-white text-sm mt-1">{user?.email}</p>
@@ -117,7 +118,7 @@ const AccountSettings = () => {
       </div>
 
       {/* Manage Subscription */}
-      <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-6">
+      <div className="dash-card">
         <h3 className="text-lg font-semibold text-white mb-2">Subscription & Billing</h3>
         <p className="text-white/50 text-sm mb-4">Manage your plan, payment method, and invoices.</p>
         <div className="flex items-center gap-3">
@@ -146,7 +147,7 @@ const AccountSettings = () => {
       />
 
       {/* Custom Domain Placeholder */}
-      <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-6">
+      <div className="dash-card">
         <div className="flex items-center gap-3 mb-3">
           <Globe className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} />
           <h3 className="text-lg font-semibold text-white">Custom Domain</h3>
@@ -172,7 +173,7 @@ const AccountSettings = () => {
 
       {/* Coming Soon Features */}
       {!flagsLoading && comingSoonFlags.length > 0 && (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-6">
+        <div className="dash-card">
           <h3 className="text-lg font-semibold text-white mb-4">Upcoming Features</h3>
           <div className="space-y-3">
             {comingSoonFlags.map(flag => {
@@ -207,7 +208,7 @@ const AccountSettings = () => {
       )}
 
       {/* Change Email */}
-      <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-6">
+      <div className="dash-card">
         <h3 className="text-lg font-semibold text-white mb-4">Change Email</h3>
         <form onSubmit={handleChangeEmail} className="space-y-4">
           <div className="space-y-2">
@@ -228,7 +229,7 @@ const AccountSettings = () => {
       </div>
 
       {/* Change Password */}
-      <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-6">
+      <div className="dash-card">
         <h3 className="text-lg font-semibold text-white mb-4">Change Password</h3>
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div className="space-y-2">
@@ -250,7 +251,7 @@ const AccountSettings = () => {
       </div>
 
       {/* Delete Account */}
-      <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-5">
+      <div className="dash-card" style={{ borderColor: "hsla(0, 84%, 60%, 0.2)", background: "hsla(0, 84%, 60%, 0.05)" }}>
         <div className="flex items-center gap-2 mb-3">
           <AlertTriangle className="w-5 h-5 text-red-400" />
           <h3 className="text-lg font-semibold text-red-400">Delete My Account</h3>
@@ -281,6 +282,7 @@ const AccountSettings = () => {
           </Button>
         </div>
       </div>
+      </div> {/* end flex flex-col gap-4 */}
     </div>
   );
 };

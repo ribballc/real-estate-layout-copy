@@ -46,7 +46,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                 onNavigate(tab.path);
               }}
               className={cn(
-                "flex flex-col items-center gap-0.5 min-w-0 flex-1 min-h-[48px] justify-center transition-all duration-150 ease-in-out px-0.5",
+                "flex flex-col items-center gap-0.5 min-w-0 flex-1 min-h-[48px] justify-center transition-all duration-150 ease-in-out px-2 py-2",
                 active
                   ? "text-[hsl(217,91%,60%)]"
                   : isDark
@@ -70,7 +70,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                 />
               </motion.span>
               <span className={cn(
-                "text-[9px] leading-tight tracking-wide uppercase truncate max-w-full",
+                "text-[11px] leading-tight tracking-wide uppercase truncate max-w-full",
                 active ? "font-semibold" : "font-medium",
                 !active && "opacity-70"
               )}>
