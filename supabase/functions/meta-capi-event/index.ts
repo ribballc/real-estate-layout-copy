@@ -15,6 +15,17 @@ async function hashValue(value: string): Promise<string> {
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+/** Normalize phone to E.164 digits-only format before hashing */
+function normalizePhone(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  // US 10-digit → prepend country code
+  if (digits.length === 10) return "1" + digits;
+  // Already 11 digits starting with 1 (US with country code)
+  if (digits.length === 11 && digits.startsWith("1")) return digits;
+  // International — return as-is
+  return digits;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -57,13 +68,23 @@ serve(async (req) => {
 
     // Build user_data with hashed PII
     const user_data: Record<string, any> = {};
+
+    // em — email (critical, highest EMQ weight)
     if (userData.email) user_data.em = [await hashValue(userData.email)];
+
+    // fn — first name
     if (userData.firstName) user_data.fn = [await hashValue(userData.firstName)];
+
+    // ln — last name
     if (userData.lastName) user_data.ln = [await hashValue(userData.lastName)];
+
+    // ph — phone (normalize to E.164 before hashing)
     if (userData.phone) {
-      const cleaned = userData.phone.replace(/\D/g, "");
-      if (cleaned) user_data.ph = [await hashValue(cleaned)];
+      const normalized = normalizePhone(userData.phone);
+      if (normalized) user_data.ph = [await hashValue(normalized)];
     }
+
+    // external_id — Supabase user ID
     if (userData.externalId) user_data.external_id = [await hashValue(userData.externalId)];
 
     // Non-hashed fields
