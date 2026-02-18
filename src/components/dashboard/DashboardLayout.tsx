@@ -3,6 +3,8 @@ import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import TrialLockOverlay from "./TrialLockOverlay";
 import MobileBottomNav from "./MobileBottomNav";
 import CommandBar from "./CommandBar";
+import WelcomeModal from "./WelcomeModal";
+import PageIntroBanner from "./PageIntroBanner";
 
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -59,6 +61,10 @@ const DashboardLayout = () => {
   const [trialActive, setTrialActive] = useState<boolean | null>(null);
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [firstName, setFirstName] = useState("");
+
+  // Entry animation — only on very first visit
+  const [showEntryAnim] = useState(() => !localStorage.getItem("darker_dashboard_intro_seen"));
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -68,12 +74,15 @@ const DashboardLayout = () => {
   useEffect(() => {
     if (!user) return;
     Promise.all([
-      supabase.from("profiles").select("trial_active, onboarding_complete").eq("user_id", user.id).single(),
+      supabase.from("profiles").select("trial_active, onboarding_complete, business_name").eq("user_id", user.id).single(),
       supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle(),
     ]).then(([profileRes, roleRes]) => {
       setTrialActive(profileRes.data?.trial_active ?? false);
       setOnboardingComplete(profileRes.data?.onboarding_complete ?? false);
       setIsAdmin(!!roleRes.data);
+      // Extract first word of business name as a rough first name for welcome
+      const bName = profileRes.data?.business_name || "";
+      setFirstName(bName.split(" ")[0] || "");
     });
   }, [user]);
 
@@ -138,7 +147,7 @@ const DashboardLayout = () => {
   return (
     <>
       <div
-        className={`min-h-screen flex w-full ${isDark ? "dashboard-dark" : "dashboard-light"}`}
+        className={`min-h-screen flex w-full ${isDark ? "dashboard-dark" : "dashboard-light"} ${showEntryAnim ? "animate-dashboard-entry" : ""}`}
         style={{
           background: isDark
             ? "linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 14%) 100%)"
@@ -217,6 +226,7 @@ const DashboardLayout = () => {
           </header>
 
           <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
+            <PageIntroBanner path={location.pathname} />
             <Outlet context={{ chatbotRef }} />
           </div>
 
@@ -260,6 +270,9 @@ const DashboardLayout = () => {
       </Sheet>
 
       <CommandBar open={commandBarOpen} onClose={() => setCommandBarOpen(false)} isDark={isDark} />
+
+      {/* First-visit welcome modal */}
+      {showEntryAnim && <WelcomeModal firstName={firstName} isDark={isDark} />}
     </>
   );
 };
