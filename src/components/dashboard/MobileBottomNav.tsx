@@ -1,5 +1,6 @@
 import { LayoutDashboard, CalendarDays, KanbanSquare, Users, Wrench, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 const TABS = [
   { label: "Home", icon: LayoutDashboard, path: "/dashboard" },
@@ -40,9 +41,12 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
           return (
             <button
               key={tab.path}
-              onClick={() => onNavigate(tab.path)}
+              onClick={() => {
+                if (navigator.vibrate) navigator.vibrate(8);
+                onNavigate(tab.path);
+              }}
               className={cn(
-                "flex flex-col items-center gap-0.5 min-w-0 flex-1 min-h-[48px] justify-center active:scale-95 transition-all duration-150 ease-in-out px-0.5",
+                "flex flex-col items-center gap-0.5 min-w-0 flex-1 min-h-[48px] justify-center transition-all duration-150 ease-in-out px-0.5",
                 active
                   ? "text-[hsl(217,91%,60%)]"
                   : isDark
@@ -50,18 +54,25 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                     : "text-[hsl(215,16%,50%)]"
               )}
             >
-              <span className={cn(
-                "flex items-center justify-center rounded-full transition-all duration-150 ease-in-out",
-                active ? "bg-[hsla(217,91%,60%,0.15)] px-3 py-1" : "px-3 py-1"
-              )}>
+              <motion.span
+                className={cn(
+                  "flex items-center justify-center rounded-full transition-all duration-150 ease-in-out",
+                  active ? "bg-[hsla(217,91%,60%,0.15)] px-3 py-1" : "px-3 py-1"
+                )}
+                animate={{
+                  scale: active ? 1.1 : 0.95,
+                }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              >
                 <tab.icon
                   className="w-5 h-5"
                   strokeWidth={active ? 2.2 : 1.5}
                 />
-              </span>
+              </motion.span>
               <span className={cn(
                 "text-[9px] leading-tight tracking-wide uppercase truncate max-w-full",
-                active ? "font-semibold" : "font-medium"
+                active ? "font-semibold" : "font-medium",
+                !active && "opacity-70"
               )}>
                 {tab.label}
               </span>

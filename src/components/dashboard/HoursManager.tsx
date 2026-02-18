@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { TOAST } from "@/lib/toast-messages";
 import { Loader2 } from "lucide-react";
 import FormSkeleton from "@/components/skeletons/FormSkeleton";
 
@@ -48,8 +49,8 @@ const HoursManager = () => {
     await supabase.from("business_hours").delete().eq("user_id", user.id);
     const { error } = await supabase.from("business_hours").insert(rows);
     setSaving(false);
-    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-    else toast({ title: "Saved!", description: "Business hours updated." });
+    if (error) toast(TOAST.GENERIC_ERROR);
+    else toast(TOAST.HOURS_SAVED);
   };
 
   if (loading) return <FormSkeleton rows={7} />;

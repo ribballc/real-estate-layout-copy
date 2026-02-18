@@ -80,33 +80,71 @@ const MiniSparkline = ({ data, color }: { data: number[]; color: string }) => {
   );
 };
 
-const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineData }: MetricCardProps) => (
-  <div className={`rounded-2xl p-5 transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
-    <div className="flex items-start justify-between mb-4">
-      <div
-        className={`w-10 h-10 rounded-xl flex items-center justify-center ${highlighted ? "bg-[hsla(0,0%,100%,0.2)] border border-[hsla(0,0%,100%,0.15)]" : "bg-[hsla(217,91%,60%,0.08)] border border-[hsla(217,91%,60%,0.12)]"}`}
-      >
-        {icon}
+const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineData }: MetricCardProps) => {
+  // Count-up animation for numeric values
+  const numericValue = useMemo(() => {
+    const cleaned = value.replace(/[^0-9.]/g, "");
+    return parseFloat(cleaned) || 0;
+  }, [value]);
+
+  const isCountable = value !== "—" && numericValue > 0;
+  const prefix = value.startsWith("$") ? "$" : "";
+  
+  const [displayNum, setDisplayNum] = useState(0);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (!isCountable || hasAnimated.current) return;
+    hasAnimated.current = true;
+    const duration = 800;
+    const start = performance.now();
+    const animate = (now: number) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplayNum(Math.round(eased * numericValue));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }, [isCountable, numericValue]);
+
+  // Reset animation if value changes significantly
+  useEffect(() => {
+    hasAnimated.current = false;
+  }, [value]);
+
+  const displayValue = isCountable
+    ? `${prefix}${displayNum.toLocaleString()}`
+    : value;
+
+  return (
+    <div className={`rounded-2xl p-5 transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
+      <div className="flex items-start justify-between mb-4">
+        <div
+          className={`w-10 h-10 rounded-xl flex items-center justify-center ${highlighted ? "bg-[hsla(0,0%,100%,0.2)] border border-[hsla(0,0%,100%,0.15)]" : "bg-[hsla(217,91%,60%,0.08)] border border-[hsla(217,91%,60%,0.12)]"}`}
+        >
+          {icon}
+        </div>
+        {sparklineData && sparklineData.length > 1 && (
+          <MiniSparkline data={sparklineData} color={highlighted ? "hsla(0,0%,100%,0.6)" : "hsl(217,91%,60%)"} />
+        )}
       </div>
-      {sparklineData && sparklineData.length > 1 && (
-        <MiniSparkline data={sparklineData} color={highlighted ? "hsla(0,0%,100%,0.6)" : "hsl(217,91%,60%)"} />
+      <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
+      <p className={`text-3xl lg:text-4xl font-bold tracking-tight mb-1 ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
+      {pct !== null && (
+        <div className="flex items-center gap-1.5">
+          <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+            {pct >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
+            {Math.abs(pct)}%
+          </span>
+          <span className={`text-xs ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
+            {subtext || "vs last period"}
+          </span>
+        </div>
       )}
     </div>
-    <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
-    <p className={`text-3xl lg:text-4xl font-bold tracking-tight mb-1 ${highlighted ? "text-white" : "dash-card-value"}`}>{value}</p>
-    {pct !== null && (
-      <div className="flex items-center gap-1.5">
-        <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
-          {pct >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-          {Math.abs(pct)}%
-        </span>
-        <span className={`text-xs ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
-          {subtext || "vs last period"}
-        </span>
-      </div>
-    )}
-  </div>
-);
+  );
+};
 
 /* ─── Onboarding Checklist Constants ─── */
 const ONBOARDING_DISMISSED_KEY = "dashboard-onboarding-dismissed";
