@@ -106,7 +106,7 @@ const TestimonialsManager = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-2xl font-bold text-white">Testimonials</h2>
-          <p className="text-white/40 text-sm mt-1">Manage customer reviews with photos</p>
+          <p className="text-white/60 text-sm mt-1">Manage customer reviews with photos</p>
         </div>
         <div className="flex items-center gap-3">
           <ImportDropdown />
@@ -129,14 +129,14 @@ const TestimonialsManager = () => {
                   </div>
                 ) : (
                   <div className="w-14 h-14 rounded-full border-2 border-dashed border-white/20 group-hover:border-accent/40 flex items-center justify-center transition-colors bg-white/5">
-                    <UserCircle className="w-6 h-6 text-white/30 group-hover:text-accent/60 transition-colors" />
+                    <UserCircle className="w-6 h-6 text-white/50 group-hover:text-accent/60 transition-colors" />
                   </div>
                 )}
                 <input type="file" accept="image/*" onChange={(e) => handlePhotoUpload(t.id, e)} className="hidden" />
               </label>
               <div className="flex-1 space-y-3">
                 <Input value={t.author} onChange={(e) => update(t.id, { author: e.target.value })} placeholder="Author name" className="h-9 bg-white/5 border-white/10 text-white font-medium focus-visible:ring-accent" />
-                <Textarea value={t.content} onChange={(e) => update(t.id, { content: e.target.value })} placeholder="Testimonial text…" className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent min-h-[60px]" />
+                <Textarea value={t.content} onChange={(e) => update(t.id, { content: e.target.value })} placeholder="Testimonial text…" className="bg-white/5 border-white/10 text-white placeholder:text-white/45 focus-visible:ring-accent min-h-[60px]" />
                 <div className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button key={star} onClick={() => update(t.id, { rating: star })} className="transition-colors hover:scale-110 active:scale-95">
@@ -145,15 +145,15 @@ const TestimonialsManager = () => {
                   ))}
                 </div>
               </div>
-              <button onClick={() => remove(t.id)} className="text-white/30 hover:text-red-400 p-1 transition-colors"><Trash2 className="w-4 h-4" /></button>
+              <button onClick={() => remove(t.id)} aria-label="Remove testimonial" className="text-white/50 hover:text-red-400 p-1 transition-colors"><Trash2 className="w-4 h-4" /></button>
             </div>
           </div>
         ))}
         {items.length === 0 && (
           <div className="text-center py-12 rounded-xl border border-dashed border-white/10">
-            <Star className="w-8 h-8 text-white/10 mx-auto mb-3" />
-            <p className="text-white/30 text-sm">No testimonials yet</p>
-            <p className="text-white/20 text-xs mt-1">Add customer reviews with photos to build trust</p>
+            <Star className="w-8 h-8 text-white/20 mx-auto mb-3" />
+            <p className="text-white/50 text-sm">No testimonials yet</p>
+            <p className="text-white/40 text-xs mt-1">Add customer reviews with photos to build trust</p>
           </div>
         )}
       </div>
@@ -173,9 +173,9 @@ const TestimonialsManager = () => {
           <div className="w-full max-w-sm rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">Import from Google My Business</h3>
-              <button onClick={() => setShowGmbImport(false)} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>
+              <button onClick={() => setShowGmbImport(false)} className="text-white/50 hover:text-white"><X className="w-5 h-5" /></button>
             </div>
-            <p className="text-white/50 text-sm">Import your reviews directly from Google My Business.</p>
+            <p className="text-white/60 text-sm">Import your reviews directly from Google My Business.</p>
             <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
               <p className="text-amber-400 text-xs">⚠️ Google My Business integration requires API credentials to be configured. Please contact support to enable this feature.</p>
             </div>

@@ -257,15 +257,15 @@ const JobsManager = () => {
           <div className="flex items-start justify-between gap-2">
             <span className="text-white font-semibold text-sm truncate">{booking.customer_name || "Unknown"}</span>
             <span
-              className="text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0"
+              className="text-xs font-semibold px-2 py-0.5 rounded-full shrink-0"
               style={{ background: column.bg, color: column.color, border: `1px solid ${column.border}` }}
             >
               ${booking.service_price}
             </span>
           </div>
-          {vehicle && <p className="text-white/40 text-xs truncate">{vehicle}</p>}
-          <p className="text-white/60 text-xs">{booking.service_title}</p>
-          <div className="flex items-center gap-2 text-white/35 text-[11px]">
+          {vehicle && <p className="text-white/60 text-xs truncate">{vehicle}</p>}
+          <p className="text-white/70 text-xs">{booking.service_title}</p>
+          <div className="flex items-center gap-2 text-white/55 text-xs">
             <CalendarIcon className="w-3 h-3" />
             {format(new Date(booking.booking_date + "T00:00"), "MMM d")} · {formatTimeShort(booking.booking_time)}
           </div>
@@ -311,7 +311,7 @@ const JobsManager = () => {
               >
                 <span className="font-semibold text-sm" style={{ color: col.color }}>{col.label}</span>
                 <span
-                  className="min-w-[22px] h-[22px] px-1.5 rounded-md text-[11px] font-bold flex items-center justify-center"
+                  className="min-w-[22px] h-[22px] px-1.5 rounded-md text-xs font-bold flex items-center justify-center"
                   style={{ background: col.bg, color: col.color, border: `1px solid ${col.border}` }}
                 >
                   {columnBookings[col.id].length}
@@ -320,7 +320,7 @@ const JobsManager = () => {
               {/* Cards */}
               <div className="flex-1 p-3 space-y-3 overflow-y-auto">
                 {columnBookings[col.id].length === 0 && (
-                  <p className="text-white/20 text-xs text-center py-6">No jobs</p>
+                  <p className="text-white/40 text-xs text-center py-6">No jobs</p>
                 )}
                 {columnBookings[col.id].map(b => (
                   <JobCard key={b.id} booking={b} column={col} />
@@ -337,7 +337,7 @@ const JobsManager = () => {
             <button
               onClick={() => setMobileCol(prev => Math.max(0, prev - 1))}
               disabled={mobileCol === 0}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white disabled:opacity-20"
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-white/60 hover:text-white disabled:opacity-20"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -346,7 +346,7 @@ const JobsManager = () => {
                 {COLUMNS[mobileCol].label}
               </span>
               <span
-                className="ml-2 inline-flex min-w-[20px] h-[20px] px-1 rounded-md text-[11px] font-bold items-center justify-center"
+                className="ml-2 inline-flex min-w-[20px] h-[20px] px-1 rounded-md text-xs font-bold items-center justify-center"
                 style={{ background: COLUMNS[mobileCol].bg, color: COLUMNS[mobileCol].color }}
               >
                 {columnBookings[COLUMNS[mobileCol].id].length}
@@ -411,13 +411,13 @@ const JobsManager = () => {
                   <div>
                     <h3 className="text-white font-bold text-lg">{selectedJob.customer_name || "Job"}</h3>
                     <span
-                      className="inline-block mt-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full"
+                      className="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full"
                       style={{ background: col.bg, color: col.color, border: `1px solid ${col.border}` }}
                     >
                       {col.label}
                     </span>
                   </div>
-                  <button onClick={() => setSelectedJob(null)} className="text-white/30 hover:text-white">
+                  <button onClick={() => setSelectedJob(null)} className="text-white/50 hover:text-white">
                     <X className="w-5 h-5" />
                   </button>
                 </div>

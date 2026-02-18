@@ -395,7 +395,7 @@ const ServicesManager = () => {
                   </button>
                 </div>
               </div>
-              <button onClick={() => deleteService(service.id)} className="text-muted-foreground/30 hover:text-destructive transition-colors p-1">
+              <button onClick={() => deleteService(service.id)} aria-label="Delete service" className="text-muted-foreground/30 hover:text-destructive transition-colors p-1">
                 <Trash2 className="w-4 h-4" />
               </button>
             </div>

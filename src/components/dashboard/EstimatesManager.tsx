@@ -355,7 +355,7 @@ const EstimatesManager = () => {
                 }} />
                 <span className="text-white/60 text-sm font-medium text-center">${(item.price * item.quantity).toFixed(2)}</span>
                 {lineItems.length > 1 && (
-                  <button onClick={() => removeLineItem(idx)} className="text-white/20 hover:text-red-400 transition-colors justify-self-center">
+                  <button onClick={() => removeLineItem(idx)} aria-label="Remove line item" className="text-white/40 hover:text-red-400 transition-colors justify-self-center">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 )}
@@ -530,7 +530,7 @@ const EstimatesManager = () => {
                     </a>
                   )}
                   <button onClick={() => openEdit(est)} className="dash-btn dash-btn-ghost dash-btn-sm text-xs">Edit</button>
-                  <button onClick={() => deleteEstimate(est.id)} className="text-white/20 hover:text-red-400 transition-colors p-1">
+                  <button onClick={() => deleteEstimate(est.id)} aria-label="Delete estimate" className="text-white/40 hover:text-red-400 transition-colors p-1">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>

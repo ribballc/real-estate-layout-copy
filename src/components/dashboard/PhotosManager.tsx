@@ -70,7 +70,7 @@ const PhotosManager = () => {
                 placeholder="Caption…"
                 className="h-8 text-xs bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent"
               />
-              <button onClick={() => deletePhoto(photo.id)} className="text-white/30 hover:text-red-400 p-1 shrink-0">
+              <button onClick={() => deletePhoto(photo.id)} aria-label="Delete photo" className="text-white/50 hover:text-red-400 p-1 shrink-0">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>

@@ -90,15 +90,15 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
         <MiniSparkline data={sparklineData} color={highlighted ? "hsla(0,0%,100%,0.6)" : "hsl(217,91%,60%)"} />
       )}
     </div>
-    <p className={`text-[11px] font-semibold uppercase tracking-wider mb-1 ${highlighted ? "text-white/70" : "dash-card-label"}`}>{label}</p>
-    <p className={`text-2xl lg:text-3xl font-bold tracking-tight mb-1 ${highlighted ? "text-white" : "dash-card-value"}`}>{value}</p>
+    <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
+    <p className={`text-3xl lg:text-4xl font-bold tracking-tight mb-1 ${highlighted ? "text-white" : "dash-card-value"}`}>{value}</p>
     {pct !== null && (
       <div className="flex items-center gap-1.5">
-        <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+        <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
           {pct >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
           {Math.abs(pct)}%
         </span>
-        <span className={`text-[11px] ${highlighted ? "text-white/50" : "dash-card-sublabel"}`}>
+        <span className={`text-xs ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
           {subtext || "vs last period"}
         </span>
       </div>
@@ -494,9 +494,9 @@ const HomeDashboard = () => {
             <div className="px-5 py-4 flex items-center justify-between" style={{ background: "linear-gradient(135deg, hsl(217,91%,60%), hsl(230,80%,55%))" }}>
               <div>
                 <h3 className="text-white font-bold text-sm">Get your shop ready — 5 quick steps</h3>
-                <p className="text-white/60 text-xs mt-0.5">{completedSteps}/5 complete</p>
+                <p className="text-white/70 text-xs mt-0.5">{completedSteps}/5 complete</p>
               </div>
-              <button onClick={handleDismissOnboarding} className="w-7 h-7 rounded-lg flex items-center justify-center text-white/40 hover:text-white/80 hover:bg-white/10 transition-colors">
+              <button onClick={handleDismissOnboarding} className="w-7 h-7 rounded-lg flex items-center justify-center text-white/60 hover:text-white/80 hover:bg-white/10 transition-colors">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -530,7 +530,7 @@ const HomeDashboard = () => {
                           <p className="text-xs alytics-card-sub">{step.description}</p>
                         </div>
                         {!done && (
-                          <button onClick={() => navigate(step.route)} className="text-[11px] font-semibold shrink-0 transition-colors" style={{ color: "hsl(217,91%,60%)" }}>
+                          <button onClick={() => navigate(step.route)} className="text-xs font-semibold shrink-0 transition-colors" style={{ color: "hsl(217,91%,60%)" }}>
                             Do it now →
                           </button>
                         )}
@@ -615,11 +615,11 @@ const HomeDashboard = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-[hsla(217,91%,60%,0.08)]">
-                  <th className="text-left px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wider dash-card-label w-8">#</th>
-                  <th className="text-left px-2 py-2.5 text-[11px] font-semibold uppercase tracking-wider dash-card-label">Service</th>
-                  <th className="text-right px-2 py-2.5 text-[11px] font-semibold uppercase tracking-wider dash-card-label">Jobs</th>
-                  <th className="text-right px-2 py-2.5 text-[11px] font-semibold uppercase tracking-wider dash-card-label">Revenue</th>
-                  <th className="text-right px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wider dash-card-label">Avg Price</th>
+                   <th className="text-left px-5 py-2.5 text-xs font-semibold uppercase tracking-wider dash-card-label w-8">#</th>
+                   <th className="text-left px-2 py-2.5 text-xs font-semibold uppercase tracking-wider dash-card-label">Service</th>
+                   <th className="text-right px-2 py-2.5 text-xs font-semibold uppercase tracking-wider dash-card-label">Jobs</th>
+                   <th className="text-right px-2 py-2.5 text-xs font-semibold uppercase tracking-wider dash-card-label">Revenue</th>
+                   <th className="text-right px-5 py-2.5 text-xs font-semibold uppercase tracking-wider dash-card-label">Avg Price</th>
                 </tr>
               </thead>
               <tbody>
@@ -802,11 +802,11 @@ const HomeDashboard = () => {
                     </div>
                     <div className="text-right shrink-0 ml-3">
                       <p className="alytics-card-title text-sm font-semibold font-mono">{formatCurrency(Number(b.service_price) || 0)}</p>
-                      <span className={`text-[10px] font-semibold uppercase tracking-wide ${
-                        b.status === "confirmed" ? "text-emerald-500" :
+                      <span className={`text-xs font-semibold uppercase tracking-wide ${
+                        b.status === "confirmed" ? "text-emerald-400" :
                         b.status === "completed" ? "text-[hsl(217,91%,60%)]" :
-                        b.status === "cancelled" ? "text-red-500" :
-                        "text-amber-500"
+                        b.status === "cancelled" ? "text-rose-400" :
+                        "text-amber-400"
                       }`}>
                         {b.status}
                       </span>
@@ -848,11 +848,11 @@ const HomeDashboard = () => {
                   {d.avg}
                 </span>
               </div>
-              <span className="text-[11px] font-medium dash-card-label">{d.label}</span>
+              <span className="text-xs font-medium dash-card-label">{d.label}</span>
             </div>
           ))}
         </div>
-        <p className="text-[11px] alytics-card-sub mt-3">Average bookings per day of week</p>
+        <p className="text-xs alytics-card-sub mt-3">Average bookings per day of week</p>
       </div>
 
       {/* ═══ Ghost Intro Floating Pill ═══ */}
