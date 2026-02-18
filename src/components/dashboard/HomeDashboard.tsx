@@ -60,7 +60,7 @@ interface MetricCardProps {
 }
 
 const MetricCard = ({ icon, label, value, pct, subtext, highlighted }: MetricCardProps) => (
-  <div className={`rounded-2xl p-5 transition-all duration-200 flex flex-col min-h-[130px] ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
+  <div className={`rounded-2xl p-5 transition-all duration-200 flex flex-col h-full ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
     <div className="flex items-start justify-between mb-4">
       <div
         className={`w-10 h-10 rounded-xl flex items-center justify-center ${highlighted ? "bg-[hsla(0,0%,100%,0.2)] border border-[hsla(0,0%,100%,0.15)]" : "bg-[hsla(217,91%,60%,0.08)] border border-[hsla(217,91%,60%,0.12)]"}`}
