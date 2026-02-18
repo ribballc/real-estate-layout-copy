@@ -60,7 +60,7 @@ interface MetricCardProps {
 }
 
 const MetricCard = ({ icon, label, value, pct, subtext, highlighted }: MetricCardProps) => (
-  <div className={`rounded-2xl p-5 transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
+  <div className={`rounded-2xl p-5 transition-all duration-200 flex flex-col min-h-[130px] ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
     <div className="flex items-start justify-between mb-4">
       <div
         className={`w-10 h-10 rounded-xl flex items-center justify-center ${highlighted ? "bg-[hsla(0,0%,100%,0.2)] border border-[hsla(0,0%,100%,0.15)]" : "bg-[hsla(217,91%,60%,0.08)] border border-[hsla(217,91%,60%,0.12)]"}`}
@@ -72,18 +72,20 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted }: MetricCar
       </button>
     </div>
     <p className={`text-[11px] font-semibold uppercase tracking-wider mb-1 ${highlighted ? "text-white/70" : "dash-card-label"}`}>{label}</p>
-    <p className={`text-2xl lg:text-3xl font-bold tracking-tight mb-1 ${highlighted ? "text-white" : "dash-card-value"}`}>{value}</p>
-    {pct !== null && (
-      <div className="flex items-center gap-1.5">
-        <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-500" : "text-red-500"}`}>
-          {pct >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-          {Math.abs(pct)}%
-        </span>
-        <span className={`text-[11px] ${highlighted ? "text-white/50" : "dash-card-sublabel"}`}>
-          {subtext || "vs last period"}
-        </span>
-      </div>
-    )}
+    <p className={`text-3xl font-bold tracking-tight ${highlighted ? "text-white" : "dash-card-value"}`}>{value}</p>
+    <div className="mt-auto pt-2">
+      {pct !== null && (
+        <div className="flex items-center gap-1.5">
+          <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+            {pct >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
+            {Math.abs(pct)}%
+          </span>
+          <span className={`text-[11px] ${highlighted ? "text-white/50" : "dash-card-sublabel"}`}>
+            {subtext || "vs last period"}
+          </span>
+        </div>
+      )}
+    </div>
   </div>
 );
 
@@ -209,7 +211,7 @@ const HomeDashboard = () => {
       </div>
 
       {/* ═══ Metric cards — 2x2 mobile, 4-col desktop ═══ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           icon={<DollarSign className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
           label="Total Revenue"

@@ -646,7 +646,7 @@
 }
 .dash-card-highlight {
   background: linear-gradient(135deg, hsla(217, 91%, 60%, 0.18) 0%, hsla(217, 91%, 60%, 0.06) 100%);
-  border-color: hsla(217, 91%, 60%, 0.25);
+  border: 1px solid hsla(217, 91%, 60%, 0.25);
 }
 .dash-card-label { color: hsla(0, 0%, 100%, 0.4); }
 .dash-card-value { color: hsl(0, 0%, 100%); }
