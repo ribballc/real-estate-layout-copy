@@ -10,7 +10,7 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
-  TrendingUp, Users, CalendarDays, Search, Menu, KanbanSquare, ClipboardList,
+  TrendingUp, Users, CalendarDays, Search, Menu, KanbanSquare, ClipboardList, FlaskConical,
 } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import darkerLogo from "@/assets/darker-logo.png";
@@ -26,6 +26,7 @@ const pageTitles: Record<string, { title: string; description: string; icon: any
   "/dashboard/services": { title: "Services", description: "Manage your service offerings and pricing", icon: Wrench },
   "/dashboard/photos": { title: "Photos", description: "Upload your portfolio and gallery", icon: Camera },
   "/dashboard/testimonials": { title: "Testimonials", description: "Manage customer reviews", icon: Star },
+  "/dashboard/offer-lab": { title: "Offer Lab", description: "Proven strategies to 3x your bookings and revenue", icon: FlaskConical },
   "/dashboard/account": { title: "Account", description: "Manage your account settings", icon: Settings },
 };
 

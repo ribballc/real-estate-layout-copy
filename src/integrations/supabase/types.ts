@@ -317,6 +317,7 @@ export type Database = {
           logo_url: string | null
           map_query: string
           no_business_address: boolean | null
+          offer_lab_progress: Json | null
           onboarding_complete: boolean
           phone: string
           primary_color: string | null
@@ -342,6 +343,7 @@ export type Database = {
           logo_url?: string | null
           map_query?: string
           no_business_address?: boolean | null
+          offer_lab_progress?: Json | null
           onboarding_complete?: boolean
           phone?: string
           primary_color?: string | null
@@ -367,6 +369,7 @@ export type Database = {
           logo_url?: string | null
           map_query?: string
           no_business_address?: boolean | null
+          offer_lab_progress?: Json | null
           onboarding_complete?: boolean
           phone?: string
           primary_color?: string | null

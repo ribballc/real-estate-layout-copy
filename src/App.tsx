@@ -29,6 +29,7 @@ import EstimatesManager from "./components/dashboard/EstimatesManager";
 import PublicEstimate from "./pages/PublicEstimate";
 import AccountSettings from "./components/dashboard/AccountSettings";
 import CustomersManager from "./components/dashboard/CustomersManager";
+import OfferLabManager from "./components/dashboard/OfferLabManager";
 import WebsitePage from "./components/dashboard/WebsitePage";
 import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
@@ -73,6 +74,7 @@ const App = () => (
               <Route path="services" element={<ServicesManager />} />
               <Route path="photos" element={<PhotosManager />} />
               <Route path="testimonials" element={<TestimonialsManager />} />
+              <Route path="offer-lab" element={<OfferLabManager />} />
               <Route path="account" element={<AccountSettings />} />
             </Route>
             <Route path="/site/:slug" element={<DeluxeLanding />} />
