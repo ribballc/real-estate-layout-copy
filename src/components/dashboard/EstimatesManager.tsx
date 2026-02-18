@@ -502,7 +502,7 @@ const EstimatesManager = () => {
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-white font-semibold text-sm truncate">{est.customer_name || "Untitled"}</span>
                     <span
-                      className="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0"
+                      className="dash-badge shrink-0"
                       style={{ background: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}
                     >
                       {cfg.label}
@@ -544,7 +544,7 @@ const EstimatesManager = () => {
       {/* Convert to Booking Modal */}
       {convertEstimate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+          <div className="w-full max-w-sm dash-card p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">Convert to Booking</h3>
               <button onClick={() => setConvertEstimate(null)} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>

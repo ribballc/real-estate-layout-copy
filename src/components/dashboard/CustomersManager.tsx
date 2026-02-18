@@ -239,7 +239,7 @@ const CustomersManager = () => {
   return (
     <div className="max-w-5xl">
       {/* Stats cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+      <div className="dash-grid-4 mb-6">
         {[
           { label: "Total Customers", value: stats.total, color: "hsl(217,91%,60%)", icon: Users },
           { label: "Active", value: stats.active, color: "hsl(160,84%,39%)", icon: TrendingUp },
@@ -342,7 +342,7 @@ const CustomersManager = () => {
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-white font-medium text-sm truncate">{c.name}</span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full border ${statusStyles[c.status] || statusStyles.lead}`}>
+                        <span className={`dash-badge ${statusStyles[c.status] || statusStyles.lead}`}>
                           {c.status}
                         </span>
                       </div>
@@ -351,12 +351,12 @@ const CustomersManager = () => {
                         <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
                           {vehicles.length <= 2 ? (
                             vehicles.map((v, i) => (
-                              <span key={i} className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-white/50">
+                              <span key={i} className="dash-badge bg-white/[0.06] border-white/10 text-white/50">
                                 <Car className="w-3 h-3" /> {formatVehicleShort(v)}
                               </span>
                             ))
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-white/[0.06] border border-white/10 text-white/50">
+                            <span className="dash-badge bg-white/[0.06] border-white/10 text-white/50">
                               <Car className="w-3 h-3" /> {vehicles.length} vehicles
                             </span>
                           )}
@@ -405,7 +405,7 @@ const CustomersManager = () => {
       {/* Add/Edit Modal */}
       {showAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto dash-card p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">{editingId ? "Edit Customer" : "Add Customer"}</h3>
               <button onClick={resetForm} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>
@@ -505,7 +505,7 @@ const CustomersManager = () => {
       {/* GMB Import Modal */}
       {showGmbImport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-white/10 p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+          <div className="w-full max-w-sm dash-card p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">Import from Google My Business</h3>
               <button onClick={() => setShowGmbImport(false)} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>

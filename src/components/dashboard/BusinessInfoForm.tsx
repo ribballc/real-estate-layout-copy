@@ -298,7 +298,7 @@ const BusinessInfoForm = () => {
       {/* Logo Upsell Modal */}
       {showLogoUpsell && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-white/10 p-6 space-y-5" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+          <div className="w-full max-w-sm dash-card p-6 space-y-5" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">Custom Logo Design</h3>
               <button onClick={() => setShowLogoUpsell(false)} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>

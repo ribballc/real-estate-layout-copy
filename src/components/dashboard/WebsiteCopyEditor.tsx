@@ -163,7 +163,7 @@ const WebsiteCopyEditor = () => {
               <Label className="text-white/70 text-sm font-medium">{field.label}</Label>
               {isEdited(field.key) && (
                 <span
-                  className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                  className="dash-badge"
                   style={{ background: "hsla(217,91%,60%,0.15)", color: "hsl(217,91%,60%)" }}
                 >
                   AI Generated
@@ -202,7 +202,7 @@ const WebsiteCopyEditor = () => {
             <Label className="text-white/70 text-sm font-medium">Service Descriptions</Label>
             {!copy.services_descriptions_edited && (
               <span
-                className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                className="dash-badge"
                 style={{ background: "hsla(217,91%,60%,0.15)", color: "hsl(217,91%,60%)" }}
               >
                 AI Generated

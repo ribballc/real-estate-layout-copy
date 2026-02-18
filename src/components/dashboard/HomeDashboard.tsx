@@ -118,7 +118,7 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
     : value;
 
   return (
-    <div className={`rounded-2xl p-5 transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
+    <div className={`dash-card transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
       <div className="flex items-start justify-between mb-4">
         <div
           className={`w-10 h-10 rounded-xl flex items-center justify-center ${highlighted ? "bg-[hsla(0,0%,100%,0.2)] border border-[hsla(0,0%,100%,0.15)]" : "bg-[hsla(217,91%,60%,0.08)] border border-[hsla(217,91%,60%,0.12)]"}`}
@@ -129,8 +129,8 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
           <MiniSparkline data={sparklineData} color={highlighted ? "hsla(0,0%,100%,0.6)" : "hsl(217,91%,60%)"} />
         )}
       </div>
-      <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
-      <p className={`text-3xl lg:text-4xl font-bold tracking-tight mb-1 ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
+      <p className={`dash-label mb-1 ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
+      <p className={`dash-metric mb-1 ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
       {pct !== null && (
         <div className="flex items-center gap-1.5">
           <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
@@ -529,13 +529,13 @@ const HomeDashboard = () => {
       {/* ═══ Onboarding Checklist ═══ */}
       {showOnboarding && (
         celebrating && allComplete ? (
-          <div className="rounded-2xl p-6 text-center animate-in fade-in duration-500" style={{ background: "linear-gradient(135deg, hsl(217,91%,60%), hsl(200,85%,55%))" }}>
+          <div className="dash-card p-6 text-center animate-in fade-in duration-500" style={{ background: "linear-gradient(135deg, hsl(217,91%,60%), hsl(200,85%,55%))" }}>
             <Sparkles className="w-8 h-8 text-white mx-auto mb-2" />
             <h3 className="text-lg font-bold text-white">🎉 You're all set!</h3>
             <p className="text-white/70 text-sm mt-1">Your shop is ready to go. Start booking customers!</p>
           </div>
         ) : !allComplete ? (
-          <div className="rounded-2xl overflow-hidden alytics-card" style={{ border: "1px solid hsla(217,91%,60%,0.2)" }}>
+          <div className="overflow-hidden alytics-card" style={{ border: "1px solid hsla(217,91%,60%,0.2)" }}>
             {/* Header */}
             <div className="px-5 py-4 flex items-center justify-between" style={{ background: "linear-gradient(135deg, hsl(217,91%,60%), hsl(230,80%,55%))" }}>
               <div>
@@ -623,7 +623,7 @@ const HomeDashboard = () => {
       </div>
 
       {/* ═══ KPI Cards — 2x2 mobile, 4-col desktop ═══ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+      <div className="dash-grid-4">
         <div className={ghost.showShimmer ? "ghost-shimmer rounded-2xl" : ""}>
           <MetricCard
             icon={<DollarSign className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
@@ -666,7 +666,7 @@ const HomeDashboard = () => {
 
       {/* ═══ Top Services Table ═══ */}
       {(ghost.isIntro ? GHOST_TOP_SERVICES : topServices).length > 0 && (
-        <div className={`alytics-card rounded-2xl overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
+        <div className={`alytics-card overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="px-5 py-4 flex items-center justify-between">
             <h3 className="alytics-card-title text-sm font-semibold">Top Services</h3>
           </div>
@@ -703,7 +703,7 @@ const HomeDashboard = () => {
 
       {/* ═══ Revenue Bar Chart ═══ */}
       {(ghost.isIntro ? GHOST_CHART_DATA : chartData).length > 1 && (
-        <div className={`alytics-card rounded-2xl p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
+        <div className={`alytics-card p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="alytics-card-title text-sm font-semibold">Revenue Breakdown</h3>
           </div>
@@ -744,7 +744,7 @@ const HomeDashboard = () => {
       {/* ═══ Two-column: Pie Chart + Recent Bookings ═══ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Report Overview — Pie chart */}
-        <div className={`alytics-card rounded-2xl p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
+        <div className={`alytics-card p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="alytics-card-title text-sm font-semibold">Report Overview</h3>
           </div>
@@ -799,7 +799,7 @@ const HomeDashboard = () => {
           const displayBookings = ghost.isIntro ? GHOST_BOOKINGS : currentBookings;
           if (!ghost.isIntro && displayBookings.length === 0) {
             return (
-              <div className="alytics-card rounded-2xl overflow-hidden">
+              <div className="alytics-card overflow-hidden">
                 <div className="px-5 py-4">
                   <h3 className="alytics-card-title text-sm font-semibold">Recent Activity</h3>
                 </div>
@@ -829,7 +829,7 @@ const HomeDashboard = () => {
             );
           }
           return (
-            <div className={`alytics-card rounded-2xl overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
+            <div className={`alytics-card overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
               <div className="px-5 py-4 flex items-center justify-between">
                 <h3 className="alytics-card-title text-sm font-semibold">Recent Bookings</h3>
                 {!ghost.isIntro && <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Live" />}
@@ -886,7 +886,7 @@ const HomeDashboard = () => {
       </div>
 
       {/* ═══ Busiest Days Heatmap ═══ */}
-      <div className={`alytics-card rounded-2xl p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
+      <div className={`alytics-card p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
         <h3 className="alytics-card-title text-sm font-semibold mb-4">Busiest Days</h3>
         <div className="grid grid-cols-7 gap-2 lg:gap-3">
           {(ghost.isIntro ? GHOST_HEATMAP : busiestDays).map(d => (

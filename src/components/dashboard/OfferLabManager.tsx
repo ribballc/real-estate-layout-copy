@@ -535,7 +535,7 @@ const StrategyCard = ({
     )}
   >
     {implemented && (
-      <div className="absolute top-3 right-3 flex items-center gap-1 bg-green-500/15 text-green-400 text-[11px] font-semibold px-2 py-1 rounded-full">
+      <div className="absolute top-3 right-3 dash-badge gap-1 bg-green-500/15 text-green-400">
         <CheckCircle2 className="w-3 h-3" />
         Implemented
       </div>
