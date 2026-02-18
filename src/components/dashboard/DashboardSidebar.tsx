@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Building2, Wrench, Clock, Camera, Star, Settings, LogOut,
   Bug, HelpCircle, CalendarDays, Users, Sun, Moon, LayoutDashboard, Lock,
@@ -145,7 +145,7 @@ const DashboardSidebar = ({
             return (
               <li
                 key={item.title}
-                className="animate-fade-in"
+                className="animate-fade-in relative group/lock-tip"
                 style={{ animationDelay: `${idx * 50}ms`, animationFillMode: "both" }}
               >
                 <RouterNavLink
@@ -155,6 +155,7 @@ const DashboardSidebar = ({
                   className={cn(
                     "flex items-center rounded-xl group/nav-item transition-all duration-150 ease-in-out",
                     collapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3 py-2.5",
+                    isItemLocked && "opacity-60",
                     active
                       ? isDark
                         ? "bg-[hsla(217,91%,60%,0.12)] border-l-[3px] border-l-[hsl(217,91%,60%)] text-[hsl(217,91%,60%)]"
@@ -191,8 +192,8 @@ const DashboardSidebar = ({
                       {isItemLocked && !badge && (
                         <Lock
                           className={cn(
-                            "w-3.5 h-3.5 ml-auto flex-shrink-0",
-                            isDark ? "text-[hsla(0,0%,100%,0.12)]" : "text-[hsl(215,16%,80%)]"
+                            "w-3 h-3 ml-auto flex-shrink-0",
+                            isDark ? "text-[hsla(0,0%,100%,0.2)]" : "text-[hsl(215,16%,75%)]"
                           )}
                           strokeWidth={1.5}
                         />
@@ -203,6 +204,31 @@ const DashboardSidebar = ({
                     <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[hsl(0,84%,60%)]" />
                   )}
                 </RouterNavLink>
+                {/* Tooltip for locked items */}
+                {isItemLocked && !collapsed && (
+                  <div
+                    className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2.5 py-1.5 rounded-md text-[12px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover/lock-tip:opacity-100 transition-opacity duration-150 z-50"
+                    style={{
+                      background: "hsl(215,50%,10%)",
+                      color: "white",
+                      boxShadow: "0 4px 12px hsla(0,0%,0%,0.3)",
+                    }}
+                  >
+                    Unlock with free trial
+                  </div>
+                )}
+                {isItemLocked && collapsed && (
+                  <div
+                    className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2.5 py-1.5 rounded-md text-[12px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover/lock-tip:opacity-100 transition-opacity duration-150 z-50"
+                    style={{
+                      background: "hsl(215,50%,10%)",
+                      color: "white",
+                      boxShadow: "0 4px 12px hsla(0,0%,0%,0.3)",
+                    }}
+                  >
+                    {item.title} — Unlock with free trial
+                  </div>
+                )}
               </li>
             );
           })}
