@@ -607,13 +607,13 @@ const HomeDashboard = () => {
       {/* Greeting + date picker */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h2 className="dash-title text-xl lg:text-2xl font-bold tracking-tight">
+          <h2 className="dash-page-title dash-title">
             {greeting}{businessName ? `, ${businessName}` : ""}
           </h2>
           <p className="dash-subtitle text-xs lg:text-sm mt-0.5">Here's how your business is doing</p>
         </div>
         <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}>
-          <SelectTrigger className="h-9 w-[150px] dash-select text-xs rounded-xl">
+          <SelectTrigger className="h-9 w-[150px] dash-select text-xs rounded-lg">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -626,7 +626,7 @@ const HomeDashboard = () => {
 
       {/* ═══ KPI Cards — 2x2 mobile, 4-col desktop ═══ */}
       <div className="dash-grid-4">
-        <div className={ghost.showShimmer ? "ghost-shimmer rounded-2xl" : ""}>
+        <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
             icon={<DollarSign className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Revenue"
@@ -636,7 +636,7 @@ const HomeDashboard = () => {
             sparklineData={ghost.isIntro ? GHOST_SPARKLINE : revenueSparkline}
           />
         </div>
-        <div className={ghost.showShimmer ? "ghost-shimmer rounded-2xl" : ""}>
+        <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
             icon={<Briefcase className="w-5 h-5 text-white" strokeWidth={1.5} />}
             label="Jobs Completed"
@@ -646,7 +646,7 @@ const HomeDashboard = () => {
             highlighted
           />
         </div>
-        <div className={ghost.showShimmer ? "ghost-shimmer rounded-2xl" : ""}>
+        <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
             icon={<TrendingUp className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Avg. Ticket"
@@ -655,7 +655,7 @@ const HomeDashboard = () => {
             subtext={periodLabel}
           />
         </div>
-        <div className={ghost.showShimmer ? "ghost-shimmer rounded-2xl" : ""}>
+        <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
             icon={<Car className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Vehicles Serviced"
@@ -669,8 +669,8 @@ const HomeDashboard = () => {
       {/* ═══ Top Services Table ═══ */}
       {(ghost.isIntro ? GHOST_TOP_SERVICES : topServices).length > 0 && (
         <div className={`alytics-card overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
-          <div className="px-5 py-4 flex items-center justify-between">
-            <h3 className="alytics-card-title text-sm font-semibold">Top Services</h3>
+          <div className="px-5 py-3 flex items-center justify-between border-b border-white/5">
+            <h3 className="dash-card-title alytics-card-title">Top Services</h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -707,7 +707,7 @@ const HomeDashboard = () => {
       {(ghost.isIntro ? GHOST_CHART_DATA : chartData).length > 1 && (
         <div className={`alytics-card p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="alytics-card-title text-sm font-semibold">Revenue Breakdown</h3>
+            <h3 className="dash-card-title alytics-card-title">Revenue Breakdown</h3>
           </div>
           <div className="h-[240px]">
             <ChartContainer config={chartConfig} className="h-full w-full">
@@ -748,7 +748,7 @@ const HomeDashboard = () => {
         {/* Report Overview — Pie chart */}
         <div className={`alytics-card p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="alytics-card-title text-sm font-semibold">Report Overview</h3>
+            <h3 className="dash-card-title alytics-card-title">Report Overview</h3>
           </div>
           {(ghost.isIntro ? GHOST_PIE : serviceBreakdown).length > 0 ? (
             <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -777,7 +777,7 @@ const HomeDashboard = () => {
               <div className="flex-1 space-y-3 w-full">
                 {(ghost.isIntro ? GHOST_PIE : serviceBreakdown).map((item, idx) => (
                   <div key={idx} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: PIE_COLORS[idx % PIE_COLORS.length] }} />
                       <span className="alytics-card-title text-sm">{item.name}</span>
                     </div>
@@ -802,13 +802,13 @@ const HomeDashboard = () => {
           if (!ghost.isIntro && displayBookings.length === 0) {
             return (
               <div className="alytics-card overflow-hidden">
-                <div className="px-5 py-4">
-                  <h3 className="alytics-card-title text-sm font-semibold">Recent Activity</h3>
+                <div className="px-5 py-3 border-b border-white/5">
+                  <h3 className="dash-card-title alytics-card-title">Recent Activity</h3>
                 </div>
                 <BookingActivityFeed onNewBooking={() => setRefreshKey(k => k + 1)} />
                 <div className="px-5 py-10 flex flex-col items-center text-center gap-3">
                   <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center"
+                    className="w-11 h-11 rounded-lg flex items-center justify-center"
                     style={{
                       background: "hsla(217,91%,60%,0.1)",
                       border: "1px solid hsla(217,91%,60%,0.15)",
@@ -832,15 +832,15 @@ const HomeDashboard = () => {
           }
           return (
             <div className={`alytics-card overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
-              <div className="px-5 py-4 flex items-center justify-between">
-                <h3 className="alytics-card-title text-sm font-semibold">Recent Bookings</h3>
+              <div className="px-5 py-3 flex items-center justify-between border-b border-white/5">
+                <h3 className="dash-card-title alytics-card-title">Recent Bookings</h3>
                 {!ghost.isIntro && <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Live" />}
               </div>
               <div className="alytics-divide">
                 {displayBookings.slice(0, 5).map((b: any, index: number) => (
                   <div
                     key={b.id}
-                    className={`flex items-center justify-between px-5 py-3.5 alytics-row-hover transition-all duration-200 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}
+                    className={`flex items-center justify-between px-5 py-3 alytics-row-hover transition-all duration-200 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div
@@ -889,12 +889,12 @@ const HomeDashboard = () => {
 
       {/* ═══ Busiest Days Heatmap ═══ */}
       <div className={`alytics-card p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
-        <h3 className="alytics-card-title text-sm font-semibold mb-4">Busiest Days</h3>
+        <h3 className="dash-card-title alytics-card-title mb-4">Busiest Days</h3>
         <div className="grid grid-cols-7 gap-2 lg:gap-3">
           {(ghost.isIntro ? GHOST_HEATMAP : busiestDays).map(d => (
-            <div key={d.label} className="flex flex-col items-center gap-1.5">
+            <div key={d.label} className="flex flex-col items-center gap-2">
               <div
-                className="w-full aspect-square rounded-xl flex items-center justify-center transition-colors"
+                className="w-full aspect-square rounded-lg flex items-center justify-center transition-colors"
                 style={{
                   background: d.intensity > 0
                     ? `hsla(217, 91%, 60%, ${0.08 + d.intensity * 0.5})`

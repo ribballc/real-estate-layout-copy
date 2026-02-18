@@ -107,7 +107,7 @@ const TestimonialsManager = () => {
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white">Testimonials</h2>
+          <h2 className="dash-page-title text-white">Testimonials</h2>
           <p className="text-white/60 text-sm mt-1">Manage customer reviews with photos</p>
         </div>
         <div className="flex items-center gap-3">
@@ -119,7 +119,7 @@ const TestimonialsManager = () => {
       </div>
       <div className="space-y-4">
         {items.map((t) => (
-          <div key={t.id} className="rounded-xl border border-white/10 bg-white/5 p-5 space-y-3 hover:border-white/20 transition-colors">
+          <div key={t.id} className="dash-card space-y-3 hover:border-white/20 transition-colors">
             <div className="flex items-start gap-4">
               <label className="cursor-pointer shrink-0 group">
                 {t.photo_url ? (

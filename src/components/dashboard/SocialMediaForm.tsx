@@ -77,7 +77,7 @@ const SocialMediaForm = ({ embedded = false }: { embedded?: boolean }) => {
 
   return (
     <div className={embedded ? "" : "max-w-2xl"}>
-      {!embedded && <h2 className="text-2xl font-bold text-white mb-6">Social Media</h2>}
+      {!embedded && <h2 className="dash-page-title text-white mb-6">Social Media</h2>}
       <div className="space-y-5">
         {fields.map((f) => (
           <div key={f.key} className="space-y-2">

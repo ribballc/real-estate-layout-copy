@@ -53,7 +53,7 @@ const PhotosManager = () => {
   return (
     <div className="max-w-3xl">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-white">Photos</h2>
+        <h2 className="dash-page-title text-white">Photos</h2>
         <label className="cursor-pointer">
           <Button asChild size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
             <span><Upload className="w-4 h-4" /> Upload</span>

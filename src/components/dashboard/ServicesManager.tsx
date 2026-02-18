@@ -226,7 +226,7 @@ const ServicesManager = () => {
   return (
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold text-foreground">Services</h2>
+        <h2 className="dash-page-title text-foreground">Services</h2>
         <div className="relative">
           <Button onClick={() => setShowAddMenu(!showAddMenu)} size="sm" className="gap-2" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
             <Plus className="w-4 h-4" /> Add Service <ChevronDown className="w-3 h-3 ml-1" />
@@ -234,25 +234,25 @@ const ServicesManager = () => {
           {showAddMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => { setShowAddMenu(false); setShowCustomInput(false); setShowManualMenu(false); }} />
-              <div className="absolute right-0 top-full mt-2 w-64 rounded-xl border border-border shadow-xl z-50 py-2 overflow-hidden bg-popover">
+              <div className="absolute right-0 top-full mt-2 w-64 rounded-[14px] border border-border shadow-xl z-50 py-2 overflow-hidden bg-popover">
                 {!showManualMenu ? (
                   <>
                     <button
                       onClick={() => setShowManualMenu(true)}
-                      className="w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-accent/10 transition-colors flex items-center gap-2.5"
+                      className="w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-accent/10 transition-colors flex items-center gap-2"
                     >
                       <Plus className="w-4 h-4 text-muted-foreground" /> Add Manually
                     </button>
                     <button
                       onClick={() => { setShowAddMenu(false); setShowScanDialog(true); }}
-                      className="w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-accent/10 transition-colors flex items-center gap-2.5"
+                      className="w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-accent/10 transition-colors flex items-center gap-2"
                     >
                       <Sparkles className="w-4 h-4 text-amber-500" /> Magic Upload
                     </button>
                   </>
                 ) : (
                   <>
-                    <button onClick={() => setShowManualMenu(false)} className="w-full text-left px-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
+                    <button onClick={() => setShowManualMenu(false)} className="w-full text-left px-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
                       <ChevronDown className="w-3 h-3 rotate-90" /> Back
                     </button>
                     <div className="border-t border-border my-1" />
@@ -311,13 +311,13 @@ const ServicesManager = () => {
             {scanning ? (
               <div className="flex flex-col items-center gap-4 py-8">
                 {scanPreview && (
-                  <img src={scanPreview} alt="Scanning" className="w-32 h-32 object-cover rounded-xl opacity-60" />
+                  <img src={scanPreview} alt="Scanning" className="w-32 h-32 object-cover rounded-lg opacity-60" />
                 )}
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
                 <p className="text-sm text-muted-foreground">Analyzing your price list…</p>
               </div>
             ) : (
-              <label className="flex flex-col items-center gap-3 border-2 border-dashed border-border rounded-xl p-10 cursor-pointer hover:border-primary/40 transition-colors">
+              <label className="flex flex-col items-center gap-3 border-2 border-dashed border-border rounded-[14px] p-10 cursor-pointer hover:border-primary/40 transition-colors">
                 <Camera className="w-10 h-10 text-muted-foreground/40" />
                 <span className="text-sm font-medium text-foreground">Tap to upload or take a photo</span>
                 <span className="text-xs text-muted-foreground">JPG, PNG, or HEIC</span>
@@ -371,7 +371,7 @@ const ServicesManager = () => {
                   <Input
                     value={service.title}
                     onChange={(e) => updateService(service.id, { title: e.target.value })}
-                    className="h-10 text-foreground font-semibold"
+                    className="h-11 text-foreground font-semibold"
                   />
                 </div>
                  <Textarea
@@ -387,7 +387,7 @@ const ServicesManager = () => {
                       type="number"
                       value={service.price}
                       onChange={(e) => updateService(service.id, { price: parseFloat(e.target.value) || 0 })}
-                      className="w-28 h-9 text-foreground"
+                      className="w-28 h-11 text-foreground"
                     />
                   </div>
                   <button

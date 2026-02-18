@@ -273,7 +273,7 @@ const CustomersManager = () => {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search customers..."
-              className="pl-10 h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent"
+              className="pl-10 h-11 bg-white/5 border-white/10 text-white focus-visible:ring-accent"
             />
           </div>
           <ImportDropdown onCsv={() => setShowCsvImport(true)} onGmb={() => setShowGmbImport(true)} />
@@ -297,7 +297,7 @@ const CustomersManager = () => {
               <button
                 key={chip.value}
                 onClick={() => setFilterStatus(chip.value)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap border transition-all duration-200 shrink-0"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap border transition-all duration-200 shrink-0"
                 style={{
                   background: isActive ? chip.activeBg : "transparent",
                   borderColor: isActive ? chip.activeBorder : "hsla(0,0%,100%,0.1)",
@@ -315,7 +315,7 @@ const CustomersManager = () => {
       {/* Customer list */}
       {filtered.length === 0 ? (
         search ? (
-          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-12 text-center">
+          <div className="rounded-[14px] border border-white/10 bg-white/[0.03] p-12 text-center">
             <User className="w-10 h-10 text-white/10 mx-auto mb-3" />
             <p className="text-white/30 text-sm">No customers match your search</p>
           </div>
@@ -333,7 +333,7 @@ const CustomersManager = () => {
           {filtered.map(c => {
             const vehicles = parseVehicles(c.vehicle);
             return (
-              <div key={c.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-white/20 transition-colors">
+              <div key={c.id} className="rounded-[14px] border border-white/10 bg-white/[0.03] p-4 hover:border-white/20 transition-colors">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
@@ -348,7 +348,7 @@ const CustomersManager = () => {
                       </div>
                       {/* Vehicle pills */}
                       {vehicles.length > 0 && (
-                        <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                        <div className="flex flex-wrap items-center gap-2 mt-1.5">
                           {vehicles.length <= 2 ? (
                             vehicles.map((v, i) => (
                               <span key={i} className="dash-badge bg-white/[0.06] border-white/10 text-white/50">
@@ -369,7 +369,7 @@ const CustomersManager = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-2 shrink-0">
                     {c.phone && (
                       <a href={`tel:${c.phone}`} className="w-9 h-9 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 flex items-center justify-center text-emerald-400 transition-colors" title="Call">
                         <Phone className="w-4 h-4" />

@@ -276,7 +276,7 @@ const EstimatesManager = () => {
     return (
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-white">{editingId ? "Edit Estimate" : "New Estimate"}</h2>
+          <h2 className="dash-page-title text-white">{editingId ? "Edit Estimate" : "New Estimate"}</h2>
           <button onClick={() => { setShowEditor(false); resetEditor(); }} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>
         </div>
 
@@ -451,7 +451,7 @@ const EstimatesManager = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-white">Estimates</h2>
+          <h2 className="dash-page-title text-white">Estimates</h2>
           <p className="text-white/40 text-sm mt-1">Create and manage customer estimates</p>
         </div>
         <button onClick={openNew} className="dash-btn dash-btn-primary dash-btn-sm">
