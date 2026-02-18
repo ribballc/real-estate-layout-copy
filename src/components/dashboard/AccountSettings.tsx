@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CreditCard } from "lucide-react";
+import { Loader2, CreditCard, XCircle } from "lucide-react";
+import CancelFlowModal from "./CancelFlowModal";
 
 const AccountSettings = () => {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ const AccountSettings = () => {
   const [savingEmail, setSavingEmail] = useState(false);
   const [savingPassword, setSavingPassword] = useState(false);
   const [openingPortal, setOpeningPortal] = useState(false);
+  const [cancelFlowOpen, setCancelFlowOpen] = useState(false);
 
   const handleManageSubscription = async () => {
     setOpeningPortal(true);
@@ -73,15 +75,30 @@ const AccountSettings = () => {
       <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-6">
         <h3 className="text-lg font-semibold text-white mb-2">Subscription & Billing</h3>
         <p className="text-white/50 text-sm mb-4">Manage your plan, payment method, and invoices.</p>
-        <Button
-          onClick={handleManageSubscription}
-          disabled={openingPortal}
-          className="h-11 gap-2"
-          style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}
-        >
-          {openingPortal ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening…</> : <><CreditCard className="w-4 h-4" /> Manage Subscription</>}
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={handleManageSubscription}
+            disabled={openingPortal}
+            className="h-11 gap-2"
+            style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}
+          >
+            {openingPortal ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening…</> : <><CreditCard className="w-4 h-4" /> Manage Subscription</>}
+          </Button>
+          <Button
+            onClick={() => setCancelFlowOpen(true)}
+            variant="ghost"
+            className="h-11 gap-2 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+          >
+            <XCircle className="w-4 h-4" /> Cancel
+          </Button>
+        </div>
       </div>
+
+      <CancelFlowModal
+        open={cancelFlowOpen}
+        onClose={() => setCancelFlowOpen(false)}
+        onProceedToStripe={handleManageSubscription}
+      />
 
       {/* Change Email */}
       <div className="rounded-xl border border-white/10 bg-white/5 p-5 mb-6">

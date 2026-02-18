@@ -8,6 +8,9 @@ import {
   CheckCircle2, Circle, Store, Wrench, Clock, Users, Sparkles, ChevronDown, X,
   Car, Hash,
 } from "lucide-react";
+import WeeklySummaryCard from "./WeeklySummaryCard";
+import BookingActivityFeed from "./BookingActivityFeed";
+import ChurnRiskBanner from "./ChurnRiskBanner";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -250,6 +253,7 @@ const HomeDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [businessName, setBusinessName] = useState("");
   const isDark = (localStorage.getItem("dashboard-theme") || "light") === "dark";
+  const [refreshKey, setRefreshKey] = useState(0);
   const ghost = useGhostIntro();
 
   // Ghost countdown values
@@ -469,6 +473,12 @@ const HomeDashboard = () => {
         transition: "opacity 0.4s ease-out",
       }}
     >
+      {/* ═══ Churn Risk Banner ═══ */}
+      <ChurnRiskBanner />
+
+      {/* ═══ Weekly Summary Card ═══ */}
+      <WeeklySummaryCard />
+
       {/* ═══ Onboarding Checklist ═══ */}
       {showOnboarding && (
         celebrating && allComplete ? (
@@ -724,86 +734,95 @@ const HomeDashboard = () => {
           )}
         </div>
 
-        {/* Recent Bookings */}
-        <div className={`alytics-card rounded-2xl overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
-          <div className="px-5 py-4 flex items-center justify-between">
-            <h3 className="alytics-card-title text-sm font-semibold">Recent Bookings</h3>
-          </div>
-          <div className="alytics-divide">
-            {(() => {
-              const displayBookings = ghost.isIntro ? GHOST_BOOKINGS : currentBookings;
-              if (displayBookings.length === 0) {
-                return (
-                  <div className="px-5 py-10 flex flex-col items-center text-center gap-3">
-                    <div
-                      className="w-11 h-11 rounded-xl flex items-center justify-center"
-                      style={{
-                        background: "hsla(217,91%,60%,0.1)",
-                        border: "1px solid hsla(217,91%,60%,0.15)",
-                      }}
-                    >
-                      <CalendarDays className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} />
-                    </div>
-                    <div>
-                      <p className="alytics-card-title text-sm font-semibold">No bookings yet</p>
-                      <p className="alytics-card-sub text-xs mt-0.5">Bookings from customers will appear here</p>
-                    </div>
-                    <button
-                      onClick={() => navigate("/dashboard/calendar")}
-                      className="dash-btn dash-btn-primary dash-btn-sm mt-1"
-                    >
-                      View Calendar
-                    </button>
-                  </div>
-                );
-              }
-              return displayBookings.slice(0, 5).map((b: any, index: number) => (
-                <div
-                  key={b.id}
-                  className={`flex items-center justify-between px-5 py-3.5 alytics-row-hover transition-all duration-200 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-xs font-semibold"
-                      style={{
-                        background: isDark
-                          ? `hsl(${(index * 50 + 200) % 360}, 55%, 22%)`
-                          : `hsl(${(index * 50 + 200) % 360}, 70%, 92%)`,
-                        color: isDark
-                          ? `hsl(${(index * 50 + 200) % 360}, 80%, 70%)`
-                          : `hsl(${(index * 50 + 200) % 360}, 60%, 35%)`,
-                      }}
-                    >
-                      {(b.customer_name || "?").charAt(0).toUpperCase()}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="alytics-card-title text-sm font-medium truncate">{b.customer_name || "—"}</p>
-                      <p className="alytics-card-sub text-xs truncate">{b.service_title || "—"} — {formatCurrency(Number(b.service_price) || 0)}</p>
-                    </div>
-                  </div>
-                  <div className="text-right shrink-0 ml-3">
-                    <p className="alytics-card-title text-sm font-semibold font-mono">{formatCurrency(Number(b.service_price) || 0)}</p>
-                    <span className={`text-[10px] font-semibold uppercase tracking-wide ${
-                      b.status === "confirmed" ? "text-emerald-500" :
-                      b.status === "completed" ? "text-[hsl(217,91%,60%)]" :
-                      b.status === "cancelled" ? "text-red-500" :
-                      "text-amber-500"
-                    }`}>
-                      {b.status}
-                    </span>
-                  </div>
+        {/* Recent Bookings / Activity Feed */}
+        {(() => {
+          const displayBookings = ghost.isIntro ? GHOST_BOOKINGS : currentBookings;
+          if (!ghost.isIntro && displayBookings.length === 0) {
+            return (
+              <div className="alytics-card rounded-2xl overflow-hidden">
+                <div className="px-5 py-4">
+                  <h3 className="alytics-card-title text-sm font-semibold">Recent Activity</h3>
                 </div>
-              ));
-            })()}
-          </div>
-          {!ghost.isIntro && currentBookings.length > 0 && (
-            <div className="px-5 py-3">
-              <button onClick={() => navigate("/dashboard/calendar")} className="alytics-link text-xs font-medium inline-flex items-center gap-1">
-                All bookings <ArrowRight className="w-3 h-3" />
-              </button>
+                <BookingActivityFeed onNewBooking={() => setRefreshKey(k => k + 1)} />
+                <div className="px-5 py-10 flex flex-col items-center text-center gap-3">
+                  <div
+                    className="w-11 h-11 rounded-xl flex items-center justify-center"
+                    style={{
+                      background: "hsla(217,91%,60%,0.1)",
+                      border: "1px solid hsla(217,91%,60%,0.15)",
+                    }}
+                  >
+                    <CalendarDays className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} />
+                  </div>
+                  <div>
+                    <p className="alytics-card-title text-sm font-semibold">No bookings yet</p>
+                    <p className="alytics-card-sub text-xs mt-0.5">Bookings from customers will appear here in real-time</p>
+                  </div>
+                  <button
+                    onClick={() => navigate("/dashboard/calendar")}
+                    className="dash-btn dash-btn-primary dash-btn-sm mt-1"
+                  >
+                    View Calendar
+                  </button>
+                </div>
+              </div>
+            );
+          }
+          return (
+            <div className={`alytics-card rounded-2xl overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
+              <div className="px-5 py-4 flex items-center justify-between">
+                <h3 className="alytics-card-title text-sm font-semibold">Recent Bookings</h3>
+                {!ghost.isIntro && <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Live" />}
+              </div>
+              <div className="alytics-divide">
+                {displayBookings.slice(0, 5).map((b: any, index: number) => (
+                  <div
+                    key={b.id}
+                    className={`flex items-center justify-between px-5 py-3.5 alytics-row-hover transition-all duration-200 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-xs font-semibold"
+                        style={{
+                          background: isDark
+                            ? `hsl(${(index * 50 + 200) % 360}, 55%, 22%)`
+                            : `hsl(${(index * 50 + 200) % 360}, 70%, 92%)`,
+                          color: isDark
+                            ? `hsl(${(index * 50 + 200) % 360}, 80%, 70%)`
+                            : `hsl(${(index * 50 + 200) % 360}, 60%, 35%)`,
+                        }}
+                      >
+                        {(b.customer_name || "?").charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="alytics-card-title text-sm font-medium truncate">{b.customer_name || "—"}</p>
+                        <p className="alytics-card-sub text-xs truncate">{b.service_title || "—"} — {formatCurrency(Number(b.service_price) || 0)}</p>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0 ml-3">
+                      <p className="alytics-card-title text-sm font-semibold font-mono">{formatCurrency(Number(b.service_price) || 0)}</p>
+                      <span className={`text-[10px] font-semibold uppercase tracking-wide ${
+                        b.status === "confirmed" ? "text-emerald-500" :
+                        b.status === "completed" ? "text-[hsl(217,91%,60%)]" :
+                        b.status === "cancelled" ? "text-red-500" :
+                        "text-amber-500"
+                      }`}>
+                        {b.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {!ghost.isIntro && currentBookings.length > 0 && (
+                <div className="px-5 py-3">
+                  <button onClick={() => navigate("/dashboard/calendar")} className="alytics-link text-xs font-medium inline-flex items-center gap-1">
+                    All bookings <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          );
+        })()}
       </div>
 
       {/* ═══ Busiest Days Heatmap ═══ */}
