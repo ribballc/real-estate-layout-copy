@@ -15,8 +15,10 @@ const CookieConsent = () => {
   const accept = () => {
     localStorage.setItem(CONSENT_KEY, "accepted");
     setVisible(false);
-    // TODO: Add your actual cookie consent logic here
-    // Load analytics scripts after consent given
+    // Initialize Meta Pixel after consent
+    if (typeof (window as any).initMetaPixel === 'function') {
+      (window as any).initMetaPixel();
+    }
   };
 
   const dismiss = () => {

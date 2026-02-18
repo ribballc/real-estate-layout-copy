@@ -10,6 +10,8 @@ import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import darkerLogo from "@/assets/darker-logo.png";
 import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
+import { fbqEvent, generateEventId, setPixelUserData } from "@/lib/pixel";
+import { sendCapiEvent } from "@/lib/capiEvent";
 
 const Signup = () => {
   const { toast } = useToast();
@@ -34,9 +36,36 @@ const Signup = () => {
     if (error) {
       toast({ title: "Signup failed", description: error.message, variant: "destructive" });
     } else if (data.session) {
-      // Auto-confirmed — redirect straight to onboarding
+      // Fire CompleteRegistration event
+      setPixelUserData({ email, firstName: name });
+      const eventId = generateEventId();
+      fbqEvent('track', 'CompleteRegistration', {
+        content_name: 'Account Created',
+        status: true,
+        currency: 'USD',
+        value: 0,
+      }, eventId);
+      sendCapiEvent({
+        eventName: 'CompleteRegistration',
+        eventId,
+        userData: { email, firstName: name },
+      });
       window.location.href = "/onboarding";
     } else {
+      // Fire CompleteRegistration event
+      setPixelUserData({ email, firstName: name });
+      const eventId = generateEventId();
+      fbqEvent('track', 'CompleteRegistration', {
+        content_name: 'Account Created',
+        status: true,
+        currency: 'USD',
+        value: 0,
+      }, eventId);
+      sendCapiEvent({
+        eventName: 'CompleteRegistration',
+        eventId,
+        userData: { email, firstName: name },
+      });
       toast({ title: "Account created!", description: "Taking you to set up your business…" });
       window.location.href = "/onboarding";
     }
