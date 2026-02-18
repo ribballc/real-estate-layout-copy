@@ -14,7 +14,8 @@ import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
   TrendingUp, Users, CalendarDays, Search, Menu, KanbanSquare, ClipboardList, FlaskConical,
 } from "lucide-react";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import darkerLogo from "@/assets/darker-logo.png";
 import darkerLogoDark from "@/assets/darker-logo-dark.png";
 
@@ -259,6 +260,10 @@ const DashboardLayout = () => {
             ? "linear-gradient(180deg, hsl(215 50% 8%) 0%, hsl(217 33% 12%) 100%)"
             : "hsl(0, 0%, 100%)",
         }}>
+          <VisuallyHidden>
+            <SheetTitle>Navigation Menu</SheetTitle>
+            <SheetDescription>Dashboard navigation sidebar</SheetDescription>
+          </VisuallyHidden>
           <DashboardSidebar
             dashboardTheme={dashboardTheme}
             onToggleTheme={toggleTheme}

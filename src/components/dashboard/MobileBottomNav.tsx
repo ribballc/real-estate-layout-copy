@@ -34,7 +34,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
         WebkitBackdropFilter: "blur(20px)",
       }}
     >
-      <div className="flex items-center justify-around px-1 pt-1 pb-1">
+      <div className="flex items-center justify-around px-0.5 pt-1 pb-1">
         {TABS.map((tab) => {
           const active = isActive(tab.path);
           return (
@@ -42,7 +42,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
               key={tab.path}
               onClick={() => onNavigate(tab.path)}
               className={cn(
-                "flex flex-col items-center gap-1 min-w-0 flex-1 min-h-[48px] justify-center active:scale-95 transition-all duration-150 ease-in-out",
+                "flex flex-col items-center gap-0.5 min-w-0 flex-1 min-h-[48px] justify-center active:scale-95 transition-all duration-150 ease-in-out px-0.5",
                 active
                   ? "text-[hsl(217,91%,60%)]"
                   : isDark
@@ -55,12 +55,12 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                 active ? "bg-[hsla(217,91%,60%,0.15)] px-3 py-1" : "px-3 py-1"
               )}>
                 <tab.icon
-                  className="w-[22px] h-[22px]"
+                  className="w-5 h-5"
                   strokeWidth={active ? 2.2 : 1.5}
                 />
               </span>
               <span className={cn(
-                "text-[10px] leading-tight tracking-wide uppercase",
+                "text-[9px] leading-tight tracking-wide uppercase truncate max-w-full",
                 active ? "font-semibold" : "font-medium"
               )}>
                 {tab.label}
