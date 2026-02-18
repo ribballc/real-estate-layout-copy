@@ -684,13 +684,13 @@
   color: hsl(215 16% 25%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/70 {
-  color: hsl(215 16% 32%) !important;
+  color: hsl(215 16% 30%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/60 {
   color: hsl(215 16% 38%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/50 {
-  color: hsl(215 16% 45%) !important;
+  color: hsl(215 16% 48%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/40 {
   color: hsl(215 16% 52%) !important;
@@ -699,7 +699,7 @@
   color: hsl(215 16% 62%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/20 {
-  color: hsl(215 16% 72%) !important;
+  color: hsl(215 16% 70%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/10 {
   color: hsl(215 16% 82%) !important;
@@ -985,7 +985,7 @@
 
 /* --- Light mode overrides --- */
 .dashboard-light .dash-title { color: hsl(215, 25%, 12%); }
-.dashboard-light .dash-subtitle { color: hsl(215, 16%, 47%); }
+.dashboard-light .dash-subtitle { color: hsl(215, 20%, 45%) !important; }
 .dashboard-light .dash-select {
   background: hsl(0, 0%, 100%);
   border-color: hsl(214, 20%, 88%);
@@ -1005,9 +1005,9 @@
   border-color: hsl(217, 91%, 60%);
   box-shadow: 0 4px 16px hsla(217, 91%, 60%, 0.25);
 }
-.dashboard-light .dash-card-highlight .dash-card-label { color: hsla(0, 0%, 100%, 0.85); }
-.dashboard-light .dash-card-highlight .dash-card-value { color: hsl(0, 0%, 100%); }
-.dashboard-light .dash-card-highlight .dash-card-sublabel { color: hsla(0, 0%, 100%, 0.65); }
+.dashboard-light .dash-card-highlight .dash-card-label { color: hsla(0, 0%, 100%, 0.75) !important; }
+.dashboard-light .dash-card-highlight .dash-card-value { color: hsl(0, 0%, 100%) !important; }
+.dashboard-light .dash-card-highlight .dash-card-sublabel { color: hsla(0, 0%, 100%, 0.65) !important; }
 .dashboard-light .dash-card-highlight .dash-menu-btn { color: hsla(0, 0%, 100%, 0.5); }
 .dashboard-light .dash-card-label { color: hsl(215, 16%, 42%); }
 .dashboard-light .dash-card-value { color: hsl(215, 25%, 12%); }

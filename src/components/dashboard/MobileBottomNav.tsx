@@ -46,8 +46,8 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                 active
                   ? "text-[hsl(217,91%,60%)]"
                   : isDark
-                    ? "text-[hsla(0,0%,100%,0.35)]"
-                    : "text-[hsl(215,16%,60%)]"
+                    ? "text-[hsla(0,0%,100%,0.45)]"
+                    : "text-[hsl(215,16%,50%)]"
               )}
             >
               <span className={cn(

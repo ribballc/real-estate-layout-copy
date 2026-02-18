@@ -292,10 +292,7 @@ const DashboardSidebar = ({
                 >
                   {user.email.charAt(0).toUpperCase()}
                 </div>
-                <span className={cn(
-                  "text-[12px] truncate",
-                  isDark ? "text-[hsla(0,0%,100%,0.4)]" : "text-[hsl(215,16%,50%)]"
-                )}>
+                <span className="text-[12px] truncate text-white/40">
                   {user.email}
                 </span>
               </div>
