@@ -5,12 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { TOAST } from "@/lib/toast-messages";
-import { Loader2 } from "lucide-react";
+import { Loader2, Pencil, ChevronDown } from "lucide-react";
 import FormSkeleton from "@/components/skeletons/FormSkeleton";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 interface HourRow { id?: string; day_of_week: number; open_time: string; close_time: string; is_closed: boolean; }
+
+const formatTime12 = (time24: string) => {
+  const [h, m] = time24.split(":").map(Number);
+  const ampm = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 || 12;
+  return `${h12}:${m.toString().padStart(2, "0")} ${ampm}`;
+};
 
 const HoursManager = () => {
   const { user } = useAuth();
@@ -37,7 +45,6 @@ const HoursManager = () => {
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
-    // Upsert all 7 days
     const rows = hours.map((h) => ({
       user_id: user.id,
       day_of_week: h.day_of_week,
@@ -45,7 +52,6 @@ const HoursManager = () => {
       close_time: h.close_time,
       is_closed: h.is_closed,
     }));
-    // Delete existing then insert
     await supabase.from("business_hours").delete().eq("user_id", user.id);
     const { error } = await supabase.from("business_hours").insert(rows);
     setSaving(false);
@@ -57,29 +63,50 @@ const HoursManager = () => {
 
   return (
     <div className="max-w-2xl">
-      <h2 className="dash-page-title text-white mb-6">Business Hours</h2>
-      <div className="space-y-3">
+      <h2 className="dash-page-title text-foreground mb-6">Business Hours</h2>
+      <div className="space-y-2">
         {hours.map((h, i) => (
-          <div key={i} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4">
-            <span className="w-28 text-sm text-white/70 font-medium shrink-0">{DAYS[i]}</span>
-            <label className="flex items-center gap-2 shrink-0">
-              <input
-                type="checkbox"
-                checked={!h.is_closed}
-                onChange={(e) => update(i, { is_closed: !e.target.checked })}
-                className="rounded border-white/20"
-              />
-              <span className="text-xs text-white/40">Open</span>
-            </label>
-            {!h.is_closed && (
-              <>
-                <Input type="time" value={h.open_time} onChange={(e) => update(i, { open_time: e.target.value })} className="w-32 h-9 bg-white/5 border-white/10 text-white focus-visible:ring-accent" />
-                <span className="text-white/30 text-sm">to</span>
-                <Input type="time" value={h.close_time} onChange={(e) => update(i, { close_time: e.target.value })} className="w-32 h-9 bg-white/5 border-white/10 text-white focus-visible:ring-accent" />
-              </>
-            )}
-            {h.is_closed && <span className="text-white/30 text-sm italic">Closed</span>}
-          </div>
+          <Collapsible key={i}>
+            <div className="dash-card !p-0 overflow-hidden">
+              <CollapsibleTrigger className="w-full flex items-center gap-3 px-4 py-3 text-left group">
+                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <Pencil className="w-4 h-4 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-semibold text-foreground">{DAYS[i]}</span>
+                </div>
+                <span className="text-xs text-muted-foreground shrink-0 mr-2">
+                  {h.is_closed ? "Closed" : `${formatTime12(h.open_time)} – ${formatTime12(h.close_time)}`}
+                </span>
+                <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180 shrink-0" />
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="px-4 pb-4 pt-2 border-t border-border space-y-3">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={!h.is_closed}
+                      onChange={(e) => update(i, { is_closed: !e.target.checked })}
+                      className="rounded border-border"
+                    />
+                    <span className="text-sm text-muted-foreground">Open this day</span>
+                  </label>
+                  {!h.is_closed && (
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <span className="text-xs text-muted-foreground w-12 shrink-0">From</span>
+                        <Input type="time" value={h.open_time} onChange={(e) => update(i, { open_time: e.target.value })} className="h-11 bg-muted/50 border-border text-foreground w-full sm:w-36" />
+                      </div>
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <span className="text-xs text-muted-foreground w-12 shrink-0">To</span>
+                        <Input type="time" value={h.close_time} onChange={(e) => update(i, { close_time: e.target.value })} className="h-11 bg-muted/50 border-border text-foreground w-full sm:w-36" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CollapsibleContent>
+            </div>
+          </Collapsible>
         ))}
       </div>
       <Button onClick={handleSave} disabled={saving} className="mt-6 h-11" style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}>
