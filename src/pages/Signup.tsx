@@ -13,7 +13,7 @@ import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
 
 const Signup = () => {
   const { toast } = useToast();
-  const [name, setName] = useState(""); // first name only
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -134,13 +134,13 @@ const Signup = () => {
           {/* Form */}
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-white/70 text-sm">First Name</Label>
+              <Label htmlFor="name" className="text-white/70 text-sm">Full Name</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsla(0,0%,100%,0.35)" }} />
                 <input
                   id="name"
                   type="text"
-                  placeholder="First name"
+                  placeholder="Full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
