@@ -118,30 +118,32 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
     : value;
 
   return (
-    <div className={`dash-card transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
-      <div className="flex items-start justify-between mb-4">
+    <div className={`dash-card min-h-[120px] flex flex-col justify-between transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
+      {/* Row 1: Label + Icon */}
+      <div className="flex items-center justify-between">
+        <p className={`dash-label ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
         <div
-          className={`w-10 h-10 rounded-xl flex items-center justify-center ${highlighted ? "bg-[hsla(0,0%,100%,0.2)] border border-[hsla(0,0%,100%,0.15)]" : "bg-[hsla(217,91%,60%,0.08)] border border-[hsla(217,91%,60%,0.12)]"}`}
+          className={`w-8 h-8 rounded-lg flex items-center justify-center ${highlighted ? "bg-[hsla(0,0%,100%,0.2)] border border-[hsla(0,0%,100%,0.15)]" : "bg-[hsla(217,91%,60%,0.08)] border border-[hsla(217,91%,60%,0.12)]"}`}
         >
           {icon}
         </div>
-        {sparklineData && sparklineData.length > 1 && (
-          <MiniSparkline data={sparklineData} color={highlighted ? "hsla(0,0%,100%,0.6)" : "hsl(217,91%,60%)"} />
+      </div>
+
+      {/* Row 2: Big number pinned to bottom */}
+      <div className="mt-auto pt-3">
+        <p className={`dash-metric ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
+        {pct !== null && (
+          <div className="flex items-center gap-1.5 mt-1">
+            <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+              {pct >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
+              {Math.abs(pct)}%
+            </span>
+            <span className={`text-xs ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
+              {subtext || "vs last period"}
+            </span>
+          </div>
         )}
       </div>
-      <p className={`dash-label mb-1 ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
-      <p className={`dash-metric mb-1 ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
-      {pct !== null && (
-        <div className="flex items-center gap-1.5">
-          <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
-            {pct >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-            {Math.abs(pct)}%
-          </span>
-          <span className={`text-xs ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
-            {subtext || "vs last period"}
-          </span>
-        </div>
-      )}
     </div>
   );
 };
@@ -707,7 +709,7 @@ const HomeDashboard = () => {
           <div className="flex items-center justify-between mb-4">
             <h3 className="alytics-card-title text-sm font-semibold">Revenue Breakdown</h3>
           </div>
-          <div className="h-[220px] lg:h-[260px]">
+          <div className="h-[240px]">
             <ChartContainer config={chartConfig} className="h-full w-full">
               <BarChart data={ghost.isIntro ? GHOST_CHART_DATA : chartData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "hsla(214,20%,50%,0.15)" : "hsla(214,20%,40%,0.12)"} vertical={false} />
@@ -742,7 +744,7 @@ const HomeDashboard = () => {
       )}
 
       {/* ═══ Two-column: Pie Chart + Recent Bookings ═══ */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
         {/* Report Overview — Pie chart */}
         <div className={`alytics-card p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="flex items-center justify-between mb-4">
@@ -750,7 +752,7 @@ const HomeDashboard = () => {
           </div>
           {(ghost.isIntro ? GHOST_PIE : serviceBreakdown).length > 0 ? (
             <div className="flex flex-col sm:flex-row items-center gap-6">
-              <div className="w-[160px] h-[160px] shrink-0">
+              <div className="h-[200px] w-full max-w-[200px] mx-auto shrink-0">
                 <ChartContainer config={{ value: { label: "Revenue", color: "hsl(217 91% 60%)" } }} className="h-full w-full">
                   <PieChart>
                     <Pie
