@@ -10,6 +10,12 @@ interface WebsitePageProps {
   isDark?: boolean;
 }
 
+const REVEAL_MESSAGES = [
+  "Loading your site…",
+  "Rendering pages…",
+  "Almost ready…",
+];
+
 const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -19,6 +25,13 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"website" | "booking">("website");
   const [iframeLoading, setIframeLoading] = useState(false);
+
+  // Iframe reveal animation state
+  const [iframeReady, setIframeReady] = useState(false);
+  const [revealPhase, setRevealPhase] = useState<"loading" | "revealing" | "done">("loading");
+  const [revealMsg, setRevealMsg] = useState(0);
+  const [revealProgress, setRevealProgress] = useState(0);
+  const revealStartRef = useRef(Date.now());
 
   // Welcome banner (session-only, first arrival from /generating)
   const [showWelcome, setShowWelcome] = useState(false);
@@ -39,6 +52,31 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
         setLoading(false);
       });
   }, [user]);
+
+  // Iframe reveal animation — cycle messages + progress bar
+  useEffect(() => {
+    if (revealPhase !== "loading") return;
+    revealStartRef.current = Date.now();
+    const msgInterval = setInterval(() => {
+      setRevealMsg(i => (i + 1) % REVEAL_MESSAGES.length);
+    }, 900);
+    const progressRaf = () => {
+      const elapsed = Date.now() - revealStartRef.current;
+      const pct = Math.min((elapsed / 2000) * 85, 85);
+      setRevealProgress(pct);
+      if (pct < 85) requestAnimationFrame(progressRaf);
+    };
+    requestAnimationFrame(progressRaf);
+    return () => clearInterval(msgInterval);
+  }, [revealPhase]);
+
+  // When iframe loads, trigger reveal
+  const handleIframeLoad = useCallback(() => {
+    setIframeReady(true);
+    setRevealProgress(100);
+    setRevealPhase("revealing");
+    setTimeout(() => setRevealPhase("done"), 600);
+  }, []);
 
   // Show welcome banner once per session
   useEffect(() => {
@@ -61,8 +99,16 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
   const handleTabSwitch = useCallback((tab: "website" | "booking") => {
     if (tab === activeTab) return;
     setIframeLoading(true);
+    setIframeReady(false);
+    setRevealPhase("loading");
+    setRevealProgress(0);
+    setRevealMsg(0);
     setActiveTab(tab);
-    setTimeout(() => setIframeLoading(false), 800);
+    // fallback clear after 3s in case onLoad doesn't fire
+    setTimeout(() => {
+      setIframeLoading(false);
+      setRevealPhase("done");
+    }, 3000);
   }, [activeTab]);
 
   const handleCopy = useCallback(() => {
@@ -245,7 +291,7 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
       >
         {/* DEMO BADGE */}
         <div
-          className="absolute z-10"
+          className="absolute z-10 transition-opacity duration-500"
           style={{
             top: 12,
             left: 12,
@@ -257,37 +303,85 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
             letterSpacing: "0.1em",
             padding: "4px 10px",
             borderRadius: 99,
+            opacity: revealPhase === "done" ? 1 : 0,
           }}
         >
           DEMO PREVIEW
         </div>
 
-        {/* Loading overlay */}
-        {iframeLoading && (
+        {/* Generation-style loading overlay */}
+        {revealPhase !== "done" && (
           <div
-            className="absolute inset-0 z-20 flex items-center justify-center"
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center"
             style={{
-              background: isDark ? "hsla(215,50%,10%,0.8)" : "hsla(210,40%,98%,0.8)",
+              background: isDark
+                ? "linear-gradient(135deg, hsl(215,50%,10%) 0%, hsl(217,33%,14%) 100%)"
+                : "linear-gradient(135deg, hsl(210,40%,98%) 0%, hsl(210,40%,94%) 100%)",
+              opacity: revealPhase === "revealing" ? 0 : 1,
+              transition: "opacity 0.5s ease-out",
             }}
           >
-            <svg className="w-10 h-10 animate-spin" viewBox="0 0 40 40" fill="none">
-              <circle cx="20" cy="20" r="17" stroke={isDark ? "hsla(0,0%,100%,0.1)" : "hsl(210,40%,90%)"} strokeWidth="3" />
-              <circle cx="20" cy="20" r="17" stroke="hsl(217,91%,60%)" strokeWidth="3" strokeLinecap="round" strokeDasharray="80" strokeDashoffset="60" />
-            </svg>
+            {/* Animated ring loader */}
+            <div style={{ width: 64, height: 64, filter: "drop-shadow(0 0 8px hsla(217,91%,60%,0.5))" }}>
+              <svg width="64" height="64" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="26" fill="none" stroke={isDark ? "hsla(0,0%,100%,0.07)" : "hsl(210,40%,90%)"} strokeWidth="3" strokeLinecap="round" />
+                <circle
+                  cx="32" cy="32" r="26" fill="none"
+                  stroke="hsl(217,91%,60%)" strokeWidth="3" strokeLinecap="round"
+                  strokeDasharray="110 54"
+                  style={{ transformOrigin: "center", animation: "generatingSpin 1s linear infinite" }}
+                />
+                <circle cx="32" cy="32" r="3" fill="hsl(217,91%,60%)"
+                  style={{ animation: "generatingPulse 1.2s ease-in-out infinite" }}
+                />
+              </svg>
+            </div>
+
+            {/* Status message */}
+            <p
+              className="mt-4 font-medium text-sm transition-opacity duration-200"
+              style={{ color: isDark ? "hsla(0,0%,100%,0.7)" : "hsl(215,16%,47%)" }}
+            >
+              {REVEAL_MESSAGES[revealMsg]}
+            </p>
+
+            {/* Progress bar */}
+            <div
+              className="mt-5"
+              style={{
+                width: 180,
+                height: 3,
+                borderRadius: 2,
+                background: isDark ? "hsla(0,0%,100%,0.08)" : "hsl(210,40%,90%)",
+              }}
+            >
+              <div
+                style={{
+                  height: "100%",
+                  borderRadius: 2,
+                  background: "hsl(217,91%,60%)",
+                  width: `${revealProgress}%`,
+                  transition: revealProgress === 100 ? "width 0.3s ease" : "none",
+                }}
+              />
+            </div>
           </div>
         )}
 
         <iframe
           src={iframeSrc}
           title={activeTab === "booking" ? "Booking Page" : "Your Website"}
-          className="w-full border-0 transition-opacity duration-300"
+          className="w-full border-0"
           style={{
             height: "calc(100vh - 320px)",
             minHeight: 480,
             borderRadius: 12,
-            opacity: iframeLoading ? 0.3 : 1,
+            opacity: revealPhase === "done" ? 1 : 0,
+            transform: revealPhase === "done" ? "scale(1)" : "scale(0.98)",
+            transition: "opacity 0.5s ease-out, transform 0.5s ease-out",
           }}
           sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+          onLoad={handleIframeLoad}
         />
       </div>
 
