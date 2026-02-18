@@ -16,6 +16,7 @@ import {
 import { format } from "date-fns";
 import CsvImportModal from "./CsvImportModal";
 import { CustomerListSkeleton } from "@/components/skeletons/CustomerRowSkeleton";
+import EmptyState from "@/components/EmptyState";
 
 interface VehicleEntry {
   year: string;
@@ -313,10 +314,20 @@ const CustomersManager = () => {
 
       {/* Customer list */}
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-12 text-center">
-          <User className="w-10 h-10 text-white/10 mx-auto mb-3" />
-          <p className="text-white/30 text-sm">{search ? "No customers match your search" : "No customers yet. Add your first customer or they'll appear here when someone books."}</p>
-        </div>
+        search ? (
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-12 text-center">
+            <User className="w-10 h-10 text-white/10 mx-auto mb-3" />
+            <p className="text-white/30 text-sm">No customers match your search</p>
+          </div>
+        ) : (
+          <EmptyState
+            icon={Users}
+            title="Your customers will appear here"
+            description="When someone books through your site, they're automatically added. You can also import existing customers from a CSV or Google My Business."
+            action={{ label: "Import Customers", onClick: () => setShowCsvImport(true) }}
+            secondaryAction={{ label: "Add Manually", onClick: () => { resetForm(); setShowAdd(true); } }}
+          />
+        )
       ) : (
         <div className="space-y-2">
           {filtered.map(c => {

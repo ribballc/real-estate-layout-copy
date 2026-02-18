@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Trash2, Star, Upload, UserCircle, Building2, X, ChevronDown } from "lucide-react";
 import CsvImportModal from "./CsvImportModal";
 import FormSkeleton from "@/components/skeletons/FormSkeleton";
+import EmptyState from "@/components/EmptyState";
 
 interface Testimonial { id: string; author: string; content: string; rating: number; photo_url: string; }
 
@@ -151,11 +152,12 @@ const TestimonialsManager = () => {
           </div>
         ))}
         {items.length === 0 && (
-          <div className="text-center py-12 rounded-xl border border-dashed border-white/10">
-            <Star className="w-8 h-8 text-white/20 mx-auto mb-3" />
-            <p className="text-white/50 text-sm">No testimonials yet</p>
-            <p className="text-white/40 text-xs mt-1">Add customer reviews with photos to build trust</p>
-          </div>
+          <EmptyState
+            icon={Star}
+            title="Collect your first review"
+            description="After a job, send your review link. Reviews show on your website and build trust that converts new visitors to bookings."
+            action={{ label: "Add a Review", onClick: add }}
+          />
         )}
       </div>
 

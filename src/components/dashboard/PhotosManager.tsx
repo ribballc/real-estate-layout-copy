@@ -4,8 +4,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Trash2 } from "lucide-react";
+import { Loader2, Upload, Trash2, Camera } from "lucide-react";
 import PhotoGridSkeleton from "@/components/skeletons/PhotoGridSkeleton";
+import EmptyState from "@/components/EmptyState";
 
 interface Photo { id: string; url: string; caption: string; sort_order: number; }
 
@@ -78,7 +79,14 @@ const PhotosManager = () => {
           </div>
         ))}
       </div>
-      {photos.length === 0 && <p className="text-center text-white/30 py-12 text-sm">No photos yet. Upload some above.</p>}
+      {photos.length === 0 && (
+        <EmptyState
+          icon={Camera}
+          title="Show off your best work"
+          description="Upload photos of your details, coatings, and transformations. They'll appear on your website and build trust with new customers."
+          action={{ label: "Upload Photos", onClick: () => document.querySelector<HTMLInputElement>('input[type="file"]')?.click() }}
+        />
+      )}
     </div>
   );
 };

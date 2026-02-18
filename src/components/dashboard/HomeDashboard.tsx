@@ -6,7 +6,7 @@ import {
   DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, ArrowRight,
   CalendarDays, Star, MoreHorizontal, Briefcase,
   CheckCircle2, Circle, Store, Wrench, Clock, Users, Sparkles, ChevronDown, X,
-  Car, Hash,
+  Car, Hash, Camera, ExternalLink, CalendarOff, Copy, Check,
 } from "lucide-react";
 import WeeklySummaryCard from "./WeeklySummaryCard";
 import BookingActivityFeed from "./BookingActivityFeed";
@@ -20,6 +20,8 @@ import {
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { format, subDays, startOfDay, endOfDay, startOfYear, eachDayOfInterval, isWithinInterval, parseISO, getDay } from "date-fns";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useToast } from "@/hooks/use-toast";
+import EmptyState from "@/components/EmptyState";
 
 type DateRange = "7d" | "14d" | "30d" | "90d" | "ytd";
 
@@ -114,7 +116,8 @@ interface OnboardingStep {
   icon: React.ElementType;
   title: string;
   description: string;
-  route: string;
+  route?: string;
+  copyAction?: boolean;
   check: (d: OnboardingData) => boolean;
 }
 
@@ -122,16 +125,17 @@ interface OnboardingData {
   hasBusinessInfo: boolean;
   servicesCount: number;
   hasHours: boolean;
-  customersCount: number;
-  bookingsCount: number;
+  photosCount: number;
+  testimonialsCount: number;
+  slug: string | null;
 }
 
 const ONBOARDING_STEPS: OnboardingStep[] = [
-  { id: "business", icon: Store, title: "Add your business info", description: "Name, phone, and address", route: "/dashboard/business", check: d => d.hasBusinessInfo },
-  { id: "services", icon: Wrench, title: "Add your services", description: "List what you offer with prices", route: "/dashboard/services", check: d => d.servicesCount > 0 },
-  { id: "hours", icon: Clock, title: "Set your business hours", description: "So customers can book the right times", route: "/dashboard/hours", check: d => d.hasHours },
-  { id: "customer", icon: Users, title: "Add your first customer", description: "Build your customer database", route: "/dashboard/customers", check: d => d.customersCount > 0 },
-  { id: "booking", icon: CalendarDays, title: "Create your first booking", description: "Schedule your first job", route: "/dashboard/calendar", check: d => d.bookingsCount > 0 },
+  { id: "services", icon: Wrench, title: "Add your first service", description: "So customers can see what you offer", route: "/dashboard/services", check: d => d.servicesCount > 0 },
+  { id: "photos", icon: Camera, title: "Upload a photo of your work", description: "Show off your best details", route: "/dashboard/photos", check: d => d.photosCount > 0 },
+  { id: "hours", icon: Clock, title: "Set your business hours", description: "So customers book the right times", route: "/dashboard/hours", check: d => d.hasHours },
+  { id: "link", icon: ExternalLink, title: "Share your booking link", description: "Start getting bookings today", copyAction: true, check: () => false },
+  { id: "review", icon: Star, title: "Collect your first review", description: "Build trust with new visitors", route: "/dashboard/testimonials", check: d => d.testimonialsCount > 0 },
 ];
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -247,6 +251,7 @@ const HomeDashboard = () => {
   const { user } = useAuth();
   const outletContext = useOutletContext<{ chatbotRef?: any } | null>();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [dateRange, setDateRange] = useState<DateRange>("30d");
   const [bookings, setBookings] = useState<any[]>([]);
   const [stats, setStats] = useState({ services: 0, photos: 0, testimonials: 0 });
@@ -282,22 +287,25 @@ const HomeDashboard = () => {
       supabase.from("services").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("photos").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("testimonials").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-      supabase.from("profiles").select("business_name, phone").eq("user_id", user.id).single(),
+      supabase.from("profiles").select("business_name, phone, slug").eq("user_id", user.id).single(),
       supabase.from("business_hours").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("customers").select("id", { count: "exact", head: true }).eq("user_id", user.id),
     ]).then(([b, s, p, t, profile, hours, customers]) => {
       if (b.error) { console.error("Bookings fetch error:", b.error); }
       setBookings(b.data || []);
       const servicesCount = s.count || 0;
-      setStats({ services: servicesCount, photos: p.count || 0, testimonials: t.count || 0 });
+      const photosCount = p.count || 0;
+      const testimonialsCount = t.count || 0;
+      setStats({ services: servicesCount, photos: photosCount, testimonials: testimonialsCount });
       setBusinessName(profile.data?.business_name || "");
 
       setOnboardingData({
         hasBusinessInfo: !!(profile.data?.business_name && profile.data?.phone),
         servicesCount,
         hasHours: (hours.count || 0) > 0,
-        customersCount: customers.count || 0,
-        bookingsCount: (b.data || []).length,
+        photosCount,
+        testimonialsCount,
+        slug: (profile.data as any)?.slug || null,
       });
 
       setLoading(false);
@@ -445,8 +453,8 @@ const HomeDashboard = () => {
   const completedSteps = onboardingData ? ONBOARDING_STEPS.filter(s => s.check(onboardingData)).length : 0;
   const allComplete = completedSteps === ONBOARDING_STEPS.length;
   const showOnboarding = !onboardingDismissed && onboardingData && (
-    (onboardingData.servicesCount < 2) || (onboardingData.bookingsCount === 0) ||
-    !onboardingData.hasBusinessInfo
+    (onboardingData.servicesCount === 0) || (onboardingData.photosCount === 0) ||
+    !onboardingData.hasHours
   );
 
   // Auto-dismiss celebration after 5 seconds
@@ -529,9 +537,22 @@ const HomeDashboard = () => {
                           <p className={`text-sm font-medium ${done ? "line-through alytics-card-sub" : "alytics-card-title"}`}>{step.title}</p>
                           <p className="text-xs alytics-card-sub">{step.description}</p>
                         </div>
-                        {!done && (
-                          <button onClick={() => navigate(step.route)} className="text-xs font-semibold shrink-0 transition-colors" style={{ color: "hsl(217,91%,60%)" }}>
+                        {!done && step.route && (
+                          <button onClick={() => navigate(step.route!)} className="text-xs font-semibold shrink-0 transition-colors" style={{ color: "hsl(217,91%,60%)" }}>
                             Do it now →
+                          </button>
+                        )}
+                        {!done && step.copyAction && onboardingData?.slug && (
+                          <button
+                            onClick={() => {
+                              const url = `${onboardingData.slug}.darkerdigital.com/book`;
+                              navigator.clipboard.writeText(url);
+                              toast({ title: "Booking link copied!", description: url });
+                            }}
+                            className="text-xs font-semibold shrink-0 transition-colors flex items-center gap-1"
+                            style={{ color: "hsl(217,91%,60%)" }}
+                          >
+                            <Copy className="w-3 h-3" /> Copy link
                           </button>
                         )}
                       </div>

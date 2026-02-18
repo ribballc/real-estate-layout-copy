@@ -380,7 +380,11 @@ const CalendarManager = () => {
                   ))}
                 </div>
               ) : (
-                <p className="text-white/30 text-sm">No bookings scheduled for today.</p>
+                <div className="text-center py-4">
+                  <CalendarIcon className="w-6 h-6 mx-auto mb-2" style={{ color: "hsla(0,0%,100%,0.15)" }} />
+                  <p className="text-white/50 text-sm font-medium">Nothing scheduled today</p>
+                  <p className="text-white/30 text-xs mt-0.5">Open days are an opportunity — share your link</p>
+                </div>
               )}
 
               {/* Revenue + Start Day */}
