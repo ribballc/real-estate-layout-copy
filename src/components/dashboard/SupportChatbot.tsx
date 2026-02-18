@@ -81,7 +81,10 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      if (!session?.access_token) {
+        throw new Error("Authentication required. Please log in.");
+      }
+      const token = session.access_token;
 
       const resp = await fetch(CHAT_URL, {
         method: "POST",

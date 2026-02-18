@@ -131,12 +131,13 @@ const ServicesManager = () => {
       const { data: { publicUrl } } = supabase.storage.from("user-photos").getPublicUrl(path);
 
       // Call AI edge function
-      const { data: session } = await supabase.auth.getSession();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error("Authentication required. Please log in.");
       const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/scrape-price-list`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({ imageUrl: publicUrl }),
       });
