@@ -638,7 +638,7 @@ const HomeDashboard = () => {
         </div>
         <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
-            icon={<Briefcase className="w-5 h-5 text-white" strokeWidth={1.5} />}
+            icon={<Briefcase className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Jobs Completed"
             value={ghost.isIntro ? String(gJobs) : (currentCompleted.length > 0 ? String(currentCompleted.length) : "—")}
             pct={ghost.isIntro ? 12 : completedPct}
