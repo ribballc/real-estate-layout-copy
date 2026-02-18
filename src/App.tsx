@@ -35,6 +35,7 @@ import OfferLabManager from "./components/dashboard/OfferLabManager";
 import WebsitePage from "./components/dashboard/WebsitePage";
 import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +82,7 @@ const App = () => (
               <Route path="offer-lab" element={<OfferLabManager />} />
               <Route path="account" element={<AccountSettings />} />
             </Route>
+            <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/site/:slug" element={<DeluxeLanding />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
