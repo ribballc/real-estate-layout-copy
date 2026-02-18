@@ -2,20 +2,23 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Lock, Copy, Check, Pencil, X } from "lucide-react";
+import { Lock, Copy, Check, Pencil, X, Globe, CalendarCheck } from "lucide-react";
 import type { SupportChatbotHandle } from "./SupportChatbot";
 
 interface WebsitePageProps {
   chatbotRef?: React.RefObject<SupportChatbotHandle>;
+  isDark?: boolean;
 }
 
-const WebsitePage = ({ chatbotRef }: WebsitePageProps = {}) => {
+const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [slug, setSlug] = useState<string | null>(null);
   const [firstName, setFirstName] = useState("");
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<"website" | "booking">("website");
+  const [iframeLoading, setIframeLoading] = useState(false);
 
   // Welcome banner (session-only, first arrival from /generating)
   const [showWelcome, setShowWelcome] = useState(false);
@@ -48,8 +51,19 @@ const WebsitePage = ({ chatbotRef }: WebsitePageProps = {}) => {
     }
   }, [loading, slug]);
 
-  const demoUrl = slug ? `${slug}.darkerdigital.com` : "";
-  const iframeSrc = slug ? `${window.location.origin}/site/${slug}` : null;
+  const websiteUrl = slug ? `${slug}.darkerdigital.com` : "";
+  const bookingUrl = slug ? `${slug}.darkerdigital.com/book` : "";
+  const demoUrl = activeTab === "booking" ? bookingUrl : websiteUrl;
+  const websiteIframeSrc = slug ? `${window.location.origin}/site/${slug}` : null;
+  const bookingIframeSrc = slug ? `${window.location.origin}/site/${slug}/book` : null;
+  const iframeSrc = activeTab === "booking" ? bookingIframeSrc : websiteIframeSrc;
+
+  const handleTabSwitch = useCallback((tab: "website" | "booking") => {
+    if (tab === activeTab) return;
+    setIframeLoading(true);
+    setActiveTab(tab);
+    setTimeout(() => setIframeLoading(false), 800);
+  }, [activeTab]);
 
   const handleCopy = useCallback(() => {
     if (!demoUrl) return;
@@ -126,12 +140,67 @@ const WebsitePage = ({ chatbotRef }: WebsitePageProps = {}) => {
         </div>
       )}
 
+      {/* ═══ Tab Toggle Bar ═══ */}
+      <div
+        className="inline-flex"
+        style={{
+          background: isDark ? "hsla(0,0%,100%,0.06)" : "hsl(210,40%,94%)",
+          border: `1px solid ${isDark ? "hsla(0,0%,100%,0.1)" : "hsl(210,40%,88%)"}`,
+          borderRadius: 10,
+          padding: 4,
+          gap: 2,
+        }}
+      >
+        {([
+          { key: "website" as const, label: "Website", icon: Globe },
+          { key: "booking" as const, label: "Booking Page", icon: CalendarCheck },
+        ]).map(({ key, label, icon: Icon }) => {
+          const isActive = activeTab === key;
+          return (
+            <button
+              key={key}
+              onClick={() => handleTabSwitch(key)}
+              className="inline-flex items-center gap-1.5 transition-all duration-200"
+              style={{
+                padding: "8px 18px",
+                borderRadius: 7,
+                fontSize: 14,
+                fontWeight: isActive ? 600 : 500,
+                background: isActive
+                  ? isDark ? "hsla(217,91%,60%,0.15)" : "white"
+                  : "transparent",
+                color: isActive
+                  ? isDark ? "white" : "hsl(222,47%,11%)"
+                  : isDark ? "hsla(0,0%,100%,0.5)" : "hsl(215,16%,47%)",
+                boxShadow: isActive
+                  ? isDark ? "0 1px 4px hsla(0,0%,0%,0.3)" : "0 1px 4px hsla(0,0%,0%,0.1)"
+                  : "none",
+                cursor: isActive ? "default" : "pointer",
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.background = isDark ? "hsla(0,0%,100%,0.06)" : "hsl(210,40%,90%)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.background = "transparent";
+                }
+              }}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {label}
+            </button>
+          );
+        })}
+      </div>
+
       {/* ═══ Address Bar ═══ */}
       <div
         className="flex items-center gap-2.5"
         style={{
-          background: "hsla(0,0%,100%,0.04)",
-          border: "1px solid hsla(0,0%,100%,0.1)",
+          background: isDark ? "hsla(0,0%,100%,0.04)" : "hsl(210,40%,96%)",
+          border: `1px solid ${isDark ? "hsla(0,0%,100%,0.1)" : "hsl(210,40%,88%)"}`,
           borderRadius: 10,
           padding: "9px 14px",
           height: 42,
@@ -139,8 +208,8 @@ const WebsitePage = ({ chatbotRef }: WebsitePageProps = {}) => {
       >
         <Lock className="w-3.5 h-3.5 shrink-0" style={{ color: "hsl(142,71%,45%)" }} />
         <span
-          className="font-mono truncate flex-1"
-          style={{ fontSize: 13, color: "hsla(0,0%,100%,0.65)" }}
+          className="font-mono truncate flex-1 transition-all duration-200"
+          style={{ fontSize: 13, color: isDark ? "hsla(0,0%,100%,0.65)" : "hsl(215,16%,47%)" }}
         >
           {demoUrl}
         </span>
@@ -165,7 +234,15 @@ const WebsitePage = ({ chatbotRef }: WebsitePageProps = {}) => {
       </div>
 
       {/* ═══ Iframe wrapper ═══ */}
-      <div className="relative" style={{ borderRadius: 12, overflow: "hidden", boxShadow: "0 8px 48px hsla(0,0%,0%,0.45)" }}>
+      <div
+        className="relative"
+        style={{
+          borderRadius: 12,
+          overflow: "hidden",
+          border: `1px solid ${isDark ? "hsla(0,0%,100%,0.08)" : "hsl(210,40%,88%)"}`,
+          boxShadow: isDark ? "0 8px 48px hsla(0,0%,0%,0.4)" : "0 4px 24px hsla(0,0%,0%,0.08)",
+        }}
+      >
         {/* DEMO BADGE */}
         <div
           className="absolute z-10"
@@ -185,11 +262,31 @@ const WebsitePage = ({ chatbotRef }: WebsitePageProps = {}) => {
           DEMO PREVIEW
         </div>
 
+        {/* Loading overlay */}
+        {iframeLoading && (
+          <div
+            className="absolute inset-0 z-20 flex items-center justify-center"
+            style={{
+              background: isDark ? "hsla(215,50%,10%,0.8)" : "hsla(210,40%,98%,0.8)",
+            }}
+          >
+            <svg className="w-10 h-10 animate-spin" viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="17" stroke={isDark ? "hsla(0,0%,100%,0.1)" : "hsl(210,40%,90%)"} strokeWidth="3" />
+              <circle cx="20" cy="20" r="17" stroke="hsl(217,91%,60%)" strokeWidth="3" strokeLinecap="round" strokeDasharray="80" strokeDashoffset="60" />
+            </svg>
+          </div>
+        )}
+
         <iframe
           src={iframeSrc}
-          title="Your Website"
-          className="w-full border-0"
-          style={{ height: "calc(100vh - 280px)", minHeight: 480, borderRadius: 12 }}
+          title={activeTab === "booking" ? "Booking Page" : "Your Website"}
+          className="w-full border-0 transition-opacity duration-300"
+          style={{
+            height: "calc(100vh - 320px)",
+            minHeight: 480,
+            borderRadius: 12,
+            opacity: iframeLoading ? 0.3 : 1,
+          }}
           sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
         />
       </div>

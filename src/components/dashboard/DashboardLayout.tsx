@@ -230,7 +230,7 @@ const DashboardLayout = () => {
             {isLocked ? (
               <LockedPageOverlay path={location.pathname} isDark={isDark} />
             ) : (
-              <Outlet context={{ chatbotRef }} />
+              <Outlet context={{ chatbotRef, isDark }} />
             )}
           </div>
 
