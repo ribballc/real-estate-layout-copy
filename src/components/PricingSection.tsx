@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { Check, ChevronRight, ChevronDown, ChevronUp, Lock, Unlock } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
-import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import { useNavigate } from "react-router-dom";
 
 const plan = {
   name: "The 'One' Plan",
@@ -116,7 +116,7 @@ const AnimatedLock = () => {
 const PricingSection = () => {
   const [annual, setAnnual] = useState(true);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
-  const { openFunnel } = useSurveyFunnel();
+  const navigate = useNavigate();
 
   const price = annual ? plan.annualPrice : plan.monthlyPrice;
   const oldPrice = plan.monthlyPrice;
@@ -213,7 +213,7 @@ const PricingSection = () => {
                 {/* CTA Button */}
                 <div className="px-6 pt-5">
                   <button
-                    onClick={openFunnel}
+                    onClick={() => navigate('/signup')}
                     className="w-full rounded-xl font-bold py-4 min-h-[52px] inline-flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-base bg-accent text-accent-foreground"
                     style={{
                       boxShadow: '0 4px 20px hsla(217,91%,60%,0.4), 0 0 40px hsla(217,91%,60%,0.15)',

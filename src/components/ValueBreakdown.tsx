@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Check, ChevronRight } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
-import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import { useNavigate } from "react-router-dom";
 
 const tabs = [
   {
@@ -40,7 +40,7 @@ const tabs = [
 ];
 
 const ValueBreakdown = () => {
-  const { openFunnel } = useSurveyFunnel();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("website");
   const active = tabs.find((t) => t.id === activeTab)!;
 
@@ -213,7 +213,7 @@ const ValueBreakdown = () => {
         <FadeIn delay={300}>
           <div className="text-center">
             <button
-              onClick={openFunnel}
+              onClick={() => navigate('/signup')}
               className="group relative inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 w-full md:w-auto justify-center"
               style={{
                 color: "hsl(0, 0%, 100%)",

@@ -1,4 +1,4 @@
-import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import { useNavigate } from "react-router-dom";
 import FadeIn from "@/components/FadeIn";
 import darkerLogo from "@/assets/darker-logo.png";
 
@@ -35,7 +35,7 @@ const PhoneRingIcon = () => (
 );
 
 const CtaFooter = () => {
-  const { openFunnel } = useSurveyFunnel();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -62,7 +62,7 @@ const CtaFooter = () => {
             </p>
           </FadeIn>
           <button
-            onClick={openFunnel}
+            onClick={() => navigate('/signup')}
             className="group relative inline-flex items-center gap-2 font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 px-12 py-5 text-lg min-h-[48px] overflow-hidden"
             style={{
               background: "linear-gradient(135deg, hsl(160, 84%, 39%) 0%, hsl(160, 64%, 30%) 100%)",

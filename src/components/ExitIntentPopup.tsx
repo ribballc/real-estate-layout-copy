@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { X } from "lucide-react";
-import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import { useNavigate } from "react-router-dom";
 
 const ExitIntentPopup = () => {
   const [visible, setVisible] = useState(false);
   const [bookings, setBookings] = useState(15);
-  const { openFunnel } = useSurveyFunnel();
+  const navigate = useNavigate();
 
   const loss = Math.round(bookings * 150 * 0.25);
 
@@ -112,7 +112,7 @@ const ExitIntentPopup = () => {
 
         <div className="flex flex-col gap-3">
           <button
-            onClick={() => { setVisible(false); openFunnel(); }}
+            onClick={() => { setVisible(false); navigate('/signup'); }}
             className="w-full py-4 text-lg font-semibold rounded-xl text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 min-h-[48px]"
             style={{
               background: "linear-gradient(135deg, hsl(217, 91%, 60%), hsl(217, 91%, 50%))",
