@@ -242,6 +242,9 @@ const HomeDashboard = () => {
       </div>
 
       {/* ═══ Quick Actions ═══ */}
+      <div className="flex items-center justify-between">
+        <h3 className="alytics-card-title text-sm font-semibold">Quick Actions</h3>
+      </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           {
@@ -472,6 +475,9 @@ const HomeDashboard = () => {
         <div className="alytics-card rounded-2xl p-5 lg:p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="alytics-card-title text-sm font-semibold">Booking Activity</h3>
+            <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center">
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
           </div>
           <div className="h-[180px] lg:h-[220px]">
             <ChartContainer config={chartConfig} className="h-full w-full">
