@@ -18,7 +18,9 @@ import {
   Camera,
   Sparkles,
   PlusCircle,
+  Pencil,
 } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import EmptyState from "@/components/EmptyState";
 import {
   Dialog,
@@ -338,78 +340,91 @@ const ServicesManager = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {services.map((service) => (
-          <div key={service.id} className="dash-card min-h-[200px] flex flex-col gap-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1 space-y-3">
-                {/* Image upload */}
-                <div className="flex items-center gap-3">
-                  {service.image_url ? (
-                    <div className="relative group">
-                      <img src={service.image_url} alt={service.title} className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-border" />
-                      <button
-                        onClick={() => updateService(service.id, { image_url: null } as any)}
-                        className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ) : (
-                    <label className="w-14 h-14 rounded-lg border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/40 transition-colors flex-shrink-0">
-                      <ImageIcon className="w-5 h-5 text-muted-foreground/40" />
-                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (!file || !user) return;
-                        const path = `${user.id}/services/${Date.now()}-${file.name}`;
-                        const { error } = await supabase.storage.from("user-photos").upload(path, file, { upsert: true });
-                        if (error) { toast({ title: "Upload failed", description: error.message, variant: "destructive" }); return; }
-                        const { data: { publicUrl } } = supabase.storage.from("user-photos").getPublicUrl(path);
-                        updateService(service.id, { image_url: publicUrl } as any);
-                      }} />
-                    </label>
-                  )}
-                  <Input
-                    value={service.title}
-                    onChange={(e) => updateService(service.id, { title: e.target.value })}
-                    className="h-11 text-foreground font-semibold"
-                  />
+          <Collapsible key={service.id}>
+            <div className="dash-card !p-0 overflow-hidden">
+              <CollapsibleTrigger className="w-full flex items-center gap-3 px-4 py-3.5 text-left group">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <Pencil className="w-5 h-5 text-primary" />
                 </div>
-                 <Textarea
-                  value={service.description}
-                  onChange={(e) => updateService(service.id, { description: e.target.value })}
-                  placeholder="Description…"
-                  className="text-foreground placeholder:text-muted-foreground/40 min-h-[60px] flex-1"
-                />
-                <div className="flex items-center gap-3 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <Label className="text-muted-foreground text-xs">Price $</Label>
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-semibold text-foreground truncate block">{service.title}</span>
+                  <span className="text-xs text-muted-foreground">${service.price.toFixed(0)}{service.popular ? " · Popular" : ""}</span>
+                </div>
+                <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180 shrink-0" />
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="px-4 pb-4 pt-1 space-y-3 border-t border-border">
+                  <div className="flex items-center gap-3">
+                    {service.image_url ? (
+                      <div className="relative group">
+                        <img src={service.image_url} alt={service.title} className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-border" />
+                        <button
+                          onClick={() => updateService(service.id, { image_url: null } as any)}
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="w-14 h-14 rounded-lg border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/40 transition-colors flex-shrink-0">
+                        <ImageIcon className="w-5 h-5 text-muted-foreground/40" />
+                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file || !user) return;
+                          const path = `${user.id}/services/${Date.now()}-${file.name}`;
+                          const { error } = await supabase.storage.from("user-photos").upload(path, file, { upsert: true });
+                          if (error) { toast({ title: "Upload failed", description: error.message, variant: "destructive" }); return; }
+                          const { data: { publicUrl } } = supabase.storage.from("user-photos").getPublicUrl(path);
+                          updateService(service.id, { image_url: publicUrl } as any);
+                        }} />
+                      </label>
+                    )}
                     <Input
-                      type="number"
-                      value={service.price}
-                      onChange={(e) => updateService(service.id, { price: parseFloat(e.target.value) || 0 })}
-                      className="w-28 h-11 text-foreground"
+                      value={service.title}
+                      onChange={(e) => updateService(service.id, { title: e.target.value })}
+                      className="h-11 text-foreground font-semibold"
                     />
                   </div>
-                  <button
-                    onClick={() => updateService(service.id, { popular: !service.popular })}
-                    className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors ${service.popular ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground hover:text-foreground"}`}
-                  >
-                    <Star className="w-3 h-3" /> Popular
-                  </button>
-                  <button
-                    onClick={() => { setOptionsServiceId(service.id); setOptionsServiceName(service.title); }}
-                    className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors bg-muted text-muted-foreground hover:text-foreground"
-                  >
-                    <Settings2 className="w-3 h-3" /> Options
-                  </button>
+                  <Textarea
+                    value={service.description}
+                    onChange={(e) => updateService(service.id, { description: e.target.value })}
+                    placeholder="Description…"
+                    className="text-foreground placeholder:text-muted-foreground/40 min-h-[60px]"
+                  />
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <Label className="text-muted-foreground text-xs">Price $</Label>
+                      <Input
+                        type="number"
+                        value={service.price}
+                        onChange={(e) => updateService(service.id, { price: parseFloat(e.target.value) || 0 })}
+                        className="w-28 h-11 text-foreground"
+                      />
+                    </div>
+                    <button
+                      onClick={() => updateService(service.id, { popular: !service.popular })}
+                      className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors ${service.popular ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground hover:text-foreground"}`}
+                    >
+                      <Star className="w-3 h-3" /> Popular
+                    </button>
+                    <button
+                      onClick={() => { setOptionsServiceId(service.id); setOptionsServiceName(service.title); }}
+                      className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors bg-muted text-muted-foreground hover:text-foreground"
+                    >
+                      <Settings2 className="w-3 h-3" /> Options
+                    </button>
+                  </div>
+                  <div className="flex justify-end pt-1">
+                    <button onClick={() => deleteService(service.id)} aria-label="Delete service" className="text-muted-foreground/30 hover:text-destructive transition-colors p-1 flex items-center gap-1 text-xs">
+                      <Trash2 className="w-3.5 h-3.5" /> Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <button onClick={() => deleteService(service.id)} aria-label="Delete service" className="text-muted-foreground/30 hover:text-destructive transition-colors p-1">
-                <Trash2 className="w-4 h-4" />
-              </button>
+              </CollapsibleContent>
             </div>
-          </div>
+          </Collapsible>
         ))}
         {services.length === 0 && (
           <EmptyState
