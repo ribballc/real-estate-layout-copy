@@ -53,10 +53,10 @@ const WelcomeModal = ({ firstName, isDark }: WelcomeModalProps) => {
           background: isDark
             ? "linear-gradient(180deg, hsl(215,50%,12%) 0%, hsl(217,33%,14%) 100%)"
             : "hsl(0, 0%, 100%)",
-          border: "1px solid hsla(0,0%,100%,0.1)",
+          border: isDark ? "1px solid hsla(0,0%,100%,0.1)" : "1px solid hsl(214,20%,90%)",
           borderRadius: "16px",
           padding: "40px",
-          boxShadow: "0 24px 64px hsla(0,0%,0%,0.4)",
+          boxShadow: isDark ? "0 24px 64px hsla(0,0%,0%,0.4)" : "0 24px 64px hsla(0,0%,0%,0.15)",
           transform: closing ? "scale(0.96)" : "scale(1)",
           opacity: closing ? 0 : 1,
           transition: "transform 0.3s ease, opacity 0.3s ease",
@@ -107,7 +107,7 @@ const WelcomeModal = ({ firstName, isDark }: WelcomeModalProps) => {
                 style={{
                   borderBottom:
                     i < actions.length - 1
-                      ? "1px solid hsla(0,0%,100%,0.06)"
+                      ? `1px solid ${isDark ? "hsla(0,0%,100%,0.06)" : "hsl(214,20%,92%)"}`
                       : "none",
                 }}
               >

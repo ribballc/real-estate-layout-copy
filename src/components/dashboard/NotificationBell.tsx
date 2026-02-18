@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   Bell, CalendarDays, Users, AlertTriangle, Phone, Eye, UserCheck, CheckCheck, X,
 } from "lucide-react";
@@ -289,6 +290,10 @@ const NotificationBell = ({ isDark }: NotificationBellProps) => {
             background: isDark ? "hsl(215,50%,8%)" : "hsl(0,0%,100%)",
             maxHeight: "70vh",
           }}>
+            <VisuallyHidden>
+              <SheetTitle>Notifications</SheetTitle>
+              <SheetDescription>Recent notifications and alerts</SheetDescription>
+            </VisuallyHidden>
             <div className="w-10 h-1 rounded-full mx-auto mt-3 mb-1" style={{ background: isDark ? "hsla(0,0%,100%,0.15)" : "hsl(214,20%,85%)" }} />
             {alertList}
           </SheetContent>

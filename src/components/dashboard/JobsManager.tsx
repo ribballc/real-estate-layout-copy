@@ -6,7 +6,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   Loader2, Plus, Clock, User, Mail, Phone, DollarSign, FileText, X,
   ChevronLeft, ChevronRight, PhoneCall, CheckCircle2, Calendar as CalendarIcon,
@@ -395,6 +396,10 @@ const JobsManager = () => {
             width: isMobile ? undefined : "420px",
           }}
         >
+          <VisuallyHidden>
+            <SheetTitle>Job Details</SheetTitle>
+            <SheetDescription>View and manage job details</SheetDescription>
+          </VisuallyHidden>
           {selectedJob && (() => {
             const col = COLUMNS.find(c => c.statuses.includes(selectedJob.status)) || COLUMNS[0];
             const vehicle = customerMap.get(selectedJob.customer_email)?.vehicle || "";
