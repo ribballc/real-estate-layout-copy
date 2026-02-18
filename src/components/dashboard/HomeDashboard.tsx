@@ -278,7 +278,7 @@ const HomeDashboard = () => {
   useEffect(() => {
     if (!user) return;
     Promise.all([
-      supabase.from("bookings").select("*").eq("user_id", user.id),
+      supabase.from("bookings").select("id, booking_date, booking_time, customer_name, service_title, service_price, status, notes").eq("user_id", user.id).limit(500),
       supabase.from("services").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("photos").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("testimonials").select("id", { count: "exact", head: true }).eq("user_id", user.id),
@@ -286,6 +286,7 @@ const HomeDashboard = () => {
       supabase.from("business_hours").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("customers").select("id", { count: "exact", head: true }).eq("user_id", user.id),
     ]).then(([b, s, p, t, profile, hours, customers]) => {
+      if (b.error) { console.error("Bookings fetch error:", b.error); }
       setBookings(b.data || []);
       const servicesCount = s.count || 0;
       setStats({ services: servicesCount, photos: p.count || 0, testimonials: t.count || 0 });

@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { checkRateLimit } from "../_shared/rate-limit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -24,6 +25,10 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  // Rate limiting: max 10 requests/minute per IP
+  const rateCheck = await checkRateLimit(req, "send-booking-notification");
+  if (!rateCheck.allowed) return rateCheck.response!;
 
   try {
     const body: BookingRequest = await req.json();
