@@ -333,6 +333,7 @@ export type Database = {
           tiktok: string
           trial_active: boolean
           trial_ends_at: string | null
+          unsubscribed_from_emails: boolean
           updated_at: string
           user_id: string
           youtube: string
@@ -365,6 +366,7 @@ export type Database = {
           tiktok?: string
           trial_active?: boolean
           trial_ends_at?: string | null
+          unsubscribed_from_emails?: boolean
           updated_at?: string
           user_id: string
           youtube?: string
@@ -397,6 +399,7 @@ export type Database = {
           tiktok?: string
           trial_active?: boolean
           trial_ends_at?: string | null
+          unsubscribed_from_emails?: boolean
           updated_at?: string
           user_id?: string
           youtube?: string
@@ -598,6 +601,33 @@ export type Database = {
           photo_url?: string | null
           rating?: number
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_emails_sent: {
+        Row: {
+          clicked_at: string | null
+          email_type: string
+          id: string
+          opened_at: string | null
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          clicked_at?: string | null
+          email_type: string
+          id?: string
+          opened_at?: string | null
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          clicked_at?: string | null
+          email_type?: string
+          id?: string
+          opened_at?: string | null
+          sent_at?: string
           user_id?: string
         }
         Relationships: []
