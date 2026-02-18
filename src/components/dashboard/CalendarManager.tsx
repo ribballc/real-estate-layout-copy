@@ -391,7 +391,7 @@ const CalendarManager = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <DollarSign className="w-4 h-4 text-emerald-400" />
-                  <span className="text-emerald-400 font-semibold text-sm">${todayRevenue.toFixed(0)}</span>
+                  <span className="text-emerald-400 font-semibold text-sm">{todayRevenue.toFixed(0)}</span>
                   <span className="text-white/40 text-xs">expected revenue</span>
                 </div>
                 {todayBookings.length > 0 && (
