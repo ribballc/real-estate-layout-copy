@@ -1187,3 +1187,71 @@
 .card-shine:hover::before {
   left: 100%;
 }
+
+/* ─── Smooth scroll ─── */
+html { scroll-behavior: smooth; }
+
+/* ─── Noise texture overlay ─── */
+.noise-overlay::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+/* ─── Scroll-reveal utility ─── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 600ms cubic-bezier(0.16,1,0.3,1), transform 600ms cubic-bezier(0.16,1,0.3,1);
+}
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Gradient glow orbs ─── */
+@keyframes orbDrift {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(30px, -20px); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes orbDrift2 {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(-25px, 15px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ─── Banner shimmer ─── */
+@keyframes bannerShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ─── Reverse logo scroll ─── */
+@keyframes logo-scroll-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+.animate-logo-scroll-reverse {
+  animation: logo-scroll-reverse 40s linear infinite;
+}
+
+/* ─── Testimonial ticker ─── */
+@keyframes testimonial-ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-testimonial-ticker {
+  animation: testimonial-ticker 40s linear infinite;
+}
+
+/* ─── Mobile sticky CTA ─── */
+.mobile-sticky-cta {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

@@ -130,11 +130,11 @@ const PricingSection = () => {
     >
       <div className="max-w-6xl mx-auto relative z-10">
         <FadeIn>
-          <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3 text-foreground">
-            Simple Pricing
+          <h2 className="font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3 text-foreground">
+            One Plan. Everything Included.
           </h2>
-          <p className="text-base md:text-lg text-center max-w-2xl mx-auto mb-10 text-muted-foreground">
-            Everything you need in one plan. Cancel anytime.
+          <p className="text-base md:text-lg text-center max-w-2xl mx-auto mb-10 text-muted-foreground leading-[1.7]">
+            No tiers. No upsells. No "you need to upgrade for that." One price covers everything — forever.
           </p>
         </FadeIn>
 
@@ -184,7 +184,7 @@ const PricingSection = () => {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-white/50">{plan.subtitle}</p>
+                  <p className="text-sm text-white/50">Less than one detail job per month. Unlimited everything.</p>
                 </div>
 
                 {/* Pricing with odometer */}
@@ -214,16 +214,19 @@ const PricingSection = () => {
                 <div className="px-6 pt-5">
                   <button
                     onClick={openFunnel}
-                    className="w-full rounded-xl font-bold py-4 min-h-[52px] inline-flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-base bg-accent text-accent-foreground"
+                    className="w-full rounded-xl font-extrabold py-4 min-h-[52px] inline-flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-base"
                     style={{
-                      boxShadow: '0 4px 20px hsla(217,91%,60%,0.4), 0 0 40px hsla(217,91%,60%,0.15)',
+                      background: 'linear-gradient(135deg, hsl(160, 84%, 39%) 0%, hsl(160, 64%, 30%) 100%)',
+                      color: 'hsl(0, 0%, 100%)',
+                      boxShadow: '0 0 28px hsla(160, 84%, 39%, 0.4), 0 4px 20px hsla(160, 84%, 39%, 0.2)',
                     }}
                   >
-                    Get Started Free
-                    <ChevronRight className="w-4 h-4" />
+                    Start My Free 14-Day Trial →
                   </button>
-                  <div className="text-[13px] text-center mt-3 text-white/40">
-                    14-day free trial · Setup in 5 mins
+                  <div className="grid grid-cols-3 gap-4 mt-6 text-center">
+                    <span className="text-[11px] text-white/40">🔒 No credit card required</span>
+                    <span className="text-[11px] text-white/40">⚡ Cancel in 2 clicks</span>
+                    <span className="text-[11px] text-white/40">🛠️ Setup support included</span>
                   </div>
                 </div>
 
@@ -270,7 +273,7 @@ const PricingSection = () => {
 
         <div className="mt-12 text-center">
           <p className="text-sm text-muted-foreground">
-            14-day free trial. No credit card required. Cancel in 2 clicks.
+            14-day free trial · No credit card · Cancel anytime in 2 clicks · Setup support included at no extra cost
           </p>
         </div>
       </div>

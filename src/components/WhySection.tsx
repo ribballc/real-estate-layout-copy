@@ -189,22 +189,22 @@ const features = [
   {
     Visual: CalendarVisual,
     title: "24/7 Smart Booking Calendar",
-    description: <>Customers book while you're detailing. Capture the <Highlight>$500-1,000/month</Highlight> you're losing to missed calls.</>,
+    description: <>While you're elbow-deep in a correction job, customers are booking, picking services, and paying deposits. Stop losing the <Highlight>$500–$1,000/month</Highlight> going to voicemail.</>,
   },
   {
     Visual: ShieldVisual,
     title: "No-Show Protection That Works",
-    description: <>Automated reminders + <Highlight>$100</Highlight> deposits = <Highlight>40%</Highlight> fewer no-shows.</>,
+    description: <>Automated reminders go out 48 hours, 24 hours, and 2 hours before every appointment. Deposits filter out the tire kickers. Your calendar stays full of real jobs.</>,
   },
   {
     Visual: WebsiteVisual,
     title: "Professional Website in 48 Hours",
-    description: <>Mobile-optimized website that looks like you paid <Highlight>$3,000</Highlight>. Zero tech skills required.</>,
+    description: <>A mobile-optimized site that ranks on Google and looks like you spent <Highlight>$3,000</Highlight> — because it would have. We build it. You just approve it.</>,
   },
   {
     Visual: PaymentVisual,
     title: "Payment Processing Built-In",
-    description: <>Accept cards, collect deposits, get paid next day. <Highlight>2.9% + 30¢</Highlight> per transaction.</>,
+    description: <>Take cards, collect deposits, get paid next day. No more Cash App confusion or chasing invoices. <Highlight>2.9% + 30¢</Highlight>. Stripe-powered. Bank-level secure.</>,
   },
 ];
 
@@ -277,24 +277,24 @@ const WhySection = () => {
             {/* Blue pill tag */}
             <div className="flex justify-center mb-5">
               <span
-                className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide"
+                className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.12em]"
                 style={{
                   background: "hsl(217, 91%, 96%)",
                   color: "hsl(217, 91%, 50%)",
                   border: "1px solid hsl(217, 91%, 88%)",
                 }}
               >
-                Why It Works
+                Built Different
               </span>
             </div>
             <h2
-              className="font-heading text-[32px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.15] mb-4"
+              className="font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.15] mb-4"
               style={{ color: "hsl(222, 47%, 11%)" }}
             >
-              Why It Works
+              Why Detailers Don't Go Back
             </h2>
-            <p className="text-base md:text-lg max-w-lg mx-auto" style={{ color: "hsl(215, 16%, 47%)" }}>
-              Why hundreds of detailers, installers, and shop owners swear by it.
+            <p className="text-base md:text-lg max-w-lg mx-auto leading-[1.7]" style={{ color: "hsl(215, 16%, 47%)" }}>
+              Because it's not a website builder. It's a complete business system built specifically for this industry.
             </p>
           </div>
         </FadeIn>
