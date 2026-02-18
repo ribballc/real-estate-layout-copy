@@ -1187,3 +1187,24 @@
 .card-shine:hover::before {
   left: 100%;
 }
+
+/* Onboarding input shake */
+@keyframes inputShake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-6px); }
+  30% { transform: translateX(6px); }
+  45% { transform: translateX(-4px); }
+  60% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+  90% { transform: translateX(2px); }
+}
+.shake-input {
+  animation: inputShake 0.3s ease-in-out;
+}
+.error-fade-in {
+  animation: errorFadeIn 0.2s ease forwards;
+}
+@keyframes errorFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
