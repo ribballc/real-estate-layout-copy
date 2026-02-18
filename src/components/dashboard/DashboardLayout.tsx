@@ -259,8 +259,10 @@ const DashboardLayout = () => {
             <div className={`flex flex-col sm:flex-row items-center justify-between gap-2 text-xs ${isDark ? "text-white/30" : "text-[hsl(215,16%,60%)]"}`}>
               <span>© {new Date().getFullYear()} Darker. All rights reserved.</span>
               <div className="flex items-center gap-4">
+                <a href="/terms" className="hover:opacity-70 transition-colors">Terms</a>
+                <a href="/privacy" className="hover:opacity-70 transition-colors">Privacy</a>
+                <a href="/cookies" className="hover:opacity-70 transition-colors">Cookies</a>
                 <a href="mailto:support@darker.com" className="hover:opacity-70 transition-colors">Support</a>
-                <a href="mailto:support@darker.com?subject=Feedback" className="hover:opacity-70 transition-colors">Feedback</a>
               </div>
             </div>
           </footer>

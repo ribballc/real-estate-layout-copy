@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useOutletContext } from "react-router-dom
 import { AuthProvider } from "@/contexts/AuthContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import CookieConsent from "@/components/CookieConsent";
 
 // Eagerly loaded pages (above the fold / critical path)
 import Index from "./pages/Index";
@@ -28,6 +29,9 @@ const BookCheckout = React.lazy(() => import("./pages/BookCheckout"));
 const PublicEstimate = React.lazy(() => import("./pages/PublicEstimate"));
 const Onboarding = React.lazy(() => import("./pages/Onboarding"));
 const AdminDashboard = React.lazy(() => import("./pages/AdminDashboard"));
+const Terms = React.lazy(() => import("./pages/Terms"));
+const Privacy = React.lazy(() => import("./pages/Privacy"));
+const Cookies = React.lazy(() => import("./pages/Cookies"));
 
 // Lazy-loaded dashboard components
 const DashboardLayout = React.lazy(() => import("./components/dashboard/DashboardLayout"));
@@ -97,6 +101,9 @@ const App = () => (
                 <Route path="/site/:slug/book/booking" element={<BookBooking />} />
                 <Route path="/site/:slug/book/checkout" element={<BookCheckout />} />
                 <Route path="/estimate/:id" element={<PublicEstimate />} />
+              <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/cookies" element={<Cookies />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
@@ -119,6 +126,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Suspense>
+            <CookieConsent />
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
