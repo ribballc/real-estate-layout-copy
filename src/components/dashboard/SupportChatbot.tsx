@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, forwardRef, useImperativeHandle, useCallback } from "react";
-import { MessageCircle, X, Send, Loader2, Sparkles, Upload, Image, MapPin, Wrench, Pen, Star, Camera, CheckCircle2, ArrowRight } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Sparkles, Upload, Image, MapPin, Wrench, Pen, Star, Camera, CheckCircle2, ArrowRight, DollarSign, TrendingUp, HelpCircle, Bug } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
@@ -16,12 +16,12 @@ interface Suggestion {
 }
 
 const suggestions: Suggestion[] = [
-  { label: "Add a service area", icon: MapPin, prompt: "Add a service area" },
-  { label: "Add photos", icon: Camera, prompt: "I want to add photos to my website" },
-  { label: "Change my logo", icon: Image, prompt: "I want to change my logo" },
-  { label: "Add a service", icon: Wrench, prompt: "I want to add a new service" },
-  { label: "Add a testimonial", icon: Star, prompt: "I want to add a customer review" },
-  { label: "Update my info", icon: Pen, prompt: "I want to update my business info" },
+  { label: "Price a Service", icon: DollarSign, prompt: "Help me price this service for my shop:" },
+  { label: "Write a Reply", icon: MessageCircle, prompt: "Help me write a professional response to this customer message:" },
+  { label: "Marketing Idea", icon: Sparkles, prompt: "Give me content ideas to post this week for my detailing shop" },
+  { label: "How do I...?", icon: HelpCircle, prompt: "How do I use this feature in the dashboard:" },
+  { label: "Upsell Script", icon: TrendingUp, prompt: "Write me an upsell script for:" },
+  { label: "Report a Bug", icon: Bug, prompt: "I found a bug I'd like to report:" },
 ];
 
 // Filter suggestions based on input text
@@ -224,7 +224,7 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
       {/* FAB */}
       <button
         onClick={() => setOpen(!open)}
-        className={`fixed bottom-20 md:bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-105 ${
+        className={`fixed bottom-[88px] md:bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-105 ${
           open ? "bg-white/10 backdrop-blur-xl border border-white/20" : ""
         }`}
         style={
@@ -242,7 +242,7 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
       {/* Chat panel */}
       {open && (
         <div
-          className="fixed bottom-[8.5rem] md:bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-48px)] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
+          className="fixed bottom-[10rem] md:bottom-24 right-6 z-50 w-[400px] max-w-[calc(100vw-48px)] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col"
           style={{
             background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)",
             height: "min(560px, calc(100vh - 140px))",
@@ -259,8 +259,8 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="text-white font-semibold text-sm">Darker AI</h3>
-              <p className="text-white/40 text-xs">Ask me anything or make changes</p>
+              <h3 className="text-white font-semibold text-sm">AI Shop Assistant</h3>
+              <p className="text-white/40 text-xs">Detailing · PPF · Tint · Wraps</p>
             </div>
             {messages.length > 0 && (
               <button
@@ -276,8 +276,8 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && (
               <div className="space-y-3">
-                <p className="text-white/50 text-sm text-center mb-4">
-                  What would you like to do?
+                <p className="text-white/50 text-xs text-center mb-3">
+                  Ask me anything about your shop, services, pricing, or customers
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   {suggestions.map((s) => (
@@ -398,7 +398,7 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
                 }}
                 onFocus={() => setShowSuggestions(input.trim().length > 0)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                placeholder="Try &quot;Add Dallas, TX as a service area&quot;"
+                placeholder="Ask about pricing, marketing, customers..."
                 disabled={loading}
                 className="flex-1 h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-[hsl(217,91%,60%)] disabled:opacity-50"
               />
@@ -413,6 +413,7 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
                 <Send className="w-4 h-4 text-white" />
               </button>
             </form>
+            <p className="text-white/20 text-[10px] text-center mt-1.5">Powered by AI</p>
           </div>
         </div>
       )}
