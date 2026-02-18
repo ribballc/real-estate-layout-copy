@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
@@ -13,8 +13,89 @@ import {
 import {
   Loader2, ChevronLeft, ChevronRight, Plus, Clock, User, Mail, Phone,
   DollarSign, FileText, X, Calendar as CalendarIcon, Ban, RefreshCw,
-  Trash2, ChevronDown, PhoneCall, Play, Car,
+  Trash2, ChevronDown, PhoneCall, Play, Car, CheckSquare, Square,
 } from "lucide-react";
+
+const SERVICE_CHECKLISTS: Record<string, string[]> = {
+  detail: ["Exterior Wash", "Clay Bar", "Polish", "Wax/Sealant", "Wheel Detail", "Tire Dressing", "Interior Vacuum", "Wipe Down", "Windows", "Final Inspection"],
+  interior: ["Vacuum All Surfaces", "Carpet Shampoo", "Seat Clean", "Dashboard Wipe", "Console Clean", "Door Panels", "Windows", "Deodorize", "Final Check"],
+  ceramic: ["Wash & Decon", "Clay Bar", "Paint Correction", "Panel Wipe Down", "Ceramic Application", "Curing", "Final Inspection"],
+  tint: ["Window Clean", "Rubber Trim Prep", "Film Cut", "Application", "Heat Gun Cure", "Edge Seal", "Inspection"],
+  ppf: ["Wash & Decon", "Surface Prep", "Template/Cut", "Wet Application", "Squeegee", "Edge Wrap", "Cure", "Inspection"],
+  vinyl: ["Surface Wash", "Panel Wipe", "Film Alignment", "Heat Application", "Edge Tuck", "Trim Reinstall", "Final Inspection"],
+};
+
+function getChecklist(serviceTitle: string): string[] {
+  const t = (serviceTitle || "").toLowerCase();
+  if (t.includes("full detail") || t.includes("detail")) return SERVICE_CHECKLISTS.detail;
+  if (t.includes("interior")) return SERVICE_CHECKLISTS.interior;
+  if (t.includes("ceramic")) return SERVICE_CHECKLISTS.ceramic;
+  if (t.includes("tint")) return SERVICE_CHECKLISTS.tint;
+  if (t.includes("ppf") || t.includes("paint protection")) return SERVICE_CHECKLISTS.ppf;
+  if (t.includes("vinyl") || t.includes("wrap")) return SERVICE_CHECKLISTS.vinyl;
+  return ["Inspect Vehicle", "Complete Service", "Quality Check", "Customer Walkthrough"];
+}
+
+function getChecklistState(bookingId: string): boolean[] {
+  try {
+    const raw = localStorage.getItem(`checklist_${bookingId}`);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function setChecklistState(bookingId: string, state: boolean[]) {
+  localStorage.setItem(`checklist_${bookingId}`, JSON.stringify(state));
+}
+
+const JobChecklist = ({ bookingId, serviceTitle }: { bookingId: string; serviceTitle: string }) => {
+  const items = getChecklist(serviceTitle);
+  const [checked, setChecked] = useState<boolean[]>(() => {
+    const saved = getChecklistState(bookingId);
+    return items.map((_, i) => saved[i] ?? false);
+  });
+
+  const toggle = useCallback((index: number) => {
+    setChecked(prev => {
+      const next = [...prev];
+      next[index] = !next[index];
+      setChecklistState(bookingId, next);
+      return next;
+    });
+  }, [bookingId]);
+
+  const done = checked.filter(Boolean).length;
+  const allDone = done === items.length;
+
+  return (
+    <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
+      <div className="flex items-center justify-between">
+        <span className={`text-xs font-semibold flex items-center gap-1.5 ${allDone ? "text-emerald-400" : "text-white/60"}`}>
+          {allDone ? <><CheckSquare className="w-3.5 h-3.5" /> Job Complete ✓</> : "Job Checklist"}
+        </span>
+        <span className={`text-[11px] ${allDone ? "text-emerald-400/70" : "text-white/40"}`}>{done}/{items.length} complete</span>
+      </div>
+      <div className="space-y-1">
+        {items.map((item, i) => (
+          <button
+            key={item}
+            onClick={() => toggle(i)}
+            className={`w-full flex items-center gap-2 text-left text-xs px-2 py-1.5 rounded-lg transition-colors ${
+              checked[i]
+                ? "text-white/30 line-through bg-white/[0.02]"
+                : "text-white/70 hover:bg-white/[0.05]"
+            }`}
+          >
+            {checked[i]
+              ? <CheckSquare className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              : <Square className="w-3.5 h-3.5 text-white/30 shrink-0" />
+            }
+            {item}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isToday, isSameDay } from "date-fns";
 
 interface Booking {
@@ -491,6 +572,10 @@ const CalendarManager = () => {
                           </a>
                         )}
                       </div>
+                      {/* Job Checklist — only for confirmed/pending */}
+                      {(b.status === "confirmed" || b.status === "pending") && (
+                        <JobChecklist bookingId={b.id} serviceTitle={b.service_title} />
+                      )}
                     </div>
                   ))}
                 </div>
