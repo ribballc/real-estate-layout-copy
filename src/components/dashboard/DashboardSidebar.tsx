@@ -94,7 +94,7 @@ const DashboardSidebar = ({
         transition: "width 200ms ease",
         background: isDark
           ? "linear-gradient(180deg, hsl(215 50% 8%) 0%, hsl(217 33% 12%) 100%)"
-          : "hsl(0, 0%, 100%)",
+          : "hsl(210, 40%, 98%)",
       }}
     >
       {/* Collapse toggle — hidden in mobile sheet */}
@@ -319,7 +319,7 @@ const DashboardSidebar = ({
                 >
                   {user.email.charAt(0).toUpperCase()}
                 </div>
-                <span className="text-[12px] truncate text-white/40">
+                <span className={`text-[12px] truncate ${isDark ? "text-white/40" : "text-[hsl(215,16%,55%)]"}`}>
                   {user.email}
                 </span>
               </div>
