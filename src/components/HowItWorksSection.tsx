@@ -62,17 +62,17 @@ const steps = [
   {
     step: 1,
     title: "Tell Us About Your Shop",
-    description: "Your shop name, services, hours, and location. Takes about 60 seconds.",
+    description: "Name, services, hours, location. Takes 60 seconds.",
   },
   {
     step: 2,
-    title: "We Build Your System",
-    description: "Your website, booking calendar, deposit collection, and SMS reminders — built and configured for you in 48 hours.",
+    title: "We Build Everything",
+    description: "Custom website + booking system with SMS reminders and deposits. Done for you automatically.",
   },
   {
     step: 3,
     title: "Bookings on Autopilot",
-    description: "Customers find you, pick a time, pay a deposit, and get automatic reminders. You just detail.",
+    description: "Customers find you, book online, pay deposits, and get reminders. You detail.",
   },
 ];
 
@@ -223,8 +223,8 @@ const HowItWorksSection = () => {
                   </svg>
                 </span>
               </h2>
-              <p className="text-lg md:text-xl italic" style={{ color: "hsl(215, 16%, 47%)" }}>
-                Three steps. No tech skills needed.
+              <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
+                yeah... its pretty darn simple.
               </p>
             </div>
           </FadeIn>
@@ -240,9 +240,9 @@ const HowItWorksSection = () => {
                     <ProcessCard step={step} index={i} isActive={isActive} />
                   </FadeIn>
 
-                  {/* Connector line between cards — hidden on mobile */}
+                  {/* Connector line between cards */}
                   {i < steps.length - 1 && (
-                    <div className="hidden sm:block w-[2px] h-12 relative overflow-hidden" style={{ background: "hsl(214, 20%, 90%)" }}>
+                    <div className="w-[2px] h-12 relative overflow-hidden" style={{ background: "hsl(214, 20%, 90%)" }}>
                       <div
                         className="absolute top-0 left-0 w-full will-change-[height]"
                         style={{
@@ -262,11 +262,11 @@ const HowItWorksSection = () => {
             <div className="text-center">
               <button
                 onClick={openFunnel}
-                className="group relative inline-flex items-center gap-2 font-extrabold rounded-xl px-10 py-4 text-base min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] active:translate-y-0"
+                className="group relative inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
                 style={{
                   color: "hsl(0, 0%, 100%)",
                   background: "linear-gradient(135deg, hsl(217, 71%, 53%) 0%, hsl(217, 71%, 43%) 100%)",
-                  boxShadow: "0 0 32px hsla(217, 91%, 60%, 0.35), 0 4px 16px hsla(217, 71%, 53%, 0.3)",
+                  boxShadow: "0 4px 16px hsla(217, 71%, 53%, 0.3)",
                 }}
               >
                 <span className="relative z-10 flex items-center gap-2">
@@ -281,7 +281,7 @@ const HowItWorksSection = () => {
                 />
               </button>
               <p className="text-sm mt-4" style={{ color: "hsl(215, 16%, 47%)" }}>
-                See your live site free · Card required to activate trial
+                Free for 14 days · No credit card required
               </p>
             </div>
           </FadeIn>

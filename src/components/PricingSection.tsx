@@ -126,22 +126,21 @@ const PricingSection = () => {
   return (
     <section
       id="pricing"
-       className="relative py-16 md:py-24 px-5 md:px-8 overflow-hidden"
-       style={{ background: "hsl(210, 40%, 98%)" }}
+      className="relative py-16 md:py-24 px-5 md:px-8 overflow-hidden bg-background"
     >
       <div className="max-w-6xl mx-auto relative z-10">
         <FadeIn>
-          <h2 className="font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3" style={{ color: "hsl(222, 47%, 11%)" }}>
-            One Plan. Everything Included.
+          <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3 text-foreground">
+            Simple Pricing
           </h2>
-           <p className="text-base md:text-lg text-center max-w-2xl mx-auto mb-10 leading-[1.7]" style={{ color: "hsl(215, 16%, 47%)" }}>
-             One plan. Every feature included. No surprises.
+          <p className="text-base md:text-lg text-center max-w-2xl mx-auto mb-10 text-muted-foreground">
+            Everything you need in one plan. Cancel anytime.
           </p>
         </FadeIn>
 
         {/* Toggle */}
         <div className="flex justify-center items-center gap-4 mb-12">
-          <span className="text-sm font-semibold transition-colors" style={{ color: !annual ? "hsl(222, 47%, 11%)" : "hsl(215, 16%, 47%)" }}>Monthly</span>
+          <span className={`text-sm font-semibold transition-colors ${!annual ? 'text-foreground' : 'text-muted-foreground'}`}>Monthly</span>
           <button
             onClick={() => setAnnual(!annual)}
             className="relative w-14 h-7 rounded-full transition-all duration-300"
@@ -157,7 +156,7 @@ const PricingSection = () => {
               style={{ left: annual ? 'calc(100% - 26px)' : '2px' }}
             />
           </button>
-          <span className="text-sm font-semibold transition-colors" style={{ color: annual ? "hsl(222, 47%, 11%)" : "hsl(215, 16%, 47%)" }}>Annual</span>
+          <span className={`text-sm font-semibold transition-colors ${annual ? 'text-foreground' : 'text-muted-foreground'}`}>Annual</span>
           <span className="text-xs font-bold px-2.5 py-1 rounded-full text-accent-foreground bg-accent">
             32% OFF
           </span>
@@ -185,7 +184,7 @@ const PricingSection = () => {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-white/50">Less than one detail job. Every feature included.</p>
+                  <p className="text-sm text-white/50">{plan.subtitle}</p>
                 </div>
 
                 {/* Pricing with odometer */}
@@ -215,19 +214,16 @@ const PricingSection = () => {
                 <div className="px-6 pt-5">
                   <button
                     onClick={openFunnel}
-                    className="w-full rounded-xl font-extrabold py-4 min-h-[52px] inline-flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-base"
+                    className="w-full rounded-xl font-bold py-4 min-h-[52px] inline-flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 text-base bg-accent text-accent-foreground"
                     style={{
-                      background: 'linear-gradient(135deg, hsl(160, 84%, 39%) 0%, hsl(160, 64%, 30%) 100%)',
-                      color: 'hsl(0, 0%, 100%)',
-                      boxShadow: '0 0 28px hsla(160, 84%, 39%, 0.4), 0 4px 20px hsla(160, 84%, 39%, 0.2)',
+                      boxShadow: '0 4px 20px hsla(217,91%,60%,0.4), 0 0 40px hsla(217,91%,60%,0.15)',
                     }}
                   >
-                    Start My Free Trial
+                    Get Started Free
+                    <ChevronRight className="w-4 h-4" />
                   </button>
-                  <div className="grid grid-cols-3 gap-4 mt-6 text-center">
-                     <span className="text-[11px] text-white/40">🔒 14-day free trial</span>
-                     <span className="text-[11px] text-white/40">⚡ Card required to activate</span>
-                     <span className="text-[11px] text-white/40">🛠️ Setup support included</span>
+                  <div className="text-[13px] text-center mt-3 text-white/40">
+                    14-day free trial · Setup in 5 mins
                   </div>
                 </div>
 
@@ -273,9 +269,9 @@ const PricingSection = () => {
         </div>
 
         <div className="mt-12 text-center">
-           <p className="text-sm" style={{ color: "hsl(215, 16%, 47%)" }}>
-             14-day free trial · Card required to activate · Cancel anytime in 2 clicks
-           </p>
+          <p className="text-sm text-muted-foreground">
+            14-day free trial. No credit card required. Cancel in 2 clicks.
+          </p>
         </div>
       </div>
     </section>

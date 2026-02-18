@@ -5,27 +5,27 @@ import FadeIn from "@/components/FadeIn";
 const faqs = [
   {
     question: "How long does it take to get my website live?",
-    answer: "48 hours from when you complete onboarding. We build it, you approve it. If you need changes, we make them same day. Most shops are live and taking bookings within 3 days total.",
+    answer: "48 hours or less. Once you tell us about your shop — services, hours, location — we build everything: your website, booking calendar, SMS reminders, and deposit collection. You'll be taking online bookings by the weekend.",
   },
   {
     question: "Do I need any tech skills?",
-    answer: "None. Zero. We've set this up for shop owners who had never built anything online before. If you can send a text, you can manage your Darker dashboard.",
+    answer: "Zero. We handle everything from setup to launch. If you can send a text message, you can manage your Darker dashboard. We also provide hands-on support if you ever get stuck.",
   },
   {
     question: "How does the deposit system work?",
-    answer: "When a customer books, they pay a $50–$100 deposit right on your site — before the appointment is confirmed. This gets processed by Stripe and sent to your bank account. Serious customers only.",
+    answer: "When customers book, they pay a deposit ($50–$100, you choose the amount) upfront via card. This filters out tire-kickers and protects you from no-shows. If they don't show, you keep the deposit. Payments hit your bank account next business day.",
   },
   {
     question: "What if I already have a website?",
-    answer: "Most shops that switch say their Darker site outperforms their old one in 30 days — in traffic, bookings, and Google ranking. But you can run both. We'll help you migrate over time.",
+    answer: "No problem. We can either replace your existing site or add our booking system alongside it. Most detailers find our done-for-you website outperforms what they were paying $100–$150/month for elsewhere.",
   },
   {
     question: "Can I cancel anytime?",
-    answer: "Yes. No contracts, no calls, no forms. Two clicks inside your account and you're done. We don't make cancelling hard because we don't need to — the product keeps people here.",
+    answer: "Yes — cancel in 2 clicks from your dashboard. No contracts, no cancellation fees, no questions asked. You also get a full 14-day free trial before you're ever charged.",
   },
   {
     question: "How does the 14-day free trial work?",
-    answer: "Create your account and we'll build your website and booking page. You can see it live in your dashboard — no card needed for that. When you're ready to take real bookings, activate your 14-day trial with a card. Cancel anytime in 2 clicks. No contracts.",
+    answer: "Sign up, get your website built, and start taking bookings — all without entering a credit card. After 14 days, pick the plan that fits. If it's not for you, just walk away. No charge, no hassle.",
   },
 ];
 
@@ -68,7 +68,7 @@ const FaqItem = ({ question, answer, index }: { question: string; answer: string
             transition: "max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease",
           }}
         >
-          <p className="px-6 md:px-8 pb-6 md:pb-8 leading-[1.7] text-[15px] md:text-base" style={{ color: "hsl(215, 16%, 47%)" }}>
+          <p className="px-6 md:px-8 pb-6 md:pb-8 leading-relaxed text-[15px] md:text-base" style={{ color: "hsl(215, 16%, 47%)" }}>
             {answer}
           </p>
         </div>
@@ -86,13 +86,13 @@ const FaqSection = () => {
       <div className="max-w-3xl mx-auto relative z-10">
         <FadeIn>
           <h2
-            className="font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3"
+            className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3"
             style={{ color: "hsl(222, 47%, 11%)" }}
           >
-            Common Questions
+            Frequently Asked Questions
           </h2>
-          <p className="text-lg text-center max-w-xl mx-auto mb-12 md:mb-16 leading-[1.7] mt-3" style={{ color: "hsl(215, 16%, 47%)" }}>
-            We've heard them all. Here are the real answers.
+          <p className="text-base md:text-lg text-center max-w-xl mx-auto mb-12 md:mb-16 leading-relaxed" style={{ color: "hsl(215, 16%, 47%)" }}>
+            Everything you need to know before getting started.
           </p>
         </FadeIn>
 
