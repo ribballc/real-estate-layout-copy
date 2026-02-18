@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -166,6 +167,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen" style={{ background: "hsl(222,47%,6%)", color: "white" }}>
+      <SEOHead title="Admin" noIndex />
       {/* Top bar */}
       <header className="sticky top-0 z-30 border-b px-6 h-14 flex items-center justify-between"
         style={{ background: "hsla(222,47%,6%,0.9)", backdropFilter: "blur(12px)", borderColor: "hsla(0,0%,100%,0.08)" }}>

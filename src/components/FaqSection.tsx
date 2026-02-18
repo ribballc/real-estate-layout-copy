@@ -1,34 +1,9 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
+import { FAQ_ITEMS } from "@/lib/seo";
 
-const faqs = [
-  {
-    question: "How long does it take to get my website live?",
-    answer: "48 hours or less. Once you tell us about your shop — services, hours, location — we build everything: your website, booking calendar, SMS reminders, and deposit collection. You'll be taking online bookings by the weekend.",
-  },
-  {
-    question: "Do I need any tech skills?",
-    answer: "Zero. We handle everything from setup to launch. If you can send a text message, you can manage your Darker dashboard. We also provide hands-on support if you ever get stuck.",
-  },
-  {
-    question: "How does the deposit system work?",
-    answer: "When customers book, they pay a deposit ($50–$100, you choose the amount) upfront via card. This filters out tire-kickers and protects you from no-shows. If they don't show, you keep the deposit. Payments hit your bank account next business day.",
-  },
-  {
-    question: "What if I already have a website?",
-    answer: "No problem. We can either replace your existing site or add our booking system alongside it. Most detailers find our done-for-you website outperforms what they were paying $100–$150/month for elsewhere.",
-  },
-  {
-    question: "Can I cancel anytime?",
-    answer: "Yes — cancel in 2 clicks from your dashboard. No contracts, no cancellation fees, no questions asked. You also get a full 14-day free trial before you're ever charged.",
-  },
-  {
-    question: "How does the 14-day free trial work?",
-    answer: "Sign up, get your website built, and start taking bookings — all without entering a credit card. After 14 days, pick the plan that fits. If it's not for you, just walk away. No charge, no hassle.",
-  },
-];
-
+const faqs = FAQ_ITEMS;
 const FaqItem = ({ question, answer, index }: { question: string; answer: string; index: number }) => {
   const [open, setOpen] = useState(false);
 

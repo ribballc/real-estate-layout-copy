@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
+import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -313,6 +314,7 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-12">
+      <SEOHead title="Onboarding" noIndex />
       {/* Background */}
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${dashboardPreview})` }} />
       <div className="absolute inset-0" style={{ background: "hsla(215,50%,10%,0.85)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }} />

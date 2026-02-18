@@ -1,3 +1,4 @@
+import SEOHead from "@/components/SEOHead";
 import DashboardSidebar from "./DashboardSidebar";
 import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import LockedPageOverlay from "./LockedPageOverlay";
@@ -163,6 +164,7 @@ const DashboardLayout = () => {
   return (
     <UpgradeModalProvider>
     <>
+      <SEOHead title={page.title} noIndex />
       <div
         className={`min-h-screen flex w-full ${isDark ? "dashboard-dark" : "dashboard-light"} ${showEntryAnim ? "animate-dashboard-entry" : ""}`}
         style={{

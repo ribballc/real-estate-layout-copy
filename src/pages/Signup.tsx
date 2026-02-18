@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SEOHead from "@/components/SEOHead";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -102,6 +103,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-12">
+      <SEOHead title="Create Your Account" description="Get your detailing website and booking system set up in 5 minutes. See your live site free — no card needed to get started." canonicalUrl="https://darkerdigital.com/signup" />
       {/* Background image + overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center"

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SEOHead from "@/components/SEOHead";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -72,6 +73,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-12">
+      <SEOHead title="Log In" description="Sign in to your Darker dashboard." canonicalUrl="https://darkerdigital.com/login" noIndex />
       {/* Background image + overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center"
