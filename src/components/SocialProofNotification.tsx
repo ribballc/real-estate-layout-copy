@@ -16,7 +16,7 @@ const SocialProofNotification = () => {
 
   useEffect(() => {
     if (dismissed) return;
-    const showTimer = setTimeout(() => setVisible(true), 5000);
+    const showTimer = setTimeout(() => setVisible(true), 10000);
     return () => clearTimeout(showTimer);
   }, [dismissed]);
 
@@ -28,7 +28,7 @@ const SocialProofNotification = () => {
         setCurrent((c) => (c + 1) % notifications.length);
         setVisible(true);
       }, 500);
-    }, 8000);
+    }, 30000);
     return () => clearInterval(interval);
   }, [visible, dismissed]);
 
