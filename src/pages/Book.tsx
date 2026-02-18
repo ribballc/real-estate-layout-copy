@@ -1,20 +1,41 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Loader2, CheckCircle2, Sparkles, Car, Paintbrush, Shield, Droplets } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
 import type { BusinessData } from "@/hooks/useBusinessData";
+
+/* Map service keywords to icons */
+const getServiceIcon = (title: string) => {
+  const t = title.toLowerCase();
+  if (t.includes("ceramic") || t.includes("coat")) return Shield;
+  if (t.includes("interior") || t.includes("clean")) return Sparkles;
+  if (t.includes("exterior") || t.includes("wash")) return Droplets;
+  return Paintbrush;
+};
+
+const cardStyle: React.CSSProperties = {
+  background: "white",
+  border: "1px solid hsl(210,40%,90%)",
+  borderRadius: 12,
+  padding: "16px 18px",
+  cursor: "pointer",
+  transition: "border-color 0.15s, box-shadow 0.15s, background 0.15s",
+};
 
 const Book = () => {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [selectedName, setSelectedName] = useState("");
+  const [bounceKey, setBounceKey] = useState(0);
 
   const handleSelect = (id: string, title: string, price: number) => {
+    const wasNull = !selectedService;
     setSelectedService(id);
     setSelectedName(title);
     sessionStorage.setItem("booking_service", JSON.stringify({ id, title, price }));
+    if (wasNull) setBounceKey((k) => k + 1);
   };
 
   const handleContinue = () => {
@@ -25,21 +46,19 @@ const Book = () => {
   return (
     <BookingLayout activeStep={0}>
       {(businessData: BusinessData) => {
-        const { services, loading, profile } = businessData;
-        const primaryColor = profile?.primary_color || "hsl(217,91%,60%)";
-        const businessName = profile?.business_name || "";
+        const { services, loading } = businessData;
 
         if (loading) {
           return (
             <div className="flex justify-center py-20">
-              <Loader2 className="w-6 h-6 animate-spin" style={{ color: "hsl(217,91%,50%)" }} />
+              <Loader2 className="w-5 h-5 animate-spin" style={{ color: "hsl(217,91%,55%)" }} />
             </div>
           );
         }
 
         if (services.length === 0) {
           return (
-            <div className="text-center py-20" style={{ color: "hsl(215,16%,47%)" }}>
+            <div className="text-center py-20" style={{ fontSize: 14, color: "hsl(215,16%,55%)" }}>
               No services available yet.
             </div>
           );
@@ -47,165 +66,129 @@ const Book = () => {
 
         return (
           <>
-            {/* Headline */}
-            <FadeIn delay={50}>
-              <div className="mb-8 md:mb-10">
-                <h1
-                  className="font-heading text-[28px] md:text-[40px] font-bold tracking-[-0.015em] leading-[1.2]"
-                  style={{ color: "hsl(222,47%,11%)" }}
-                >
-                  What are you looking for?
-                </h1>
-                {businessName && (
-                  <p className="text-sm md:text-base mt-2" style={{ color: "hsl(215,16%,47%)" }}>
-                    Choose a service from {businessName}
-                  </p>
-                )}
-              </div>
+            <FadeIn delay={40}>
+              <h1
+                className="font-heading font-bold tracking-[-0.01em] leading-[1.2] mb-1"
+                style={{ fontSize: 22, color: "hsl(222,47%,11%)" }}
+              >
+                Choose a service
+              </h1>
+              <p style={{ fontSize: 14, color: "hsl(215,16%,55%)", marginBottom: 20 }}>
+                Select what you'd like done
+              </p>
             </FadeIn>
 
-            {/* Service grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="space-y-3">
               {services.map((service, i) => {
                 const isSelected = selectedService === service.id;
+                const Icon = getServiceIcon(service.title);
                 return (
-                  <FadeIn key={service.id} delay={100 + i * 60}>
+                  <FadeIn key={service.id} delay={60 + i * 40}>
                     <button
                       onClick={() => handleSelect(service.id, service.title, service.price)}
-                      className="group relative w-full text-left rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:-translate-y-1"
+                      className="w-full text-left flex items-center gap-3.5"
                       style={{
-                        background: "white",
-                        border: isSelected
-                          ? "2px solid hsl(217,91%,50%)"
-                          : "1px solid hsl(210,40%,90%)",
-                        boxShadow: isSelected
-                          ? "0 8px 24px hsla(217,91%,50%,0.12)"
-                          : undefined,
+                        ...cardStyle,
+                        ...(isSelected
+                          ? {
+                              borderColor: "hsl(217,91%,55%)",
+                              background: "hsl(217,91%,98%)",
+                              boxShadow: "0 0 0 3px hsla(217,91%,55%,0.12)",
+                            }
+                          : {}),
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.borderColor = "hsl(217,91%,65%)";
+                          e.currentTarget.style.boxShadow = "0 2px 12px hsla(217,91%,60%,0.1)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isSelected) {
+                          e.currentTarget.style.borderColor = "hsl(210,40%,90%)";
+                          e.currentTarget.style.boxShadow = "none";
+                        }
                       }}
                     >
-                      {/* Image / gradient placeholder */}
-                      <div className="relative w-full aspect-[16/9] overflow-hidden">
-                        {service.image_url ? (
-                          <img
-                            src={service.image_url}
-                            alt={service.title}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        ) : (
-                          <div
-                            className="w-full h-full"
-                            style={{
-                              background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}88)`,
-                            }}
-                          />
-                        )}
+                      {/* Icon box */}
+                      <div
+                        className="flex items-center justify-center flex-shrink-0"
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 8,
+                          background: "hsl(217,91%,96%)",
+                        }}
+                      >
+                        <Icon size={18} style={{ color: "hsl(217,91%,50%)" }} />
+                      </div>
 
-                        {/* Popular badge */}
-                        {service.popular && (
-                          <span
-                            className="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-[0.04em] shadow-md"
-                            style={{
-                              background: "hsl(38, 92%, 50%)",
-                              color: "hsl(38, 92%, 10%)",
-                            }}
-                          >
-                            Most Popular
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <span className="block font-semibold truncate" style={{ fontSize: 15, color: "hsl(222,47%,11%)" }}>
+                          {service.title}
+                        </span>
+                        {service.description && (
+                          <span className="block truncate" style={{ fontSize: 13, color: "hsl(215,16%,55%)" }}>
+                            {service.description}
                           </span>
                         )}
-
-                        {/* Selected checkmark */}
-                        {isSelected && (
-                          <div
-                            className="absolute top-3 left-3 w-7 h-7 rounded-full flex items-center justify-center shadow-md animate-in zoom-in duration-200"
-                            style={{ background: "hsl(217,91%,50%)" }}
-                          >
-                            <CheckCircle2 className="w-4 h-4 text-white" />
-                          </div>
-                        )}
-
-                        {/* Selected tint overlay */}
-                        {isSelected && (
-                          <div className="absolute inset-0 pointer-events-none" style={{ background: "hsla(217,91%,50%,0.06)" }} />
-                        )}
                       </div>
 
-                      {/* Content */}
-                      <div
-                        className="flex flex-col flex-1 p-5"
-                        style={{ background: isSelected ? "hsl(217,91%,97%)" : "white" }}
-                      >
-                        <h3
-                          className="text-base font-semibold mb-1.5 line-clamp-1"
-                          style={{ color: "hsl(222,47%,11%)" }}
-                        >
-                          {service.title}
-                        </h3>
-                        <p
-                          className="text-sm leading-relaxed line-clamp-2 mb-4"
-                          style={{ color: "hsl(215,16%,47%)" }}
-                        >
-                          {service.description || "Professional detailing service"}
-                        </p>
-
-                        {/* Price */}
-                        <div className="mt-auto flex items-end justify-between">
-                          <div>
-                            <p className="text-[10px] uppercase tracking-wider font-medium" style={{ color: "hsl(215,16%,60%)" }}>Starting at</p>
-                            <p className="text-2xl font-bold tracking-tight" style={{ color: "hsl(217,91%,45%)" }}>
-                              ${service.price}
-                            </p>
-                          </div>
-                        </div>
+                      {/* Price / check */}
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="font-semibold" style={{ fontSize: 15, color: "hsl(217,91%,45%)" }}>
+                          ${service.price}
+                        </span>
+                        {isSelected && (
+                          <CheckCircle2 size={20} style={{ color: "hsl(217,91%,55%)" }} />
+                        )}
                       </div>
-
-                      {/* Hover left border accent (only when not selected) */}
-                      {!isSelected && (
-                        <div
-                          className="absolute left-0 top-0 bottom-0 w-[3px] scale-y-0 group-hover:scale-y-100 transition-transform duration-300 origin-center"
-                          style={{ background: "hsl(217,91%,70%)" }}
-                        />
-                      )}
                     </button>
                   </FadeIn>
                 );
               })}
             </div>
 
-            {/* Sticky CTA */}
-            <div
-              className="fixed md:relative bottom-0 left-0 right-0 md:bottom-auto z-30 md:z-auto md:bg-transparent px-4 py-3 md:p-0 md:mt-8"
-              style={{
-                background: "hsla(0,0%,100%,0.85)",
-                backdropFilter: "blur(16px)",
-                borderTop: "1px solid hsl(210,40%,90%)",
-              }}
-            >
-              <div className="max-w-screen-lg mx-auto md:mx-0" style={{ borderTop: "none" }}>
-                <button
-                  onClick={handleContinue}
-                  disabled={!selectedService}
-                  className="w-full md:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3 rounded-xl text-sm font-semibold min-h-[48px] transition-all duration-200"
-                  style={
-                    selectedService
-                      ? {
-                          background: "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(217,91%,50%) 100%)",
-                          color: "white",
-                          boxShadow: "0 4px 12px hsla(217,91%,60%,0.3)",
-                        }
-                      : {
-                          background: "hsl(210,40%,94%)",
-                          color: "hsl(215,16%,60%)",
-                          cursor: "not-allowed",
-                        }
-                  }
-                >
-                  {selectedService ? `Continue with ${selectedName}` : "Select a service to continue"}
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
+            {/* CTA */}
+            <div className="mt-6">
+              <button
+                key={bounceKey}
+                onClick={handleContinue}
+                disabled={!selectedService}
+                className="w-full inline-flex items-center justify-center gap-2 font-bold"
+                style={{
+                  height: 50,
+                  borderRadius: 12,
+                  fontSize: 15,
+                  transition: "opacity 0.15s, box-shadow 0.15s, transform 0.15s",
+                  ...(selectedService
+                    ? {
+                        background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))",
+                        color: "white",
+                        boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)",
+                        animation: "ctaBounce 0.25s ease",
+                      }
+                    : {
+                        background: "hsl(210,40%,92%)",
+                        color: "hsl(215,16%,60%)",
+                        cursor: "not-allowed",
+                        opacity: 0.45,
+                      }),
+                }}
+              >
+                Continue
+                <ArrowRight size={16} />
+              </button>
             </div>
-            {/* Mobile spacer */}
-            <div className="h-20 md:h-0" />
+
+            <style>{`
+              @keyframes ctaBounce {
+                0%   { transform: scale(1); }
+                50%  { transform: scale(1.02); }
+                100% { transform: scale(1); }
+              }
+            `}</style>
           </>
         );
       }}

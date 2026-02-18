@@ -1,58 +1,46 @@
-import { ChevronRight, Check } from "lucide-react";
-import FadeIn from "@/components/FadeIn";
-
-const steps = [
-  { label: "Service", path: "/book" },
-  { label: "Vehicle", path: "/book/vehicle" },
-  { label: "Options", path: "/book/options" },
-  { label: "Add-ons", path: "/book/add-ons" },
-  { label: "Schedule", path: "/book/booking" },
-  { label: "Checkout", path: "/book/checkout" },
-];
-
 interface BookingBreadcrumbProps {
   activeStep: number;
+  totalSteps: number;
+  label: string;
 }
 
-const BookingBreadcrumb = ({ activeStep }: BookingBreadcrumbProps) => (
-  <FadeIn>
-    <nav className="flex items-center gap-1.5 flex-wrap mb-8 md:mb-10">
-      {steps.map((step, i) => {
-        const isActive = i === activeStep;
-        const isCompleted = i < activeStep;
-        return (
-          <span key={step.label} className="flex items-center gap-1.5">
-            <span
-              className="inline-flex items-center gap-1.5 text-sm font-medium px-2.5 py-1 rounded-lg transition-colors"
-              style={
-                isActive
-                  ? {
-                      background: "hsl(217,91%,96%)",
-                      color: "hsl(217,91%,40%)",
-                      border: "1px solid hsl(217,91%,80%)",
-                    }
-                  : isCompleted
-                  ? {
-                      background: "hsl(142,71%,94%)",
-                      color: "hsl(142,71%,35%)",
-                    }
-                  : {
-                      background: "hsl(210,40%,94%)",
-                      color: "hsl(215,16%,47%)",
-                    }
-              }
-            >
-              {isCompleted && <Check className="w-3 h-3" />}
-              {step.label}
-            </span>
-            {i < steps.length - 1 && (
-              <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" style={{ color: "hsl(210,40%,82%)" }} />
-            )}
-          </span>
-        );
-      })}
-    </nav>
-  </FadeIn>
-);
+const BookingBreadcrumb = ({ activeStep, totalSteps, label }: BookingBreadcrumbProps) => {
+  const progress = ((activeStep + 1) / totalSteps) * 100;
+
+  return (
+    <div className="max-w-[780px] mx-auto px-4 pt-5 pb-1">
+      {/* Progress bar */}
+      <div
+        className="w-full overflow-hidden"
+        style={{
+          height: 4,
+          borderRadius: 2,
+          background: "hsl(210,40%,90%)",
+        }}
+      >
+        <div
+          style={{
+            height: "100%",
+            width: `${progress}%`,
+            borderRadius: 2,
+            background: "hsl(217,91%,55%)",
+            transition: "width 0.4s ease",
+          }}
+        />
+      </div>
+
+      {/* Step label */}
+      <p
+        className="mt-2"
+        style={{
+          fontSize: 12,
+          color: "hsl(215,16%,55%)",
+        }}
+      >
+        Step {activeStep + 1} of {totalSteps} — {label}
+      </p>
+    </div>
+  );
+};
 
 export default BookingBreadcrumb;
