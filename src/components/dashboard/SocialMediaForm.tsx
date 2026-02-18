@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { TOAST } from "@/lib/toast-messages";
 import { Loader2 } from "lucide-react";
 import FormSkeleton from "@/components/skeletons/FormSkeleton";
 
@@ -68,8 +69,8 @@ const SocialMediaForm = ({ embedded = false }: { embedded?: boolean }) => {
     });
     const { error } = await supabase.from("profiles").update(form).eq("user_id", user.id);
     setSaving(false);
-    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-    else toast({ title: "Saved!", description: "Social links updated." });
+    if (error) toast(TOAST.GENERIC_ERROR);
+    else toast(TOAST.SOCIAL_SAVED);
   };
 
   if (loading) return <FormSkeleton rows={4} />;

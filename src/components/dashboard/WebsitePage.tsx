@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Lock, Copy, Check, Pencil, X, Globe, CalendarCheck } from "lucide-react";
+import CopyButton from "@/components/CopyButton";
 import type { SupportChatbotHandle } from "./SupportChatbot";
 
 interface WebsitePageProps {
@@ -259,24 +260,14 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
         >
           {demoUrl}
         </span>
-        <button
-          onClick={handleCopy}
-          className="ml-auto shrink-0 font-medium transition-colors"
-          style={{
-            color: copied ? "hsl(142,71%,45%)" : "hsl(217,91%,60%)",
-            fontSize: 13,
-            padding: "4px 10px",
-            border: `1px solid ${copied ? "hsla(142,71%,45%,0.25)" : "hsla(217,91%,60%,0.25)"}`,
-            borderRadius: 6,
-            background: "transparent",
-          }}
-        >
-          {copied ? (
-            <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Copied ✓</span>
-          ) : (
-            <span className="flex items-center gap-1"><Copy className="w-3 h-3" /> Copy Link</span>
-          )}
-        </button>
+        <CopyButton
+          text={`https://${demoUrl}`}
+          label="Copy Link"
+          copiedLabel="Copied!"
+          variant="inline"
+          className="ml-auto shrink-0 px-2.5 py-1 rounded-md"
+          toastMessage={{ title: "Link copied", description: `${demoUrl} is on your clipboard.` }}
+        />
       </div>
 
       {/* ═══ Iframe wrapper ═══ */}

@@ -1,4 +1,5 @@
 import SEOHead from "@/components/SEOHead";
+import PageTransition from "@/components/PageTransition";
 import DashboardSidebar from "./DashboardSidebar";
 import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import LockedPageOverlay from "./LockedPageOverlay";
@@ -252,7 +253,9 @@ const DashboardLayout = () => {
             {isLocked ? (
               <LockedPageOverlay path={location.pathname} isDark={isDark} />
             ) : (
-              <Outlet context={{ chatbotRef, isDark }} />
+              <PageTransition key={location.pathname}>
+                <Outlet context={{ chatbotRef, isDark }} />
+              </PageTransition>
             )}
           </div>
 
