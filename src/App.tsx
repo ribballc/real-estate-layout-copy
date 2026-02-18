@@ -8,6 +8,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import DeluxeLanding from "./pages/DeluxeLanding";
 import Loading from "./pages/Loading";
+import Generating from "./pages/Generating";
 import Preview from "./pages/Preview";
 import Book from "./pages/Book";
 import BookVehicle from "./pages/BookVehicle";
@@ -53,7 +54,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
             <Route path="/loading" element={<ProtectedRoute><Loading /></ProtectedRoute>} />
-            <Route path="/generating" element={<ProtectedRoute><Loading /></ProtectedRoute>} />
+            <Route path="/generating" element={<ProtectedRoute><Generating /></ProtectedRoute>} />
             <Route path="/preview" element={<Preview />} />
             <Route path="/site/:slug/book" element={<Book />} />
             <Route path="/site/:slug/book/vehicle" element={<BookVehicle />} />
