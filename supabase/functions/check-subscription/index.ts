@@ -42,15 +42,28 @@ serve(async (req) => {
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
 
-    // Look up Stripe customer
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     if (customers.data.length === 0) {
-      logStep("No Stripe customer found, setting trial_active=false");
+      logStep("No Stripe customer found");
       await supabaseClient
         .from("profiles")
-        .update({ trial_active: false })
+        .update({
+          trial_active: false,
+          subscription_status: "none",
+          subscription_plan: null,
+          stripe_customer_id: null,
+          stripe_subscription_id: null,
+          trial_ends_at: null,
+          subscription_ends_at: null,
+        })
         .eq("user_id", user.id);
-      return new Response(JSON.stringify({ subscribed: false }), {
+      return new Response(JSON.stringify({
+        subscribed: false,
+        status: "none",
+        plan: null,
+        trialEnd: null,
+        cancelAtPeriodEnd: false,
+      }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -58,39 +71,79 @@ serve(async (req) => {
     const customerId = customers.data[0].id;
     logStep("Found Stripe customer", { customerId });
 
-    // Check for active or trialing subscriptions
+    // Get all subscriptions (active, trialing, past_due)
     const subscriptions = await stripe.subscriptions.list({
       customer: customerId,
-      status: "active",
-      limit: 1,
+      limit: 10,
     });
 
-    let hasActive = subscriptions.data.length > 0;
+    // Find the most relevant subscription
+    const activeSub = subscriptions.data.find(s =>
+      ["active", "trialing", "past_due"].includes(s.status)
+    );
 
-    // Also check trialing
-    if (!hasActive) {
-      const trialing = await stripe.subscriptions.list({
-        customer: customerId,
-        status: "trialing",
-        limit: 1,
-      });
-      hasActive = trialing.data.length > 0;
+    let status = "none";
+    let plan: string | null = null;
+    let trialEnd: string | null = null;
+    let subscriptionEnd: string | null = null;
+    let subscriptionId: string | null = null;
+    let cancelAtPeriodEnd = false;
+
+    if (activeSub) {
+      status = activeSub.status;
+      subscriptionId = activeSub.id;
+      cancelAtPeriodEnd = activeSub.cancel_at_period_end;
+
+      if (activeSub.trial_end) {
+        trialEnd = new Date(activeSub.trial_end * 1000).toISOString();
+      }
+      subscriptionEnd = new Date(activeSub.current_period_end * 1000).toISOString();
+
+      // Determine plan from price
+      const priceId = activeSub.items.data[0]?.price?.id;
+      if (priceId === "price_1T1JeMP734Q0ltptDuj5K6Na") {
+        plan = "annual";
+      } else if (priceId === "price_1T1I5SP734Q0ltptMJmmSvok") {
+        plan = "monthly";
+      } else {
+        plan = "monthly"; // fallback
+      }
+
+      logStep("Active subscription found", { status, plan, subscriptionId });
+    } else {
+      // Check for canceled
+      const canceled = subscriptions.data.find(s => s.status === "canceled");
+      if (canceled) status = "canceled";
+      logStep("No active subscription", { status });
     }
 
-    logStep("Subscription status", { hasActive });
+    const isActive = ["active", "trialing"].includes(status);
 
-    // Update trial_active in profiles
     await supabaseClient
       .from("profiles")
-      .update({ trial_active: hasActive })
+      .update({
+        trial_active: isActive,
+        subscription_status: status,
+        subscription_plan: plan,
+        stripe_customer_id: customerId,
+        stripe_subscription_id: subscriptionId,
+        trial_ends_at: trialEnd,
+        subscription_ends_at: subscriptionEnd,
+      })
       .eq("user_id", user.id);
 
-    logStep("Updated trial_active", { trial_active: hasActive });
+    logStep("Profile updated", { trial_active: isActive, status, plan });
 
-    return new Response(
-      JSON.stringify({ subscribed: hasActive }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({
+      subscribed: isActive,
+      status,
+      plan,
+      trialEnd,
+      subscriptionEnd,
+      cancelAtPeriodEnd,
+    }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: msg });

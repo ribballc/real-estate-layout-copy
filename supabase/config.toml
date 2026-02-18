@@ -24,5 +24,8 @@ verify_jwt = false
 [functions.send-booking-notification]
 verify_jwt = false
 
+[functions.stripe-webhook]
+verify_jwt = false
+
 [functions.update-estimate-status]
 verify_jwt = false
