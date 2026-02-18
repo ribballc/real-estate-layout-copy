@@ -1,53 +1,42 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams, useParams } from "react-router-dom";
-import { ArrowRight, Check, Plus } from "lucide-react";
+import { ArrowRight, ArrowLeft, Check, Plus } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
 
-/* ═══════════════════════════════════════════════════════
-   CMS-READY CONFIG — replace with DB/API data later
-   ═══════════════════════════════════════════════════════ */
-
-interface AddOn {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  popular?: boolean;
-}
+interface AddOn { id: string; title: string; description: string; price: number; popular?: boolean; }
 
 const addOnsByService: Record<string, AddOn[]> = {
   interior: [
     { id: "leather-conditioning", title: "Leather Conditioning", description: "Premium conditioner to restore & protect leather seats and trim.", price: 60, popular: true },
-    { id: "odor-elimination", title: "Odor Elimination", description: "Ozone treatment to neutralize stubborn odors from pets, smoke, and spills.", price: 75 },
+    { id: "odor-elimination", title: "Odor Elimination", description: "Ozone treatment to neutralize stubborn odors.", price: 75 },
     { id: "fabric-protection", title: "Fabric Protection", description: "Stain-resistant coating for upholstery and carpets.", price: 50 },
-    { id: "steam-clean", title: "Steam Cleaning", description: "Deep steam extraction for carpets, mats, and hard-to-reach crevices.", price: 80 },
-    { id: "dashboard-uv", title: "Dashboard UV Protection", description: "UV protectant to prevent cracking and fading on all interior plastics.", price: 35 },
+    { id: "steam-clean", title: "Steam Cleaning", description: "Deep steam extraction for carpets and crevices.", price: 80 },
+    { id: "dashboard-uv", title: "Dashboard UV Protection", description: "UV protectant to prevent cracking and fading.", price: 35 },
   ],
   exterior: [
-    { id: "clay-bar", title: "Clay Bar Treatment", description: "Remove embedded contaminants for a glass-smooth finish before polish.", price: 80, popular: true },
-    { id: "wheel-ceramic", title: "Wheel Ceramic Coat", description: "Ceramic coating for wheels & calipers to repel brake dust and road grime.", price: 120 },
-    { id: "trim-restore", title: "Trim Restoration", description: "Restore faded black plastic trim to a rich, factory-fresh look.", price: 45 },
-    { id: "headlight-restore", title: "Headlight Restoration", description: "Sand, polish, and seal cloudy or yellowed headlights.", price: 65, popular: true },
-    { id: "rain-repel", title: "Rain Repellent Coating", description: "Hydrophobic windshield & glass treatment for improved visibility.", price: 40 },
+    { id: "clay-bar", title: "Clay Bar Treatment", description: "Remove contaminants for a glass-smooth finish.", price: 80, popular: true },
+    { id: "wheel-ceramic", title: "Wheel Ceramic Coat", description: "Ceramic coating for wheels & calipers.", price: 120 },
+    { id: "trim-restore", title: "Trim Restoration", description: "Restore faded black plastic trim.", price: 45 },
+    { id: "headlight-restore", title: "Headlight Restoration", description: "Sand, polish, and seal cloudy headlights.", price: 65, popular: true },
+    { id: "rain-repel", title: "Rain Repellent Coating", description: "Hydrophobic windshield treatment.", price: 40 },
   ],
   full: [
-    { id: "clay-bar", title: "Clay Bar Treatment", description: "Remove embedded contaminants for a glass-smooth finish before polish.", price: 80, popular: true },
-    { id: "leather-conditioning", title: "Leather Conditioning", description: "Premium conditioner to restore & protect leather seats and trim.", price: 60 },
-    { id: "headlight-restore", title: "Headlight Restoration", description: "Sand, polish, and seal cloudy or yellowed headlights.", price: 65, popular: true },
-    { id: "engine-bay", title: "Engine Bay Detail", description: "Full degrease, dress, and protect for a showroom-quality engine bay.", price: 90 },
-    { id: "odor-elimination", title: "Odor Elimination", description: "Ozone treatment to neutralize stubborn odors from pets, smoke, and spills.", price: 75 },
-    { id: "rain-repel", title: "Rain Repellent Coating", description: "Hydrophobic windshield & glass treatment for improved visibility.", price: 40 },
+    { id: "clay-bar", title: "Clay Bar Treatment", description: "Remove contaminants for a glass-smooth finish.", price: 80, popular: true },
+    { id: "leather-conditioning", title: "Leather Conditioning", description: "Premium conditioner for leather seats.", price: 60 },
+    { id: "headlight-restore", title: "Headlight Restoration", description: "Sand, polish, and seal cloudy headlights.", price: 65, popular: true },
+    { id: "engine-bay", title: "Engine Bay Detail", description: "Degrease, dress, and protect your engine bay.", price: 90 },
+    { id: "odor-elimination", title: "Odor Elimination", description: "Ozone treatment to neutralize odors.", price: 75 },
+    { id: "rain-repel", title: "Rain Repellent Coating", description: "Hydrophobic windshield treatment.", price: 40 },
   ],
   ceramic: [
-    { id: "paint-correction-1", title: "Single-Stage Paint Correction", description: "One-step machine polish to remove light swirls before ceramic application.", price: 200, popular: true },
-    { id: "paint-correction-2", title: "Two-Stage Paint Correction", description: "Compound + polish for deeper scratches and heavy swirl removal.", price: 350 },
-    { id: "wheel-ceramic", title: "Wheel Ceramic Coat", description: "Extend ceramic protection to wheels & calipers.", price: 120 },
-    { id: "glass-ceramic", title: "Glass Ceramic Coat", description: "Ceramic coating for all glass surfaces — hydrophobic rain repellent built in.", price: 100 },
-    { id: "trim-ceramic", title: "Trim Ceramic Coat", description: "Protect plastic and rubber trim with a dedicated ceramic layer.", price: 80 },
+    { id: "paint-correction-1", title: "Single-Stage Paint Correction", description: "One-step polish to remove light swirls.", price: 200, popular: true },
+    { id: "paint-correction-2", title: "Two-Stage Paint Correction", description: "Compound + polish for deeper scratches.", price: 350 },
+    { id: "wheel-ceramic", title: "Wheel Ceramic Coat", description: "Ceramic protection for wheels & calipers.", price: 120 },
+    { id: "glass-ceramic", title: "Glass Ceramic Coat", description: "Ceramic coating for all glass surfaces.", price: 100 },
+    { id: "trim-ceramic", title: "Trim Ceramic Coat", description: "Protect plastic and rubber trim.", price: 80 },
   ],
 };
-
 const defaultAddOns: AddOn[] = addOnsByService.full;
 
 const BookAddOns = () => {
@@ -56,115 +45,88 @@ const BookAddOns = () => {
   const [searchParams] = useSearchParams();
   const serviceId = searchParams.get("service") || "full";
   const addOns = addOnsByService[serviceId] ?? defaultAddOns;
-
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
-  const toggle = (id: string) =>
-    setSelected((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
+  const toggle = (id: string) => setSelected((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  const total = addOns.filter((a) => selected.has(a.id)).reduce((s, a) => s + a.price, 0);
 
-  const total = addOns
-    .filter((a) => selected.has(a.id))
-    .reduce((sum, a) => sum + a.price, 0);
+  const handleContinue = () => {
+    const sel = addOns.filter(a => selected.has(a.id)).map(a => ({ id: a.id, title: a.title, price: a.price }));
+    sessionStorage.setItem("booking_addons", JSON.stringify(sel));
+    navigate(`/site/${slug}/book/booking`);
+  };
 
   return (
     <BookingLayout activeStep={3}>
-      <FadeIn delay={50}>
-        <h1
-          className="font-heading text-[28px] md:text-[40px] font-bold tracking-[-0.015em] leading-[1.2] mb-2 md:mb-3"
-          style={{ color: "hsl(222,47%,11%)" }}
-        >
+      <FadeIn delay={40}>
+        <h1 className="font-heading font-bold tracking-[-0.01em] leading-[1.2] mb-1" style={{ fontSize: 22, color: "hsl(222,47%,11%)" }}>
           Enhance your detail
         </h1>
-        <p className="text-sm md:text-base mb-8 md:mb-10 max-w-xl" style={{ color: "hsl(215,16%,47%)" }}>
-          Recommended add-ons for your selected service. Pick as many as you'd like — skip if you're happy with the base package.
+        <p style={{ fontSize: 14, color: "hsl(215,16%,55%)", marginBottom: 20 }}>
+          Optional add-ons — skip if you're happy with the base
         </p>
       </FadeIn>
 
-      {/* Add-on cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+      <div className="space-y-2.5 mb-8">
         {addOns.map((addon, i) => {
-          const isSelected = selected.has(addon.id);
+          const isSel = selected.has(addon.id);
           return (
-            <FadeIn key={addon.id} delay={100 + i * 60}>
+            <FadeIn key={addon.id} delay={60 + i * 35}>
               <button
                 onClick={() => toggle(addon.id)}
-                className="group relative w-full text-left rounded-2xl p-6 min-h-[180px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1"
+                className="w-full text-left flex items-center gap-3.5 transition-all duration-150"
                 style={{
-                  background: isSelected ? "hsl(217,91%,97%)" : "white",
-                  border: isSelected
-                    ? "2px solid hsl(217,91%,50%)"
-                    : "1px solid hsl(210,40%,90%)",
-                  boxShadow: isSelected
-                    ? "0 8px 24px hsla(217,91%,50%,0.12)"
-                    : undefined,
+                  background: isSel ? "hsl(217,91%,98%)" : "white",
+                  border: isSel ? "2px solid hsl(217,91%,55%)" : "1px solid hsl(210,40%,90%)",
+                  borderRadius: 12,
+                  padding: "14px 16px",
+                  boxShadow: isSel ? "0 0 0 3px hsla(217,91%,55%,0.12)" : undefined,
                 }}
               >
-                {addon.popular && (
-                  <span
-                    className="absolute -top-3 right-4 text-[11px] font-semibold px-3 py-1 rounded-md uppercase tracking-[0.06em]"
-                    style={{ background: "hsl(217,91%,50%)", color: "white" }}
-                  >
-                    Popular
-                  </span>
-                )}
-
-                {/* Selection indicator */}
-                <div
-                  className="absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200"
-                  style={
-                    isSelected
-                      ? { background: "hsl(217,91%,50%)", color: "white" }
-                      : { border: "1px solid hsl(210,40%,82%)" }
-                  }
-                >
-                  {isSelected ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" style={{ color: "hsl(215,16%,60%)" }} />}
+                {/* Indicator */}
+                <div className="w-[22px] h-[22px] rounded-full flex items-center justify-center flex-shrink-0" style={isSel ? { background: "hsl(217,91%,55%)", color: "white" } : { border: "1.5px solid hsl(210,40%,82%)" }}>
+                  {isSel ? <Check size={12} /> : <Plus size={12} style={{ color: "hsl(215,16%,65%)" }} />}
                 </div>
 
-                <div>
-                  <h3 className="text-base font-semibold mb-1.5 pr-8" style={{ color: "hsl(222,47%,11%)" }}>{addon.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: "hsl(215,16%,47%)" }}>{addon.description}</p>
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold truncate" style={{ fontSize: 14, color: "hsl(222,47%,11%)" }}>{addon.title}</span>
+                    {addon.popular && (
+                      <span className="flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded" style={{ background: "hsl(217,91%,96%)", color: "hsl(217,91%,45%)" }}>Popular</span>
+                    )}
+                  </div>
+                  <span className="block truncate" style={{ fontSize: 12, color: "hsl(215,16%,55%)", marginTop: 1 }}>{addon.description}</span>
                 </div>
 
-                <div className="mt-4">
-                  <span className="text-lg font-bold" style={{ color: "hsl(217,91%,45%)" }}>+${addon.price}</span>
-                </div>
+                {/* Price */}
+                <span className="font-semibold flex-shrink-0" style={{ fontSize: 14, color: "hsl(217,91%,45%)" }}>+${addon.price}</span>
               </button>
             </FadeIn>
           );
         })}
       </div>
 
-      {/* Summary + Continue */}
-      <FadeIn delay={50}>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <button
-            onClick={() => {
-              const selectedAddOns = addOns.filter(a => selected.has(a.id)).map(a => ({ id: a.id, title: a.title, price: a.price }));
-              sessionStorage.setItem("booking_addons", JSON.stringify(selectedAddOns));
-              navigate(`/site/${slug}/book/booking`);
-            }}
-            className="inline-flex items-center gap-2 text-sm font-semibold rounded-lg px-6 py-3 min-h-[44px] transition-all duration-300 hover:gap-3"
-            style={{
-              background: "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(217,91%,50%) 100%)",
-              color: "white",
-              boxShadow: "0 4px 12px hsla(217, 91%, 60%, 0.3)",
-            }}
-          >
-            {selected.size > 0 ? "Continue with Add-ons" : "Skip Add-ons"}
-            <ArrowRight className="w-4 h-4" />
-          </button>
+      {/* Summary */}
+      {selected.size > 0 && (
+        <FadeIn delay={20}>
+          <div className="mb-4 px-1" style={{ fontSize: 13, color: "hsl(215,16%,55%)" }}>
+            {selected.size} add-on{selected.size > 1 ? "s" : ""} · <span className="font-semibold" style={{ color: "hsl(222,47%,11%)" }}>+${total}</span>
+          </div>
+        </FadeIn>
+      )}
 
-          {selected.size > 0 && (
-            <span className="text-sm" style={{ color: "hsl(215,16%,47%)" }}>
-              {selected.size} add-on{selected.size > 1 ? "s" : ""} selected · <span className="font-semibold" style={{ color: "hsl(222,47%,11%)" }}>+${total}</span>
-            </span>
-          )}
-        </div>
-      </FadeIn>
+      <div className="flex items-center gap-3">
+        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 font-semibold" style={{ height: 50, padding: "0 20px", borderRadius: 12, fontSize: 14, border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}>
+          <ArrowLeft size={15} /> Back
+        </button>
+        <button onClick={handleContinue} className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 font-bold" style={{
+          height: 50, borderRadius: 12, fontSize: 15, padding: "0 24px",
+          background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)",
+        }}>
+          {selected.size > 0 ? "Continue" : "Skip"} <ArrowRight size={15} />
+        </button>
+      </div>
     </BookingLayout>
   );
 };

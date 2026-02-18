@@ -3,6 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import BookingSidebar from "@/components/BookingSidebar";
 import BookingBreadcrumb from "@/components/BookingBreadcrumb";
 import darkerLogo from "@/assets/darker-logo.png";
+import { ShieldCheck } from "lucide-react";
 import { useBusinessDataBySlug, type BusinessData } from "@/hooks/useBusinessData";
 
 interface BookingLayoutProps {
@@ -10,48 +11,101 @@ interface BookingLayoutProps {
   children: ReactNode | ((data: BusinessData) => ReactNode);
 }
 
+const STEP_LABELS = [
+  "Choose a Service",
+  "Select Your Vehicle",
+  "Choose Your Options",
+  "Pick Add-ons",
+  "Pick Date & Time",
+  "Confirm Booking",
+];
+
 const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
   const { slug } = useParams<{ slug: string }>();
   const location = useLocation();
   const businessData = useBusinessDataBySlug(slug || null);
 
-  // Scroll to top on route change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [location.pathname]);
 
+  const businessName = businessData.profile?.business_name || "";
+
   return (
-    <div className="min-h-[100dvh] bg-background overflow-x-hidden">
-      {/* Top Nav */}
+    <div
+      className="min-h-[100dvh] overflow-x-hidden"
+      style={{ background: "hsl(210,40%,97%)" }}
+    >
+      {/* ── Booksy-style sticky header ── */}
       <header
-        className="sticky top-0 z-50"
+        className="sticky top-0 z-30"
         style={{
-          background: "hsla(0, 0%, 100%, 0.85)",
-          backdropFilter: "blur(16px) saturate(180%)",
-          borderBottom: "1px solid hsl(210,40%,90%)",
+          height: 60,
+          background: "white",
+          borderBottom: "1px solid hsl(210,40%,92%)",
+          boxShadow: "0 1px 4px hsla(0,0%,0%,0.06)",
         }}
       >
-        <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center">
-          <a href={`/site/${slug}`}>
+        <div className="max-w-[780px] mx-auto px-4 h-full flex items-center justify-between">
+          {/* Left: logo + name */}
+          <a href={`/site/${slug}`} className="flex items-center gap-2.5 min-w-0">
             <img
               src={businessData.profile?.logo_url || darkerLogo}
-              alt={businessData.profile?.business_name || "Darker"}
-              className="h-8"
+              alt={businessName || "Business"}
+              className="h-7 w-auto flex-shrink-0"
             />
+            {businessName && (
+              <span
+                className="font-semibold truncate hidden sm:inline"
+                style={{ fontSize: 15, color: "hsl(222,47%,11%)" }}
+              >
+                {businessName}
+              </span>
+            )}
           </a>
+
+          {/* Right: secure badge */}
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            <ShieldCheck size={15} style={{ color: "hsl(142,71%,40%)" }} />
+            <span
+              className="hidden min-[375px]:inline"
+              style={{ fontSize: 12, color: "hsl(215,16%,55%)" }}
+            >
+              Secure Booking
+            </span>
+          </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-5 md:px-8 py-8 md:py-12">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+      {/* ── Progress bar ── */}
+      <BookingBreadcrumb activeStep={activeStep} totalSteps={STEP_LABELS.length} label={STEP_LABELS[activeStep] || ""} />
+
+      {/* ── Content ── */}
+      <div className="max-w-[780px] mx-auto px-4 py-6 md:py-10">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
           <main className="flex-1 min-w-0 order-1">
-            <BookingBreadcrumb activeStep={activeStep} />
-            {typeof children === "function" ? children(businessData) : children}
+            {/* Step enter animation */}
+            <div
+              key={location.pathname}
+              style={{
+                animation: "stepEnter 220ms ease-out both",
+              }}
+            >
+              {typeof children === "function" ? children(businessData) : children}
+            </div>
           </main>
 
           <BookingSidebar businessData={businessData} />
         </div>
       </div>
+
+      {/* Step transition keyframes */}
+      <style>{`
+        @keyframes stepEnter {
+          from { opacity: 0; transform: translateX(16px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
     </div>
   );
 };
