@@ -137,6 +137,18 @@ const DashboardLayout = () => {
     };
   }, [dashboardTheme]);
 
+  // Sync theme to body for Radix portal scoping (Tooltip, Popover, DropdownMenu)
+  useEffect(() => {
+    if (dashboardTheme === "dark") {
+      document.body.removeAttribute("data-dashboard-theme");
+    } else {
+      document.body.setAttribute("data-dashboard-theme", "light");
+    }
+    return () => {
+      document.body.removeAttribute("data-dashboard-theme");
+    };
+  }, [dashboardTheme]);
+
   const UNLOCKED_PATHS = ["/dashboard", "/dashboard/business", "/dashboard/account"];
   const isLocked = !isAdmin && trialActive === false && !UNLOCKED_PATHS.includes(location.pathname);
 

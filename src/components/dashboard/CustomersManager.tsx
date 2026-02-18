@@ -94,7 +94,7 @@ const ImportDropdown = ({ onCsv, onGmb }: { onCsv: () => void; onGmb: () => void
         Import <ChevronDown className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1 z-50 rounded-lg border border-white/10 bg-[hsl(215,50%,12%)] p-1 min-w-[160px] shadow-xl">
+        <div className="absolute right-0 top-full mt-1 z-50 rounded-lg border border-white/10 bg-[hsl(215,50%,12%)] p-1 min-w-[160px] shadow-xl dark-dropdown-panel">
           <button onClick={() => { onCsv(); setOpen(false); }} className="w-full text-left text-sm px-3 py-2 rounded-md text-white/70 hover:bg-white/10 hover:text-white transition-colors flex items-center gap-2">
             <Upload className="w-3.5 h-3.5" /> Import CSV
           </button>

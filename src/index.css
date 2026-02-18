@@ -828,6 +828,15 @@
   background-color: hsl(215 50% 10%) !important;
 }
 
+/* Fix hardcoded dark dropdown/modal arbitrary backgrounds in light mode */
+.dashboard-light .bg-\[hsl\(215\2c 50\%\2c 12\%\)\] {
+  background-color: hsl(0, 0%, 100%) !important;
+}
+.dashboard-light .bg-\[hsl\(217\2c 33\%\2c 10\%\)\],
+.dashboard-light .bg-\[hsl\(217\2c 33\%\2c 12\%\)\] {
+  background-color: hsl(0, 0%, 100%) !important;
+}
+
 /* --- Status badge text stays vivid in light mode --- */
 .dashboard-light .text-emerald-400 { color: hsl(160 84% 35%) !important; }
 .dashboard-light .text-amber-400 { color: hsl(38 92% 42%) !important; }
@@ -886,6 +895,63 @@
 
 /* --- Star fill in light mode --- */
 .dashboard-light .fill-accent { fill: hsl(217 91% 52%) !important; }
+
+/* Fix bg-white/[0.02] and bg-white/[0.05] — used in checklist items */
+.dashboard-light .bg-white\/\[0\.02\],
+.dashboard-light .bg-white\/\[0\.05\] {
+  background-color: hsl(214, 20%, 97%) !important;
+}
+
+/* Fix line-through strikethrough items in light mode */
+.dashboard-light .line-through.text-white\/30 {
+  color: hsl(215, 16%, 70%) !important;
+}
+
+/* Fix text-gray-* and text-slate-* used without dark/light conditionals */
+.dashboard-light .text-gray-400 { color: hsl(215, 16%, 45%) !important; }
+.dashboard-light .text-gray-500 { color: hsl(215, 16%, 38%) !important; }
+.dashboard-light .text-slate-400 { color: hsl(215, 16%, 45%) !important; }
+.dashboard-light .text-slate-500 { color: hsl(215, 16%, 38%) !important; }
+
+/* Fix bg-gray-* used without conditionals */
+.dashboard-light .bg-gray-800,
+.dashboard-light .bg-gray-900,
+.dashboard-light .bg-slate-800,
+.dashboard-light .bg-slate-900 {
+  background-color: hsl(0, 0%, 100%) !important;
+  color: hsl(215, 25%, 12%) !important;
+}
+
+/* Portal-rendered Radix components (Tooltip, Popover, DropdownMenu, Select)
+   need global overrides when dashboard is in light mode.
+   DashboardLayout sets data-dashboard-theme="light" on <body>. */
+body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] {
+  --background: 0 0% 100%;
+  --foreground: 215 25% 12%;
+  --card: 0 0% 100%;
+  --card-foreground: 215 25% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 215 25% 12%;
+  --border: 214 20% 90%;
+  --input: 214 20% 90%;
+  --muted: 214 20% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 214 20% 93%;
+  --accent-foreground: 215 25% 12%;
+}
+
+body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] * {
+  color: hsl(215, 25%, 12%);
+}
+
+body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="text-white"] {
+  color: hsl(215, 25%, 12%) !important;
+}
+
+body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="bg-white\/5"],
+body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="bg-white\/10"] {
+  background-color: hsl(214, 20%, 96%) !important;
+}
 
 /* --- Chatbot exclusions (keep original dark styles) --- */
 .dashboard-light .support-chatbot .text-white { color: white !important; }
