@@ -278,7 +278,7 @@ const DashboardLayout = () => {
 
       {/* Mobile slide-out sidebar */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="p-0 w-[280px] border-none" style={{
+        <SheetContent side="left" className={`p-0 w-[280px] border-none ${isDark ? "dashboard-dark" : "dashboard-light"}`} style={{
           background: isDark
             ? "linear-gradient(180deg, hsl(215 50% 8%) 0%, hsl(217 33% 12%) 100%)"
             : "hsl(0, 0%, 100%)",
