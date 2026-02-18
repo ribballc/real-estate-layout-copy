@@ -2,15 +2,8 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Globe, Pencil, Mail, X, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Lock, Copy, Check, Pencil, X } from "lucide-react";
 import type { SupportChatbotHandle } from "./SupportChatbot";
-
-const TABS = [
-  { id: "website", label: "Website" },
-  { id: "booking", label: "Booking Page" },
-] as const;
-type TabId = (typeof TABS)[number]["id"];
 
 interface WebsitePageProps {
   chatbotRef?: React.RefObject<SupportChatbotHandle>;
@@ -20,187 +13,244 @@ const WebsitePage = ({ chatbotRef }: WebsitePageProps = {}) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [slug, setSlug] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState("");
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<TabId>("website");
-  const [showTutorial, setShowTutorial] = useState(false);
-  const bookingTabRef = useRef<HTMLButtonElement>(null);
+  const [copied, setCopied] = useState(false);
+
+  // Welcome banner (session-only, first arrival from /generating)
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("slug")
+      .select("slug, business_name")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
         setSlug(data?.slug ?? null);
+        // Extract first name from business context or auth metadata
+        const meta = (user as any)?.user_metadata;
+        const name = meta?.first_name || meta?.full_name?.split(" ")[0] || "";
+        setFirstName(name);
         setLoading(false);
       });
   }, [user]);
 
-  // Show tutorial on first visit
+  // Show welcome banner once per session
   useEffect(() => {
     if (!loading && slug) {
-      const seen = localStorage.getItem("dd_booking_tab_tutorial");
+      const seen = sessionStorage.getItem("seenWebsiteIntro");
       if (!seen) {
-        const timer = setTimeout(() => setShowTutorial(true), 800);
-        return () => clearTimeout(timer);
+        setShowWelcome(true);
+        sessionStorage.setItem("seenWebsiteIntro", "1");
       }
     }
   }, [loading, slug]);
 
-  const dismissTutorial = useCallback(() => {
-    setShowTutorial(false);
-    localStorage.setItem("dd_booking_tab_tutorial", "1");
-  }, []);
+  const demoUrl = slug ? `${slug}.darkerdigital.com` : "";
+  const iframeSrc = slug ? `${window.location.origin}/site/${slug}` : null;
 
-  const switchToBooking = useCallback(() => {
-    setActiveTab("booking");
-    dismissTutorial();
-  }, [dismissTutorial]);
-
-  // Listen for "book-now" messages from the iframe
-  useEffect(() => {
-    const handler = (e: MessageEvent) => {
-      if (e.data === "dd-book-now") {
-        switchToBooking();
-      }
-    };
-    window.addEventListener("message", handler);
-    return () => window.removeEventListener("message", handler);
-  }, [switchToBooking]);
+  const handleCopy = useCallback(() => {
+    if (!demoUrl) return;
+    navigator.clipboard.writeText(`https://${demoUrl}`).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }, [demoUrl]);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-32">
-        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[hsl(217,91%,60%)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
-  const siteUrl = slug ? `${window.location.origin}/site/${slug}` : null;
-  const bookUrl = slug ? `${window.location.origin}/site/${slug}/book` : null;
-  const iframeSrc = activeTab === "website" ? siteUrl : bookUrl;
+  if (!iframeSrc) {
+    return (
+      <div className="rounded-2xl border border-border p-12 text-center space-y-3">
+        <p className="text-muted-foreground">Complete your business info to generate your website.</p>
+        <button
+          onClick={() => navigate("/dashboard/business")}
+          className="mt-2 px-5 py-2 rounded-lg text-sm font-semibold text-white"
+          style={{ background: "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(224,91%,54%) 100%)" }}
+        >
+          Set Up Business Info
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      {/* ─── Tab bar ─── */}
-      <div className="relative flex gap-8 border-b border-border">
-        {TABS.map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              ref={tab.id === "booking" ? bookingTabRef : undefined}
-              onClick={() => {
-                setActiveTab(tab.id);
-                if (tab.id === "booking") dismissTutorial();
-              }}
-              className={`
-                relative pb-3 text-lg font-bold transition-colors
-                ${isActive
-                  ? "text-[hsl(217,91%,60%)]"
-                  : "text-muted-foreground hover:text-foreground"
-                }
-              `}
-            >
-              {tab.label}
-              {/* Active underline */}
-              {isActive && (
-                <span className="absolute bottom-0 left-0 right-0 h-[3px] rounded-full bg-[hsl(217,91%,60%)]" />
-              )}
-            </button>
-          );
-        })}
-
-        {/* ─── Tutorial tooltip ─── */}
-        {showTutorial && (
-          <div className="absolute top-full left-[calc(50%+40px)] -translate-x-1/2 mt-3 z-50 animate-fade-in-up">
-            {/* Arrow */}
-            <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-[hsl(217,91%,60%)]" />
-            <div className="bg-[hsl(217,91%,60%)] text-white rounded-xl px-5 py-4 shadow-lg shadow-[hsl(217,91%,60%)]/20 max-w-xs">
-              <div className="flex items-start gap-3">
-                <Sparkles className="w-5 h-5 mt-0.5 shrink-0" />
-                <div className="space-y-2">
-                  <p className="font-semibold text-sm">Check Out Your Booking Page!</p>
-                  <p className="text-xs text-white/80">
-                    Click here to preview your booking page, or tap "Book Now" on your website to switch automatically.
-                  </p>
-                  <button
-                    onClick={switchToBooking}
-                    className="text-xs font-bold underline underline-offset-2 hover:text-white/90"
-                  >
-                    View Booking Page →
-                  </button>
-                </div>
-                <button onClick={dismissTutorial} className="shrink-0 hover:text-white/80">
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ─── Preview embed ─── */}
-      {iframeSrc ? (
+    <div className="space-y-5">
+      {/* ═══ Welcome Banner (first visit only) ═══ */}
+      {showWelcome && (
         <div
-          className="rounded-2xl overflow-hidden border border-border relative"
-          style={{ boxShadow: "0 0 40px rgba(0,0,0,0.08)" }}
+          className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          style={{
+            background: "hsla(217,91%,60%,0.1)",
+            borderBottom: "1px solid hsla(217,91%,60%,0.2)",
+            padding: "20px 24px",
+            borderRadius: 12,
+          }}
         >
-          {/* Browser bar */}
-          <div className="flex items-center gap-3 px-4 py-3 bg-muted/30 border-b border-border">
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-[hsl(0,80%,60%)]" />
-              <div className="w-3 h-3 rounded-full bg-[hsl(40,90%,55%)]" />
-              <div className="w-3 h-3 rounded-full bg-[hsl(140,60%,45%)]" />
-            </div>
-            <div className="flex-1 h-8 rounded-lg flex items-center px-3 text-xs font-mono bg-muted/50 text-muted-foreground">
-              <Globe className="w-3 h-3 mr-2 text-primary" />
-              {slug}.darkerdigital.com{activeTab === "booking" ? "/book" : ""}
-            </div>
+          <div>
+            <p className="text-white font-bold" style={{ fontSize: 18 }}>
+              Your website is ready{firstName ? `, ${firstName}` : ""}.
+            </p>
+            <p style={{ color: "hsla(0,0%,100%,0.6)", fontSize: 14, marginTop: 4 }}>
+              This is a live demo. Activate your trial to publish it and start taking real bookings.
+            </p>
           </div>
-
-          <iframe
-            src={iframeSrc}
-            title={activeTab === "website" ? "Your Website" : "Your Booking Page"}
-            className="w-full border-0"
-            style={{ height: "80vh" }}
-            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-          />
-
-          {/* Action buttons at bottom */}
-          <div className="flex flex-wrap items-center gap-3 px-4 py-3 border-t border-border bg-muted/20">
-            <Button
-              onClick={() => chatbotRef?.current?.openWithPrompt("I'd like to make changes to my website:")}
-              className="gap-2 bg-[hsl(217,91%,60%)] hover:bg-[hsl(217,91%,50%)] text-white"
-            >
-              <Pencil className="w-4 h-4" />
-              Make Changes
-            </Button>
-            <Button
-              variant="outline"
-              className="gap-2 border-border bg-card text-foreground hover:bg-muted"
-              asChild
-            >
-              <a href="mailto:info@darkerdigital.com">
-                <Mail className="w-4 h-4" />
-                Request Changes
-              </a>
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="rounded-2xl border border-border p-12 text-center space-y-3">
-          <Globe className="w-10 h-10 mx-auto text-muted-foreground" />
-          <p className="text-muted-foreground">
-            Complete your business info to generate your website.
-          </p>
-          <Button onClick={() => navigate("/dashboard/business")} size="sm">
-            Set Up Business Info
-          </Button>
+          <button
+            className="shrink-0 font-semibold text-white"
+            style={{
+              background: "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(224,91%,54%) 100%)",
+              height: 40,
+              borderRadius: 8,
+              fontSize: 14,
+              padding: "0 20px",
+            }}
+          >
+            Activate Free Trial →
+          </button>
+          <button
+            onClick={() => setShowWelcome(false)}
+            className="absolute top-3 right-3 transition-colors"
+            style={{ color: "hsla(0,0%,100%,0.4)" }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = "white"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = "hsla(0,0%,100%,0.4)"; }}
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
+
+      {/* ═══ Address Bar ═══ */}
+      <div
+        className="flex items-center gap-2.5"
+        style={{
+          background: "hsla(0,0%,100%,0.04)",
+          border: "1px solid hsla(0,0%,100%,0.1)",
+          borderRadius: 10,
+          padding: "9px 14px",
+          height: 42,
+        }}
+      >
+        <Lock className="w-3.5 h-3.5 shrink-0" style={{ color: "hsl(142,71%,45%)" }} />
+        <span
+          className="font-mono truncate flex-1"
+          style={{ fontSize: 13, color: "hsla(0,0%,100%,0.65)" }}
+        >
+          {demoUrl}
+        </span>
+        <button
+          onClick={handleCopy}
+          className="ml-auto shrink-0 font-medium transition-colors"
+          style={{
+            color: copied ? "hsl(142,71%,45%)" : "hsl(217,91%,60%)",
+            fontSize: 13,
+            padding: "4px 10px",
+            border: `1px solid ${copied ? "hsla(142,71%,45%,0.25)" : "hsla(217,91%,60%,0.25)"}`,
+            borderRadius: 6,
+            background: "transparent",
+          }}
+        >
+          {copied ? (
+            <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Copied ✓</span>
+          ) : (
+            <span className="flex items-center gap-1"><Copy className="w-3 h-3" /> Copy Link</span>
+          )}
+        </button>
+      </div>
+
+      {/* ═══ Iframe wrapper ═══ */}
+      <div className="relative" style={{ borderRadius: 12, overflow: "hidden", boxShadow: "0 8px 48px hsla(0,0%,0%,0.45)" }}>
+        {/* DEMO BADGE */}
+        <div
+          className="absolute z-10"
+          style={{
+            top: 12,
+            left: 12,
+            background: "hsla(40,100%,50%,0.15)",
+            border: "1px solid hsla(40,100%,50%,0.35)",
+            color: "hsl(40,100%,62%)",
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: "0.1em",
+            padding: "4px 10px",
+            borderRadius: 99,
+          }}
+        >
+          DEMO PREVIEW
+        </div>
+
+        <iframe
+          src={iframeSrc}
+          title="Your Website"
+          className="w-full border-0"
+          style={{ height: "calc(100vh - 280px)", minHeight: 480, borderRadius: 12 }}
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+        />
+      </div>
+
+      {/* ═══ Editable Info Callout ═══ */}
+      <div
+        className="flex items-center gap-3.5"
+        style={{
+          background: "hsla(217,91%,60%,0.06)",
+          border: "1px solid hsla(217,91%,60%,0.15)",
+          borderRadius: 12,
+          padding: "18px 20px",
+        }}
+      >
+        <Pencil className="w-[18px] h-[18px] shrink-0" style={{ color: "hsl(217,91%,60%)" }} />
+        <div className="flex-1 min-w-0">
+          <p className="text-white font-semibold" style={{ fontSize: 14 }}>Everything here is editable.</p>
+          <p style={{ color: "hsla(0,0%,100%,0.5)", fontSize: 13, marginTop: 2 }}>
+            Shop name, services, location, hours, photos — change anything from your settings in seconds.
+          </p>
+        </div>
+        <button
+          onClick={() => navigate("/dashboard/business")}
+          className="shrink-0 font-medium hover:underline"
+          style={{ color: "hsl(217,91%,60%)", fontSize: 13 }}
+        >
+          Edit Info →
+        </button>
+      </div>
+
+      {/* ═══ Activate CTA ═══ */}
+      <div className="text-center py-6">
+        <p className="text-white font-bold" style={{ fontSize: 18 }}>Ready to go live?</p>
+        <p style={{ color: "hsla(0,0%,100%,0.5)", fontSize: 14, marginTop: 6 }}>
+          Publish your site, activate your booking calendar, and start getting paid. 14-day free trial.
+        </p>
+        <button
+          className="mx-auto mt-4 block font-semibold text-white"
+          style={{
+            background: "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(224,91%,54%) 100%)",
+            maxWidth: 260,
+            width: "100%",
+            height: 48,
+            borderRadius: 10,
+            fontSize: 15,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.filter = "brightness(1.08)";
+            e.currentTarget.style.boxShadow = "0 4px 16px hsla(217,91%,60%,0.4)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.filter = "none";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        >
+          Activate Free Trial →
+        </button>
+        <p style={{ color: "hsla(0,0%,100%,0.3)", fontSize: 12, marginTop: 10 }}>
+          Card required · Cancel anytime in 2 clicks
+        </p>
+      </div>
     </div>
   );
 };
