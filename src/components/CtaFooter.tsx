@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 import darkerLogo from "@/assets/darker-logo.png";
 
 const CtaFooter = () => {
@@ -42,12 +43,13 @@ const CtaFooter = () => {
               onClick={() => navigate('/signup')}
               className="group relative inline-flex items-center gap-2 font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 px-12 py-5 text-lg min-h-[48px] overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, hsl(160, 84%, 39%) 0%, hsl(160, 64%, 30%) 100%)",
+                background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)",
                 color: "hsl(0, 0%, 100%)",
-                boxShadow: "0 0 40px hsla(160, 84%, 39%, 0.45), 0 8px 24px hsla(160, 84%, 39%, 0.35)",
+                boxShadow: "0 8px 24px hsla(217, 91%, 60%, 0.35)",
               }}
             >
-              <span className="relative z-10">Claim My Free Website — Takes 60 Seconds →</span>
+              <span className="relative z-10">Claim My Free Website — Takes 60 Seconds</span>
+              <ChevronRight className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-[3px]" />
               <span
                 className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"
                 style={{ background: "linear-gradient(90deg, transparent 0%, hsla(0, 0%, 100%, 0.2) 50%, transparent 100%)" }}
