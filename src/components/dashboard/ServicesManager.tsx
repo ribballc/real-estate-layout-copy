@@ -17,7 +17,9 @@ import {
   Settings2,
   Camera,
   Sparkles,
+  PlusCircle,
 } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 import {
   Dialog,
   DialogContent,
@@ -409,7 +411,13 @@ const ServicesManager = () => {
           </div>
         ))}
         {services.length === 0 && (
-          <p className="text-center text-muted-foreground/50 py-8 text-sm">No services yet. Add your first service above.</p>
+          <EmptyState
+            icon={PlusCircle}
+            title="Add your first service"
+            description="Services are how customers book and pay. Add a detail package to get started — we have preset services to save you time."
+            action={{ label: "Add a Service", onClick: () => setShowAddMenu(true) }}
+            secondaryAction={{ label: "Use a Preset", onClick: () => { setShowAddMenu(true); setShowManualMenu(true); } }}
+          />
         )}
       </div>
 
