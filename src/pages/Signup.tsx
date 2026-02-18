@@ -7,19 +7,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, Phone } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import darkerLogo from "@/assets/darker-logo.png";
 import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
-import { trackEvent, setPixelUserData } from "@/lib/tracking";
+import { trackEvent, setPixelUserData, captureAndStoreFbCookies } from "@/lib/tracking";
 
 const Signup = () => {
   const { toast } = useToast();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const formatPhone = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 10);
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,21 +44,27 @@ const Signup = () => {
     if (error) {
       toast({ title: "Signup failed", description: error.message, variant: "destructive" });
     } else if (data.session) {
+      // Store phone on profile if provided
+      if (phone && data.user) {
+        await supabase.from('profiles').update({ phone: phone.replace(/\D/g, '') }).eq('user_id', data.user.id);
+      }
+      // Capture FB cookies at first touch
+      if (data.user) captureAndStoreFbCookies(data.user.id);
       // Fire CompleteRegistration event
-      setPixelUserData({ email, firstName: name });
+      setPixelUserData({ email, firstName: name, phone });
       trackEvent({
         eventName: 'CompleteRegistration',
         customData: { content_name: 'Account Created', status: true, currency: 'USD', value: 0 },
-        userData: { email, firstName: name },
+        userData: { email, firstName: name, phone: phone || undefined },
       });
       window.location.href = "/onboarding";
     } else {
       // Fire CompleteRegistration event
-      setPixelUserData({ email, firstName: name });
+      setPixelUserData({ email, firstName: name, phone });
       trackEvent({
         eventName: 'CompleteRegistration',
         customData: { content_name: 'Account Created', status: true, currency: 'USD', value: 0 },
-        userData: { email, firstName: name },
+        userData: { email, firstName: name, phone: phone || undefined },
       });
       toast({ title: "Account created!", description: "Taking you to set up your business…" });
       window.location.href = "/onboarding";
@@ -183,6 +197,24 @@ const Signup = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="w-full h-12 text-sm"
+                  style={inputStyle}
+                  onFocus={focusHandler}
+                  onBlur={blurHandler}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="phone" className="text-white/70 text-sm">Phone <span style={{ color: "hsla(0,0%,100%,0.3)" }}>(optional)</span></Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsla(0,0%,100%,0.35)" }} />
+                <input
+                  id="phone"
+                  type="tel"
+                  placeholder="(555) 123-4567"
+                  value={phone}
+                  onChange={(e) => setPhone(formatPhone(e.target.value))}
                   className="w-full h-12 text-sm"
                   style={inputStyle}
                   onFocus={focusHandler}

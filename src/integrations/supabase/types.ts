@@ -418,6 +418,7 @@ export type Database = {
       profiles: {
         Row: {
           account_deleted: boolean
+          acquisition_landing_url: string | null
           address: string
           business_name: string
           churn_risk: boolean
@@ -425,6 +426,8 @@ export type Database = {
           deleted_at: string | null
           email: string
           facebook: string
+          fbc: string | null
+          fbp: string | null
           google_business: string
           id: string
           instagram: string
@@ -457,6 +460,7 @@ export type Database = {
         }
         Insert: {
           account_deleted?: boolean
+          acquisition_landing_url?: string | null
           address?: string
           business_name?: string
           churn_risk?: boolean
@@ -464,6 +468,8 @@ export type Database = {
           deleted_at?: string | null
           email?: string
           facebook?: string
+          fbc?: string | null
+          fbp?: string | null
           google_business?: string
           id?: string
           instagram?: string
@@ -496,6 +502,7 @@ export type Database = {
         }
         Update: {
           account_deleted?: boolean
+          acquisition_landing_url?: string | null
           address?: string
           business_name?: string
           churn_risk?: boolean
@@ -503,6 +510,8 @@ export type Database = {
           deleted_at?: string | null
           email?: string
           facebook?: string
+          fbc?: string | null
+          fbp?: string | null
           google_business?: string
           id?: string
           instagram?: string
