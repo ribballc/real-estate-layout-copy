@@ -63,7 +63,7 @@ const ValueBreakdown = () => {
               Here's What You Get
             </h2>
             <p className="text-lg md:text-xl leading-[1.7]" style={{ color: "hsl(215, 16%, 47%)" }}>
-              Everything a serious shop needs. Built, configured, and running — not a template you have to figure out.
+              Everything's included. All configured and ready.
             </p>
           </div>
         </FadeIn>
@@ -200,13 +200,13 @@ const ValueBreakdown = () => {
 
 
 
-                <div className="text-center pt-5" style={{ borderTop: "1px solid hsla(0, 0%, 100%, 0.1)" }}>
-                  <p className="text-[15px] md:text-base leading-relaxed" style={{ color: "hsl(210, 40%, 96%)" }}>
-                    <strong className="font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>Start completely free for 14 days. No credit card, no commitment.</strong>
-                    <br />
-                    <span style={{ color: "hsl(215, 16%, 47%)" }}>After your trial: $54/month — less than one detail job.</span>
-                  </p>
-                </div>
+                 <div className="text-center pt-5" style={{ borderTop: "1px solid hsla(217, 91%, 60%, 0.15)" }}>
+                   <p className="text-[15px] md:text-base leading-relaxed" style={{ color: "hsl(210, 40%, 96%)" }}>
+                     <strong className="font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>See your live site in the dashboard — no card needed.</strong>
+                     <br />
+                     <span style={{ color: "hsl(215, 16%, 47%)" }}>Start your 14-day free trial when you're ready. Then just $54/month.</span>
+                   </p>
+                 </div>
               </div>
             </div>
           </div>
@@ -224,7 +224,7 @@ const ValueBreakdown = () => {
               }}
             >
               <span className="relative z-10 flex items-center gap-2">
-                Start Free — No Card Needed
+                Start Free Trial
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-[3px] transition-transform" />
               </span>
               <span
@@ -234,9 +234,9 @@ const ValueBreakdown = () => {
                 }}
               />
             </button>
-            <p className="text-sm mt-4" style={{ color: "hsl(215, 16%, 47%)" }}>
-              Free for 14 days · No credit card required
-            </p>
+             <p className="text-sm mt-4" style={{ color: "hsl(215, 16%, 47%)" }}>
+               See your site free · Card required to activate trial · Cancel anytime
+             </p>
           </div>
         </FadeIn>
       </div>
