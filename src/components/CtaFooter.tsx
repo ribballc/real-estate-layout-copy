@@ -55,10 +55,10 @@ const CtaFooter = () => {
               className="font-heading text-[24px] md:text-[42px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-4"
               style={{ color: "hsl(0, 0%, 100%)" }}
             >
-              Ready to Stop Missing Jobs?
+              Get Your Shop Online in 48 Hours.
             </h2>
-            <p className="text-base md:text-lg leading-relaxed max-w-[600px] mx-auto mb-8" style={{ color: "hsla(0, 0%, 100%, 0.8)" }}>
-              Your website can be live in 48 hours. Join 200+ detailers already using Darker.
+            <p className="text-base md:text-lg leading-relaxed max-w-[560px] mx-auto mb-8" style={{ color: "hsla(0, 0%, 100%, 0.8)" }}>
+              See your live website and booking page in the dashboard the same day — no card needed to get started. 200+ detailing shops already on Darker.
             </p>
           </FadeIn>
           <button
@@ -70,15 +70,26 @@ const CtaFooter = () => {
               boxShadow: "0 8px 24px hsla(160, 84%, 39%, 0.35)",
             }}
           >
-            <span className="relative z-10">Build My Website Free →</span>
+            <span className="relative z-10">Get Started Free →</span>
             <span
               className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"
               style={{ background: "linear-gradient(90deg, transparent 0%, hsla(0, 0%, 100%, 0.2) 50%, transparent 100%)" }}
             />
           </button>
           <p className="text-sm mt-4" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
-            Free for 14 days · Takes 60 seconds to start
+            No card to get started · 14-day trial to go live · Cancel anytime
           </p>
+          {/* Call option — replace with your phone number */}
+          <div className="mt-6 flex items-center justify-center gap-2" style={{ color: "hsla(0, 0%, 100%, 0.5)" }}>
+            <span className="text-sm">Questions?</span>
+            <a
+              href="tel:+1XXXXXXXXXX"
+              className="text-sm font-semibold underline underline-offset-2 transition-colors hover:text-white"
+              style={{ color: "hsla(0, 0%, 100%, 0.75)" }}
+            >
+              Call us →
+            </a>
+          </div>
         </div>
       </section>
 

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import HeroSection from "@/components/HeroSection";
 import ValueBreakdown from "@/components/ValueBreakdown";
 import LogoTicker from "@/components/LogoTicker";
@@ -9,25 +10,84 @@ import FaqSection from "@/components/FaqSection";
 import CtaFooter from "@/components/CtaFooter";
 import SurveyFunnelModal from "@/components/SurveyFunnelModal";
 import ScrollProgress from "@/components/ScrollProgress";
-import SocialProofNotification from "@/components/SocialProofNotification";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
-import { SurveyFunnelProvider } from "@/components/SurveyFunnelContext";
+import { SurveyFunnelProvider, useSurveyFunnel } from "@/components/SurveyFunnelContext";
 
-const SpringBanner = () => (
-  <div className="w-full py-2.5 text-center text-sm font-semibold text-white tracking-wide" style={{
-    background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
-  }}>
-    <span className="inline-flex items-center gap-2">
-      <span className="text-base" style={{ animation: 'springBounce 2s ease-in-out infinite' }}>🌸</span>
-      SPRING SALE: 32% OFF + Free Gifts
-    </span>
-  </div>
-);
+const bannerMessages = [
+  "🔒  See your live website in the dashboard — no card needed to get started",
+  "⚡  Setup takes 5 minutes. Your site goes live in 48 hours.",
+  "★★★★★  Trusted by 200+ detailing shops  ·  $2.4M in bookings captured",
+];
+
+const SpringBanner = () => {
+  const [idx, setIdx] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIdx(i => (i + 1) % bannerMessages.length);
+        setVisible(true);
+      }, 350);
+    }, 4500);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div className="w-full py-2.5 text-center text-sm font-semibold text-white tracking-wide overflow-hidden" style={{
+      background: 'linear-gradient(135deg, hsl(217 91% 55%) 0%, hsl(217 91% 48%) 100%)',
+    }}>
+      <span style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : 'translateY(-6px)',
+        transition: 'opacity 0.35s ease, transform 0.35s ease',
+        display: 'inline-block',
+      }}>
+        {bannerMessages[idx]}
+      </span>
+    </div>
+  );
+};
+
+const MobileStickyBar = () => {
+  const { openFunnel } = useSurveyFunnel();
+  return (
+    <div
+      className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+      style={{
+        background: 'hsl(215, 50%, 10%)',
+        borderTop: '1px solid hsla(0,0%,100%,0.1)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+      }}
+    >
+      <div className="flex h-16">
+        {/* Replace href with your actual phone number */}
+        <a
+          href="tel:+1XXXXXXXXXX"
+          className="flex-1 flex items-center justify-center gap-2 text-sm font-semibold transition-colors"
+          style={{ color: 'hsla(0,0%,100%,0.75)', borderRight: '1px solid hsla(0,0%,100%,0.1)' }}
+        >
+          📞 Call Us
+        </a>
+        <button
+          onClick={openFunnel}
+          className="flex-1 flex items-center justify-center gap-1 text-sm font-bold text-white"
+          style={{
+            background: 'linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(217,91%,50%) 100%)',
+          }}
+        >
+          Start Free →
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const Index = () => {
   return (
     <SurveyFunnelProvider>
-      <div className="min-h-screen relative" style={{ background: 'linear-gradient(180deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)' }}>
+      <div className="min-h-screen relative pb-16 md:pb-0" style={{ background: 'linear-gradient(180deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)' }}>
         <ScrollProgress />
         <SpringBanner />
         <HeroSection />
@@ -40,7 +100,7 @@ const Index = () => {
         <FaqSection />
         <CtaFooter />
         <SurveyFunnelModal />
-        <SocialProofNotification />
+        <MobileStickyBar />
         <ExitIntentPopup />
       </div>
     </SurveyFunnelProvider>

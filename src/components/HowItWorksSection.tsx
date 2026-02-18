@@ -62,17 +62,17 @@ const steps = [
   {
     step: 1,
     title: "Tell Us About Your Shop",
-    description: "Name, services, hours, location. Takes 60 seconds.",
+    description: "Your shop name, services, hours, and location. Takes about 60 seconds.",
   },
   {
     step: 2,
     title: "We Build Everything",
-    description: "Custom website + booking system with SMS reminders and deposits. Done for you automatically.",
+    description: "Your website, booking calendar, deposit collection, and SMS reminders — built and configured for you in 48 hours.",
   },
   {
     step: 3,
     title: "Bookings on Autopilot",
-    description: "Customers find you, book online, pay deposits, and get reminders. You detail.",
+    description: "Customers find you, pick a time, pay a deposit, and get automatic reminders. You just detail.",
   },
 ];
 
@@ -224,7 +224,7 @@ const HowItWorksSection = () => {
                 </span>
               </h2>
               <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
-                yeah... its pretty darn simple.
+                Three steps. No tech skills needed.
               </p>
             </div>
           </FadeIn>
@@ -281,7 +281,7 @@ const HowItWorksSection = () => {
                 />
               </button>
               <p className="text-sm mt-4" style={{ color: "hsl(215, 16%, 47%)" }}>
-                Free for 14 days · No credit card required
+                See your live site free · 14-day trial to go live
               </p>
             </div>
           </FadeIn>

@@ -63,7 +63,7 @@ const ValueBreakdown = () => {
               Here's What You Get
             </h2>
             <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
-              it's a lot of stuff but... it's all done for you
+              Everything's included. All configured and ready.
             </p>
           </div>
         </FadeIn>
@@ -198,11 +198,11 @@ const ValueBreakdown = () => {
                   </div>
                 </div>
 
-                <div className="text-center pt-5" style={{ borderTop: "1px solid hsla(0, 0%, 100%, 0.1)" }}>
-                  <p className="text-[15px] md:text-base leading-relaxed" style={{ color: "hsl(210, 40%, 96%)" }}>
-                    <strong className="font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>14-day free trial. Zero risk. No card needed.</strong>
+                <div className="text-center pt-5" style={{ borderTop: "1px solid hsla(217, 91%, 60%, 0.15)" }}>
+                  <p className="text-[15px] md:text-base leading-relaxed" style={{ color: "hsl(215, 16%, 47%)" }}>
+                    <strong className="font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>See your live site in the dashboard — no card needed.</strong>
                     <br />
-                    <span style={{ color: "hsl(215, 16%, 47%)" }}>Then $54/month for hosting + automation.</span>
+                    Start your 14-day free trial when you're ready. Then just $54/month.
                   </p>
                 </div>
               </div>
@@ -222,7 +222,7 @@ const ValueBreakdown = () => {
               }}
             >
               <span className="relative z-10 flex items-center gap-2">
-                Claim Now
+                Start Free Trial
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
               </span>
               <span
@@ -233,7 +233,7 @@ const ValueBreakdown = () => {
               />
             </button>
             <p className="text-sm mt-4" style={{ color: "hsl(215, 16%, 47%)" }}>
-              Free for 14 days · No credit card required
+              See your site free · Card required to activate trial · Cancel anytime
             </p>
           </div>
         </FadeIn>

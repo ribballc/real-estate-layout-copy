@@ -74,7 +74,7 @@ const HeroSection = () => {
                 opacity: 0, animation: 'fadeSlideDown 0.4s ease-out 0.2s forwards',
               }}
             >
-              FOR DETAILERS & INSTALLERS
+              For Detailers & Installers
             </span>
 
             {/* Headline */}
@@ -122,10 +122,10 @@ const HeroSection = () => {
 
             {/* Sub-headline */}
             <p
-              className="mt-5 text-[15px] md:text-xl leading-[1.6] max-w-[600px]"
+              className="mt-5 text-[15px] md:text-xl leading-[1.6] max-w-[560px]"
               style={{ color: 'hsla(0, 0%, 100%, 0.7)', opacity: 0, animation: 'heroBlurIn 0.5s ease-out 1.0s forwards' }}
             >
-              Get a professional website with 24/7 booking. Customers book themselves while you're in the field. Automated reminders, deposits, and a calendar that fills itself.
+              A done-for-you website and 24/7 online booking system built for detailers. Customers book, pay deposits, and get automated reminders — while you stay in the bay.
             </p>
 
             {/* Email form + CTA */}
@@ -169,7 +169,7 @@ const HeroSection = () => {
                   opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
                 }}
               >
-                Launch My Site Free
+                Get Started Free
                 <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </form>
@@ -179,9 +179,9 @@ const HeroSection = () => {
             <div className="mt-5 flex items-center gap-4 flex-wrap" style={{
               color: 'hsla(0, 0%, 100%, 0.5)', opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 1.8s forwards',
             }}>
-              <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> Built in 5 minutes</span>
+              <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> No card to get started</span>
               <span className="text-primary-foreground/20">•</span>
-              <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> Free for 14 days</span>
+              <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> 14-day free trial</span>
             </div>
 
             {/* Social proof */}

@@ -126,15 +126,16 @@ const PricingSection = () => {
   return (
     <section
       id="pricing"
-      className="relative py-16 md:py-24 px-5 md:px-8 overflow-hidden bg-background"
+      className="relative py-16 md:py-24 px-5 md:px-8 overflow-hidden"
+      style={{ background: "hsl(210, 40%, 98%)" }}
     >
       <div className="max-w-6xl mx-auto relative z-10">
         <FadeIn>
-          <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3 text-foreground">
+          <h2 className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3" style={{ color: "hsl(222, 47%, 11%)" }}>
             Simple Pricing
           </h2>
-          <p className="text-base md:text-lg text-center max-w-2xl mx-auto mb-10 text-muted-foreground">
-            Everything you need in one plan. Cancel anytime.
+          <p className="text-base md:text-lg text-center max-w-2xl mx-auto mb-10" style={{ color: "hsl(215, 16%, 47%)" }}>
+            One plan. Every feature included. No surprises.
           </p>
         </FadeIn>
 
@@ -184,7 +185,7 @@ const PricingSection = () => {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-white/50">{plan.subtitle}</p>
+                  <p className="text-sm text-white/50">Less than one detail job. Every feature included.</p>
                 </div>
 
                 {/* Pricing with odometer */}
@@ -219,11 +220,11 @@ const PricingSection = () => {
                       boxShadow: '0 4px 20px hsla(217,91%,60%,0.4), 0 0 40px hsla(217,91%,60%,0.15)',
                     }}
                   >
-                    Get Started Free
+                    Start My Free Trial
                     <ChevronRight className="w-4 h-4" />
                   </button>
                   <div className="text-[13px] text-center mt-3 text-white/40">
-                    14-day free trial · Setup in 5 mins
+                    14-day free trial · Card required to activate
                   </div>
                 </div>
 
@@ -269,8 +270,8 @@ const PricingSection = () => {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-sm text-muted-foreground">
-            14-day free trial. No credit card required. Cancel in 2 clicks.
+          <p className="text-sm" style={{ color: "hsl(215, 16%, 47%)" }}>
+            14-day free trial · Card required to activate · Cancel anytime in 2 clicks
           </p>
         </div>
       </div>

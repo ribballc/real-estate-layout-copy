@@ -25,7 +25,7 @@ const faqs = [
   },
   {
     question: "How does the 14-day free trial work?",
-    answer: "Sign up, get your website built, and start taking bookings — all without entering a credit card. After 14 days, pick the plan that fits. If it's not for you, just walk away. No charge, no hassle.",
+    answer: "Create your account and we'll build your website and booking page. You can see everything live in your dashboard — no card needed for that. When you're ready to go live and start taking real bookings, you activate your 14-day trial with a card. Cancel anytime in 2 clicks. No contracts.",
   },
 ];
 
@@ -89,7 +89,7 @@ const FaqSection = () => {
             className="font-heading text-[28px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.015em] leading-[1.2] text-center mb-3"
             style={{ color: "hsl(222, 47%, 11%)" }}
           >
-            Frequently Asked Questions
+            Common Questions
           </h2>
           <p className="text-base md:text-lg text-center max-w-xl mx-auto mb-12 md:mb-16 leading-relaxed" style={{ color: "hsl(215, 16%, 47%)" }}>
             Everything you need to know before getting started.

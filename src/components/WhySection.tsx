@@ -188,23 +188,23 @@ const PaymentVisual = () => (
 const features = [
   {
     Visual: CalendarVisual,
-    title: "24/7 Smart Booking Calendar",
-    description: <>Customers book while you're detailing. Capture the <Highlight>$500-1,000/month</Highlight> you're losing to missed calls.</>,
+    title: "24/7 Online Booking",
+    description: <>While you're in the bay, customers are booking and paying deposits. No missed calls, no back-and-forth texts — just confirmed jobs on your calendar.</>,
   },
   {
     Visual: ShieldVisual,
-    title: "No-Show Protection That Works",
-    description: <>Automated reminders + <Highlight>$100</Highlight> deposits = <Highlight>40%</Highlight> fewer no-shows.</>,
+    title: "No-Show Protection",
+    description: <>Automated reminders go out before every appointment. Required deposits filter out tire-kickers. Detailers on Darker average <Highlight>40% fewer no-shows</Highlight>.</>,
   },
   {
     Visual: WebsiteVisual,
     title: "Professional Website in 48 Hours",
-    description: <>Mobile-optimized website that looks like you paid <Highlight>$3,000</Highlight>. Zero tech skills required.</>,
+    description: <>A mobile-optimized site that ranks on Google and looks like you spent <Highlight>$3,000</Highlight> building it. We do it for you — you just approve it.</>,
   },
   {
     Visual: PaymentVisual,
-    title: "Payment Processing Built-In",
-    description: <>Accept cards, collect deposits, get paid next day. <Highlight>2.9% + 30¢</Highlight> per transaction.</>,
+    title: "Payments & Deposits Built In",
+    description: <>Accept cards, collect deposits upfront, and get paid the next business day. <Highlight>2.9% + 30¢</Highlight> per transaction. Powered by Stripe.</>,
   },
 ];
 
@@ -269,7 +269,7 @@ const WhySection = () => {
   return (
     <section
       className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
-      style={{ background: "hsl(0, 0%, 100%)" }}
+      style={{ background: "hsl(210, 40%, 98%)" }}
     >
       <div className="max-w-[1100px] mx-auto relative z-10">
         <FadeIn>
@@ -284,17 +284,17 @@ const WhySection = () => {
                   border: "1px solid hsl(217, 91%, 88%)",
                 }}
               >
-                Why It Works
+                Built for Detailers
               </span>
             </div>
             <h2
               className="font-heading text-[32px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.15] mb-4"
               style={{ color: "hsl(222, 47%, 11%)" }}
             >
-              Why It Works
+              Everything You Need, Done for You
             </h2>
             <p className="text-base md:text-lg max-w-lg mx-auto" style={{ color: "hsl(215, 16%, 47%)" }}>
-              Why hundreds of detailers, installers, and shop owners swear by it.
+              No piecing tools together. No figuring out tech. One system that handles it all.
             </p>
           </div>
         </FadeIn>

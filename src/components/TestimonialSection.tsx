@@ -6,10 +6,10 @@ const reviews = [
   { initials: "JR", name: "Jake Rivera", role: "Rivera's Auto Spa", quote: "No-shows used to cost me $600+ a week. Since adding deposits and SMS reminders, I've maybe had 2 cancellations in the last month.", metric: "+$2,800/mo" },
   { initials: "DW", name: "DeShawn Williams", role: "Pristine Detail Co.", quote: "My old website was embarrassing. Darker gave me something that looks like I paid $5K for it, and customers can actually book from it.", metric: "+$1,900/mo" },
   { initials: "KP", name: "Kyle Patterson", role: "KP Mobile Detail", quote: "I used to lose 2 hours a day just texting people back and forth. Now they book themselves and I just show up and work.", metric: "90 min saved/day" },
-  { initials: "AM", name: "Andre Mitchell", role: "Gloss Boss Detailing", quote: "The route optimization alone is worth the Pro plan. I'm fitting in 2 extra jobs a day because I'm not driving all over the city.", metric: "+$4,100/mo" },
-  { initials: "SL", name: "Sarah Langston", role: "Luxe Auto Care", quote: "Customers tell me all the time how professional my booking page looks. It's night and day from the old 'DM me to book' setup.", metric: "+$2,200/mo" },
+  { initials: "AM", name: "Andre Mitchell", role: "Gloss Boss Detailing", quote: "Went from $6k months to over $10k in 90 days. My site looks better than shops that have been open for 20 years. Worth every cent.", metric: "+$4,100/mo" },
+  { initials: "SL", name: "Sarah Langston", role: "Luxe Auto Care", quote: "As a solo operator this was exactly what I needed — like having a receptionist and web developer for $54/mo. Customers tell me the booking page is so clean.", metric: "+$2,200/mo" },
   { initials: "CB", name: "Chris Brooks", role: "Brooks Detail Studio", quote: "I was skeptical about the 48-hour setup but they actually delivered. Had my first online booking before the weekend was over.", metric: "+$1,600/mo" },
-  { initials: "TN", name: "Tony Nguyen", role: "Shine Pro Mobile", quote: "Big thanks to Darker for making my small operation look like a real business. The booking system is smooth and clients love it.", metric: "+$2,500/mo" },
+  { initials: "TN", name: "Tony Nguyen", role: "Shine Pro Mobile", quote: "Automated review requests got me from 11 Google reviews to 94 in 4 months. My inbound calls literally doubled. Didn't have to do anything.", metric: "+$2,500/mo" },
 ];
 
 const row1 = reviews.slice(0, 4);
