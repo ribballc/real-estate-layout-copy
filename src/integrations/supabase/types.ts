@@ -806,6 +806,66 @@ export type Database = {
         }
         Relationships: []
       }
+      website_copy: {
+        Row: {
+          about_paragraph: string
+          about_paragraph_edited: boolean
+          created_at: string
+          cta_tagline: string
+          cta_tagline_edited: boolean
+          generated_at: string
+          hero_headline: string
+          hero_headline_edited: boolean
+          hero_subheadline: string
+          hero_subheadline_edited: boolean
+          id: string
+          seo_meta_description: string
+          seo_meta_description_edited: boolean
+          services_descriptions: Json
+          services_descriptions_edited: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          about_paragraph?: string
+          about_paragraph_edited?: boolean
+          created_at?: string
+          cta_tagline?: string
+          cta_tagline_edited?: boolean
+          generated_at?: string
+          hero_headline?: string
+          hero_headline_edited?: boolean
+          hero_subheadline?: string
+          hero_subheadline_edited?: boolean
+          id?: string
+          seo_meta_description?: string
+          seo_meta_description_edited?: boolean
+          services_descriptions?: Json
+          services_descriptions_edited?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          about_paragraph?: string
+          about_paragraph_edited?: boolean
+          created_at?: string
+          cta_tagline?: string
+          cta_tagline_edited?: boolean
+          generated_at?: string
+          hero_headline?: string
+          hero_headline_edited?: boolean
+          hero_subheadline?: string
+          hero_subheadline_edited?: boolean
+          id?: string
+          seo_meta_description?: string
+          seo_meta_description_edited?: boolean
+          services_descriptions?: Json
+          services_descriptions_edited?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
