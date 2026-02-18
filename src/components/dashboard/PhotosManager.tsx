@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, Trash2 } from "lucide-react";
+import PhotoGridSkeleton from "@/components/skeletons/PhotoGridSkeleton";
 
 interface Photo { id: string; url: string; caption: string; sort_order: number; }
 
@@ -46,7 +47,7 @@ const PhotosManager = () => {
     setPhotos((prev) => prev.filter((p) => p.id !== id));
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
+  if (loading) return <PhotoGridSkeleton />;
 
   return (
     <div className="max-w-3xl">

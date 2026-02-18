@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Trash2, Star, Upload, UserCircle, Building2, X, ChevronDown } from "lucide-react";
 import CsvImportModal from "./CsvImportModal";
+import FormSkeleton from "@/components/skeletons/FormSkeleton";
 
 interface Testimonial { id: string; author: string; content: string; rating: number; photo_url: string; }
 
@@ -75,7 +76,7 @@ const TestimonialsManager = () => {
     fetchItems();
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
+  if (loading) return <FormSkeleton rows={3} />;
 
   const ImportDropdown = () => {
     const [open, setOpen] = useState(false);
