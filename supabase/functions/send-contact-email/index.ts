@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { checkRateLimit } from "../_shared/rate-limit.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const TWILIO_ACCOUNT_SID = Deno.env.get("TWILIO_ACCOUNT_SID");
@@ -59,6 +60,10 @@ const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  // Rate limiting: max 10 requests/minute per IP
+  const rateCheck = await checkRateLimit(req, "send-contact-email");
+  if (!rateCheck.allowed) return rateCheck.response!;
 
   try {
     const { name, email, phone, vehicleType, address, services, addons, message }: ContactEmailRequest = await req.json();

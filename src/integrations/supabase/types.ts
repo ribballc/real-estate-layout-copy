@@ -250,6 +250,33 @@ export type Database = {
         }
         Relationships: []
       }
+      error_logs: {
+        Row: {
+          error_message: string
+          id: string
+          occurred_at: string
+          page_url: string
+          stack_trace: string
+          user_id: string | null
+        }
+        Insert: {
+          error_message?: string
+          id?: string
+          occurred_at?: string
+          page_url?: string
+          stack_trace?: string
+          user_id?: string | null
+        }
+        Update: {
+          error_message?: string
+          id?: string
+          occurred_at?: string
+          page_url?: string
+          stack_trace?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       estimates: {
         Row: {
           created_at: string
@@ -466,6 +493,30 @@ export type Database = {
           updated_at?: string
           user_id?: string
           youtube?: string
+        }
+        Relationships: []
+      }
+      rate_limits: {
+        Row: {
+          endpoint: string
+          id: string
+          ip_address: string
+          request_count: number
+          window_start: string
+        }
+        Insert: {
+          endpoint?: string
+          id?: string
+          ip_address: string
+          request_count?: number
+          window_start?: string
+        }
+        Update: {
+          endpoint?: string
+          id?: string
+          ip_address?: string
+          request_count?: number
+          window_start?: string
         }
         Relationships: []
       }
