@@ -561,7 +561,7 @@
 .dashboard-light .dash-body {
   font-size: 0.875rem;
   line-height: 1.6;
-  color: hsl(215, 25%, 15%);
+  color: hsl(215, 30%, 22%);
 }
 
 /* Labels / captions */
@@ -577,23 +577,35 @@
 .dashboard-light caption {
   font-size: 0.75rem;
   letter-spacing: 0.03em;
-  color: hsla(215, 25%, 15%, 0.5);
+  color: hsl(215, 20%, 38%);
 }
 
 /* Card values / big numbers */
-.dashboard-dark .dash-value,
+.dashboard-dark .dash-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: hsl(0, 0%, 100%);
+}
 .dashboard-light .dash-value {
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: hsl(222, 47%, 11%);
 }
 
 /* Page titles */
-.dashboard-dark .dash-title,
+.dashboard-dark .dash-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: hsl(0, 0%, 100%);
+}
 .dashboard-light .dash-title {
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.01em;
+  color: hsl(222, 47%, 11%);
 }
 @media (min-width: 768px) {
   .dashboard-dark .dash-title,
@@ -615,7 +627,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: hsla(215, 25%, 15%, 0.6);
+  color: hsl(215, 20%, 42%);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -646,10 +658,10 @@
 
 /* Sidebar nav items */
 .dashboard-light .dash-sidebar .dash-nav-text {
-  color: hsl(215, 25%, 15%);
+  color: hsl(222, 47%, 11%);
 }
 .dashboard-light .dash-sidebar .dash-nav-icon {
-  color: hsl(215, 20%, 50%);
+  color: hsl(215, 20%, 40%);
 }
 
 /* Mobile bottom nav */
@@ -675,7 +687,7 @@
 /* --- Text colors (exclude highlighted cards which need white text on blue bg) --- */
 .dashboard-light :not(.dash-card-highlight) > .text-white,
 .dashboard-light .text-white:not(.dash-card-highlight *) {
-  color: hsl(215 25% 12%) !important;
+  color: hsl(222 47% 11%) !important;
 }
 .dashboard-light .dash-card-highlight .text-white { color: hsl(0 0% 100%) !important; }
 .dashboard-light .dash-card-highlight .text-white\/80 { color: hsla(0, 0%, 100%, 0.8) !important; }
@@ -683,29 +695,30 @@
 .dashboard-light .dash-card-highlight .text-white\/60 { color: hsla(0, 0%, 100%, 0.6) !important; }
 .dashboard-light .dash-card-highlight .text-white\/50 { color: hsla(0, 0%, 100%, 0.5) !important; }
 
+/* Opacity variants → high-contrast equivalents on white */
 .dashboard-light *:not(.dash-card-highlight *).text-white\/80 {
-  color: hsl(215 16% 25%) !important;
+  color: hsl(222 47% 18%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/70 {
-  color: hsl(215 16% 30%) !important;
+  color: hsl(215 25% 25%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/60 {
-  color: hsl(215 16% 38%) !important;
+  color: hsl(215 20% 33%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/50 {
-  color: hsl(215 16% 48%) !important;
+  color: hsl(215 18% 40%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/40 {
-  color: hsl(215 16% 52%) !important;
+  color: hsl(215 16% 47%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/30 {
-  color: hsl(215 16% 62%) !important;
+  color: hsl(215 14% 55%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/20 {
-  color: hsl(215 16% 70%) !important;
+  color: hsl(215 12% 65%) !important;
 }
 .dashboard-light *:not(.dash-card-highlight *).text-white\/10 {
-  color: hsl(215 16% 82%) !important;
+  color: hsl(215 10% 75%) !important;
 }
 
 /* --- Background colors --- */
@@ -876,9 +889,10 @@
 .dashboard-light .text-red-500 { color: hsl(0, 85%, 45%) !important; }
 .dashboard-light .text-amber-500 { color: hsl(40, 100%, 40%) !important; }
 
-/* hover text-white/60, text-white/70 in interactive elements */
-.dashboard-light .hover\:text-white\/60:hover { color: hsl(215 16% 38%) !important; }
-.dashboard-light .hover\:text-white\/70:hover { color: hsl(215 16% 30%) !important; }
+/* hover text-white/* in interactive elements — higher contrast */
+.dashboard-light .hover\:text-white\/60:hover { color: hsl(215 20% 33%) !important; }
+.dashboard-light .hover\:text-white\/70:hover { color: hsl(215 25% 25%) !important; }
+.dashboard-light .hover\:text-white\/80:hover { color: hsl(222 47% 18%) !important; }
 
 /* Fix bg-accent/20 */
 .dashboard-light .bg-accent\/20 { background-color: hsl(217 91% 94%) !important; }
