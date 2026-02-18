@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.update-estimate-status]
 verify_jwt = false
+
+[functions.detect-churn-risk]
+verify_jwt = false

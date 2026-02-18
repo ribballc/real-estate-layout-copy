@@ -169,6 +169,39 @@ export type Database = {
         }
         Relationships: []
       }
+      churn_reasons: {
+        Row: {
+          canceled_at: string
+          created_at: string
+          detail: string
+          id: string
+          offer_accepted: boolean
+          offer_shown: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          canceled_at?: string
+          created_at?: string
+          detail?: string
+          id?: string
+          offer_accepted?: boolean
+          offer_shown?: string
+          reason?: string
+          user_id: string
+        }
+        Update: {
+          canceled_at?: string
+          created_at?: string
+          detail?: string
+          id?: string
+          offer_accepted?: boolean
+          offer_shown?: string
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           created_at: string
@@ -277,6 +310,27 @@ export type Database = {
         }
         Relationships: []
       }
+      feature_requests: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       photos: {
         Row: {
           caption: string
@@ -308,12 +362,15 @@ export type Database = {
         Row: {
           address: string
           business_name: string
+          churn_risk: boolean
           created_at: string
           email: string
           facebook: string
           google_business: string
           id: string
           instagram: string
+          last_login_at: string | null
+          last_weekly_summary_shown_at: string | null
           logo_url: string | null
           map_query: string
           no_business_address: boolean | null
@@ -341,12 +398,15 @@ export type Database = {
         Insert: {
           address?: string
           business_name?: string
+          churn_risk?: boolean
           created_at?: string
           email?: string
           facebook?: string
           google_business?: string
           id?: string
           instagram?: string
+          last_login_at?: string | null
+          last_weekly_summary_shown_at?: string | null
           logo_url?: string | null
           map_query?: string
           no_business_address?: boolean | null
@@ -374,12 +434,15 @@ export type Database = {
         Update: {
           address?: string
           business_name?: string
+          churn_risk?: boolean
           created_at?: string
           email?: string
           facebook?: string
           google_business?: string
           id?: string
           instagram?: string
+          last_login_at?: string | null
+          last_weekly_summary_shown_at?: string | null
           logo_url?: string | null
           map_query?: string
           no_business_address?: boolean | null
