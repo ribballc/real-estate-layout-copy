@@ -10,7 +10,7 @@ import FaqSection from "@/components/FaqSection";
 import CtaFooter from "@/components/CtaFooter";
 import SurveyFunnelModal from "@/components/SurveyFunnelModal";
 import ScrollProgress from "@/components/ScrollProgress";
-import SocialProofNotification from "@/components/SocialProofNotification";
+
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { SurveyFunnelProvider } from "@/components/SurveyFunnelContext";
 import { trackEvent, generateEventId } from "@/lib/tracking";
@@ -151,7 +151,7 @@ const Index = () => {
         <FaqSection />
         <CtaFooter />
         <SurveyFunnelModal />
-        <SocialProofNotification />
+        
         <ExitIntentPopup />
       </div>
     </SurveyFunnelProvider>
