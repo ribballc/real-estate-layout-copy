@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS offer_lab_progress jsonb DEFAULT '{}'::jsonb;
