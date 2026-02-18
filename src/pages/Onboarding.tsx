@@ -240,7 +240,13 @@ const Onboarding = () => {
       return;
     }
     firePixel("track", "CompleteRegistration");
-    localStorage.setItem("leadData", JSON.stringify({ businessName: shopName.trim() }));
+    localStorage.setItem("leadData", JSON.stringify({
+      businessName: shopName.trim(),
+      ownerFirstName: firstName.trim(),
+      city: location.trim(),
+      services,
+      businessType: businessType === "Shop Location" ? "shop" : businessType === "Mobile Only" ? "mobile" : "both",
+    }));
     navigate("/generating");
   };
 

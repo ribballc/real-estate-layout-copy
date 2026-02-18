@@ -1,9 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
 
 const STATUS_MESSAGES = [
   "Setting up your booking calendar...",
+  "Writing your website copy with AI...",
   "Building your service pages...",
   "Configuring your location...",
   "Adding your contact info...",
@@ -12,8 +14,8 @@ const STATUS_MESSAGES = [
 ];
 
 const CYCLE_MS = 1300;
-const NAV_DELAY = 4000;
-const PROGRESS_DURATION = 3600;
+const NAV_DELAY = 6000; // extended to allow AI call
+const PROGRESS_DURATION = 5400;
 
 const Generating = () => {
   const navigate = useNavigate();
@@ -23,14 +25,70 @@ const Generating = () => {
   const [progress, setProgress] = useState(0);
   const [navigating, setNavigating] = useState(false);
   const startRef = useRef(Date.now());
+  const aiCalledRef = useRef(false);
+  const aiDoneRef = useRef(false);
 
-  // Load shop name
+  // Load lead data and trigger AI copy generation
   useEffect(() => {
+    let leadData: any = {};
     try {
-      const data = JSON.parse(localStorage.getItem("leadData") || "{}");
-      if (data.businessName) setShopName(data.businessName);
+      leadData = JSON.parse(localStorage.getItem("leadData") || "{}");
+      if (leadData.businessName) setShopName(leadData.businessName);
     } catch {}
+
+    // Fire AI generation
+    if (!aiCalledRef.current && leadData.businessName) {
+      aiCalledRef.current = true;
+      generateCopy(leadData).finally(() => {
+        aiDoneRef.current = true;
+      });
+    }
   }, []);
+
+  const generateCopy = async (data: any) => {
+    try {
+      const { error } = await supabase.functions.invoke("generate-website-copy", {
+        body: {
+          businessName: data.businessName || "",
+          ownerFirstName: data.ownerFirstName || "",
+          city: data.city || "",
+          services: data.services || [],
+          businessType: data.businessType || "shop",
+        },
+      });
+      if (error) {
+        console.warn("AI copy generation failed, using fallback:", error);
+        await saveFallbackCopy(data);
+      }
+    } catch (e) {
+      console.warn("AI copy generation error, using fallback:", e);
+      await saveFallbackCopy(data);
+    }
+  };
+
+  const saveFallbackCopy = async (data: any) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const services = data.services || [];
+      const fallback = {
+        user_id: user.id,
+        hero_headline: `Professional Auto Detailing in ${data.city || "Your Area"}`,
+        hero_subheadline: `${data.businessName} delivers premium detailing services. Book your appointment online anytime.`,
+        about_paragraph: `${data.businessName} is proudly operated by ${data.ownerFirstName || "our team"} in ${data.city || "your area"}. We specialize in ${services.slice(0, 3).join(", ") || "auto detailing"} with an uncompromising focus on quality. Every vehicle we touch leaves looking its absolute best.`,
+        services_descriptions: services.map((s: string) => ({
+          service: s,
+          description: `Professional ${s.toLowerCase()} service delivering results that speak for themselves.`,
+        })),
+        seo_meta_description: `${data.businessName} — professional auto detailing in ${data.city || "your area"}. ${services[0] || "Full detail"}, ${services[1] || "interior"} & more. Book online today.`.slice(0, 155),
+        cta_tagline: "Reserve Your Detail Online",
+        generated_at: new Date().toISOString(),
+      };
+
+      await supabase.from("website_copy").upsert(fallback, { onConflict: "user_id" });
+    } catch {}
+  };
 
   // Cycle status messages
   useEffect(() => {
@@ -44,7 +102,7 @@ const Generating = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Progress bar (0→90% over 3.6s)
+  // Progress bar (0→90% over duration)
   useEffect(() => {
     const raf = () => {
       const elapsed = Date.now() - startRef.current;
@@ -55,7 +113,7 @@ const Generating = () => {
     requestAnimationFrame(raf);
   }, []);
 
-  // Auto-navigate at 4s
+  // Auto-navigate once AI is done or timeout
   useEffect(() => {
     const timer = setTimeout(() => {
       setNavigating(true);
@@ -79,23 +137,19 @@ const Generating = () => {
         {/* SVG Ring Loader */}
         <div className="my-6" style={{ width: 96, height: 96, filter: "drop-shadow(0 0 6px hsla(217,91%,60%,0.7))" }}>
           <svg width="96" height="96" viewBox="0 0 96 96">
-            {/* Base ring */}
             <circle cx="48" cy="48" r="40" fill="none" stroke="hsla(0,0%,100%,0.07)" strokeWidth="4" strokeLinecap="round" />
-            {/* Trailing ghost arc */}
             <circle
               cx="48" cy="48" r="40" fill="none"
               stroke="hsl(217,91%,40%)" strokeWidth="3" strokeLinecap="round"
               strokeDasharray="60 244" opacity="0.4"
               style={{ transformOrigin: "center", animation: "generatingSpinReverse 1.6s linear infinite" }}
             />
-            {/* Main spinning arc */}
             <circle
               cx="48" cy="48" r="40" fill="none"
               stroke="hsl(217,91%,60%)" strokeWidth="4" strokeLinecap="round"
               strokeDasharray="164 88"
               style={{ transformOrigin: "center", animation: "generatingSpin 1s linear infinite" }}
             />
-            {/* Center dot */}
             <circle cx="48" cy="48" r="4" fill="hsl(217,91%,60%)"
               style={{ animation: "generatingPulse 1.2s ease-in-out infinite" }}
             />

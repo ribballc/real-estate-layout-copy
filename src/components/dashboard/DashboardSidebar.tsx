@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import {
   Building2, Wrench, Clock, Camera, Star, Settings, LogOut,
   Bug, HelpCircle, CalendarDays, Users, Sun, Moon, LayoutDashboard, Lock,
-  Bell, Globe, ChevronLeft, ChevronRight, KanbanSquare, ClipboardList, FlaskConical,
+  Bell, Globe, ChevronLeft, ChevronRight, KanbanSquare, ClipboardList, FlaskConical, FileText,
 } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,6 +16,7 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, alwaysUnlocked: true },
   { title: "Business Info", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true },
   { title: "Website", url: "/dashboard/website", icon: Globe, alwaysUnlocked: true },
+  { title: "Website Copy", url: "/dashboard/copy", icon: FileText, alwaysUnlocked: true },
   { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
   { title: "Jobs", url: "/dashboard/jobs", icon: KanbanSquare },
   { title: "Estimates", url: "/dashboard/estimates", icon: ClipboardList },

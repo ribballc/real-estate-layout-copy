@@ -47,6 +47,7 @@ const AccountSettings = React.lazy(() => import("./components/dashboard/AccountS
 const CustomersManager = React.lazy(() => import("./components/dashboard/CustomersManager"));
 const OfferLabManager = React.lazy(() => import("./components/dashboard/OfferLabManager"));
 const WebsitePage = React.lazy(() => import("./components/dashboard/WebsitePage"));
+const WebsiteCopyEditor = React.lazy(() => import("./components/dashboard/WebsiteCopyEditor"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -119,6 +120,7 @@ const App = () => (
                   <Route path="testimonials" element={<TestimonialsManager />} />
                   <Route path="offer-lab" element={<OfferLabManager />} />
                   <Route path="account" element={<AccountSettings />} />
+                  <Route path="copy" element={<WebsiteCopyEditor />} />
                 </Route>
                 <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
                 <Route path="/site/:slug" element={<DeluxeLanding />} />
