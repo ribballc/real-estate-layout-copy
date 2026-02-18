@@ -5,11 +5,9 @@ import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
 import { supabase } from "@/integrations/supabase/client";
 import { format, addDays, startOfTomorrow } from "date-fns";
-import type { BusinessData } from "@/hooks/useBusinessData";
 
 const MORNING_SLOTS = ["8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM"];
 const AFTERNOON_SLOTS = ["12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"];
-
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const BookBooking = () => {
@@ -21,13 +19,11 @@ const BookBooking = () => {
   const [bookedTimes, setBookedTimes] = useState<Set<string>>(new Set());
   const stripRef = useRef<HTMLDivElement>(null);
 
-  // Generate 14 days starting tomorrow
   const days = useMemo(() => {
     const tomorrow = startOfTomorrow();
     return Array.from({ length: 14 }, (_, i) => addDays(tomorrow, i));
   }, []);
 
-  // Fetch blocked days
   useEffect(() => {
     const fetchBlockedDays = async () => {
       const { data } = await supabase.from("blocked_days").select("blocked_date");
@@ -36,7 +32,6 @@ const BookBooking = () => {
     fetchBlockedDays();
   }, []);
 
-  // Fetch booked times for selected date
   useEffect(() => {
     if (!selectedDate) { setBookedTimes(new Set()); return; }
     const dateStr = format(selectedDate, "yyyy-MM-dd");
@@ -48,7 +43,6 @@ const BookBooking = () => {
         .in("status", ["confirmed", "pending"]);
       if (data) {
         const times = new Set(data.map(b => {
-          // Convert "HH:mm:ss" to "H:MM AM/PM"
           const [h, m] = b.booking_time.split(":");
           const hour = parseInt(h);
           const ampm = hour >= 12 ? "PM" : "AM";
@@ -83,14 +77,29 @@ const BookBooking = () => {
         key={time}
         onClick={() => !booked && setSelectedTime(time)}
         disabled={booked}
-        className={`h-[44px] rounded-full text-sm font-medium transition-all duration-200 ${
+        className="h-[44px] rounded-full text-sm font-medium transition-all duration-200"
+        style={
           booked
-            ? "bg-muted text-muted-foreground/40 line-through cursor-not-allowed border border-transparent"
+            ? {
+                background: "hsl(210,40%,94%)",
+                color: "hsl(215,16%,60%)",
+                textDecoration: "line-through",
+                cursor: "not-allowed",
+                border: "1px solid transparent",
+              }
             : isSelected
-              ? "text-white shadow-md border border-transparent"
-              : "bg-card text-foreground border border-border hover:border-accent/50"
-        }`}
-        style={isSelected ? { background: "hsl(217,91%,60%)", boxShadow: "0 4px 12px hsla(217,91%,60%,0.3)" } : undefined}
+            ? {
+                background: "hsl(217,91%,50%)",
+                color: "white",
+                boxShadow: "0 4px 12px hsla(217,91%,50%,0.3)",
+                border: "1px solid transparent",
+              }
+            : {
+                background: "white",
+                color: "hsl(222,47%,11%)",
+                border: "1px solid hsl(210,40%,90%)",
+              }
+        }
       >
         {time}
       </button>
@@ -100,10 +109,10 @@ const BookBooking = () => {
   return (
     <BookingLayout activeStep={4}>
       <FadeIn delay={50}>
-        <h1 className="font-heading text-[28px] md:text-[40px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground mb-2">
+        <h1 className="font-heading text-[28px] md:text-[40px] font-bold tracking-[-0.015em] leading-[1.2] mb-2" style={{ color: "hsl(222,47%,11%)" }}>
           Pick a date & time
         </h1>
-        <p className="text-sm text-muted-foreground mb-8">Select when you'd like to come in</p>
+        <p className="text-sm mb-8" style={{ color: "hsl(215,16%,47%)" }}>Select when you'd like to come in</p>
       </FadeIn>
 
       {/* Date strip */}
@@ -125,22 +134,34 @@ const BookBooking = () => {
                   setSelectedTime(null);
                 }}
                 disabled={blocked}
-                className={`flex flex-col items-center justify-center shrink-0 w-[60px] h-[72px] rounded-2xl text-center transition-all duration-200 ${
-                  blocked
-                    ? "opacity-30 cursor-not-allowed bg-muted"
-                    : isSelected
-                      ? "text-white scale-105 shadow-lg"
-                      : "bg-card border border-border text-foreground hover:border-accent/50"
-                }`}
+                className="flex flex-col items-center justify-center shrink-0 w-[60px] h-[72px] rounded-2xl text-center transition-all duration-200"
                 style={{
                   scrollSnapAlign: "start",
-                  ...(isSelected ? { background: "hsl(217,91%,60%)", boxShadow: "0 4px 16px hsla(217,91%,60%,0.35)" } : {}),
+                  ...(blocked
+                    ? { opacity: 0.3, cursor: "not-allowed", background: "hsl(210,40%,94%)" }
+                    : isSelected
+                    ? {
+                        background: "hsl(217,91%,50%)",
+                        color: "white",
+                        transform: "scale(1.05)",
+                        boxShadow: "0 4px 16px hsla(217,91%,50%,0.35)",
+                      }
+                    : {
+                        background: "white",
+                        border: "1px solid hsl(210,40%,90%)",
+                      }),
                 }}
               >
-                <span className={`text-[11px] font-medium leading-none ${isSelected ? "text-white/70" : "text-muted-foreground"}`}>
+                <span
+                  className="text-[11px] font-medium leading-none"
+                  style={{ color: isSelected ? "hsla(0,0%,100%,0.7)" : "hsl(215,16%,47%)" }}
+                >
                   {DAY_LABELS[day.getDay()]}
                 </span>
-                <span className={`text-lg font-bold leading-none mt-1 ${isSelected ? "text-white" : ""}`}>
+                <span
+                  className="text-lg font-bold leading-none mt-1"
+                  style={{ color: isSelected ? "white" : "hsl(222,47%,11%)" }}
+                >
                   {day.getDate()}
                 </span>
               </button>
@@ -152,27 +173,24 @@ const BookBooking = () => {
       {/* Selected date label */}
       {selectedDate && (
         <FadeIn delay={0}>
-          <p className="text-sm font-semibold text-foreground mt-3 mb-6">
+          <p className="text-sm font-semibold mt-3 mb-6" style={{ color: "hsl(222,47%,11%)" }}>
             {format(selectedDate, "EEEE, MMMM d")}
           </p>
         </FadeIn>
       )}
 
-      {/* Time slots — fade in after date selection */}
+      {/* Time slots */}
       {selectedDate && (
         <FadeIn delay={80}>
           <div className="space-y-5">
-            {/* Morning */}
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">Morning</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider mb-2.5" style={{ color: "hsl(215,16%,47%)" }}>Morning</p>
               <div className="grid grid-cols-3 gap-2.5">
                 {MORNING_SLOTS.map(renderSlot)}
               </div>
             </div>
-
-            {/* Afternoon */}
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">Afternoon</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider mb-2.5" style={{ color: "hsl(215,16%,47%)" }}>Afternoon</p>
               <div className="grid grid-cols-3 gap-2.5">
                 {AFTERNOON_SLOTS.map(renderSlot)}
               </div>
@@ -183,19 +201,31 @@ const BookBooking = () => {
 
       {/* Sticky CTA */}
       {canContinue && (
-        <div className="fixed md:relative bottom-0 left-0 right-0 md:bottom-auto z-30 md:z-auto bg-background/80 backdrop-blur-lg md:backdrop-blur-none md:bg-transparent border-t border-border md:border-none px-4 py-3 md:p-0 md:mt-8">
+        <div
+          className="fixed md:relative bottom-0 left-0 right-0 md:bottom-auto z-30 md:z-auto md:bg-transparent px-4 py-3 md:p-0 md:mt-8"
+          style={{
+            background: "hsla(0,0%,100%,0.85)",
+            backdropFilter: "blur(16px)",
+            borderTop: "1px solid hsl(210,40%,90%)",
+          }}
+        >
           <div className="flex items-center gap-3 max-w-screen-lg mx-auto md:mx-0">
             <button
               onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border border-border text-foreground hover:bg-muted transition-colors min-h-[48px]"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold min-h-[48px] transition-colors"
+              style={{ border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}
             >
               <ArrowLeft className="w-4 h-4" />
               Back
             </button>
             <button
               onClick={handleContinue}
-              className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold min-h-[48px] text-white transition-all shadow-lg"
-              style={{ background: "hsl(217,91%,60%)", boxShadow: "0 4px 12px hsla(217,91%,60%,0.3)" }}
+              className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl text-sm font-semibold min-h-[48px] transition-all"
+              style={{
+                background: "linear-gradient(135deg, hsl(217,91%,60%), hsl(217,91%,50%))",
+                color: "white",
+                boxShadow: "0 4px 12px hsla(217,91%,60%,0.3)",
+              }}
             >
               Continue to Checkout
               <ArrowRight className="w-4 h-4" />
