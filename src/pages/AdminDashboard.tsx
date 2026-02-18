@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import {
   DollarSign, Users, TrendingUp, RefreshCw, Search,
-  ArrowUpRight, Activity, UserCheck, CreditCard, X,
+  ArrowUpRight, Activity, UserCheck, CreditCard, X, Download, Trash2,
 } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
@@ -113,6 +113,39 @@ const AdminDashboard = () => {
     u.name.toLowerCase().includes(search.toLowerCase())
   ) ?? [];
 
+  const deletionsPending = data?.users.filter(u => u.email.includes("deleted_user_")).length ?? 0;
+
+  const exportCsv = (d: AdminData) => {
+    const rows = [
+      ["Metric", "Value"],
+      ["MRR", String(d.mrr)],
+      ["ARR", String(d.arr)],
+      ["MRR Monthly", String(d.mrrMonthly)],
+      ["MRR Annual", String(d.mrrAnnual)],
+      ["Active Subscribers", String(d.totalActive)],
+      ["Total Users", String(d.totalUsers)],
+      ["Signups (30d)", String(d.signups30d)],
+      ["Onboarding Rate", `${d.onboardingRate}%`],
+      ["Activation Rate", `${d.activationRate}%`],
+      ["Trial to Paid Rate", `${d.trialToPaidRate}%`],
+      ["Churn Rate (30d)", `${d.churnRate}%`],
+      [],
+      ["Month", "Monthly MRR", "Annual MRR", "Total MRR"],
+      ...d.mrrHistory.map(h => [h.label, String(h.monthly), String(h.annual), String(h.total)]),
+      [],
+      ["Email", "Name", "Signed Up", "Status", "Plan", "Activated", "Onboarded"],
+      ...d.users.map(u => [u.email, u.name, u.createdAt, u.status, u.plan || "none", String(u.activated), String(u.onboardingComplete)]),
+    ];
+    const csv = rows.map(r => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `darker-metrics-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   if (loading && !data) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "hsl(222,47%,6%)" }}>
@@ -143,6 +176,12 @@ const AdminDashboard = () => {
           </span>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => exportCsv(data)} disabled={!data}
+            className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition-colors"
+            style={{ background: "hsla(142,71%,45%,0.1)", color: "hsl(142,71%,45%)" }}>
+            <Download className="w-3.5 h-3.5" />
+            Export CSV
+          </button>
           <button onClick={fetchData} disabled={loading}
             className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition-colors"
             style={{ background: "hsla(0,0%,100%,0.06)", color: "hsla(0,0%,100%,0.6)" }}>
@@ -168,12 +207,13 @@ const AdminDashboard = () => {
         </div>
 
         {/* Row 2: Funnel metrics */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           <FunnelCard label="Signups (30d)" value={String(data.signups30d)} />
           <FunnelCard label="Onboarding Rate" value={`${data.onboardingRate}%`} />
           <FunnelCard label="Activation Rate" value={`${data.activationRate}%`} />
           <FunnelCard label="Trial → Paid" value={`${data.trialToPaidRate}%`} />
           <FunnelCard label="Churn (30d)" value={`${data.churnRate}%`} alert={data.churnRate > 10} />
+          <FunnelCard label="Deletions Pending" value={String(deletionsPending)} alert={deletionsPending > 0} />
         </div>
 
         {/* Row 3: MRR Chart */}

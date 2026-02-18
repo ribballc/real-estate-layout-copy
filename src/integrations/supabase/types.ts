@@ -337,6 +337,36 @@ export type Database = {
         }
         Relationships: []
       }
+      feature_flags: {
+        Row: {
+          created_at: string
+          description: string
+          enabled_for_user_ids: string[]
+          enabled_globally: boolean
+          flag_name: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          enabled_for_user_ids?: string[]
+          enabled_globally?: boolean
+          flag_name: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          enabled_for_user_ids?: string[]
+          enabled_globally?: boolean
+          flag_name?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       feature_requests: {
         Row: {
           content: string
@@ -387,10 +417,12 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_deleted: boolean
           address: string
           business_name: string
           churn_risk: boolean
           created_at: string
+          deleted_at: string | null
           email: string
           facebook: string
           google_business: string
@@ -420,13 +452,16 @@ export type Database = {
           unsubscribed_from_emails: boolean
           updated_at: string
           user_id: string
+          wants_custom_domain: boolean
           youtube: string
         }
         Insert: {
+          account_deleted?: boolean
           address?: string
           business_name?: string
           churn_risk?: boolean
           created_at?: string
+          deleted_at?: string | null
           email?: string
           facebook?: string
           google_business?: string
@@ -456,13 +491,16 @@ export type Database = {
           unsubscribed_from_emails?: boolean
           updated_at?: string
           user_id: string
+          wants_custom_domain?: boolean
           youtube?: string
         }
         Update: {
+          account_deleted?: boolean
           address?: string
           business_name?: string
           churn_risk?: boolean
           created_at?: string
+          deleted_at?: string | null
           email?: string
           facebook?: string
           google_business?: string
@@ -492,6 +530,7 @@ export type Database = {
           unsubscribed_from_emails?: boolean
           updated_at?: string
           user_id?: string
+          wants_custom_domain?: boolean
           youtube?: string
         }
         Relationships: []
