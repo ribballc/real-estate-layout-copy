@@ -4,20 +4,26 @@ import { useNavigate } from "react-router-dom";
 
 const ExitIntentPopup = () => {
   const [visible, setVisible] = useState(false);
-  const [bookings, setBookings] = useState(15);
+  const [armed, setArmed] = useState(false);
   const navigate = useNavigate();
 
-  const loss = Math.round(bookings * 150 * 0.25);
+  // Arm the popup after 8s on page — avoids firing on instant bounces
+  useEffect(() => {
+    if (sessionStorage.getItem("exitShown")) return;
+    const t = setTimeout(() => setArmed(true), 8000);
+    return () => clearTimeout(t);
+  }, []);
 
   const show = useCallback(() => {
+    if (!armed) return;
     if (sessionStorage.getItem("exitShown")) return;
     setVisible(true);
     sessionStorage.setItem("exitShown", "true");
-  }, []);
+  }, [armed]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (e.clientY <= 0) show();
+      if (e.clientY <= 4) show();
     };
     document.addEventListener("mouseleave", handler);
     return () => document.removeEventListener("mouseleave", handler);
@@ -38,95 +44,97 @@ const ExitIntentPopup = () => {
       {/* Backdrop */}
       <div
         className="absolute inset-0 animate-fade-in"
-        style={{ background: "hsla(0, 0%, 0%, 0.8)", backdropFilter: "blur(8px)" }}
+        style={{ background: "hsla(0, 0%, 0%, 0.85)", backdropFilter: "blur(10px)" }}
         onClick={() => setVisible(false)}
       />
 
       {/* Modal */}
       <div
-        className="relative w-[90%] max-w-[560px] rounded-3xl p-8 md:p-12 text-center animate-scale-in"
+        className="relative w-[90%] max-w-[520px] rounded-2xl p-8 md:p-10 text-center animate-scale-in"
         style={{
-          background: "linear-gradient(135deg, hsl(215, 50%, 10%) 0%, hsl(217, 33%, 17%) 100%)",
-          border: "1px solid hsla(217, 91%, 60%, 0.3)",
-          boxShadow: "0 20px 60px hsla(0, 0%, 0%, 0.5), 0 0 100px hsla(217, 91%, 60%, 0.2)",
+          background: "linear-gradient(160deg, hsl(215, 50%, 10%) 0%, hsl(217, 33%, 15%) 100%)",
+          border: "1px solid hsla(217, 91%, 60%, 0.25)",
+          boxShadow: "0 24px 80px hsla(0, 0%, 0%, 0.6), 0 0 120px hsla(217, 91%, 60%, 0.15)",
         }}
       >
         <button
           onClick={() => setVisible(false)}
-          className="absolute top-5 right-5 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:rotate-90"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:rotate-90"
           style={{
             background: "hsla(0, 0%, 100%, 0.05)",
-            border: "1px solid hsla(0, 0%, 100%, 0.1)",
-            color: "hsla(0, 0%, 100%, 0.6)",
+            border: "1px solid hsla(0, 0%, 100%, 0.08)",
+            color: "hsla(0, 0%, 100%, 0.4)",
           }}
         >
           <X className="w-4 h-4" />
         </button>
 
-        <div className="text-6xl mb-4">⏸️</div>
-        <h3 className="font-heading text-3xl md:text-4xl font-bold text-primary-foreground mb-2">Wait!</h3>
-        <p className="text-lg md:text-xl mb-8" style={{ color: "hsla(0, 0%, 100%, 0.7)" }}>Before You Go...</p>
+        {/* Eyebrow */}
+        <p
+          className="text-xs font-bold tracking-widest uppercase mb-4"
+          style={{ color: "hsl(217,91%,60%)" }}
+        >
+          Hold on
+        </p>
 
-        {/* Calculator */}
+        {/* Headline — the slap */}
+        <h3
+          className="font-bold leading-tight mb-3"
+          style={{ color: "white", fontSize: "clamp(1.5rem, 4vw, 2.1rem)", lineHeight: 1.15 }}
+        >
+          You're really going to leave<br />
+          <span style={{ color: "hsl(217,91%,60%)" }}>without claiming your free website?</span>
+        </h3>
+
+        <p
+          className="text-sm mb-7 max-w-sm mx-auto"
+          style={{ color: "hsla(0, 0%, 100%, 0.5)", lineHeight: 1.6 }}
+        >
+          Every detailer ahead of you in your city already has 24/7 online booking.
+          Your phone number alone isn't going to cut it anymore.
+        </p>
+
+        {/* Value stack */}
         <div
-          className="rounded-2xl p-6 mb-6"
+          className="rounded-xl p-5 mb-6 text-left"
           style={{
-            background: "hsla(217, 91%, 60%, 0.05)",
-            border: "1px solid hsla(217, 91%, 60%, 0.2)",
+            background: "hsla(217, 91%, 60%, 0.06)",
+            border: "1px solid hsla(217, 91%, 60%, 0.15)",
           }}
         >
-          <p className="text-sm mb-4" style={{ color: "hsla(0, 0%, 100%, 0.8)" }}>
-            See how much you're actually losing to missed calls:
+          <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "hsla(0,0%,100%,0.35)" }}>
+            What you walk away from
           </p>
-          <label className="flex flex-col gap-2 mb-4">
-            <span className="text-xs" style={{ color: "hsla(0, 0%, 100%, 0.7)" }}>Your monthly bookings:</span>
-            <input
-              type="number"
-              value={bookings}
-              onChange={(e) => setBookings(Math.max(1, parseInt(e.target.value) || 1))}
-              className="w-full p-3 rounded-lg text-center text-lg font-semibold text-primary-foreground min-h-[52px]"
-              style={{
-                background: "hsla(0, 0%, 100%, 0.05)",
-                border: "1px solid hsla(0, 0%, 100%, 0.1)",
-              }}
-            />
-          </label>
-
-          <div
-            className="flex items-center justify-center gap-3 p-4 rounded-xl"
-            style={{
-              background: "hsla(0, 84%, 60%, 0.1)",
-              border: "1px solid hsla(0, 84%, 60%, 0.3)",
-            }}
-          >
-            <span className="text-2xl">💸</span>
-            <span className="text-base font-semibold text-primary-foreground">
-              You're losing <span className="text-destructive text-xl font-bold">${loss.toLocaleString()}/month</span>
-            </span>
-          </div>
+          {[
+            "Your own booking website — live in minutes",
+            "24/7 online scheduling (no more missed calls)",
+            "AI-written copy tailored to your shop",
+            "Your own booking link to put everywhere",
+          ].map((item, i) => (
+            <div key={i} className="flex items-start gap-2.5 mb-2 last:mb-0">
+              <span style={{ color: "hsl(217,91%,60%)", fontSize: 14, lineHeight: "1.6", flexShrink: 0 }}>✓</span>
+              <span className="text-sm" style={{ color: "hsla(0,0%,100%,0.7)", lineHeight: 1.6 }}>{item}</span>
+            </div>
+          ))}
         </div>
-
-        <p className="text-sm mb-6" style={{ color: "hsla(0, 0%, 100%, 0.6)" }}>
-          Join 200+ detailers who recovered this money
-        </p>
 
         <div className="flex flex-col gap-3">
           <button
             onClick={() => { setVisible(false); navigate('/signup'); }}
-            className="w-full py-4 text-lg font-semibold rounded-xl text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 min-h-[48px]"
+            className="w-full py-4 text-base font-semibold rounded-xl text-white transition-all duration-300 hover:-translate-y-0.5"
             style={{
               background: "linear-gradient(135deg, hsl(217, 91%, 60%), hsl(217, 91%, 50%))",
-              boxShadow: "0 4px 20px hsla(217, 91%, 60%, 0.4)",
+              boxShadow: "0 4px 24px hsla(217, 91%, 60%, 0.45)",
             }}
           >
-            Start Free Trial →
+            Claim My Free Website →
           </button>
           <button
             onClick={() => setVisible(false)}
-            className="w-full py-3 text-sm transition-colors duration-200"
-            style={{ color: "hsla(0, 0%, 100%, 0.5)" }}
+            className="w-full py-3 text-xs transition-colors duration-200"
+            style={{ color: "hsla(0, 0%, 100%, 0.25)" }}
           >
-            No thanks, I'll stay disorganized
+            No thanks, I'll keep losing bookings to competitors
           </button>
         </div>
       </div>
