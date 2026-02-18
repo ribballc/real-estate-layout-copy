@@ -1,12 +1,12 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useOutletContext, useNavigate } from "react-router-dom";
-import WebsitePage from "./WebsitePage";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, ArrowRight,
   CalendarDays, Star, MoreHorizontal, Briefcase,
   CheckCircle2, Circle, Store, Wrench, Clock, Users, Sparkles, ChevronDown, X,
+  Car, Hash,
 } from "lucide-react";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -14,8 +14,8 @@ import {
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent,
 } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
-import { format, subDays, startOfDay, endOfDay, startOfYear, eachDayOfInterval, isWithinInterval, parseISO } from "date-fns";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell, LineChart, Line } from "recharts";
+import { format, subDays, startOfDay, endOfDay, startOfYear, eachDayOfInterval, isWithinInterval, parseISO, getDay } from "date-fns";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 type DateRange = "7d" | "14d" | "30d" | "90d" | "ytd";
@@ -58,9 +58,24 @@ interface MetricCardProps {
   pct: number | null;
   subtext?: string;
   highlighted?: boolean;
+  sparklineData?: number[];
 }
 
-const MetricCard = ({ icon, label, value, pct, subtext, highlighted }: MetricCardProps) => (
+const MiniSparkline = ({ data, color }: { data: number[]; color: string }) => {
+  if (data.length < 2) return null;
+  const chartData = data.map((v, i) => ({ v, i }));
+  return (
+    <div className="h-[32px] w-[80px] mt-1">
+      <ChartContainer config={{ v: { label: "val", color } }} className="h-full w-full">
+        <LineChart data={chartData} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
+          <Line type="monotone" dataKey="v" stroke={color} strokeWidth={1.5} dot={false} />
+        </LineChart>
+      </ChartContainer>
+    </div>
+  );
+};
+
+const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineData }: MetricCardProps) => (
   <div className={`rounded-2xl p-5 transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
     <div className="flex items-start justify-between mb-4">
       <div
@@ -68,9 +83,9 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted }: MetricCar
       >
         {icon}
       </div>
-      <button className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${highlighted ? "text-white/50 hover:text-white/80" : "dash-menu-btn"}`}>
-        <MoreHorizontal className="w-4 h-4" />
-      </button>
+      {sparklineData && sparklineData.length > 1 && (
+        <MiniSparkline data={sparklineData} color={highlighted ? "hsla(0,0%,100%,0.6)" : "hsl(217,91%,60%)"} />
+      )}
     </div>
     <p className={`text-[11px] font-semibold uppercase tracking-wider mb-1 ${highlighted ? "text-white/70" : "dash-card-label"}`}>{label}</p>
     <p className={`text-2xl lg:text-3xl font-bold tracking-tight mb-1 ${highlighted ? "text-white" : "dash-card-value"}`}>{value}</p>
@@ -115,6 +130,8 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   { id: "customer", icon: Users, title: "Add your first customer", description: "Build your customer database", route: "/dashboard/customers", check: d => d.customersCount > 0 },
   { id: "booking", icon: CalendarDays, title: "Create your first booking", description: "Schedule your first job", route: "/dashboard/calendar", check: d => d.bookingsCount > 0 },
 ];
+
+const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 /* ─── Main Dashboard ─── */
 const HomeDashboard = () => {
@@ -183,12 +200,49 @@ const HomeDashboard = () => {
       return isWithinInterval(d, { start: prev.start, end: prev.end });
     }), [bookings, prev]);
 
+  // KPI computations
   const currentRevenue = currentBookings.reduce((sum, b) => sum + (Number(b.service_price) || 0), 0);
   const previousRevenue = previousBookings.reduce((sum, b) => sum + (Number(b.service_price) || 0), 0);
-  const currentJobCount = currentBookings.length;
-  const previousJobCount = previousBookings.length;
   const revenuePct = pctChange(currentRevenue, previousRevenue);
-  const jobsPct = pctChange(currentJobCount, previousJobCount);
+
+  const currentCompleted = useMemo(() => currentBookings.filter(b => b.status === "completed"), [currentBookings]);
+  const previousCompleted = useMemo(() => previousBookings.filter(b => b.status === "completed"), [previousBookings]);
+  const completedPct = pctChange(currentCompleted.length, previousCompleted.length);
+
+  const avgTicket = currentCompleted.length > 0 ? Math.round(currentCompleted.reduce((s, b) => s + (Number(b.service_price) || 0), 0) / currentCompleted.length) : 0;
+  const prevAvgTicket = previousCompleted.length > 0 ? Math.round(previousCompleted.reduce((s, b) => s + (Number(b.service_price) || 0), 0) / previousCompleted.length) : 0;
+  const avgTicketPct = pctChange(avgTicket, prevAvgTicket);
+
+  // Unique vehicles from notes "Vehicle: ..." or service_title
+  const countUniqueVehicles = useCallback((bks: any[]) => {
+    const set = new Set<string>();
+    bks.forEach(b => {
+      if (b.notes && b.notes.startsWith("Vehicle:")) {
+        set.add(b.notes.split("\n")[0].replace("Vehicle: ", "").trim().toLowerCase());
+      } else if (b.customer_name) {
+        set.add(`${b.customer_name}-${b.booking_date}`.toLowerCase());
+      }
+    });
+    return set.size;
+  }, []);
+  const vehiclesCurrent = countUniqueVehicles(currentBookings);
+  const vehiclesPrev = countUniqueVehicles(previousBookings);
+  const vehiclesPct = pctChange(vehiclesCurrent, vehiclesPrev);
+
+  const periodLabel = `vs last ${dateRange === "ytd" ? "year" : dateRange.replace("d", " days")}`;
+
+  // Revenue sparkline: daily revenue for sparkline in metric card
+  const revenueSparkline = useMemo(() => {
+    const days = eachDayOfInterval({ start, end });
+    // Downsample to ~14 points max
+    const step = Math.max(1, Math.floor(days.length / 14));
+    const points: number[] = [];
+    for (let i = 0; i < days.length; i += step) {
+      const dayStr = format(days[i], "yyyy-MM-dd");
+      points.push(currentBookings.filter(b => b.booking_date === dayStr).reduce((s, b) => s + (Number(b.service_price) || 0), 0));
+    }
+    return points;
+  }, [currentBookings, start, end]);
 
   /* Bar chart: revenue by day */
   const chartData = useMemo(() => {
@@ -219,6 +273,41 @@ const HomeDashboard = () => {
       pct: total > 0 ? Math.round((value / total) * 100) : 0,
     }));
   }, [currentBookings]);
+
+  /* Top Services table */
+  const topServices = useMemo(() => {
+    const map: Record<string, { jobs: number; revenue: number }> = {};
+    currentBookings.forEach(b => {
+      const title = b.service_title || "Other";
+      if (!map[title]) map[title] = { jobs: 0, revenue: 0 };
+      map[title].jobs++;
+      map[title].revenue += Number(b.service_price) || 0;
+    });
+    return Object.entries(map)
+      .map(([name, data]) => ({ name, ...data, avg: data.jobs > 0 ? Math.round(data.revenue / data.jobs) : 0 }))
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5);
+  }, [currentBookings]);
+
+  /* Busiest Days heatmap — uses ALL bookings historically */
+  const busiestDays = useMemo(() => {
+    const counts = [0, 0, 0, 0, 0, 0, 0]; // Sun-Sat
+    const dayCount = [0, 0, 0, 0, 0, 0, 0];
+    // Count weeks in the range for averaging
+    const days = eachDayOfInterval({ start, end });
+    days.forEach(d => { dayCount[getDay(d)]++; });
+    currentBookings.forEach(b => {
+      const d = parseISO(b.booking_date);
+      counts[getDay(d)]++;
+    });
+    const avgs = counts.map((c, i) => dayCount[i] > 0 ? +(c / dayCount[i]).toFixed(1) : 0);
+    const maxAvg = Math.max(...avgs, 1);
+    return DAY_LABELS.map((label, i) => ({
+      label,
+      avg: avgs[i],
+      intensity: avgs[i] / maxAvg, // 0–1
+    }));
+  }, [currentBookings, start, end]);
 
   const PIE_COLORS = [
     "hsl(217, 91%, 60%)",
@@ -343,45 +432,82 @@ const HomeDashboard = () => {
         </Select>
       </div>
 
-      {/* ═══ Metric cards — 2x2 mobile, 4-col desktop ═══ */}
+      {/* ═══ KPI Cards — 2x2 mobile, 4-col desktop ═══ */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
         <MetricCard
           icon={<DollarSign className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
-          label="Total Revenue"
+          label="Revenue"
           value={currentRevenue > 0 ? formatCurrency(currentRevenue) : "—"}
           pct={revenuePct}
-          subtext={`vs last ${dateRange === "ytd" ? "year" : dateRange.replace("d", " days")}`}
+          subtext={periodLabel}
+          sparklineData={revenueSparkline}
         />
         <MetricCard
           icon={<Briefcase className="w-5 h-5 text-white" strokeWidth={1.5} />}
-          label="Total Bookings"
-          value={currentJobCount > 0 ? String(currentJobCount) : "—"}
-          pct={jobsPct}
-          subtext={`vs last ${dateRange === "ytd" ? "year" : dateRange.replace("d", " days")}`}
+          label="Jobs Completed"
+          value={currentCompleted.length > 0 ? String(currentCompleted.length) : "—"}
+          pct={completedPct}
+          subtext={periodLabel}
           highlighted
         />
         <MetricCard
-          icon={<Star className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
-          label="Reviews"
-          value={stats.testimonials > 0 ? String(stats.testimonials) : "—"}
-          pct={null}
+          icon={<TrendingUp className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
+          label="Avg. Ticket"
+          value={avgTicket > 0 ? formatCurrency(avgTicket) : "—"}
+          pct={avgTicketPct}
+          subtext={periodLabel}
         />
         <MetricCard
-          icon={<CalendarDays className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
-          label="Avg. per Job"
-          value={currentJobCount > 0 ? formatCurrency(Math.round(currentRevenue / currentJobCount)) : "—"}
-          pct={null}
+          icon={<Car className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
+          label="Vehicles Serviced"
+          value={vehiclesCurrent > 0 ? String(vehiclesCurrent) : "—"}
+          pct={vehiclesPct}
+          subtext={periodLabel}
         />
       </div>
+
+      {/* ═══ Top Services Table ═══ */}
+      {topServices.length > 0 && (
+        <div className="alytics-card rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 flex items-center justify-between">
+            <h3 className="alytics-card-title text-sm font-semibold">Top Services</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-[hsla(217,91%,60%,0.08)]">
+                  <th className="text-left px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wider dash-card-label w-8">#</th>
+                  <th className="text-left px-2 py-2.5 text-[11px] font-semibold uppercase tracking-wider dash-card-label">Service</th>
+                  <th className="text-right px-2 py-2.5 text-[11px] font-semibold uppercase tracking-wider dash-card-label">Jobs</th>
+                  <th className="text-right px-2 py-2.5 text-[11px] font-semibold uppercase tracking-wider dash-card-label">Revenue</th>
+                  <th className="text-right px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wider dash-card-label">Avg Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topServices.map((svc, i) => (
+                  <tr
+                    key={svc.name}
+                    className="border-b border-[hsla(217,91%,60%,0.05)] last:border-b-0 alytics-row-hover transition-colors"
+                    style={i === 0 ? { borderLeft: "3px solid hsl(45,93%,47%)" } : undefined}
+                  >
+                    <td className="px-5 py-3 text-xs font-mono dash-card-label">{i + 1}</td>
+                    <td className="px-2 py-3 alytics-card-title font-medium truncate max-w-[200px]">{svc.name}</td>
+                    <td className="px-2 py-3 text-right font-mono alytics-card-title">{svc.jobs}</td>
+                    <td className="px-2 py-3 text-right font-mono alytics-card-title font-semibold">{formatCurrency(svc.revenue)}</td>
+                    <td className="px-5 py-3 text-right font-mono alytics-card-sub">{formatCurrency(svc.avg)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* ═══ Revenue Bar Chart ═══ */}
       {chartData.length > 1 && (
         <div className="alytics-card rounded-2xl p-5 lg:p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="alytics-card-title text-sm font-semibold">Revenue Breakdown</h3>
-            <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center">
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
           </div>
           <div className="h-[220px] lg:h-[260px]">
             <ChartContainer config={chartConfig} className="h-full w-full">
@@ -423,9 +549,6 @@ const HomeDashboard = () => {
         <div className="alytics-card rounded-2xl p-5 lg:p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="alytics-card-title text-sm font-semibold">Report Overview</h3>
-            <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center">
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
           </div>
           {serviceBreakdown.length > 0 ? (
             <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -477,9 +600,6 @@ const HomeDashboard = () => {
         <div className="alytics-card rounded-2xl overflow-hidden">
           <div className="px-5 py-4 flex items-center justify-between">
             <h3 className="alytics-card-title text-sm font-semibold">Recent Bookings</h3>
-            <button className="dash-menu-btn w-7 h-7 rounded-lg flex items-center justify-center">
-              <MoreHorizontal className="w-4 h-4" />
-            </button>
           </div>
           <div className="alytics-divide">
             {currentBookings.length === 0 ? (
@@ -524,7 +644,7 @@ const HomeDashboard = () => {
                       <p className="alytics-card-title text-sm font-medium truncate">{b.customer_name || "—"}</p>
                       <p className="alytics-card-sub text-xs truncate">{b.service_title || "—"}</p>
                       {b.notes && b.notes.startsWith("Vehicle:") && (
-                        <p className="text-[11px] text-muted-foreground/60 truncate">{b.notes.split("\n")[0].replace("Vehicle: ", "")}</p>
+                        <p className="text-[11px] alytics-card-sub truncate">{b.notes.split("\n")[0].replace("Vehicle: ", "")}</p>
                       )}
                     </div>
                   </div>
@@ -553,60 +673,33 @@ const HomeDashboard = () => {
         </div>
       </div>
 
-      {/* ═══ Activity Line Chart ═══ */}
-      {chartData.length > 1 && (
-        <div className="alytics-card rounded-2xl p-5 lg:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="alytics-card-title text-sm font-semibold">Booking Activity</h3>
-          </div>
-          <div className="h-[180px] lg:h-[220px]">
-            <ChartContainer config={chartConfig} className="h-full w-full">
-              <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -10 }}>
-                <defs>
-                  <linearGradient id="activityGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0.15} />
-                    <stop offset="100%" stopColor="hsl(217, 91%, 60%)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsla(214, 20%, 50%, 0.15)" vertical={false} />
-                <XAxis
-                  dataKey="date"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fontSize: 11, fill: "hsl(215, 16%, 55%)" }}
-                  interval="preserveStartEnd"
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fontSize: 11, fill: "hsl(215, 16%, 55%)" }}
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Area
-                  type="monotone"
-                  dataKey="bookings"
-                  stroke="hsl(217, 91%, 60%)"
-                  strokeWidth={2.5}
-                  fill="url(#activityGrad)"
-                  dot={false}
-                  activeDot={{ r: 5, fill: "hsl(217, 91%, 60%)", stroke: "hsl(0, 0%, 100%)", strokeWidth: 2 }}
-                  animationDuration={600}
-                />
-              </AreaChart>
-            </ChartContainer>
-          </div>
+      {/* ═══ Busiest Days Heatmap ═══ */}
+      <div className="alytics-card rounded-2xl p-5 lg:p-6">
+        <h3 className="alytics-card-title text-sm font-semibold mb-4">Busiest Days</h3>
+        <div className="grid grid-cols-7 gap-2 lg:gap-3">
+          {busiestDays.map(d => (
+            <div key={d.label} className="flex flex-col items-center gap-1.5">
+              <div
+                className="w-full aspect-square rounded-xl flex items-center justify-center transition-colors"
+                style={{
+                  background: d.intensity > 0
+                    ? `hsla(217, 91%, 60%, ${0.08 + d.intensity * 0.5})`
+                    : "hsla(217, 91%, 60%, 0.04)",
+                  border: `1px solid hsla(217, 91%, 60%, ${0.05 + d.intensity * 0.25})`,
+                }}
+              >
+                <span
+                  className="text-lg lg:text-xl font-bold"
+                  style={{ color: d.intensity > 0.5 ? "hsl(217, 91%, 70%)" : "hsla(215, 16%, 55%, 0.8)" }}
+                >
+                  {d.avg}
+                </span>
+              </div>
+              <span className="text-[11px] font-medium dash-card-label">{d.label}</span>
+            </div>
+          ))}
         </div>
-      )}
-
-      {/* Live Website Preview — same tabbed view as /dashboard/website */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="alytics-card-title font-semibold text-sm">Your Website Preview</h3>
-            <p className="alytics-card-sub text-xs">This is how your live site looks with your current data</p>
-          </div>
-        </div>
-        <WebsitePage chatbotRef={outletContext?.chatbotRef} />
+        <p className="text-[11px] alytics-card-sub mt-3">Average bookings per day of week</p>
       </div>
     </div>
   );
