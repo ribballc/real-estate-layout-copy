@@ -27,18 +27,13 @@ const HeroSection = () => {
       {/* Glow Orbs */}
       <div className="absolute rounded-full pointer-events-none" style={{
         width: 500, height: 500, top: "-15%", left: "-10%",
-        background: "radial-gradient(circle, hsla(217, 91%, 60%, 0.4), transparent)",
-        filter: "blur(80px)", opacity: 0.15, animation: "orbFloat1 25s ease-in-out infinite",
+        background: "radial-gradient(circle, hsla(217, 91%, 60%, 0.06), transparent)",
+        filter: "blur(120px)", animation: "orbDrift 25s ease-in-out infinite alternate",
       }} />
       <div className="absolute rounded-full pointer-events-none" style={{
         width: 600, height: 600, bottom: "-20%", right: "-10%",
-        background: "radial-gradient(circle, hsla(213, 94%, 68%, 0.3), transparent)",
-        filter: "blur(80px)", opacity: 0.12, animation: "orbFloat2 30s ease-in-out infinite 5s",
-      }} />
-      <div className="absolute rounded-full pointer-events-none" style={{
-        width: 300, height: 300, top: "40%", left: "60%",
-        background: "radial-gradient(circle, hsla(217, 91%, 60%, 0.25), transparent)",
-        filter: "blur(80px)", opacity: 0.08, animation: "orbFloat3 35s ease-in-out infinite 10s",
+        background: "radial-gradient(circle, hsla(160, 84%, 39%, 0.04), transparent)",
+        filter: "blur(120px)", animation: "orbDrift2 25s ease-in-out infinite alternate",
       }} />
 
       {/* Grid patterns */}
@@ -65,30 +60,34 @@ const HeroSection = () => {
 
           {/* LEFT: Text column */}
           <div className="relative z-10 text-left">
-            {/* Badge */}
+            {/* Badge — pulsing green dot pill */}
             <span
-              className="text-sky text-[13px] font-medium tracking-[0.05em] uppercase px-3 py-1.5 rounded-lg inline-flex items-center gap-2 mb-5"
+              className="text-sm font-semibold tracking-wide px-5 py-2 rounded-full inline-flex items-center gap-2.5 mb-5 backdrop-blur-sm"
               style={{
-                background: 'hsla(217, 91%, 60%, 0.1)',
-                border: '1px solid hsla(217, 91%, 60%, 0.2)',
+                background: 'hsla(0, 0%, 100%, 0.05)',
+                border: '1px solid hsla(0, 0%, 100%, 0.1)',
+                color: 'hsla(0, 0%, 100%, 0.8)',
                 opacity: 0, animation: 'fadeSlideDown 0.4s ease-out 0.2s forwards',
               }}
             >
-              FOR DETAILERS & INSTALLERS
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-400" />
+              </span>
+              Built for Detailers, PPF Installers & Tint Shops
             </span>
 
             {/* Headline */}
             <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em]">
-              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
-                The Instant
+              <span className="block font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
+                Stop Losing Bookings
               </span>
-              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.5s forwards' }}>
-                Website & Booking
+              <span className="block font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.5s forwards' }}>
+                To a Phone You Can't
               </span>
-              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
-                System For{' '}
+              <span className="block font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
                 <span className="hidden md:inline-block relative font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
-                  Auto Pros
+                  Always Answer.
                   <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.2s forwards' }}>
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#greenGlow)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.2s forwards' }} />
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.2s forwards' }} />
@@ -102,9 +101,9 @@ const HeroSection = () => {
                   </svg>
                 </span>
               </span>
-              <span className="block md:hidden font-heading text-[36px] font-semibold italic relative" style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.7s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
+              <span className="block md:hidden font-heading text-[30px] font-semibold italic relative" style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.7s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
                 <span className="relative inline-block">
-                  Auto Pros
+                  Always Answer.
                   <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.4s forwards' }}>
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#greenGlowMobile)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.4s forwards' }} />
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.4s forwards' }} />
@@ -122,10 +121,10 @@ const HeroSection = () => {
 
             {/* Sub-headline */}
             <p
-              className="mt-5 text-[15px] md:text-xl leading-[1.6] max-w-[600px]"
+              className="mt-5 text-[15px] md:text-xl leading-[1.7] max-w-[560px]"
               style={{ color: 'hsla(0, 0%, 100%, 0.7)', opacity: 0, animation: 'heroBlurIn 0.5s ease-out 1.0s forwards' }}
             >
-              Get a professional website with 24/7 booking. Customers book themselves while you're in the field. Automated reminders, deposits, and a calendar that fills itself.
+              Get a done-for-you website and 24/7 booking system built for your shop. Customers book, pay deposits, and get automatic reminders — while you stay under the hood.
             </p>
 
             {/* Email form + CTA */}
@@ -140,7 +139,7 @@ const HeroSection = () => {
                   type="email"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
-                  placeholder="Enter Your Email"
+                  placeholder="Enter your email — it's free to start"
                   maxLength={100}
                   className="h-14 w-full rounded-xl pl-10 pr-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none transition-all duration-200"
                   style={{
@@ -161,7 +160,7 @@ const HeroSection = () => {
               </div>
               <button
                 type="submit"
-                className="group h-14 px-8 text-base font-semibold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+                className="group h-14 px-8 text-base font-extrabold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
                 style={{
                   background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
                   color: 'hsl(0 0% 100%)',
@@ -169,8 +168,8 @@ const HeroSection = () => {
                   opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
                 }}
               >
-                Launch My Site Free
-                <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                Claim My Free Website
+                <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-[3px]" />
               </button>
             </form>
             {error && <p className="text-sm text-destructive mt-2">{error}</p>}
@@ -179,9 +178,9 @@ const HeroSection = () => {
             <div className="mt-5 flex items-center gap-4 flex-wrap" style={{
               color: 'hsla(0, 0%, 100%, 0.5)', opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 1.8s forwards',
             }}>
-              <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> Built in 5 minutes</span>
+              <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> Live in 48 hours</span>
               <span className="text-primary-foreground/20">•</span>
-              <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> Free for 14 days</span>
+              <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> Free for 14 days — no card needed</span>
             </div>
 
             {/* Social proof */}
@@ -190,7 +189,7 @@ const HeroSection = () => {
             }}>
               <span className="text-accent text-sm tracking-wide">★★★★★</span>
               <span className="font-semibold">
-                Trusted by <strong>200+</strong> detailers · <strong>$2.4M</strong> in bookings captured
+                Trusted by <strong>200+</strong> shops  ·  <strong>$2.4M</strong> in bookings captured  ·  <strong>4.9/5</strong> average rating
               </span>
             </div>
           </div>
@@ -207,7 +206,7 @@ const HeroSection = () => {
 
         {/* Scroll indicator */}
         <div className="hidden md:flex flex-col items-center pb-8 pt-4" style={{ opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 2.2s forwards' }}>
-          <span className="text-primary-foreground/40 text-[13px] font-medium tracking-[0.05em] uppercase mb-2">Scroll to explore</span>
+          <span className="text-primary-foreground/40 text-[13px] font-bold tracking-[0.12em] uppercase mb-2">Scroll to explore</span>
           <ChevronDown className="w-5 h-5 text-primary-foreground/40" style={{ animation: 'scrollBounce 2s ease-in-out infinite' }} />
         </div>
       </div>

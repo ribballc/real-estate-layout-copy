@@ -57,13 +57,13 @@ const ValueBreakdown = () => {
         <FadeIn>
           <div className="text-center mb-12 md:mb-16">
             <h2
-              className="font-heading text-[32px] md:text-[56px] lg:text-[72px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
+              className="font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.2] mb-4"
               style={{ color: "hsl(222, 47%, 11%)" }}
             >
               Here's What You Get
             </h2>
-            <p className="text-lg md:text-xl" style={{ color: "hsl(215, 16%, 47%)" }}>
-              it's a lot of stuff but... it's all done for you
+            <p className="text-lg md:text-xl leading-[1.7]" style={{ color: "hsl(215, 16%, 47%)" }}>
+              Everything a serious shop needs. Built, configured, and running — not a template you have to figure out.
             </p>
           </div>
         </FadeIn>
@@ -150,13 +150,13 @@ const ValueBreakdown = () => {
                 <div className="flex flex-col md:flex-row items-center justify-center gap-5 md:gap-8 mb-6">
                   <div className="flex flex-col items-center gap-2">
                     <span
-                      className="text-[14px] font-semibold uppercase tracking-[1.2px]"
+                      className="text-[11px] font-bold uppercase tracking-[0.12em]"
                       style={{ color: "hsl(215, 16%, 55%)" }}
                     >
-                      Total Value
+                      Professional agencies charge:
                     </span>
                     <span
-                      className="font-mono text-4xl md:text-[40px] font-semibold line-through decoration-[3px]"
+                      className="font-mono text-2xl font-semibold line-through decoration-[3px]"
                       style={{
                         color: "hsl(215, 16%, 55%)",
                         textDecorationColor: "hsl(0, 84%, 60%)",
@@ -180,17 +180,17 @@ const ValueBreakdown = () => {
 
                   <div className="flex flex-col items-center gap-2">
                     <span
-                      className="text-[14px] font-semibold uppercase tracking-[1.2px]"
+                      className="text-[11px] font-bold uppercase tracking-[0.12em]"
                       style={{ color: "hsl(215, 16%, 55%)" }}
                     >
-                      Your Price Today
+                      Your price with Darker:
                     </span>
                     <span
                       className="font-bold text-[48px] md:text-[56px] leading-none"
                       style={{
                         color: "hsl(160, 84%, 39%)",
                         letterSpacing: "-2px",
-                        textShadow: "0 0 24px hsla(160, 84%, 39%, 0.3)",
+                        textShadow: "0 0 20px hsla(160, 84%, 39%, 0.5)",
                       }}
                     >
                       FREE
@@ -198,11 +198,13 @@ const ValueBreakdown = () => {
                   </div>
                 </div>
 
+
+
                 <div className="text-center pt-5" style={{ borderTop: "1px solid hsla(0, 0%, 100%, 0.1)" }}>
                   <p className="text-[15px] md:text-base leading-relaxed" style={{ color: "hsl(210, 40%, 96%)" }}>
-                    <strong className="font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>14-day free trial. Zero risk. No card needed.</strong>
+                    <strong className="font-semibold" style={{ color: "hsl(222, 47%, 11%)" }}>Start completely free for 14 days. No credit card, no commitment.</strong>
                     <br />
-                    <span style={{ color: "hsl(215, 16%, 47%)" }}>Then $54/month for hosting + automation.</span>
+                    <span style={{ color: "hsl(215, 16%, 47%)" }}>After your trial: $54/month — less than one detail job.</span>
                   </p>
                 </div>
               </div>
@@ -214,16 +216,16 @@ const ValueBreakdown = () => {
           <div className="text-center">
             <button
               onClick={openFunnel}
-              className="group relative inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 w-full md:w-auto justify-center"
+              className="group relative inline-flex items-center gap-2 font-extrabold rounded-xl px-12 py-5 text-base min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 w-full md:w-auto justify-center"
               style={{
                 color: "hsl(0, 0%, 100%)",
                 background: "linear-gradient(135deg, hsl(217, 71%, 53%) 0%, hsl(217, 71%, 43%) 100%)",
-                boxShadow: "0 4px 16px hsla(217, 71%, 53%, 0.3)",
+                boxShadow: "0 0 32px hsla(217, 91%, 60%, 0.35), 0 4px 16px hsla(217, 71%, 53%, 0.3)",
               }}
             >
               <span className="relative z-10 flex items-center gap-2">
-                Claim Now
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+                Start Free — No Card Needed
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-[3px] transition-transform" />
               </span>
               <span
                 className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"
