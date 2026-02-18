@@ -2,6 +2,7 @@ import DashboardSidebar from "./DashboardSidebar";
 import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import TrialLockOverlay from "./TrialLockOverlay";
 import MobileBottomNav from "./MobileBottomNav";
+import CommandBar from "./CommandBar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState, useRef } from "react";
@@ -10,7 +11,6 @@ import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
   TrendingUp, Users, CalendarDays, Search, Menu, KanbanSquare, ClipboardList,
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import darkerLogo from "@/assets/darker-logo.png";
 import darkerLogoDark from "@/assets/darker-logo-dark.png";
@@ -51,8 +51,7 @@ const DashboardLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
     return localStorage.getItem("sidebar-collapsed") === "true";
   });
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [commandBarOpen, setCommandBarOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const chatbotRef = useRef<SupportChatbotHandle>(null);
   const [trialActive, setTrialActive] = useState<boolean | null>(null);
@@ -120,9 +119,17 @@ const DashboardLayout = () => {
     });
   };
 
-  const searchResults = searchQuery.trim()
-    ? searchablePages.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase()) || p.description.toLowerCase().includes(searchQuery.toLowerCase()))
-    : [];
+  // Cmd+K handler
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setCommandBarOpen(prev => !prev);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   const isDark = dashboardTheme === "dark";
 
@@ -186,43 +193,21 @@ const DashboardLayout = () => {
                   </p>
                 </div>
               </div>
-              {/* Desktop search */}
-              <div className="relative hidden md:block w-64">
-                <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-white/30" : "text-[hsl(215,16%,65%)]"}`} />
-                <Input
-                  value={searchQuery}
-                  onChange={e => { setSearchQuery(e.target.value); setSearchOpen(true); }}
-                  onFocus={() => setSearchOpen(true)}
-                  onBlur={() => setTimeout(() => setSearchOpen(false), 200)}
-                  placeholder="Search anything..."
-                  className={`pl-10 h-9 text-sm rounded-xl ${
-                    isDark
-                      ? "bg-white/5 border-white/10 text-white"
-                      : "bg-[hsl(210,40%,98%)] border-[hsl(214,20%,90%)] text-[hsl(215,25%,12%)]"
-                  } focus-visible:ring-[hsl(217,91%,60%)]`}
-                />
-                {searchOpen && searchResults.length > 0 && (
-                  <div className={`absolute top-full mt-1 left-0 right-0 rounded-xl border shadow-xl z-50 overflow-hidden ${
-                    isDark ? "border-white/10 bg-[hsl(215,50%,10%)]" : "border-[hsl(214,20%,90%)] bg-white"
-                  }`}>
-                    {searchResults.map(r => (
-                      <button
-                        key={r.url}
-                        onMouseDown={() => { navigate(r.url); setSearchQuery(""); setSearchOpen(false); }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${
-                          isDark ? "hover:bg-white/[0.04] text-white/70" : "hover:bg-[hsl(217,91%,97%)] text-[hsl(215,16%,40%)]"
-                        }`}
-                      >
-                        <r.icon className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} />
-                        <div className="text-left">
-                          <span className="font-medium">{r.title}</span>
-                          <span className={`block text-xs ${isDark ? "text-white/40" : "text-[hsl(215,16%,55%)]"}`}>{r.description}</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+              {/* Desktop search trigger → opens command bar */}
+              <button
+                onClick={() => setCommandBarOpen(true)}
+                className={`hidden md:flex items-center gap-2 px-3 h-9 rounded-xl border text-sm transition-colors w-56 ${
+                  isDark
+                    ? "bg-white/5 border-white/10 text-white/40 hover:bg-white/[0.08] hover:text-white/60"
+                    : "bg-[hsl(210,40%,98%)] border-[hsl(214,20%,90%)] text-[hsl(215,16%,55%)] hover:bg-[hsl(214,20%,96%)]"
+                }`}
+              >
+                <Search className="w-4 h-4 shrink-0" />
+                <span className="flex-1 text-left truncate">Search...</span>
+                <kbd className={`text-[10px] px-1.5 py-0.5 rounded font-mono shrink-0 ${isDark ? "bg-white/10 text-white/30" : "bg-[hsl(214,20%,92%)] text-[hsl(215,16%,50%)]"}`}>
+                  ⌘K
+                </kbd>
+              </button>
             </div>
           </header>
 
@@ -268,6 +253,8 @@ const DashboardLayout = () => {
           />
         </SheetContent>
       </Sheet>
+
+      <CommandBar open={commandBarOpen} onClose={() => setCommandBarOpen(false)} isDark={isDark} />
     </>
   );
 };
