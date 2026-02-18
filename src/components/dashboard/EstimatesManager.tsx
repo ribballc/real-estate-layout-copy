@@ -13,6 +13,7 @@ import {
   Search, ChevronDown, ArrowRight,
 } from "lucide-react";
 import { format } from "date-fns";
+import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
 /* ── Types ───────────────────────────────────────────── */
 
@@ -267,7 +268,7 @@ const EstimatesManager = () => {
 
   /* ── Loading ───────────────────────────────────────── */
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-[hsl(217,91%,60%)]" /></div>;
+  if (loading) return <TableSkeleton rows={4} cols={5} />;
 
   /* ── Editor modal ──────────────────────────────────── */
 

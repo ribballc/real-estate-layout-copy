@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, X, Plus, Palette, ChevronDown, Share2 } from "lucide-react";
+import FormSkeleton from "@/components/skeletons/FormSkeleton";
 import HoursManager from "./HoursManager";
 import SocialMediaForm from "./SocialMediaForm";
 import AddressAutocomplete from "./AddressAutocomplete";
@@ -96,7 +97,7 @@ const BusinessInfoForm = () => {
 
   const removeServiceArea = (city: string) => setServiceAreas(serviceAreas.filter(a => a !== city));
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
+  if (loading) return <FormSkeleton rows={6} />;
 
   const field = (label: string, key: keyof typeof form, type = "text", placeholder = "") => (
     <div className="space-y-2">

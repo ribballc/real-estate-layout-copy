@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Plus, Trash2, ChevronDown, Upload, ImageIcon, X } from "lucide-react";
+import { ServiceListSkeleton } from "@/components/skeletons/ServiceCardSkeleton";
 
 interface AddOn { id: string; service_id: string; title: string; description: string; price: number; image_url: string | null; }
 interface Service { id: string; title: string; }
@@ -124,8 +125,14 @@ const AddOnsManager = () => {
   };
 
   const updateAddOn = async (id: string, updates: Partial<AddOn>) => {
-    await supabase.from("add_ons").update(updates).eq("id", id);
-    setAddOns((prev) => prev.map((a) => (a.id === id ? { ...a, ...updates } : a)));
+    // Optimistic update
+    const prev = addOns.find(a => a.id === id);
+    setAddOns((all) => all.map((a) => (a.id === id ? { ...a, ...updates } : a)));
+    const { error } = await supabase.from("add_ons").update(updates).eq("id", id);
+    if (error) {
+      if (prev) setAddOns((all) => all.map((a) => (a.id === id ? prev : a)));
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    }
   };
 
   const deleteAddOn = async (id: string) => {
@@ -133,7 +140,7 @@ const AddOnsManager = () => {
     setAddOns((prev) => prev.filter((a) => a.id !== id));
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
+  if (loading) return <ServiceListSkeleton count={2} />;
 
   const filtered = addOns.filter((a) => a.service_id === selectedService);
   const selectedServiceObj = services.find(s => s.id === selectedService);

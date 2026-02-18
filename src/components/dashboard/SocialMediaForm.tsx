@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import FormSkeleton from "@/components/skeletons/FormSkeleton";
 
 const fields = [
   { key: "instagram", label: "Instagram", prefix: "@", baseUrl: "https://instagram.com/", placeholder: "yourbusiness" },
@@ -71,7 +72,7 @@ const SocialMediaForm = ({ embedded = false }: { embedded?: boolean }) => {
     else toast({ title: "Saved!", description: "Social links updated." });
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
+  if (loading) return <FormSkeleton rows={4} />;
 
   return (
     <div className={embedded ? "" : "max-w-2xl"}>

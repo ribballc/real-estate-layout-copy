@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import ServiceOptionsManager from "./ServiceOptionsManager";
 import AddOnsManager from "./AddOnsManager";
+import { ServiceListSkeleton } from "@/components/skeletons/ServiceCardSkeleton";
 
 interface Service {
   id: string;
@@ -93,9 +94,15 @@ const ServicesManager = () => {
   };
 
   const updateService = async (id: string, updates: Partial<Service>) => {
+    // Optimistic update
+    const prev = services.find(s => s.id === id);
+    setServices((s) => s.map((svc) => (svc.id === id ? { ...svc, ...updates } : svc)));
     const { error } = await supabase.from("services").update(updates).eq("id", id);
-    if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
-    else setServices((prev) => prev.map((s) => (s.id === id ? { ...s, ...updates } : s)));
+    if (error) {
+      // Revert
+      if (prev) setServices((s) => s.map((svc) => (svc.id === id ? prev : svc)));
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    }
   };
 
   const deleteService = async (id: string) => {
@@ -196,7 +203,7 @@ const ServicesManager = () => {
     }
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
+  if (loading) return <ServiceListSkeleton />;
 
   const existingTitles = new Set(services.map(s => s.title.toLowerCase()));
   const availablePresets = PRESET_SERVICES.filter(p => !existingTitles.has(p.title.toLowerCase()));

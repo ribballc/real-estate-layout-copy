@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import CsvImportModal from "./CsvImportModal";
+import { CustomerListSkeleton } from "@/components/skeletons/CustomerRowSkeleton";
 
 interface VehicleEntry {
   year: string;
@@ -189,8 +190,14 @@ const CustomersManager = () => {
   };
 
   const updateStatus = async (id: string, status: string) => {
-    await supabase.from("customers").update({ status }).eq("id", id);
-    setCustomers(prev => prev.map(c => c.id === id ? { ...c, status } : c));
+    // Optimistic update
+    const prev = customers.find(c => c.id === id);
+    setCustomers(all => all.map(c => c.id === id ? { ...c, status } : c));
+    const { error } = await supabase.from("customers").update({ status }).eq("id", id);
+    if (error) {
+      if (prev) setCustomers(all => all.map(c => c.id === id ? prev : c));
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    }
   };
 
   const confirmDelete = async () => {
@@ -226,7 +233,7 @@ const CustomersManager = () => {
     totalRevenue: customers.reduce((sum, c) => sum + (c.total_spent || 0), 0),
   }), [customers]);
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
+  if (loading) return <CustomerListSkeleton />;
 
   return (
     <div className="max-w-5xl">

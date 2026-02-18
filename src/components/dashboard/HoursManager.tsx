@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import FormSkeleton from "@/components/skeletons/FormSkeleton";
 
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -51,7 +52,7 @@ const HoursManager = () => {
     else toast({ title: "Saved!", description: "Business hours updated." });
   };
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
+  if (loading) return <FormSkeleton rows={7} />;
 
   return (
     <div className="max-w-2xl">

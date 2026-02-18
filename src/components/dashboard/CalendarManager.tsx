@@ -15,6 +15,7 @@ import {
   DollarSign, FileText, X, Calendar as CalendarIcon, Ban, RefreshCw,
   Trash2, ChevronDown, PhoneCall, Play, Car, CheckSquare, Square,
 } from "lucide-react";
+import CalendarSkeleton from "@/components/skeletons/CalendarSkeleton";
 
 const SERVICE_CHECKLISTS: Record<string, string[]> = {
   detail: ["Exterior Wash", "Clay Bar", "Polish", "Wax/Sealant", "Wheel Detail", "Tire Dressing", "Interior Vacuum", "Wipe Down", "Windows", "Final Inspection"],
@@ -314,7 +315,7 @@ const CalendarManager = () => {
     return () => window.removeEventListener("click", handler);
   }, [openStatusDropdown]);
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-accent" /></div>;
+  if (loading) return <CalendarSkeleton />;
 
   return (
     <div className="max-w-5xl">

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import TableSkeleton from "@/components/skeletons/TableSkeleton";
 import {
   Loader2, Plus, Clock, User, Mail, Phone, DollarSign, FileText, X,
   ChevronLeft, ChevronRight, PhoneCall, CheckCircle2, Calendar as CalendarIcon,
@@ -276,7 +277,7 @@ const JobsManager = () => {
 
   /* ── Loading ─────────────────────────────────────── */
 
-  if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-[hsl(217,91%,60%)]" /></div>;
+  if (loading) return <TableSkeleton rows={5} cols={4} />;
 
   /* ── Render ──────────────────────────────────────── */
 
