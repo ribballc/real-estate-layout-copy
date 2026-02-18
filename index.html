@@ -32,6 +32,7 @@
 
     <script>
       // Meta Pixel — only loads when cookie consent is given
+      // PageView is NOT fired here; it fires from React on route changes for deduplication
       function initMetaPixel() {
         if (window.fbq) return;
         !function(f,b,e,v,n,t,s)
@@ -47,7 +48,6 @@
           fn:window.__darker_user_first_name||'',
           ph:window.__darker_user_phone||''
         });
-        fbq('track','PageView');
       }
       // Auto-init if consent was previously given
       if(localStorage.getItem('darker_cookie_consent')==='accepted'){initMetaPixel()}

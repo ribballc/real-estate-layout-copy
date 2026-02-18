@@ -13,8 +13,7 @@ import ScrollProgress from "@/components/ScrollProgress";
 import SocialProofNotification from "@/components/SocialProofNotification";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { SurveyFunnelProvider } from "@/components/SurveyFunnelContext";
-import { fbqEvent, generateEventId } from "@/lib/pixel";
-import { sendCapiEvent } from "@/lib/capiEvent";
+import { trackEvent, generateEventId } from "@/lib/tracking";
 import SEOHead from "@/components/SEOHead";
 import { SITE_URL, FAQ_ITEMS } from "@/lib/seo";
 
@@ -90,13 +89,14 @@ const MARKETING_STRUCTURED_DATA = [
 const Index = () => {
   // Event 1: ViewContent — Landing Page
   useEffect(() => {
-    const eventId = generateEventId();
-    fbqEvent('track', 'ViewContent', {
-      content_name: 'Landing Page',
-      content_category: 'Marketing',
-      content_type: 'website',
-    }, eventId);
-    sendCapiEvent({ eventName: 'ViewContent', eventId });
+    trackEvent({
+      eventName: 'ViewContent',
+      customData: {
+        content_name: 'Landing Page',
+        content_category: 'Marketing',
+        content_type: 'website',
+      },
+    });
   }, []);
 
   // Capture fbclid from Meta ad clicks

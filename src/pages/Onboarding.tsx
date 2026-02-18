@@ -17,8 +17,7 @@ import {
   validateLocation,
 } from "@/lib/onboarding-validation";
 import { MapPin, Loader2 } from "lucide-react";
-import { fbqEvent, generateEventId } from "@/lib/pixel";
-import { sendCapiEvent } from "@/lib/capiEvent";
+import { trackEvent } from "@/lib/tracking";
 
 const SERVICES = [
   "Full Detail", "Interior Only", "Exterior Only", "Paint Correction",
@@ -232,23 +231,11 @@ const Onboarding = () => {
       return;
     }
     // Event 5: SubmitApplication — Onboarding Completed
-    const submitEventId = generateEventId();
-    fbqEvent('trackCustom', 'SubmitApplication', {
-      shop_name: shopName,
-      city: location,
-      services: services.join(','),
-      business_type: businessType,
-      num_services: services.length,
-    }, submitEventId);
-    sendCapiEvent({
+    trackEvent({
       eventName: 'SubmitApplication',
-      eventId: submitEventId,
-      userData: {
-        email: user.email || undefined,
-        firstName,
-        phone,
-      },
-      customData: { shop_name: shopName, city: location },
+      type: 'trackCustom',
+      userData: { email: user.email || undefined, firstName, phone },
+      customData: { shop_name: shopName, city: location, services: services.join(','), business_type: businessType, num_services: services.length },
     });
     localStorage.setItem("leadData", JSON.stringify({
       businessName: shopName.trim(),
@@ -280,11 +267,9 @@ const Onboarding = () => {
     };
     const stepEvent = stepEventMap[step];
     if (stepEvent) {
-      const eventId = generateEventId();
-      fbqEvent('trackCustom', stepEvent.name, stepEvent.customData || {}, eventId);
-      sendCapiEvent({
+      trackEvent({
         eventName: stepEvent.name,
-        eventId,
+        type: 'trackCustom',
         userData: stepEvent.userData,
         customData: stepEvent.customData,
       });

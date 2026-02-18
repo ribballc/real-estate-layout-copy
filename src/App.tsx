@@ -2,12 +2,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React, { Suspense } from "react";
-import { BrowserRouter, Routes, Route, useOutletContext } from "react-router-dom";
+import React, { Suspense, useEffect } from "react";
+import { BrowserRouter, Routes, Route, useOutletContext, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import CookieConsent from "@/components/CookieConsent";
+import { trackPageView } from "@/lib/tracking";
 
 // Eagerly loaded pages (above the fold / critical path)
 import Index from "./pages/Index";
@@ -80,6 +81,15 @@ const WebsitePageRoute = React.forwardRef<any>((_props, _ref) => {
 });
 WebsitePageRoute.displayName = "WebsitePageRoute";
 
+// Route-change PageView tracker
+const PageViewTracker = () => {
+  const location = useLocation();
+  useEffect(() => {
+    trackPageView();
+  }, [location.pathname]);
+  return null;
+};
+
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
@@ -88,6 +98,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
+            <PageViewTracker />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />

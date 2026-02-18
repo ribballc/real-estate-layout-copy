@@ -5,8 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { fbqEvent, generateEventId } from "@/lib/pixel";
-import { sendCapiEvent } from "@/lib/capiEvent";
+import { trackEvent } from "@/lib/tracking";
 
 const PRICES = {
   monthly: "price_1T1I5SP734Q0ltptMJmmSvok",
@@ -136,17 +135,10 @@ const UpgradeModal = () => {
     }
     setLoading(true);
     // Event 7: StartTrial — Stripe Checkout Clicked
-    const eventId = generateEventId();
-    fbqEvent('track', 'StartTrial', {
-      currency: 'USD',
-      value: annual ? 54 : 79,
-      predicted_ltv: annual ? 648 : 948,
-    }, eventId);
-    sendCapiEvent({
+    trackEvent({
       eventName: 'StartTrial',
-      eventId,
       userData: { email: user?.email || undefined, firstName: user?.user_metadata?.first_name },
-      customData: { currency: 'USD', value: annual ? 54 : 79, plan: annual ? 'annual' : 'monthly' },
+      customData: { currency: 'USD', value: annual ? 54 : 79, predicted_ltv: annual ? 648 : 948, plan: annual ? 'annual' : 'monthly' },
     });
     try {
       const priceId = annual ? PRICES.annual : PRICES.monthly;

@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { fbqEvent, generateEventId } from "@/lib/pixel";
-import { sendCapiEvent } from "@/lib/capiEvent";
+import { trackEvent } from "@/lib/tracking";
 
 interface UpgradeModalContextType {
   upgradeModalOpen: boolean;
@@ -21,17 +20,9 @@ export const UpgradeModalProvider = ({ children }: { children: ReactNode }) => {
 
   const handleOpen = () => {
     setUpgradeModalOpen(true);
-    // Event 6: InitiateCheckout
-    const eventId = generateEventId();
-    fbqEvent('track', 'InitiateCheckout', {
-      content_name: 'Upgrade Modal Opened',
-      currency: 'USD',
-      num_items: 1,
-    }, eventId);
-    sendCapiEvent({
+    trackEvent({
       eventName: 'InitiateCheckout',
-      eventId,
-      customData: { currency: 'USD' },
+      customData: { content_name: 'Upgrade Modal Opened', currency: 'USD', num_items: 1 },
     });
   };
 
