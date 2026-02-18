@@ -5,6 +5,8 @@ import MobileBottomNav from "./MobileBottomNav";
 import CommandBar from "./CommandBar";
 import WelcomeModal from "./WelcomeModal";
 import PageIntroBanner from "./PageIntroBanner";
+import UpgradeModal from "./UpgradeModal";
+import { UpgradeModalProvider } from "@/contexts/UpgradeModalContext";
 
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,6 +17,7 @@ import {
   TrendingUp, Users, CalendarDays, Search, Menu, KanbanSquare, ClipboardList, FlaskConical,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { useToast } from "@/hooks/use-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import darkerLogo from "@/assets/darker-logo.png";
 import darkerLogoDark from "@/assets/darker-logo-dark.png";
@@ -48,6 +51,7 @@ const DashboardLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   const page = pageTitles[location.pathname] || pageTitles["/dashboard"];
   const PageIcon = page.icon;
   const [dashboardTheme, setDashboardTheme] = useState<"dark" | "light">(() => {
@@ -91,12 +95,20 @@ const DashboardLayout = () => {
     if (!user) return;
     const params = new URLSearchParams(location.search);
     const isPostCheckout = params.get("checkout") === "success";
+    if (isPostCheckout) {
+      window.history.replaceState({}, "", "/dashboard");
+    }
     const checkSubscription = async () => {
       try {
         const { data, error } = await supabase.functions.invoke("check-subscription");
         if (!error && data?.subscribed) {
           setTrialActive(true);
-          if (isPostCheckout) navigate("/dashboard", { replace: true });
+          if (isPostCheckout) {
+            toast({
+              title: "You're live! Your free trial has started.",
+              description: "Your site is now active. Start taking bookings.",
+            });
+          }
         }
       } catch (e) {
         console.error("Failed to check subscription:", e);
@@ -146,6 +158,7 @@ const DashboardLayout = () => {
   const isDark = dashboardTheme === "dark";
 
   return (
+    <UpgradeModalProvider>
     <>
       <div
         className={`min-h-screen flex w-full ${isDark ? "dashboard-dark" : "dashboard-light"} ${showEntryAnim ? "animate-dashboard-entry" : ""}`}
@@ -280,7 +293,9 @@ const DashboardLayout = () => {
 
       {/* First-visit welcome modal */}
       {showEntryAnim && <WelcomeModal firstName={firstName} isDark={isDark} />}
+      <UpgradeModal />
     </>
+    </UpgradeModalProvider>
   );
 };
 

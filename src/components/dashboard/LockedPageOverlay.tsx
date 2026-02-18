@@ -1,12 +1,5 @@
-import { Lock, Loader2, ChevronRight } from "lucide-react";
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-
-const PRICES = {
-  monthly: "price_1T1I5SP734Q0ltptMJmmSvok",
-  annual: "price_1T1JeMP734Q0ltptDuj5K6Na",
-};
+import { Lock, ChevronRight } from "lucide-react";
+import { useUpgradeModal } from "@/contexts/UpgradeModalContext";
 
 const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/dashboard/calendar": "your online booking calendar and customer scheduling",
@@ -42,30 +35,10 @@ interface LockedPageOverlayProps {
 }
 
 const LockedPageOverlay = ({ path, isDark }: LockedPageOverlayProps) => {
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const { openUpgradeModal } = useUpgradeModal();
 
   const pageName = getPageName(path);
   const description = PAGE_DESCRIPTIONS[path] || "this feature";
-
-  const handleActivate = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { priceId: PRICES.annual },
-      });
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-    } catch (err: any) {
-      toast({
-        title: "Checkout error",
-        description: err.message || "Something went wrong",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="relative">
@@ -159,9 +132,8 @@ const LockedPageOverlay = ({ path, isDark }: LockedPageOverlayProps) => {
 
         {/* CTA */}
         <button
-          onClick={handleActivate}
-          disabled={loading}
-          className="mt-6 font-semibold inline-flex items-center gap-2 transition-all"
+          onClick={openUpgradeModal}
+          className="mt-6 font-semibold inline-flex items-center gap-2 transition-all hover:brightness-110"
           style={{
             height: "48px",
             borderRadius: "10px",
@@ -171,34 +143,12 @@ const LockedPageOverlay = ({ path, isDark }: LockedPageOverlayProps) => {
             color: "white",
             fontSize: "15px",
             border: "none",
-            cursor: loading ? "wait" : "pointer",
+            cursor: "pointer",
             boxShadow: "0 4px 20px hsla(217,91%,60%,0.3)",
-            opacity: loading ? 0.7 : 1,
-          }}
-          onMouseEnter={(e) => {
-            if (!loading) {
-              e.currentTarget.style.filter = "brightness(1.08)";
-              e.currentTarget.style.boxShadow =
-                "0 4px 20px hsla(217,91%,60%,0.4)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.filter = "brightness(1)";
-            e.currentTarget.style.boxShadow =
-              "0 4px 20px hsla(217,91%,60%,0.3)";
           }}
         >
-          {loading ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Opening checkout…
-            </>
-          ) : (
-            <>
-              Activate Free Trial
-              <ChevronRight className="w-4 h-4" />
-            </>
-          )}
+          Activate Free Trial
+          <ChevronRight className="w-4 h-4" />
         </button>
 
         {/* Fine print */}
