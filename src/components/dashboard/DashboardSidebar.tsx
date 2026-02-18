@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Building2, Wrench, Clock, Camera, Star, Settings, LogOut,
   Bug, HelpCircle, CalendarDays, Users, Sun, Moon, LayoutDashboard, Lock,
-  Bell, Globe, ChevronLeft, ChevronRight,
+  Bell, Globe, ChevronLeft, ChevronRight, KanbanSquare,
 } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,6 +17,7 @@ const items = [
   { title: "Business Info", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true },
   { title: "Website", url: "/dashboard/website", icon: Globe, alwaysUnlocked: true },
   { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
+  { title: "Jobs", url: "/dashboard/jobs", icon: KanbanSquare },
   { title: "Customers", url: "/dashboard/customers", icon: Users },
   { title: "Services", url: "/dashboard/services", icon: Wrench },
   { title: "Photos", url: "/dashboard/photos", icon: Camera },

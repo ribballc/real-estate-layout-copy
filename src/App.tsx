@@ -24,6 +24,7 @@ import ServicesManager from "./components/dashboard/ServicesManager";
 import PhotosManager from "./components/dashboard/PhotosManager";
 import TestimonialsManager from "./components/dashboard/TestimonialsManager";
 import CalendarManager from "./components/dashboard/CalendarManager";
+import JobsManager from "./components/dashboard/JobsManager";
 import AccountSettings from "./components/dashboard/AccountSettings";
 import CustomersManager from "./components/dashboard/CustomersManager";
 import WebsitePage from "./components/dashboard/WebsitePage";
@@ -63,6 +64,7 @@ const App = () => (
               <Route path="business" element={<BusinessInfoForm />} />
               <Route path="website" element={<WebsitePageRoute />} />
               <Route path="calendar" element={<CalendarManager />} />
+              <Route path="jobs" element={<JobsManager />} />
               <Route path="customers" element={<CustomersManager />} />
               <Route path="services" element={<ServicesManager />} />
               <Route path="photos" element={<PhotosManager />} />
