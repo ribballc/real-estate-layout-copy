@@ -10,11 +10,11 @@ const GhostCar = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 400 160" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M40 120 C40 120 50 60 120 50 C160 44 200 40 240 44 C300 50 340 70 360 90 L380 100 C390 104 390 116 380 118 L360 120 L340 120 C340 106 328 94 314 94 C300 94 288 106 288 120 L140 120 C140 106 128 94 114 94 C100 94 88 106 88 120 Z"
-      fill="currentColor" className="text-muted-foreground"
+      fill="currentColor" style={{ color: "hsl(210,40%,82%)" }}
     />
-    <circle cx="114" cy="120" r="18" fill="currentColor" className="text-muted-foreground" />
+    <circle cx="114" cy="120" r="18" fill="currentColor" style={{ color: "hsl(210,40%,82%)" }} />
     <circle cx="114" cy="120" r="10" fill="hsl(210 40% 98%)" />
-    <circle cx="314" cy="120" r="18" fill="currentColor" className="text-muted-foreground" />
+    <circle cx="314" cy="120" r="18" fill="currentColor" style={{ color: "hsl(210,40%,82%)" }} />
     <circle cx="314" cy="120" r="10" fill="hsl(210 40% 98%)" />
   </svg>
 );
@@ -70,108 +70,66 @@ const BookVehicle = () => {
       }
     } catch { /* CORS */ }
     setImageLoaded(true);
-    // trigger fade+scale animation
     requestAnimationFrame(() => setShowImage(true));
   }, []);
 
-  const handleMakeChange = (val: string) => {
-    setMake(val);
-    setModel("");
-  };
-
-  const handleYearChange = (val: string) => {
-    setYear(val);
-    setMake("");
-    setModel("");
-  };
+  const handleMakeChange = (val: string) => { setMake(val); setModel(""); };
+  const handleYearChange = (val: string) => { setYear(val); setMake(""); setModel(""); };
 
   const handleContinue = () => {
     sessionStorage.setItem("booking_vehicle", JSON.stringify({ year, make, model }));
     navigate(`/site/${slug}/book/options?service=${serviceId}&name=${encodeURIComponent(serviceName)}`);
   };
 
-  /* ─── Custom select styling ─── */
-  const selectWrapperClass = "relative group";
   const selectClass = (enabled: boolean) =>
-    `w-full px-4 py-3.5 rounded-xl border text-sm focus:outline-none focus:ring-2 transition-all appearance-none min-h-[52px] pl-11 pr-10 ${
-      enabled
-        ? "border-border bg-card text-foreground focus:ring-accent cursor-pointer"
-        : "border-border/50 bg-muted/50 text-muted-foreground cursor-not-allowed opacity-60"
-    }`;
-  const chevronClass = "absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none";
-  const checkClass = "absolute right-10 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none";
+    `w-full px-4 py-3.5 rounded-xl text-sm focus:outline-none transition-all appearance-none min-h-[52px] pl-11 pr-10`;
 
-  /* ─── Vehicle preview panel ─── */
+  const selectStyle = (enabled: boolean): React.CSSProperties =>
+    enabled
+      ? {
+          background: "white",
+          border: "1px solid hsl(210,40%,86%)",
+          color: "hsl(222,47%,11%)",
+          cursor: "pointer",
+        }
+      : {
+          background: "hsl(210,40%,96%)",
+          border: "1px solid hsl(210,40%,90%)",
+          color: "hsl(215,16%,60%)",
+          cursor: "not-allowed",
+          opacity: 0.6,
+        };
+
   const vehiclePreview = (
     <div className="flex-1 flex flex-col items-center justify-center min-h-[280px] md:min-h-[360px] relative">
-      {/* Hidden preload img */}
       {carImageUrl && !imageError && !imageLoaded && (
-        <img
-          key={imageKey.current}
-          src={carImageUrl}
-          alt=""
-          crossOrigin="anonymous"
-          onLoad={handleImageLoad}
-          onError={() => setImageError(true)}
-          className="hidden"
-        />
+        <img key={imageKey.current} src={carImageUrl} alt="" crossOrigin="anonymous" onLoad={handleImageLoad} onError={() => setImageError(true)} className="hidden" />
       )}
 
       {canContinue && imageLoaded && !imageError && showImage ? (
         <div className="flex flex-col items-center w-full">
-          {/* Main car image with fade+scale */}
           <div className="relative w-full max-w-[440px]">
-            <img
-              src={carImageUrl!}
-              alt={`${year} ${make} ${model}`}
-              className="w-full object-contain relative z-10 transition-all duration-300"
-              style={{
-                animation: "vehicleFadeScale 300ms ease-out forwards",
-              }}
-            />
-            {/* Gradient floor */}
-            <div
-              className="absolute bottom-0 left-0 right-0 h-16 z-0 rounded-b-xl"
-              style={{
-                background: "linear-gradient(to top, hsla(215,50%,8%,0.12), transparent)",
-              }}
-            />
-            {/* Reflection */}
-            <img
-              src={carImageUrl!}
-              alt=""
-              aria-hidden
-              className="w-full object-contain pointer-events-none select-none"
-              style={{
-                transform: "scaleY(-1)",
-                opacity: 0.12,
-                filter: "blur(4px)",
-                maskImage: "linear-gradient(to top, transparent 30%, black 100%)",
-                WebkitMaskImage: "linear-gradient(to top, transparent 30%, black 100%)",
-                marginTop: "-8px",
-              }}
-            />
+            <img src={carImageUrl!} alt={`${year} ${make} ${model}`} className="w-full object-contain relative z-10 transition-all duration-300" style={{ animation: "vehicleFadeScale 300ms ease-out forwards" }} />
+            <div className="absolute bottom-0 left-0 right-0 h-16 z-0 rounded-b-xl" style={{ background: "linear-gradient(to top, hsla(210,40%,90%,0.3), transparent)" }} />
+            <img src={carImageUrl!} alt="" aria-hidden className="w-full object-contain pointer-events-none select-none" style={{ transform: "scaleY(-1)", opacity: 0.08, filter: "blur(4px)", maskImage: "linear-gradient(to top, transparent 30%, black 100%)", WebkitMaskImage: "linear-gradient(to top, transparent 30%, black 100%)", marginTop: "-8px" }} />
           </div>
-          {/* Pill badge */}
-          <span className="inline-flex items-center gap-2 mt-3 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-sm font-semibold text-foreground">
+          <span className="inline-flex items-center gap-2 mt-3 px-4 py-1.5 rounded-full text-sm font-semibold" style={{ background: "hsl(217,91%,96%)", border: "1px solid hsl(217,91%,88%)", color: "hsl(222,47%,11%)" }}>
             {year} {make} {model}
           </span>
         </div>
       ) : canContinue && (imageError || !imageLoaded) ? (
-        /* Fallback: silhouette + info */
         <div className="flex flex-col items-center w-full" style={{ animation: "vehicleFadeScale 300ms ease-out forwards" }}>
           <GhostCar className="w-full max-w-[320px] opacity-30" />
-          <p className="text-lg font-semibold text-foreground mt-4">{year} {make} {model}</p>
-          <span className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-medium">
+          <p className="text-lg font-semibold mt-4" style={{ color: "hsl(222,47%,11%)" }}>{year} {make} {model}</p>
+          <span className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full text-xs font-medium" style={{ background: "hsl(142,71%,94%)", color: "hsl(142,71%,35%)" }}>
             <CheckCircle2 className="w-3.5 h-3.5" />
             Vehicle selected
           </span>
         </div>
       ) : (
-        /* Empty state */
         <div className="flex flex-col items-center">
           <GhostCar className="w-full max-w-[280px] opacity-15" />
-          <p className="text-sm text-muted-foreground mt-4 text-center max-w-[240px] leading-relaxed">
+          <p className="text-sm mt-4 text-center max-w-[240px] leading-relaxed" style={{ color: "hsl(215,16%,47%)" }}>
             Select your vehicle above
           </p>
         </div>
@@ -181,7 +139,6 @@ const BookVehicle = () => {
 
   return (
     <BookingLayout activeStep={1}>
-      {/* Keyframes for vehicle animation */}
       <style>{`
         @keyframes vehicleFadeScale {
           from { opacity: 0; transform: scale(0.97); }
@@ -194,49 +151,46 @@ const BookVehicle = () => {
       `}</style>
 
       <FadeIn delay={50}>
-        <h1 className="font-heading text-[28px] md:text-[40px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground mb-6 md:mb-8">
+        <h1 className="font-heading text-[28px] md:text-[40px] font-bold tracking-[-0.015em] leading-[1.2] mb-6 md:mb-8" style={{ color: "hsl(222,47%,11%)" }}>
           Find your vehicle
         </h1>
       </FadeIn>
 
-      {/* Mobile: preview first, then selectors */}
       <div className="flex flex-col md:flex-row gap-6 lg:gap-12">
-        {/* Preview — shown first on mobile, second on desktop */}
         <FadeIn delay={150} className="order-first md:order-last flex-1">
           {vehiclePreview}
         </FadeIn>
 
-        {/* Selectors */}
         <FadeIn delay={100} className="order-last md:order-first">
           <div className="w-full md:w-[340px] space-y-4">
             {/* Year */}
-            <div className={selectWrapperClass}>
-              <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none z-10" />
-              {year && <Check className={`${checkClass} text-accent`} />}
-              <ChevronDown className={chevronClass} />
-              <select value={year} onChange={(e) => handleYearChange(e.target.value)} className={selectClass(true)}>
+            <div className="relative group">
+              <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none z-10" style={{ color: "hsl(215,16%,60%)" }} />
+              {year && <Check className="absolute right-10 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsl(142,71%,35%)" }} />}
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsl(215,16%,60%)" }} />
+              <select value={year} onChange={(e) => handleYearChange(e.target.value)} className={selectClass(true)} style={selectStyle(true)}>
                 <option value="">Year</option>
                 {vehicleYears.map((y) => <option key={y} value={y}>{y}</option>)}
               </select>
             </div>
 
             {/* Make */}
-            <div className={selectWrapperClass}>
-              <Car className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none z-10" />
-              {make && <Check className={`${checkClass} text-accent`} />}
-              <ChevronDown className={chevronClass} />
-              <select value={make} onChange={(e) => handleMakeChange(e.target.value)} disabled={!year} className={selectClass(!!year)}>
+            <div className="relative group">
+              <Car className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none z-10" style={{ color: "hsl(215,16%,60%)" }} />
+              {make && <Check className="absolute right-10 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsl(142,71%,35%)" }} />}
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsl(215,16%,60%)" }} />
+              <select value={make} onChange={(e) => handleMakeChange(e.target.value)} disabled={!year} className={selectClass(!!year)} style={selectStyle(!!year)}>
                 <option value="">{year ? "Make" : "Select year first"}</option>
                 {vehicleMakes.map((m) => <option key={m} value={m}>{m}</option>)}
               </select>
             </div>
 
             {/* Model */}
-            <div className={selectWrapperClass}>
-              <Truck className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none z-10" />
-              {model && <Check className={`${checkClass} text-accent`} />}
-              <ChevronDown className={chevronClass} />
-              <select value={model} onChange={(e) => setModel(e.target.value)} disabled={!make} className={selectClass(!!make)}>
+            <div className="relative group">
+              <Truck className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none z-10" style={{ color: "hsl(215,16%,60%)" }} />
+              {model && <Check className="absolute right-10 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsl(142,71%,35%)" }} />}
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsl(215,16%,60%)" }} />
+              <select value={model} onChange={(e) => setModel(e.target.value)} disabled={!make} className={selectClass(!!make)} style={selectStyle(!!make)}>
                 <option value="">{make ? "Model" : "Select make first"}</option>
                 {availableModels.map((m) => <option key={m} value={m}>{m}</option>)}
               </select>
@@ -245,11 +199,11 @@ const BookVehicle = () => {
             {/* Green confirmation row */}
             {canContinue && (
               <div
-                className="flex items-center gap-2.5 px-4 py-3 rounded-xl border text-sm font-medium animate-in fade-in duration-300"
+                className="flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-medium animate-in fade-in duration-300"
                 style={{
-                  background: "hsla(160, 84%, 39%, 0.08)",
-                  borderColor: "hsla(160, 84%, 39%, 0.25)",
-                  color: "hsl(160, 84%, 39%)",
+                  background: "hsl(142,71%,94%)",
+                  border: "1px solid hsl(142,71%,80%)",
+                  color: "hsl(142,71%,30%)",
                 }}
               >
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
@@ -258,21 +212,28 @@ const BookVehicle = () => {
               </div>
             )}
 
-            {/* Can't find link */}
-            <p className="text-sm text-muted-foreground pt-1">
+            <p className="text-sm pt-1" style={{ color: "hsl(215,16%,47%)" }}>
               Can't find your vehicle?{" "}
-              <a href="mailto:hello@darkerdigital.com" className="text-accent hover:underline">Contact us</a>
+              <a href="mailto:hello@darkerdigital.com" className="hover:underline" style={{ color: "hsl(217,91%,50%)" }}>Contact us</a>
             </p>
           </div>
         </FadeIn>
       </div>
 
-      {/* Sticky bottom bar on mobile, inline on desktop */}
-      <div className="fixed md:relative bottom-0 left-0 right-0 md:bottom-auto md:left-auto md:right-auto z-30 md:z-auto bg-background/80 backdrop-blur-lg md:backdrop-blur-none md:bg-transparent border-t border-border md:border-none px-4 py-3 md:p-0 md:mt-6">
+      {/* Sticky bottom bar */}
+      <div
+        className="fixed md:relative bottom-0 left-0 right-0 md:bottom-auto md:left-auto md:right-auto z-30 md:z-auto md:bg-transparent px-4 py-3 md:p-0 md:mt-6"
+        style={{
+          background: "hsla(0,0%,100%,0.85)",
+          backdropFilter: "blur(16px)",
+          borderTop: "1px solid hsl(210,40%,90%)",
+        }}
+      >
         <div className="flex items-center gap-3 max-w-screen-lg mx-auto md:mx-0">
           <button
             onClick={() => navigate(`/site/${slug}/book`)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border border-border text-foreground hover:bg-muted transition-colors min-h-[48px]"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold min-h-[48px] transition-colors"
+            style={{ border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}
           >
             <ArrowLeft className="w-4 h-4" />
             Back
@@ -280,18 +241,26 @@ const BookVehicle = () => {
           <button
             onClick={handleContinue}
             disabled={!canContinue}
-            className={`flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold min-h-[48px] transition-all ${
+            className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold min-h-[48px] transition-all"
+            style={
               canContinue
-                ? "bg-accent text-accent-foreground hover:brightness-105 shadow-lg shadow-accent/20"
-                : "bg-muted text-muted-foreground cursor-not-allowed"
-            }`}
+                ? {
+                    background: "linear-gradient(135deg, hsl(217,91%,60%), hsl(217,91%,50%))",
+                    color: "white",
+                    boxShadow: "0 4px 12px hsla(217,91%,60%,0.3)",
+                  }
+                : {
+                    background: "hsl(210,40%,94%)",
+                    color: "hsl(215,16%,60%)",
+                    cursor: "not-allowed",
+                  }
+            }
           >
             Continue
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>
-      {/* Spacer for fixed bottom bar on mobile */}
       <div className="h-20 md:h-0" />
     </BookingLayout>
   );

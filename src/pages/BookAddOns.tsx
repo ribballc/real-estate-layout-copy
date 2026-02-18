@@ -16,7 +16,6 @@ interface AddOn {
   popular?: boolean;
 }
 
-/** Add-ons keyed by service id (matches services in Book.tsx) */
 const addOnsByService: Record<string, AddOn[]> = {
   interior: [
     { id: "leather-conditioning", title: "Leather Conditioning", description: "Premium conditioner to restore & protect leather seats and trim.", price: 60, popular: true },
@@ -49,10 +48,7 @@ const addOnsByService: Record<string, AddOn[]> = {
   ],
 };
 
-/** Fallback if an unknown service is passed */
 const defaultAddOns: AddOn[] = addOnsByService.full;
-
-/* ═══════════════════════════════════════════════════════ */
 
 const BookAddOns = () => {
   const navigate = useNavigate();
@@ -77,10 +73,13 @@ const BookAddOns = () => {
   return (
     <BookingLayout activeStep={3}>
       <FadeIn delay={50}>
-        <h1 className="font-heading text-[28px] md:text-[40px] font-bold tracking-[-0.015em] leading-[1.2] text-foreground mb-2 md:mb-3">
+        <h1
+          className="font-heading text-[28px] md:text-[40px] font-bold tracking-[-0.015em] leading-[1.2] mb-2 md:mb-3"
+          style={{ color: "hsl(222,47%,11%)" }}
+        >
           Enhance your detail
         </h1>
-        <p className="text-muted-foreground text-sm md:text-base mb-8 md:mb-10 max-w-xl">
+        <p className="text-sm md:text-base mb-8 md:mb-10 max-w-xl" style={{ color: "hsl(215,16%,47%)" }}>
           Recommended add-ons for your selected service. Pick as many as you'd like — skip if you're happy with the base package.
         </p>
       </FadeIn>
@@ -93,39 +92,45 @@ const BookAddOns = () => {
             <FadeIn key={addon.id} delay={100 + i * 60}>
               <button
                 onClick={() => toggle(addon.id)}
-                className={`group relative w-full text-left rounded-2xl p-6 min-h-[180px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
-                  isSelected
-                    ? "ring-2 ring-accent shadow-[0_12px_32px_hsla(217,91%,60%,0.2)]"
-                    : "hover:shadow-[0_12px_32px_hsla(217,91%,60%,0.12)]"
-                }`}
+                className="group relative w-full text-left rounded-2xl p-6 min-h-[180px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1"
                 style={{
-                  background: "linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)",
+                  background: isSelected ? "hsl(217,91%,97%)" : "white",
+                  border: isSelected
+                    ? "2px solid hsl(217,91%,50%)"
+                    : "1px solid hsl(210,40%,90%)",
+                  boxShadow: isSelected
+                    ? "0 8px 24px hsla(217,91%,50%,0.12)"
+                    : undefined,
                 }}
               >
                 {addon.popular && (
-                  <span className="absolute -top-3 right-4 text-[11px] font-semibold px-3 py-1 rounded-md uppercase tracking-[0.06em] bg-accent text-accent-foreground">
+                  <span
+                    className="absolute -top-3 right-4 text-[11px] font-semibold px-3 py-1 rounded-md uppercase tracking-[0.06em]"
+                    style={{ background: "hsl(217,91%,50%)", color: "white" }}
+                  >
                     Popular
                   </span>
                 )}
 
                 {/* Selection indicator */}
                 <div
-                  className={`absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  className="absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200"
+                  style={
                     isSelected
-                      ? "bg-accent text-accent-foreground"
-                      : "border border-primary-foreground/20"
-                  }`}
+                      ? { background: "hsl(217,91%,50%)", color: "white" }
+                      : { border: "1px solid hsl(210,40%,82%)" }
+                  }
                 >
-                  {isSelected ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5 text-primary-foreground/40" />}
+                  {isSelected ? <Check className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" style={{ color: "hsl(215,16%,60%)" }} />}
                 </div>
 
                 <div>
-                  <h3 className="text-base font-semibold text-primary-foreground mb-1.5 pr-8">{addon.title}</h3>
-                  <p className="text-sm text-primary-foreground/60 leading-relaxed">{addon.description}</p>
+                  <h3 className="text-base font-semibold mb-1.5 pr-8" style={{ color: "hsl(222,47%,11%)" }}>{addon.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "hsl(215,16%,47%)" }}>{addon.description}</p>
                 </div>
 
                 <div className="mt-4">
-                  <span className="text-lg font-bold text-accent">+${addon.price}</span>
+                  <span className="text-lg font-bold" style={{ color: "hsl(217,91%,45%)" }}>+${addon.price}</span>
                 </div>
               </button>
             </FadeIn>
@@ -144,8 +149,8 @@ const BookAddOns = () => {
             }}
             className="inline-flex items-center gap-2 text-sm font-semibold rounded-lg px-6 py-3 min-h-[44px] transition-all duration-300 hover:gap-3"
             style={{
-              background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)",
-              color: "hsl(0 0% 100%)",
+              background: "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(217,91%,50%) 100%)",
+              color: "white",
               boxShadow: "0 4px 12px hsla(217, 91%, 60%, 0.3)",
             }}
           >
@@ -154,8 +159,8 @@ const BookAddOns = () => {
           </button>
 
           {selected.size > 0 && (
-            <span className="text-sm text-muted-foreground">
-              {selected.size} add-on{selected.size > 1 ? "s" : ""} selected · <span className="font-semibold text-foreground">+${total}</span>
+            <span className="text-sm" style={{ color: "hsl(215,16%,47%)" }}>
+              {selected.size} add-on{selected.size > 1 ? "s" : ""} selected · <span className="font-semibold" style={{ color: "hsl(222,47%,11%)" }}>+${total}</span>
             </span>
           )}
         </div>

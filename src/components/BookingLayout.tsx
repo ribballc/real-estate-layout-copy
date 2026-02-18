@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
-import { useParams } from "react-router-dom";
+import { ReactNode, useEffect } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import BookingSidebar from "@/components/BookingSidebar";
 import BookingBreadcrumb from "@/components/BookingBreadcrumb";
 import darkerLogo from "@/assets/darker-logo.png";
@@ -12,18 +12,23 @@ interface BookingLayoutProps {
 
 const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
   const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
   const businessData = useBusinessDataBySlug(slug || null);
 
-  const isDark = businessData.profile?.secondary_color !== "#FFFFFF";
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [location.pathname]);
 
   return (
-    <div className={`min-h-screen bg-background ${isDark ? "site-dark" : ""}`}>
+    <div className="min-h-[100dvh] bg-background overflow-x-hidden">
       {/* Top Nav */}
       <header
-        className="sticky top-0 z-50 border-b border-border"
+        className="sticky top-0 z-50"
         style={{
-          background: isDark ? "hsla(215, 50%, 8%, 0.85)" : "hsla(0, 0%, 100%, 0.85)",
+          background: "hsla(0, 0%, 100%, 0.85)",
           backdropFilter: "blur(16px) saturate(180%)",
+          borderBottom: "1px solid hsl(210,40%,90%)",
         }}
       >
         <div className="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center">
