@@ -1277,3 +1277,13 @@
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.04); }
 }
+
+/* Website iframe reveal — generation-style spinner */
+@keyframes generatingSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes generatingPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}

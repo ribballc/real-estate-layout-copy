@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import React from "react";
 import { BrowserRouter, Routes, Route, useOutletContext } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -38,10 +39,11 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 // Wrapper to pass outlet context (chatbotRef) as prop to WebsitePage
-const WebsitePageRoute = () => {
+const WebsitePageRoute = React.forwardRef<any>((_props, _ref) => {
   const ctx = useOutletContext<{ chatbotRef?: any; isDark?: boolean } | null>();
   return <WebsitePage chatbotRef={ctx?.chatbotRef} isDark={ctx?.isDark ?? false} />;
-};
+});
+WebsitePageRoute.displayName = "WebsitePageRoute";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
