@@ -22,19 +22,23 @@ const Signup = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: { first_name: name, full_name: name },
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: `${window.location.origin}/onboarding`,
       },
     });
     setLoading(false);
     if (error) {
       toast({ title: "Signup failed", description: error.message, variant: "destructive" });
+    } else if (data.session) {
+      // Auto-confirmed — redirect straight to onboarding
+      window.location.href = "/onboarding";
     } else {
-      toast({ title: "Check your email", description: "We sent you a confirmation link to verify your account. After confirming, you'll be taken to set up your business." });
+      toast({ title: "Account created!", description: "Taking you to set up your business…" });
+      window.location.href = "/onboarding";
     }
   };
 
