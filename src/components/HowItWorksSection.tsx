@@ -1,6 +1,6 @@
 import { useRef, useCallback, useEffect, useState } from "react";
 import FadeIn from "@/components/FadeIn";
-import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import { useNavigate } from "react-router-dom";
 
 
 const FormIcon = () => (
@@ -154,7 +154,7 @@ const ProcessCard = ({ step, index, isActive }: { step: typeof steps[0]; index: 
 };
 
 const HowItWorksSection = () => {
-  const { openFunnel } = useSurveyFunnel();
+  const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null);
   const cardsContainerRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -261,7 +261,7 @@ const HowItWorksSection = () => {
           <FadeIn delay={500}>
             <div className="text-center">
               <button
-                onClick={openFunnel}
+                onClick={() => navigate('/signup')}
                 className="group relative inline-flex items-center gap-2 font-semibold rounded-xl px-12 py-5 text-lg min-h-[48px] overflow-hidden transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0"
                 style={{
                   color: "hsl(0, 0%, 100%)",

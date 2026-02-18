@@ -1,10 +1,10 @@
 import { useState, useMemo } from "react";
 import FadeIn from "@/components/FadeIn";
-import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import { useNavigate } from "react-router-dom";
 import { Slider } from "@/components/ui/slider";
 
 const RoiCalculator = () => {
-  const { openFunnel } = useSurveyFunnel();
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState(15);
   const [avgValue, setAvgValue] = useState(150);
   const [noshowRate, setNoshowRate] = useState(25);
@@ -211,7 +211,7 @@ const RoiCalculator = () => {
               {/* CTA */}
               {results.yearly > 1000 && (
                 <button
-                  onClick={openFunnel}
+                  onClick={() => navigate('/signup')}
                   className="w-full py-4 text-lg font-semibold rounded-xl text-primary-foreground transition-all duration-300 hover:-translate-y-0.5 min-h-[48px]"
                   style={{
                     background: "linear-gradient(135deg, hsl(217, 91%, 60%), hsl(217, 91%, 50%))",

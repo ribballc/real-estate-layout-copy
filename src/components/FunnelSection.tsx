@@ -1,5 +1,5 @@
 import FadeIn from "@/components/FadeIn";
-import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import { useNavigate } from "react-router-dom";
 
 const without = [
   "$50-150/mo for a basic website that doesn't book anything",
@@ -20,7 +20,7 @@ const withDarker = [
 ];
 
 const FunnelSection = () => {
-  const { openFunnel } = useSurveyFunnel();
+  const navigate = useNavigate();
 
   return (
     <section className="bg-card py-16 md:py-24 px-5 md:px-8">
@@ -73,7 +73,7 @@ const FunnelSection = () => {
         <FadeIn delay={300}>
           <div className="mt-12">
             <button
-              onClick={openFunnel}
+              onClick={() => navigate('/signup')}
               className="group inline-flex items-center gap-2 font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 px-10 py-4 text-base min-h-[48px] text-primary-foreground"
               style={{
                 background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
