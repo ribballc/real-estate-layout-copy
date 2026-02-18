@@ -41,7 +41,6 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Find or reference customer
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     let customerId: string | undefined;
     if (customers.data.length > 0) {
@@ -61,11 +60,19 @@ serve(async (req) => {
         trial_settings: {
           end_behavior: { missing_payment_method: "pause" },
         },
+        metadata: {
+          supabase_user_id: user.id,
+        },
+      },
+      metadata: {
+        supabase_user_id: user.id,
       },
       automatic_tax: { enabled: true },
+      allow_promotion_codes: true,
+      billing_address_collection: "auto",
+      payment_method_collection: "if_required",
       success_url: `${origin}/dashboard?checkout=success`,
       cancel_url: `${origin}/dashboard?checkout=cancel`,
-      payment_method_collection: "if_required",
     });
 
     logStep("Checkout session created", { sessionId: session.id });

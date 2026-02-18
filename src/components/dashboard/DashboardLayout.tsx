@@ -6,7 +6,9 @@ import CommandBar from "./CommandBar";
 import WelcomeModal from "./WelcomeModal";
 import PageIntroBanner from "./PageIntroBanner";
 import UpgradeModal from "./UpgradeModal";
+import PastDueBanner from "./PastDueBanner";
 import { UpgradeModalProvider } from "@/contexts/UpgradeModalContext";
+import { useSubscription } from "@/hooks/useSubscription";
 
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -67,6 +69,7 @@ const DashboardLayout = () => {
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [firstName, setFirstName] = useState("");
+  const subscription = useSubscription();
 
   // Entry animation — only on very first visit
   const [showEntryAnim] = useState(() => !localStorage.getItem("darker_dashboard_intro_seen"));
@@ -238,6 +241,9 @@ const DashboardLayout = () => {
               
             </div>
           </header>
+
+          {/* Past due warning banner */}
+          {subscription.isPastDue && <PastDueBanner isDark={isDark} />}
 
           <div className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8">
             <PageIntroBanner path={location.pathname} />
