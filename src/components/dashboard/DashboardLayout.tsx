@@ -8,7 +8,7 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
-  TrendingUp, Users, CalendarDays, Search, Menu,
+  TrendingUp, Users, CalendarDays, Search, Menu, KanbanSquare,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -19,6 +19,7 @@ const pageTitles: Record<string, { title: string; description: string; icon: any
   "/dashboard": { title: "Dashboard", description: "Overview of your business performance", icon: TrendingUp },
   "/dashboard/business": { title: "Business Info", description: "Manage your brand, address and service areas", icon: Building2 },
   "/dashboard/calendar": { title: "Calendar", description: "View and manage your bookings", icon: CalendarDays },
+  "/dashboard/jobs": { title: "Jobs", description: "Manage your work orders", icon: KanbanSquare },
   "/dashboard/customers": { title: "Customers", description: "Manage your customer relationships", icon: Users },
   "/dashboard/services": { title: "Services", description: "Manage your service offerings and pricing", icon: Wrench },
   "/dashboard/photos": { title: "Photos", description: "Upload your portfolio and gallery", icon: Camera },

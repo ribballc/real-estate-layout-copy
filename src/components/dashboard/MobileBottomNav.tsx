@@ -1,9 +1,10 @@
-import { LayoutDashboard, CalendarDays, Users, Wrench, Settings } from "lucide-react";
+import { LayoutDashboard, CalendarDays, KanbanSquare, Users, Wrench, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TABS = [
   { label: "Home", icon: LayoutDashboard, path: "/dashboard" },
   { label: "Calendar", icon: CalendarDays, path: "/dashboard/calendar" },
+  { label: "Jobs", icon: KanbanSquare, path: "/dashboard/jobs" },
   { label: "Customers", icon: Users, path: "/dashboard/customers" },
   { label: "Services", icon: Wrench, path: "/dashboard/services" },
   { label: "Account", icon: Settings, path: "/dashboard/account" },
