@@ -80,14 +80,14 @@ const HeroSection = () => {
             {/* Headline */}
             <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em]">
               <span className="block font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
-                Stop Losing Bookings
+                The Instant
               </span>
               <span className="block font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.5s forwards' }}>
-                To a Phone You Can't
+                Website & Booking
               </span>
               <span className="block font-heading text-[30px] md:text-[48px] lg:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
                 <span className="hidden md:inline-block relative font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
-                  Always Answer.
+                   System For Auto Pros.
                   <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.2s forwards' }}>
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#greenGlow)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.2s forwards' }} />
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.2s forwards' }} />
@@ -103,7 +103,7 @@ const HeroSection = () => {
               </span>
               <span className="block md:hidden font-heading text-[30px] font-semibold italic relative" style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.7s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
                 <span className="relative inline-block">
-                  Always Answer.
+                  System For Auto Pros.
                   <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.4s forwards' }}>
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#greenGlowMobile)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.4s forwards' }} />
                     <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.4s forwards' }} />
@@ -124,7 +124,7 @@ const HeroSection = () => {
               className="mt-5 text-[15px] md:text-xl leading-[1.7] max-w-[560px]"
               style={{ color: 'hsla(0, 0%, 100%, 0.7)', opacity: 0, animation: 'heroBlurIn 0.5s ease-out 1.0s forwards' }}
             >
-              Get a done-for-you website and 24/7 booking system built for your shop. Customers book, pay deposits, and get automatic reminders — while you stay under the hood.
+              A done-for-you website and 24/7 online booking system built for detailers. Customers book, pay deposits, and get automated reminders — while you stay in the bay.
             </p>
 
             {/* Email form + CTA */}
@@ -168,7 +168,7 @@ const HeroSection = () => {
                   opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
                 }}
               >
-                Claim My Free Website
+                Get Started Free
                 <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-[3px]" />
               </button>
             </form>
@@ -178,9 +178,9 @@ const HeroSection = () => {
             <div className="mt-5 flex items-center gap-4 flex-wrap" style={{
               color: 'hsla(0, 0%, 100%, 0.5)', opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 1.8s forwards',
             }}>
-              <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> Live in 48 hours</span>
+               <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> No card to get started</span>
               <span className="text-primary-foreground/20">•</span>
-              <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> Free for 14 days — no card needed</span>
+              <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> 14-day free trial</span>
             </div>
 
             {/* Social proof */}

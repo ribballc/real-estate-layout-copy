@@ -6,10 +6,10 @@ const reviews = [
   { initials: "JR", name: "Jake Rivera", role: "Rivera's Auto Spa", quote: "The deposit thing alone was a game changer. No-shows went from 4-5 a week to basically zero.", metric: "+$2,800/mo" },
   { initials: "DW", name: "DeShawn Williams", role: "Pristine Detail Co.", quote: "Customers book at midnight, I wake up to confirmed jobs with deposits already paid. It's wild.", metric: "+$1,900/mo" },
   { initials: "KP", name: "Kyle Patterson", role: "KP Mobile Detail", quote: "I used to spend 90 minutes a day just texting people back. That's all automated now. I just detail.", metric: "90 min saved/day" },
-  { initials: "AM", name: "Andre Mitchell", role: "Gloss Boss Detailing", quote: "Went from $6k months to $10k months in 90 days. My website looks better than shops that have been open for 20 years.", metric: "+$4,100/mo" },
+  { initials: "AM", name: "Andre Mitchell", role: "Gloss Boss Detailing", quote: "Went from $6k months to over $10k in 90 days. My site looks better than shops that have been open for 20 years. Worth every cent.", metric: "+$4,100/mo" },
   { initials: "SL", name: "Sarah Langston", role: "Luxe Auto Care", quote: "As a solo operator this was exactly what I needed. It's like having a receptionist and a web developer for $54/mo.", metric: "+$2,200/mo" },
   { initials: "CB", name: "Chris Brooks", role: "Brooks Detail Studio", quote: "Set it up on a Sunday afternoon. Had 3 online bookings by Monday morning. I've never looked back.", metric: "+$1,600/mo" },
-  { initials: "TN", name: "Tony Nguyen", role: "Shine Pro Mobile", quote: "The automated review requests alone got me from 11 Google reviews to 94 in 4 months. My calls doubled.", metric: "+$2,500/mo" },
+  { initials: "TN", name: "Tony Nguyen", role: "Shine Pro Mobile", quote: "Automated review requests got me from 11 Google reviews to 94 in 4 months. My inbound calls literally doubled. Didn't have to do anything.", metric: "+$2,500/mo" },
 ];
 
 const row1 = reviews.slice(0, 4);
