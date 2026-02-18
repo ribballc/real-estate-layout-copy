@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import HeroSection from "@/components/HeroSection";
 import ValueBreakdown from "@/components/ValueBreakdown";
 import LogoTicker from "@/components/LogoTicker";
@@ -12,6 +13,8 @@ import ScrollProgress from "@/components/ScrollProgress";
 import SocialProofNotification from "@/components/SocialProofNotification";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { SurveyFunnelProvider } from "@/components/SurveyFunnelContext";
+import { fbqEvent, generateEventId } from "@/lib/pixel";
+import { sendCapiEvent } from "@/lib/capiEvent";
 
 const SpringBanner = () => (
   <div className="w-full py-2.5 text-center text-sm font-semibold text-white tracking-wide" style={{
@@ -25,6 +28,28 @@ const SpringBanner = () => (
 );
 
 const Index = () => {
+  // Event 1: ViewContent — Landing Page
+  useEffect(() => {
+    const eventId = generateEventId();
+    fbqEvent('track', 'ViewContent', {
+      content_name: 'Landing Page',
+      content_category: 'Marketing',
+      content_type: 'website',
+    }, eventId);
+    sendCapiEvent({ eventName: 'ViewContent', eventId });
+  }, []);
+
+  // Capture fbclid from Meta ad clicks
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const fbclid = params.get('fbclid');
+    if (fbclid) {
+      const fbc = `fb.1.${Date.now()}.${fbclid}`;
+      document.cookie = `_fbc=${fbc}; max-age=31536000; path=/; SameSite=Lax`;
+      localStorage.setItem('darker_fbc', fbc);
+    }
+  }, []);
+
   return (
     <SurveyFunnelProvider>
       <div className="min-h-screen relative" style={{ background: 'linear-gradient(180deg, hsl(215 50% 10%) 0%, hsl(217 33% 17%) 100%)' }}>

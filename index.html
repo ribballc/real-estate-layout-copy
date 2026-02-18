@@ -19,6 +19,33 @@
     <meta name="twitter:title" content="Darker Digital — Websites & Booking for Mobile Detailers">
     <meta property="og:description" content="Darker Digital: Done-for-you websites with smart booking, SMS reminders, and deposit collection. Built for mobile detailers in 48 hours.">
     <meta name="twitter:description" content="Darker Digital: Done-for-you websites with smart booking, SMS reminders, and deposit collection. Built for mobile detailers in 48 hours.">
+    <script>
+      // Meta Pixel — only loads when cookie consent is given
+      function initMetaPixel() {
+        if (window.fbq) return;
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window,document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        // TODO: Replace PIXEL_ID_HERE with your Meta Pixel ID
+        fbq('init','PIXEL_ID_HERE',{
+          em:window.__darker_user_email||'',
+          fn:window.__darker_user_first_name||'',
+          ph:window.__darker_user_phone||''
+        });
+        fbq('track','PageView');
+      }
+      // Auto-init if consent was previously given
+      if(localStorage.getItem('darker_cookie_consent')==='accepted'){initMetaPixel()}
+    </script>
+    <noscript>
+      <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=PIXEL_ID_HERE&ev=PageView&noscript=1"/>
+    </noscript>
 </head>
 
   <body>

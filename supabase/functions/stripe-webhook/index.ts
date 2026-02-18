@@ -83,6 +83,33 @@ serve(async (req) => {
     return null;
   }
 
+  // Helper: fire Meta CAPI event server-to-server
+  async function fireCapiEvent(eventName: string, eventId: string, email: string | null, customData: Record<string, any>) {
+    try {
+      const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+      const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) return;
+      await fetch(`${SUPABASE_URL}/functions/v1/meta-capi-event`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          eventName,
+          eventId,
+          eventTime: Math.floor(Date.now() / 1000),
+          userData: { email, clientIpAddress: null, clientUserAgent: null },
+          customData,
+          eventSourceUrl: "https://darkerdigital.com/dashboard",
+        }),
+      });
+      logStep("CAPI event sent", { eventName, eventId });
+    } catch (e) {
+      logStep("CAPI event failed", { eventName, error: String(e) });
+    }
+  }
+
   try {
     switch (event.type) {
       case "checkout.session.completed": {
@@ -97,6 +124,20 @@ serve(async (req) => {
             .eq("user_id", userId);
           logStep("Linked Stripe customer to user", { userId, customerId });
         }
+
+        // Event 8: Purchase — Trial Activated
+        const isAnnual = session.metadata?.plan === "annual";
+        const value = isAnnual ? 54 : 79;
+        await fireCapiEvent("Purchase", `stripe-${session.id}`, session.customer_email ?? null, {
+          currency: "USD",
+          value,
+          predicted_ltv: isAnnual ? 648 : 948,
+          content_name: "Free Trial Activated",
+          content_type: "product",
+          content_ids: [isAnnual ? "plan_annual" : "plan_monthly"],
+          order_id: session.id,
+          num_items: 1,
+        });
         break;
       }
 
@@ -172,6 +213,25 @@ serve(async (req) => {
             })
             .eq("user_id", userId);
           logStep("Payment succeeded, set active", { userId });
+
+          // Event 9: Subscribe — Trial converted to paid
+          // billing_reason 'subscription_cycle' means this is a recurring payment (not initial)
+          if ((invoice as any).billing_reason === "subscription_cycle") {
+            const sub = invoice.subscription as string;
+            let isAnnual = false;
+            try {
+              const subObj = await stripe.subscriptions.retrieve(sub);
+              const priceId = subObj.items.data[0]?.price?.id;
+              isAnnual = priceId === "price_1T1JeMP734Q0ltptDuj5K6Na";
+            } catch {}
+            await fireCapiEvent("Subscribe", `stripe-inv-${invoice.id}`, (invoice as any).customer_email ?? null, {
+              currency: "USD",
+              value: isAnnual ? 54 : 79,
+              predicted_ltv: isAnnual ? 648 : 948,
+              content_name: "Trial Converted to Paid",
+              order_id: invoice.id,
+            });
+          }
         }
         break;
       }

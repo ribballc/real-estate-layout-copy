@@ -16,17 +16,8 @@ import {
   validateLocation,
 } from "@/lib/onboarding-validation";
 import { MapPin, Loader2 } from "lucide-react";
-
-// TODO: replace YOUR_PIXEL_ID with your Meta Pixel ID
-declare global {
-  interface Window {
-    fbq?: (...args: unknown[]) => void;
-  }
-}
-
-const firePixel = (...args: unknown[]) => {
-  try { window.fbq?.(...args); } catch {}
-};
+import { fbqEvent, generateEventId } from "@/lib/pixel";
+import { sendCapiEvent } from "@/lib/capiEvent";
 
 const SERVICES = [
   "Full Detail", "Interior Only", "Exterior Only", "Paint Correction",
@@ -239,7 +230,25 @@ const Onboarding = () => {
       setSubmitting(false);
       return;
     }
-    firePixel("track", "CompleteRegistration");
+    // Event 5: SubmitApplication — Onboarding Completed
+    const submitEventId = generateEventId();
+    fbqEvent('trackCustom', 'SubmitApplication', {
+      shop_name: shopName,
+      city: location,
+      services: services.join(','),
+      business_type: businessType,
+      num_services: services.length,
+    }, submitEventId);
+    sendCapiEvent({
+      eventName: 'SubmitApplication',
+      eventId: submitEventId,
+      userData: {
+        email: user.email || undefined,
+        firstName,
+        phone,
+      },
+      customData: { shop_name: shopName, city: location },
+    });
     localStorage.setItem("leadData", JSON.stringify({
       businessName: shopName.trim(),
       ownerFirstName: firstName.trim(),
@@ -260,14 +269,25 @@ const Onboarding = () => {
     }
     setError(null);
 
-    const pixelEvents: Record<number, string> = {
-      1: "OnboardingStep1_ShopName",
-      2: "OnboardingStep2_Name",
-      3: "OnboardingStep3_Phone",
-      4: "OnboardingStep4_Location",
-      5: "OnboardingStep5_Services",
+    // Event 3: Onboarding step events with CAPI
+    const stepEventMap: Record<number, { name: string; customData?: Record<string, unknown>; userData?: { firstName?: string; phone?: string } }> = {
+      1: { name: 'OnboardingStep1_ShopName', customData: { shop_name: shopName } },
+      2: { name: 'OnboardingStep2_Name', userData: { firstName } },
+      3: { name: 'OnboardingStep3_Phone', userData: { firstName, phone } },
+      4: { name: 'OnboardingStep4_Location', customData: { city: location } },
+      5: { name: 'OnboardingStep5_Services', customData: { services: services.join(','), num_services: services.length } },
     };
-    if (pixelEvents[step]) firePixel("trackCustom", pixelEvents[step]);
+    const stepEvent = stepEventMap[step];
+    if (stepEvent) {
+      const eventId = generateEventId();
+      fbqEvent('trackCustom', stepEvent.name, stepEvent.customData || {}, eventId);
+      sendCapiEvent({
+        eventName: stepEvent.name,
+        eventId,
+        userData: stepEvent.userData,
+        customData: stepEvent.customData,
+      });
+    }
 
     if (step < TOTAL_STEPS) {
       setStep((s) => s + 1);
