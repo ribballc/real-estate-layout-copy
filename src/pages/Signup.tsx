@@ -13,7 +13,7 @@ import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
 
 const Signup = () => {
   const { toast } = useToast();
-  const [name, setName] = useState("");
+  const [name, setName] = useState(""); // first name only
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -26,7 +26,7 @@ const Signup = () => {
       email,
       password,
       options: {
-        data: { full_name: name },
+        data: { first_name: name, full_name: name },
         emailRedirectTo: window.location.origin,
       },
     });
@@ -134,13 +134,13 @@ const Signup = () => {
           {/* Form */}
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-white/70 text-sm">Full Name</Label>
+              <Label htmlFor="name" className="text-white/70 text-sm">First Name</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsla(0,0%,100%,0.35)" }} />
                 <input
                   id="name"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="First name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -178,7 +178,7 @@ const Signup = () => {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
+                  placeholder="Create a password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
