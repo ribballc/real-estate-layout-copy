@@ -595,52 +595,6 @@ const HomeDashboard = () => {
       {/* ═══ Churn Risk Banner ═══ */}
       <ChurnRiskBanner />
 
-      {/* ═══ This Week at a Glance ═══ */}
-      {!ghost.isIntro && !loading && (
-        <div className="alytics-card overflow-hidden">
-          <div
-            className="px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
-            style={{ borderLeft: "3px solid hsl(217,91%,60%)" }}
-          >
-            <div className="flex items-center gap-2.5 shrink-0">
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ background: "hsla(217,91%,60%,0.1)" }}
-              >
-                <CalendarDays className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
-              </div>
-              <p className="text-sm font-semibold alytics-card-title">This Week</p>
-            </div>
-
-            <div className="flex items-center gap-5 sm:gap-8 flex-wrap flex-1">
-              <div className="flex flex-col">
-                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Bookings</span>
-                <span className="text-lg font-bold alytics-card-title">{thisWeekBookings.length}</span>
-              </div>
-
-              <div className="w-px h-8 hidden sm:block" style={{ background: "hsla(217,91%,60%,0.15)" }} />
-
-              <div className="flex flex-col">
-                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Revenue</span>
-                <span className="text-lg font-bold alytics-card-title">{formatCurrency(thisWeekRevenue)}</span>
-              </div>
-
-              <div className="w-px h-8 hidden sm:block" style={{ background: "hsla(217,91%,60%,0.15)" }} />
-
-              <div className="flex flex-col">
-                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Next Appointment</span>
-                {nextUpcoming ? (
-                  <span className="text-sm font-semibold alytics-card-title">
-                    {nextUpcoming.customer_name || "Customer"} · {format(parseISO(nextUpcoming.booking_date), "EEE, MMM d")} at {nextUpcoming.booking_time?.slice(0, 5)}
-                  </span>
-                ) : (
-                  <span className="text-sm alytics-card-sub">None scheduled</span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ═══ Weekly Summary Card ═══ */}
       <WeeklySummaryCard />
@@ -784,30 +738,50 @@ const HomeDashboard = () => {
         </button>
       </div>
 
-      {/* ═══ Today's at-a-glance ═══ */}
-      {!ghost.isIntro && todayBookings.length > 0 && (
-        <div className="alytics-card flex items-center justify-between px-5 py-3.5">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-              style={{ background: "hsla(217,91%,60%,0.1)", border: "1px solid hsla(217,91%,60%,0.15)" }}
-            >
-              <CalendarDays className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
+      {/* ═══ This Week at a Glance ═══ */}
+      {!ghost.isIntro && !loading && (
+        <div className="alytics-card overflow-hidden">
+          <div
+            className="px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
+            style={{ borderLeft: "3px solid hsl(217,91%,60%)" }}
+          >
+            <div className="flex items-center gap-2.5 shrink-0">
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                style={{ background: "hsla(217,91%,60%,0.1)" }}
+              >
+                <CalendarDays className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
+              </div>
+              <p className="text-sm font-semibold alytics-card-title">This Week</p>
             </div>
-            <div>
-              <p className="alytics-card-title text-sm font-semibold">Today — {format(new Date(), "MMMM d")}</p>
-              <p className="alytics-card-sub text-xs">
-                {todayBookings.length} booking{todayBookings.length !== 1 ? "s" : ""}
-                {todayRevenue > 0 ? ` · ${formatCurrency(todayRevenue)}` : ""}
-              </p>
+
+            <div className="flex items-center gap-5 sm:gap-8 flex-wrap flex-1">
+              <div className="flex flex-col">
+                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Bookings</span>
+                <span className="text-lg font-bold alytics-card-title">{thisWeekBookings.length}</span>
+              </div>
+
+              <div className="w-px h-8 hidden sm:block" style={{ background: "hsla(217,91%,60%,0.15)" }} />
+
+              <div className="flex flex-col">
+                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Revenue</span>
+                <span className="text-lg font-bold alytics-card-title">{formatCurrency(thisWeekRevenue)}</span>
+              </div>
+
+              <div className="w-px h-8 hidden sm:block" style={{ background: "hsla(217,91%,60%,0.15)" }} />
+
+              <div className="flex flex-col">
+                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Next Appointment</span>
+                {nextUpcoming ? (
+                  <span className="text-sm font-semibold alytics-card-title">
+                    {nextUpcoming.customer_name || "Customer"} · {format(parseISO(nextUpcoming.booking_date), "EEE, MMM d")} at {nextUpcoming.booking_time?.slice(0, 5)}
+                  </span>
+                ) : (
+                  <span className="text-sm alytics-card-sub">None scheduled</span>
+                )}
+              </div>
             </div>
           </div>
-          <button
-            onClick={() => navigate("/dashboard/calendar")}
-            className="alytics-link text-xs font-medium inline-flex items-center gap-1"
-          >
-            View <ArrowRight className="w-3 h-3" />
-          </button>
         </div>
       )}
 
