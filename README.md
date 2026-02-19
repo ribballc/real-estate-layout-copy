@@ -1,4 +1,4 @@
-# Darker — Detailer CRM
+# Darker CRM
 
 ## Project info
 
