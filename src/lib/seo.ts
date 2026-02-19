@@ -46,6 +46,21 @@ export const FAQ_ITEMS = [
     answer:
       'Sign up, get your website built, and start taking bookings — all without entering a credit card. After 14 days, pick the plan that fits. If it\'s not for you, just walk away. No charge, no hassle.',
   },
+  {
+    question: 'What if I\'m not tech-savvy?',
+    answer:
+      'You don\'t need to be. Setup takes 5 minutes — you answer questions about your business and we build it. If you can fill out a form, you can launch your Darker site. Our support team is also available 7 days a week.',
+  },
+  {
+    question: 'Can I keep using my existing Instagram for bookings?',
+    answer:
+      'Yes — and Darker makes it even better. Just add your Darker booking link to your Instagram bio. When someone clicks it, they book and pay a deposit directly. No more DMs back and forth.',
+  },
+  {
+    question: 'What happens after the 14-day free trial?',
+    answer:
+      'You\'ll be prompted to pick a plan. If you don\'t, your booking page pauses — but your data stays safe and you can reactivate anytime. No contracts, no cancellation fees.',
+  },
 ];
 
 /** Build OpeningHoursSpecification from business hours */
