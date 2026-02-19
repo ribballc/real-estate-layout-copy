@@ -126,6 +126,31 @@ const DashboardLayout = () => {
     if (onboardingComplete === false) navigate("/onboarding", { replace: true });
   }, [onboardingComplete, navigate]);
 
+  // Real-time booking notification — Supabase channel
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`realtime-bookings-${user.id}`)
+      .on(
+        "postgres_changes" as any,
+        { event: "INSERT", schema: "public", table: "bookings", filter: `user_id=eq.${user.id}` },
+        (payload: any) => {
+          const b = payload.new;
+          toast({
+            title: "New booking received",
+            description: [
+              b.customer_name || "A customer",
+              "booked",
+              b.service_title || "a service",
+              b.booking_date ? `on ${b.booking_date}` : "",
+            ].filter(Boolean).join(" "),
+          });
+        }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user]);
+
   // Set html background for overscroll matching
   useEffect(() => {
     const color = dashboardTheme === "dark" ? "hsl(215, 50%, 10%)" : "hsl(210, 40%, 98%)";
