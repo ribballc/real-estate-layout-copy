@@ -1,4 +1,4 @@
-import { LayoutDashboard, CalendarDays, KanbanSquare, Users, Wrench, Settings } from "lucide-react";
+import { LayoutDashboard, CalendarDays, KanbanSquare, Users, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -8,7 +8,6 @@ const TABS = [
   { label: "Jobs", icon: KanbanSquare, path: "/dashboard/jobs" },
   { label: "Customers", icon: Users, path: "/dashboard/customers" },
   { label: "Services", icon: Wrench, path: "/dashboard/services" },
-  { label: "Account", icon: Settings, path: "/dashboard/account" },
 ] as const;
 
 interface MobileBottomNavProps {

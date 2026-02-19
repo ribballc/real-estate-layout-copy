@@ -712,7 +712,7 @@ const CalendarManager = () => {
       <button
         onClick={() => { setShowAddModal(true); setNewBooking(prev => ({ ...prev, booking_date: format(new Date(), "yyyy-MM-dd") })); }}
         className="fixed z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-[hsl(217,91%,60%)]/30 hover:shadow-xl hover:shadow-[hsl(217,91%,60%)]/40 hover:scale-105 active:scale-95 transition-all"
-        style={{ background: "hsl(217, 91%, 60%)", bottom: isMobile ? "5rem" : "2rem", right: "1.5rem" }}
+        style={{ background: "hsl(217, 91%, 60%)", bottom: isMobile ? "7.5rem" : "2rem", right: "1.5rem" }}
         aria-label="Add Booking"
       >
         <Plus className="w-6 h-6 text-white" />
