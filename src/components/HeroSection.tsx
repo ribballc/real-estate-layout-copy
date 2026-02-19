@@ -185,12 +185,34 @@ const HeroSection = () => {
             </div>
 
             {/* Social proof */}
-            <div className="mt-4 inline-flex items-center gap-2 text-sm" style={{
+            <div className="mt-4 inline-flex items-center gap-3 text-sm" style={{
               color: 'hsla(0, 0%, 100%, 0.6)', opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 2.0s forwards',
             }}>
+              <div className="flex items-center">
+                {[
+                  { initials: 'TB', bg: '#3b82f6' },
+                  { initials: 'RG', bg: '#10b981' },
+                  { initials: 'MV', bg: '#f59e0b' },
+                  { initials: 'JD', bg: '#8b5cf6' },
+                  { initials: 'CS', bg: '#ef4444' },
+                ].map((a, i) => (
+                  <div
+                    key={a.initials}
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold ring-2 ring-[hsl(215,50%,10%)]"
+                    style={{
+                      backgroundColor: a.bg,
+                      color: 'white',
+                      marginLeft: i === 0 ? 0 : '-0.5rem',
+                      zIndex: 5 - i,
+                    }}
+                  >
+                    {a.initials}
+                  </div>
+                ))}
+              </div>
               <span className="text-accent text-sm tracking-wide">★★★★★</span>
               <span className="font-semibold">
-                Trusted by <strong>200+</strong> detailers · <strong>$2.4M</strong> in bookings captured
+                4.9 · <strong>200+</strong> Detailers & Shops
               </span>
             </div>
           </div>
