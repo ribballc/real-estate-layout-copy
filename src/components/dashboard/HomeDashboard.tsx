@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { startOfWeek, endOfWeek } from "date-fns";
 import { useOutletContext, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -406,6 +407,27 @@ const HomeDashboard = () => {
   const todayBookings = useMemo(() => bookings.filter(b => b.booking_date === todayStr), [bookings, todayStr]);
   const todayRevenue = todayBookings.reduce((s, b) => s + (Number(b.service_price) || 0), 0);
 
+  // This week at a glance
+  const weekStart = useMemo(() => startOfWeek(new Date(), { weekStartsOn: 1 }), []);
+  const weekEnd = useMemo(() => endOfWeek(new Date(), { weekStartsOn: 1 }), []);
+  const thisWeekBookings = useMemo(() =>
+    bookings.filter(b => {
+      const d = parseISO(b.booking_date);
+      return isWithinInterval(d, { start: weekStart, end: weekEnd });
+    }), [bookings, weekStart, weekEnd]);
+  const thisWeekRevenue = thisWeekBookings.reduce((s, b) => s + (Number(b.service_price) || 0), 0);
+
+  const nextUpcoming = useMemo(() => {
+    const now = new Date();
+    const upcoming = bookings
+      .filter(b => {
+        const dt = new Date(`${b.booking_date}T${b.booking_time}`);
+        return dt >= now && (b.status === "confirmed" || b.status === "pending");
+      })
+      .sort((a, b) => new Date(`${a.booking_date}T${a.booking_time}`).getTime() - new Date(`${b.booking_date}T${b.booking_time}`).getTime());
+    return upcoming[0] || null;
+  }, [bookings]);
+
   const periodLabel = `vs last ${dateRange === "ytd" ? "year" : dateRange.replace("d", " days")}`;
 
   const sparklineDays = useMemo(() => {
@@ -572,6 +594,53 @@ const HomeDashboard = () => {
     >
       {/* ═══ Churn Risk Banner ═══ */}
       <ChurnRiskBanner />
+
+      {/* ═══ This Week at a Glance ═══ */}
+      {!ghost.isIntro && !loading && (
+        <div className="alytics-card overflow-hidden">
+          <div
+            className="px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
+            style={{ borderLeft: "3px solid hsl(217,91%,60%)" }}
+          >
+            <div className="flex items-center gap-2.5 shrink-0">
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                style={{ background: "hsla(217,91%,60%,0.1)" }}
+              >
+                <CalendarDays className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
+              </div>
+              <p className="text-sm font-semibold alytics-card-title">This Week</p>
+            </div>
+
+            <div className="flex items-center gap-5 sm:gap-8 flex-wrap flex-1">
+              <div className="flex flex-col">
+                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Bookings</span>
+                <span className="text-lg font-bold alytics-card-title">{thisWeekBookings.length}</span>
+              </div>
+
+              <div className="w-px h-8 hidden sm:block" style={{ background: "hsla(217,91%,60%,0.15)" }} />
+
+              <div className="flex flex-col">
+                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Revenue</span>
+                <span className="text-lg font-bold alytics-card-title">{formatCurrency(thisWeekRevenue)}</span>
+              </div>
+
+              <div className="w-px h-8 hidden sm:block" style={{ background: "hsla(217,91%,60%,0.15)" }} />
+
+              <div className="flex flex-col">
+                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Next Appointment</span>
+                {nextUpcoming ? (
+                  <span className="text-sm font-semibold alytics-card-title">
+                    {nextUpcoming.customer_name || "Customer"} · {format(parseISO(nextUpcoming.booking_date), "EEE, MMM d")} at {nextUpcoming.booking_time?.slice(0, 5)}
+                  </span>
+                ) : (
+                  <span className="text-sm alytics-card-sub">None scheduled</span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ═══ Weekly Summary Card ═══ */}
       <WeeklySummaryCard />
