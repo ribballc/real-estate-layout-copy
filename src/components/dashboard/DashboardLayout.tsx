@@ -182,8 +182,8 @@ const DashboardLayout = () => {
         className={`min-h-screen flex w-full ${isDark ? "dashboard-dark" : "dashboard-light"} ${showEntryAnim ? "animate-dashboard-entry" : ""}`}
         style={{
           background: isDark
-            ? "linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(217 33% 14%) 100%)"
-            : "hsl(210, 40%, 98%)",
+            ? "linear-gradient(145deg, hsl(215 50% 9%) 0%, hsl(217 33% 13%) 60%, hsl(215 40% 11%) 100%)"
+            : "linear-gradient(160deg, hsl(210, 40%, 99%) 0%, hsl(214, 35%, 97%) 50%, hsl(216, 30%, 97%) 100%)",
         }}
       >
         <DashboardSidebar
@@ -205,8 +205,11 @@ const DashboardLayout = () => {
           <header
             className={`shrink-0 border-b ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}
             style={{
-              background: isDark ? "hsla(215,50%,10%,0.8)" : "hsl(0, 0%, 100%)",
+              background: isDark ? "hsla(215,50%,10%,0.85)" : "hsla(0, 0%, 100%, 0.92)",
               backdropFilter: "blur(20px)",
+              boxShadow: isDark
+                ? "0 1px 0 hsla(0,0%,100%,0.05)"
+                : "0 1px 0 hsl(214,20%,92%), 0 2px 12px hsla(215,25%,12%,0.04)",
             }}
           >
             <div className="h-14 flex items-center gap-3 px-4 md:px-8">
