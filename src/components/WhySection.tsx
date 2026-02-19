@@ -19,7 +19,7 @@ const CalendarVisual = () => (
 
       {/* Mini chart line */}
       <polyline points="28,52 40,48 55,50 70,42 85,38 100,35 108,38" stroke="hsl(217,91%,60%)" strokeWidth="1.5" fill="none" strokeLinecap="round">
-        <animate attributeName="points" values="28,52 40,52 55,52 70,52 85,52 100,52 108,52;28,52 40,48 55,50 70,42 85,38 100,35 108,38" dur="2s" fill="freeze" repeatCount="indefinite" />
+        <animate attributeName="points" values="28,52 40,52 55,52 70,52 85,52 100,52 108,52;28,52 40,48 55,50 70,42 85,38 100,35 108,38" dur="5s" fill="freeze" repeatCount="indefinite" />
       </polyline>
 
       {/* Calendar card */}
@@ -30,7 +30,7 @@ const CalendarVisual = () => (
         <rect key={`${r}-${c}`} x={133 + c * 16} y={34 + r * 12} width="10" height="8" rx="2"
           fill={[1,7,11].includes(r*5+c) ? "hsl(217,91%,60%)" : "hsl(214,20%,94%)"}
           opacity={[1,7,11].includes(r*5+c) ? 0.2 : 1}>
-          <animate attributeName="opacity" values="0;1" dur="0.3s" begin={`${(r*5+c)*0.08}s`} fill="freeze" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0;1" dur="0.8s" begin={`${(r*5+c)*0.2}s`} fill="freeze" repeatCount="indefinite" />
         </rect>
       )))}
 
@@ -102,30 +102,30 @@ const WebsiteVisual = () => (
 
       {/* Hero section building */}
       <rect x="28" y="42" width="80" height="10" rx="3" fill="hsl(215,25%,12%)" opacity="0.8">
-        <animate attributeName="width" values="0;80" dur="0.8s" fill="freeze" repeatCount="indefinite" />
+        <animate attributeName="width" values="0;80" dur="2s" fill="freeze" repeatCount="indefinite" />
       </rect>
       <rect x="28" y="56" width="55" height="6" rx="3" fill="hsl(214,20%,88%)">
-        <animate attributeName="width" values="0;55" dur="0.8s" begin="0.3s" fill="freeze" repeatCount="indefinite" />
+        <animate attributeName="width" values="0;55" dur="2s" begin="0.8s" fill="freeze" repeatCount="indefinite" />
       </rect>
 
       {/* CTA button */}
       <rect x="28" y="70" width="60" height="14" rx="7" fill="hsl(217,91%,60%)">
-        <animate attributeName="opacity" values="0;1" dur="0.4s" begin="0.6s" fill="freeze" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1" dur="1s" begin="1.5s" fill="freeze" repeatCount="indefinite" />
       </rect>
       <text x="58" y="80" textAnchor="middle" fontSize="7" fontWeight="600" fill="white" opacity="0">
         Book Now
-        <animate attributeName="opacity" values="0;1" dur="0.4s" begin="0.8s" fill="freeze" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1" dur="1s" begin="2s" fill="freeze" repeatCount="indefinite" />
       </text>
 
       {/* Image area */}
       <rect x="120" y="42" width="72" height="50" rx="6" fill="hsl(217,91%,96%)">
-        <animate attributeName="opacity" values="0;1" dur="0.5s" begin="0.5s" fill="freeze" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0;1" dur="1.2s" begin="1.2s" fill="freeze" repeatCount="indefinite" />
       </rect>
 
       {/* Service cards */}
       {[0,1,2].map(i => (
         <rect key={i} x={28 + i * 58} y="100" width="50" height="38" rx="5" fill="hsl(214,20%,96%)" stroke="hsl(214,20%,92%)" strokeWidth="1">
-          <animate attributeName="opacity" values="0;1" dur="0.4s" begin={`${1 + i * 0.2}s`} fill="freeze" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0;1" dur="1s" begin={`${2.5 + i * 0.5}s`} fill="freeze" repeatCount="indefinite" />
         </rect>
       ))}
     </svg>
