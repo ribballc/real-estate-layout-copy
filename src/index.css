@@ -1536,12 +1536,12 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 }
 
 @keyframes dashStaggerIn {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .dash-stagger-item {
   opacity: 0;
-  animation: dashStaggerIn 0.4s ease-out forwards;
+  animation: dashStaggerIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Intro banner animations */

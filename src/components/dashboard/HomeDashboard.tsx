@@ -607,7 +607,7 @@ const HomeDashboard = () => {
         ) : null
       )}
       {/* Greeting + date picker */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 dash-stagger-item" style={{ animationDelay: "0ms" }}>
         <div>
           <h2 className="dash-page-title dash-title">
             {greeting}{businessName ? `, ${businessName}` : ""}
@@ -627,7 +627,7 @@ const HomeDashboard = () => {
       </div>
 
       {/* ═══ Quick Actions ═══ */}
-      <div className="flex items-center gap-2 flex-wrap -mt-1">
+      <div className="flex items-center gap-2 flex-wrap -mt-1 dash-stagger-item" style={{ animationDelay: "60ms" }}>
         <button
           onClick={() => navigate("/dashboard/jobs")}
           className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
@@ -697,7 +697,7 @@ const HomeDashboard = () => {
       )}
 
       {/* ═══ KPI Cards — 2x2 mobile, 4-col desktop ═══ */}
-      <div className="dash-grid-4">
+      <div className="dash-grid-4 dash-stagger-item" style={{ animationDelay: "120ms" }}>
         <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
             icon={<DollarSign className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
@@ -740,7 +740,7 @@ const HomeDashboard = () => {
 
       {/* ═══ Top Services Table ═══ */}
       {(ghost.isIntro ? GHOST_TOP_SERVICES : topServices).length > 0 && (
-        <div className={`alytics-card overflow-hidden ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
+        <div className={`alytics-card overflow-hidden dash-stagger-item ${ghost.showShimmer ? "ghost-shimmer" : ""}`} style={{ animationDelay: "200ms" }}>
           <div className="px-5 py-3 flex items-center justify-between border-b border-white/5">
             <h3 className="dash-card-title alytics-card-title">Top Services</h3>
           </div>
@@ -777,7 +777,7 @@ const HomeDashboard = () => {
 
       {/* ═══ Revenue Bar Chart ═══ */}
       {(ghost.isIntro ? GHOST_CHART_DATA : chartData).length > 1 && (
-        <div className={`alytics-card p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
+        <div className={`alytics-card p-5 lg:p-6 dash-stagger-item ${ghost.showShimmer ? "ghost-shimmer" : ""}`} style={{ animationDelay: "280ms" }}>
           <div className="flex items-center justify-between mb-4">
             <h3 className="dash-card-title alytics-card-title">Revenue Breakdown</h3>
           </div>
@@ -816,7 +816,7 @@ const HomeDashboard = () => {
       )}
 
       {/* ═══ Two-column: Pie Chart + Recent Bookings ═══ */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch dash-stagger-item" style={{ animationDelay: "340ms" }}>
         {/* Report Overview — Pie chart */}
         <div className={`alytics-card p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
           <div className="flex items-center justify-between mb-4">
@@ -960,7 +960,7 @@ const HomeDashboard = () => {
       </div>
 
       {/* ═══ Busiest Days Heatmap ═══ */}
-      <div className={`alytics-card p-5 lg:p-6 ${ghost.showShimmer ? "ghost-shimmer" : ""}`}>
+      <div className={`alytics-card p-5 lg:p-6 dash-stagger-item ${ghost.showShimmer ? "ghost-shimmer" : ""}`} style={{ animationDelay: "400ms" }}>
         <h3 className="dash-card-title alytics-card-title mb-4">Busiest Days</h3>
         <div className="grid grid-cols-7 gap-2 lg:gap-3">
           {(ghost.isIntro ? GHOST_HEATMAP : busiestDays).map(d => (
