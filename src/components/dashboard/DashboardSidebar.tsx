@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import {
   Building2, Wrench, Clock, Camera, Star, Settings, LogOut,
   Bug, HelpCircle, CalendarDays, Users, Sun, Moon, LayoutDashboard, Lock,
-  Bell, Globe, ChevronLeft, ChevronRight, KanbanSquare, ClipboardList, FlaskConical, FileText,
+  Bell, Globe, ChevronLeft, ChevronRight, KanbanSquare, ClipboardList, FlaskConical,
 } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,7 +16,6 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, alwaysUnlocked: true },
   { title: "Business Info", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true },
   { title: "Website", url: "/dashboard/website", icon: Globe, alwaysUnlocked: true },
-  { title: "Website Copy", url: "/dashboard/copy", icon: FileText, alwaysUnlocked: true },
   { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
   { title: "Jobs", url: "/dashboard/jobs", icon: KanbanSquare },
   { title: "Estimates", url: "/dashboard/estimates", icon: ClipboardList },
@@ -154,8 +153,8 @@ const DashboardSidebar = ({
                   end={item.url === "/dashboard"}
                   title={collapsed ? item.title : undefined}
                   className={cn(
-                    "flex items-center rounded-xl group/nav-item transition-all duration-150 ease-in-out",
-                    collapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3 py-2.5",
+                    "flex rounded-xl group/nav-item transition-all duration-150 ease-in-out",
+                    collapsed ? "items-center justify-center px-0 py-2.5" : "items-center gap-3 px-3 py-2.5",
                     isItemLocked && "opacity-60",
                     active
                       ? isDark
@@ -180,7 +179,7 @@ const DashboardSidebar = ({
                   {!collapsed && (
                     <>
                       <span className={cn(
-                        "text-[14px] tracking-tight flex-1",
+                        "flex-1 text-[14px] tracking-tight leading-tight",
                         active ? "font-semibold" : "font-medium"
                       )}>
                         {item.title}
@@ -193,7 +192,7 @@ const DashboardSidebar = ({
                       {isItemLocked && !badge && (
                         <Lock
                           className={cn(
-                            "w-3 h-3 ml-auto flex-shrink-0",
+                            "w-3 h-3 flex-shrink-0",
                             isDark ? "text-[hsla(0,0%,100%,0.2)]" : "text-[hsl(215,16%,75%)]"
                           )}
                           strokeWidth={1.5}
