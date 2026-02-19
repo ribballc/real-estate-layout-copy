@@ -93,8 +93,11 @@ const DashboardSidebar = ({
         width: collapsed ? 64 : 256,
         transition: "width 200ms ease",
         background: isDark
-          ? "linear-gradient(180deg, hsl(215 50% 8%) 0%, hsl(217 33% 12%) 100%)"
-          : "hsl(210, 40%, 98%)",
+          ? "linear-gradient(180deg, hsl(215 50% 8%) 0%, hsl(217 33% 11%) 100%)"
+          : "hsl(0, 0%, 100%)",
+        boxShadow: isDark
+          ? "4px 0 24px hsla(0, 0%, 0%, 0.18)"
+          : "4px 0 20px hsla(215, 25%, 12%, 0.05)",
       }}
     >
       {/* Collapse toggle — hidden in mobile sheet */}

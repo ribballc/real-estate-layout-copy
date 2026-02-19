@@ -122,9 +122,7 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
       {/* Row 1: Label + Icon */}
       <div className="flex items-center justify-between">
         <p className={`dash-label ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
-        <div
-          className={`w-8 h-8 rounded-lg flex items-center justify-center ${highlighted ? "bg-[hsla(0,0%,100%,0.2)] border border-[hsla(0,0%,100%,0.15)]" : "bg-[hsla(217,91%,60%,0.08)] border border-[hsla(217,91%,60%,0.12)]"}`}
-        >
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center dash-metric-icon ${highlighted ? "dash-metric-icon--highlight" : ""}`}>
           {icon}
         </div>
       </div>
@@ -937,11 +935,11 @@ const HomeDashboard = () => {
                     </div>
                     <div className="text-right shrink-0 ml-3">
                       <p className="alytics-card-title text-sm font-semibold font-mono">{formatCurrency(Number(b.service_price) || 0)}</p>
-                      <span className={`text-xs font-semibold uppercase tracking-wide ${
-                        b.status === "confirmed" ? "text-emerald-400" :
-                        b.status === "completed" ? "text-[hsl(217,91%,60%)]" :
-                        b.status === "cancelled" ? "text-rose-400" :
-                        "text-amber-400"
+                      <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                        b.status === "confirmed" ? "bg-emerald-500/10 text-emerald-400" :
+                        b.status === "completed" ? "bg-[hsla(217,91%,60%,0.12)] text-[hsl(217,91%,65%)]" :
+                        b.status === "cancelled" ? "bg-rose-500/10 text-rose-400" :
+                        "bg-amber-500/10 text-amber-400"
                       }`}>
                         {b.status}
                       </span>
