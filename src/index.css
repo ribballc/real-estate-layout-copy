@@ -345,7 +345,7 @@
 }
 
 .process-icon-container {
-  animation: iconFloat 3s ease-in-out infinite, iconPulse 2s ease-in-out infinite;
+  animation: iconFloat 6s ease-in-out infinite, iconPulse 4s ease-in-out infinite;
 }
 
 .process-card:hover .process-icon-container {

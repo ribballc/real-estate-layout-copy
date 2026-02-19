@@ -22,7 +22,7 @@ const SpringBanner = () => (
     background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
   }}>
     <span className="inline-flex items-center gap-2">
-      <span className="text-base" style={{ animation: 'springBounce 2s ease-in-out infinite' }}>🌸</span>
+      <span className="text-base" style={{ animation: 'springBounce 4s ease-in-out infinite' }}>🌸</span>
       SPRING SALE: 32% OFF + Free Gifts
     </span>
   </div>

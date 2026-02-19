@@ -19,7 +19,7 @@ const CalendarVisual = () => (
 
       {/* Mini chart line */}
       <polyline points="28,52 40,48 55,50 70,42 85,38 100,35 108,38" stroke="hsl(217,91%,60%)" strokeWidth="1.5" fill="none" strokeLinecap="round">
-        <animate attributeName="points" values="28,52 40,52 55,52 70,52 85,52 100,52 108,52;28,52 40,48 55,50 70,42 85,38 100,35 108,38" dur="5s" fill="freeze" repeatCount="indefinite" />
+        <animate attributeName="points" values="28,52 40,52 55,52 70,52 85,52 100,52 108,52;28,52 40,48 55,50 70,42 85,38 100,35 108,38" dur="5s" fill="freeze" />
       </polyline>
 
       {/* Calendar card */}
@@ -30,7 +30,7 @@ const CalendarVisual = () => (
         <rect key={`${r}-${c}`} x={133 + c * 16} y={34 + r * 12} width="10" height="8" rx="2"
           fill={[1,7,11].includes(r*5+c) ? "hsl(217,91%,60%)" : "hsl(214,20%,94%)"}
           opacity={[1,7,11].includes(r*5+c) ? 0.2 : 1}>
-          <animate attributeName="opacity" values="0;1" dur="0.8s" begin={`${(r*5+c)*0.2}s`} fill="freeze" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0;1" dur="0.8s" begin={`${(r*5+c)*0.2}s`} fill="freeze" />
         </rect>
       )))}
 
