@@ -25,7 +25,7 @@ const CtaFooter = () => {
               animation: "fadeSlideUp 0.5s ease-out 0.3s forwards",
             }}
           >
-            Stop Missing Jobs.
+            Your competitors are already on Darker.
           </h2>
           <p
             className="text-base md:text-lg max-w-[560px] mx-auto mb-10"
@@ -36,7 +36,7 @@ const CtaFooter = () => {
               animation: "fadeSlideUp 0.5s ease-out 0.45s forwards",
             }}
           >
-            Someone in your area just Googled "detailing near me." Is your shop showing up? Get live in 48 hours — free.
+            Every day without an online booking page is money left on the table. Setup takes 5 minutes. Your first 14 days are free.
           </p>
           <div style={{ opacity: 0, animation: "fadeSlideUp 0.5s ease-out 0.6s forwards" }}>
             <button
@@ -48,16 +48,18 @@ const CtaFooter = () => {
                 boxShadow: "0 8px 24px hsla(217, 91%, 60%, 0.35)",
               }}
             >
-              <span className="relative z-10">Claim My Free Website — Takes 60 Seconds</span>
+              <span className="relative z-10">Claim My Free 14 Days →</span>
               <ChevronRight className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-[3px]" />
               <span
                 className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"
                 style={{ background: "linear-gradient(90deg, transparent 0%, hsla(0, 0%, 100%, 0.2) 50%, transparent 100%)" }}
               />
             </button>
-            <p className="text-sm mt-4" style={{ color: "hsla(0, 0%, 100%, 0.5)" }}>
-              Free for 14 days · No credit card · Live in 48 hours
-            </p>
+            <div className="flex flex-wrap justify-center gap-5 mt-4 text-[12px]" style={{ color: "hsla(0, 0%, 100%, 0.4)" }}>
+              <span>🔒 No credit card required</span>
+              <span>⚡ Live in 5 minutes</span>
+              <span>↩ Cancel anytime</span>
+            </div>
           </div>
         </div>
       </section>
