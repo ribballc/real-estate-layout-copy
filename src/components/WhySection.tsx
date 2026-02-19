@@ -18,6 +18,11 @@ const CalendarVisual = () => (
       <text x="93" y="20" textAnchor="middle" fontSize="7" fontWeight="500" fill="hsl(215,16%,55%)">Bookings</text>
       <text x="93" y="33" textAnchor="middle" fontSize="13" fontWeight="700" fill="hsl(215,25%,12%)">60</text>
 
+      {/* Revenue chart — shifted down to clear values */}
+      <polyline points="28,57 40,53 55,55 70,49 85,46 100,43 108,46" fill="none" stroke="hsl(217,91%,60%)" strokeWidth="1.5" strokeLinecap="round">
+        <animate attributeName="points" values="28,57 40,57 55,57 70,57 85,57 100,57 108,57;28,57 40,53 55,55 70,49 85,46 100,43 108,46" dur="1.5s" repeatCount="indefinite" />
+      </polyline>
+
       {/* Calendar card */}
       <rect x="125" y="10" width="95" height="65" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,90%)" strokeWidth="1" />
       <rect x="125" y="10" width="95" height="18" rx="8" fill="hsl(217,91%,60%)" />
@@ -38,13 +43,14 @@ const CalendarVisual = () => (
 
       {/* Bottom stats row */}
       <rect x="20" y="80" width="200" height="65" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,90%)" strokeWidth="1" />
+      <line x1="120" y1="85" x2="120" y2="140" stroke="hsl(214,20%,90%)" strokeWidth="0.5" />
       <text x="40" y="100" fontSize="8" fontWeight="500" fill="hsl(215,16%,55%)">Top month</text>
       <text x="40" y="118" fontSize="13" fontWeight="700" fill="hsl(217,91%,55%)">January</text>
       <text x="40" y="132" fontSize="8" fill="hsl(215,16%,55%)">2026</text>
 
-      <text x="120" y="100" fontSize="8" fontWeight="500" fill="hsl(215,16%,55%)">Top service</text>
-      <text x="120" y="118" fontSize="13" fontWeight="700" fill="hsl(215,25%,12%)">Full Detail</text>
-      <text x="120" y="132" fontSize="8" fill="hsl(215,16%,55%)">48 booked</text>
+      <text x="130" y="100" fontSize="8" fontWeight="500" fill="hsl(215,16%,55%)">Top service</text>
+      <text x="130" y="118" fontSize="13" fontWeight="700" fill="hsl(215,25%,12%)">Full Detail</text>
+      <text x="130" y="132" fontSize="8" fill="hsl(215,16%,55%)">48 booked</text>
     </svg>
   </div>
 );
@@ -152,20 +158,20 @@ const PaymentVisual = () => (
       </path>
 
       {/* Transaction notification */}
-      <rect x="55" y="125" width="90" height="26" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,88%)" strokeWidth="1">
+      <rect x="45" y="125" width="110" height="26" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,88%)" strokeWidth="1">
         <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
       </rect>
-      <circle cx="70" cy="138" r="6" fill="hsl(160,84%,92%)">
+      <circle cx="62" cy="138" r="6" fill="hsl(160,84%,92%)">
         <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
       </circle>
-      <path d="M67 138 L69 140 L73 136" stroke="hsl(160,84%,39%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M59 138 L61 140 L65 136" stroke="hsl(160,84%,39%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
       </path>
-      <text x="82" y="135" fontSize="7" fontWeight="600" fill="hsl(215,25%,12%)" opacity="0">
+      <text x="74" y="135" fontSize="7" fontWeight="600" fill="hsl(215,25%,12%)" opacity="0">
         Payment received
         <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
       </text>
-      <text x="82" y="144" fontSize="7" fill="hsl(160,84%,39%)" opacity="0">
+      <text x="74" y="144" fontSize="7" fill="hsl(160,84%,39%)" opacity="0">
         +$250.00
         <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
       </text>
