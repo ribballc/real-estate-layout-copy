@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { DndContext, DragOverlay, useDraggable, useDroppable, PointerSensor, useSensor, useSensors, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
 import {
   Loader2, Plus, Clock, User, Mail, Phone, DollarSign, FileText, X,
@@ -68,15 +70,6 @@ const COLUMNS: Column[] = [
     strip: "hsl(38, 92%, 50%)",
   },
   {
-    id: "ready",
-    label: "Ready for Pickup",
-    statuses: ["ready"],
-    color: "hsl(142, 71%, 45%)",
-    bg: "hsla(142, 71%, 45%, 0.08)",
-    border: "hsla(142, 71%, 45%, 0.25)",
-    strip: "hsl(142, 71%, 45%)",
-  },
-  {
     id: "completed",
     label: "Completed",
     statuses: ["completed"],
@@ -85,13 +78,22 @@ const COLUMNS: Column[] = [
     border: "hsla(160, 84%, 39%, 0.25)",
     strip: "hsl(160, 84%, 39%)",
   },
+  {
+    id: "invoiced",
+    label: "Invoiced",
+    statuses: ["invoiced"],
+    color: "hsl(280, 67%, 55%)",
+    bg: "hsla(280, 67%, 55%, 0.08)",
+    border: "hsla(280, 67%, 55%, 0.25)",
+    strip: "hsl(280, 67%, 55%)",
+  },
 ];
 
 const STATUS_FOR_COLUMN: Record<string, string> = {
   scheduled: "confirmed",
   in_progress: "pending",
-  ready: "ready",
   completed: "completed",
+  invoiced: "invoiced",
 };
 
 /* ── Service step checklists ─────────────────────────── */
@@ -135,7 +137,7 @@ const JobsManager = () => {
   const [checkedSteps, setCheckedSteps] = useState<Set<string>>(new Set());
   const [mobileCol, setMobileCol] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
   const [newBooking, setNewBooking] = useState({
     customer_name: "", customer_email: "", customer_phone: "",
     service_title: "", service_price: 0, booking_date: "",
@@ -173,30 +175,30 @@ const JobsManager = () => {
     return map;
   }, [bookings]);
 
-  /* ── Drag handlers ───────────────────────────────── */
+  /* ── dnd-kit sensors & handlers ────────────────── */
 
-  const handleDragStart = (e: React.DragEvent, id: string) => {
-    setDraggedId(id);
-    e.dataTransfer.effectAllowed = "move";
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(String(event.active.id));
   };
 
-  const handleDrop = async (e: React.DragEvent, colId: string) => {
-    e.preventDefault();
-    if (!draggedId) return;
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveId(null);
+    if (!over) return;
+    const colId = String(over.id);
     const newStatus = STATUS_FOR_COLUMN[colId];
     if (!newStatus) return;
-    const booking = bookings.find(b => b.id === draggedId);
-    if (!booking || booking.status === newStatus) { setDraggedId(null); return; }
-    setBookings(prev => prev.map(b => b.id === draggedId ? { ...b, status: newStatus } : b));
-    setDraggedId(null);
-    const { error } = await supabase.from("bookings").update({ status: newStatus }).eq("id", draggedId);
+    const booking = bookings.find(b => b.id === active.id);
+    if (!booking || booking.status === newStatus) return;
+    setBookings(prev => prev.map(b => b.id === active.id ? { ...b, status: newStatus } : b));
+    const { error } = await supabase.from("bookings").update({ status: newStatus }).eq("id", String(active.id));
     if (error) {
       toast({ title: "Error updating status", description: error.message, variant: "destructive" });
       fetchData();
     }
   };
-
-  const handleDragOver = (e: React.DragEvent) => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; };
 
   /* ── Add booking ─────────────────────────────────── */
 
@@ -237,22 +239,26 @@ const JobsManager = () => {
     }
   };
 
-  /* ── Job card ────────────────────────────────────── */
+  /* ── Draggable Job card ───────────────────────────── */
 
-  const JobCard = ({ booking, column }: { booking: Booking; column: Column }) => {
+  const DraggableJobCard = ({ booking, column }: { booking: Booking; column: Column }) => {
+    const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: booking.id });
     const vehicle = customerMap.get(booking.customer_email)?.vehicle || "";
+    const style = {
+      transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+      opacity: isDragging ? 0.4 : 1,
+      background: "hsla(215, 50%, 8%, 0.5)",
+      borderColor: "hsla(0, 0%, 100%, 0.08)",
+    };
     return (
       <div
-        draggable={!isMobile}
-        onDragStart={e => handleDragStart(e, booking.id)}
-        onClick={() => { setSelectedJob(booking); setCheckedSteps(new Set()); }}
-        className="relative rounded-lg border cursor-pointer transition-all duration-150 hover:scale-[1.01] hover:shadow-lg overflow-hidden"
-        style={{
-          background: "hsla(215, 50%, 8%, 0.5)",
-          borderColor: "hsla(0, 0%, 100%, 0.08)",
-        }}
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
+        onClick={() => { if (!isDragging) { setSelectedJob(booking); setCheckedSteps(new Set()); } }}
+        className="relative rounded-lg border cursor-grab active:cursor-grabbing transition-all duration-150 hover:scale-[1.01] hover:shadow-lg overflow-hidden touch-none"
+        style={style}
       >
-        {/* Color strip */}
         <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg" style={{ background: column.strip }} />
         <div className="pl-4 pr-3 py-3 space-y-2">
           <div className="flex items-start justify-between gap-2">
@@ -275,6 +281,43 @@ const JobsManager = () => {
     );
   };
 
+  /* ── Droppable Column ───────────────────────────── */
+
+  const DroppableColumn = ({ col, children }: { col: Column; children: React.ReactNode }) => {
+    const { setNodeRef, isOver } = useDroppable({ id: col.id });
+    return (
+      <div
+        ref={setNodeRef}
+        className="flex flex-col rounded-[14px] border min-h-[400px] transition-colors duration-200"
+        style={{
+          borderColor: isOver ? col.border : "hsla(0, 0%, 100%, 0.08)",
+          background: isOver ? col.bg : "hsla(215, 50%, 8%, 0.3)",
+        }}
+      >
+        <div
+          className="flex items-center justify-between px-4 py-3 rounded-t-[14px] border-b"
+          style={{ background: col.bg, borderColor: col.border }}
+        >
+          <span className="font-semibold text-sm" style={{ color: col.color }}>{col.label}</span>
+          <span
+            className="min-w-[22px] h-[22px] px-1.5 rounded-md text-xs font-bold flex items-center justify-center"
+            style={{ background: col.bg, color: col.color, border: `1px solid ${col.border}` }}
+          >
+            {columnBookings[col.id].length}
+          </span>
+        </div>
+        <div className="flex-1 p-3 space-y-3 overflow-y-auto">
+          {children}
+        </div>
+      </div>
+    );
+  };
+
+  /* ── Overlay card for drag ──────────────────────── */
+
+  const activeBooking = activeId ? bookings.find(b => b.id === activeId) : null;
+  const activeColumn = activeBooking ? COLUMNS.find(c => c.statuses.includes(activeBooking.status)) || COLUMNS[0] : null;
+
   /* ── Loading ─────────────────────────────────────── */
 
   if (loading) return <TableSkeleton rows={5} cols={4} />;
@@ -294,97 +337,102 @@ const JobsManager = () => {
         </button>
       </div>
 
-      {/* ── Desktop: Kanban columns ─────────────────── */}
-      {!isMobile ? (
-        <div className="grid grid-cols-4 gap-4">
-          {COLUMNS.map(col => (
-            <div
-              key={col.id}
-              onDragOver={handleDragOver}
-              onDrop={e => handleDrop(e, col.id)}
-              className="flex flex-col rounded-[14px] border min-h-[400px]"
-              style={{ borderColor: "hsla(0, 0%, 100%, 0.08)", background: "hsla(215, 50%, 8%, 0.3)" }}
-            >
-              {/* Column header */}
-              <div
-                className="flex items-center justify-between px-4 py-3 rounded-t-[14px] border-b"
-                style={{ background: col.bg, borderColor: col.border }}
-              >
-                <span className="font-semibold text-sm" style={{ color: col.color }}>{col.label}</span>
-                <span
-                  className="min-w-[22px] h-[22px] px-1.5 rounded-md text-xs font-bold flex items-center justify-center"
-                  style={{ background: col.bg, color: col.color, border: `1px solid ${col.border}` }}
-                >
-                  {columnBookings[col.id].length}
-                </span>
-              </div>
-              {/* Cards */}
-              <div className="flex-1 p-3 space-y-3 overflow-y-auto">
+      {/* ── Kanban Board ─────────────────────────────── */}
+      <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        {!isMobile ? (
+          <div className="grid grid-cols-4 gap-4">
+            {COLUMNS.map(col => (
+              <DroppableColumn key={col.id} col={col}>
                 {columnBookings[col.id].length === 0 && (
                   <p className="text-white/40 text-xs text-center py-6">No jobs</p>
                 )}
                 {columnBookings[col.id].map(b => (
-                  <JobCard key={b.id} booking={b} column={col} />
+                  <DraggableJobCard key={b.id} booking={b} column={col} />
                 ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        /* ── Mobile: single column + swipe ──────────── */
-        <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-          {/* Column selector */}
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={() => setMobileCol(prev => Math.max(0, prev - 1))}
-              disabled={mobileCol === 0}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-white/60 hover:text-white disabled:opacity-20"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <div className="text-center">
-              <span className="font-semibold text-sm" style={{ color: COLUMNS[mobileCol].color }}>
-                {COLUMNS[mobileCol].label}
-              </span>
-              <span
-                className="ml-2 inline-flex min-w-[20px] h-[20px] px-1 rounded-md text-xs font-bold items-center justify-center"
-                style={{ background: COLUMNS[mobileCol].bg, color: COLUMNS[mobileCol].color }}
-              >
-                {columnBookings[COLUMNS[mobileCol].id].length}
-              </span>
-              {/* Dots */}
-              <div className="flex items-center justify-center gap-2 mt-2">
-                {COLUMNS.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setMobileCol(i)}
-                    className="w-2 h-2 rounded-full transition-all"
-                    style={{
-                      background: i === mobileCol ? COLUMNS[mobileCol].color : "hsla(0, 0%, 100%, 0.15)",
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-            <button
-              onClick={() => setMobileCol(prev => Math.min(COLUMNS.length - 1, prev + 1))}
-              disabled={mobileCol === COLUMNS.length - 1}
-              className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white disabled:opacity-20"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-          {/* Cards */}
-          <div className="space-y-3 min-h-[300px]">
-            {columnBookings[COLUMNS[mobileCol].id].length === 0 && (
-              <p className="text-white/20 text-xs text-center py-10">No jobs</p>
-            )}
-            {columnBookings[COLUMNS[mobileCol].id].map(b => (
-              <JobCard key={b.id} booking={b} column={COLUMNS[mobileCol]} />
+              </DroppableColumn>
             ))}
           </div>
-        </div>
-      )}
+        ) : (
+          /* ── Mobile: single column + swipe ──────────── */
+          <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+            <div className="flex items-center justify-between mb-4">
+              <button
+                onClick={() => setMobileCol(prev => Math.max(0, prev - 1))}
+                disabled={mobileCol === 0}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-white/60 hover:text-white disabled:opacity-20"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <div className="text-center">
+                <span className="font-semibold text-sm" style={{ color: COLUMNS[mobileCol].color }}>
+                  {COLUMNS[mobileCol].label}
+                </span>
+                <span
+                  className="ml-2 inline-flex min-w-[20px] h-[20px] px-1 rounded-md text-xs font-bold items-center justify-center"
+                  style={{ background: COLUMNS[mobileCol].bg, color: COLUMNS[mobileCol].color }}
+                >
+                  {columnBookings[COLUMNS[mobileCol].id].length}
+                </span>
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  {COLUMNS.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setMobileCol(i)}
+                      className="w-2 h-2 rounded-full transition-all"
+                      style={{
+                        background: i === mobileCol ? COLUMNS[mobileCol].color : "hsla(0, 0%, 100%, 0.15)",
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+              <button
+                onClick={() => setMobileCol(prev => Math.min(COLUMNS.length - 1, prev + 1))}
+                disabled={mobileCol === COLUMNS.length - 1}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white disabled:opacity-20"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="space-y-3 min-h-[300px]">
+              {columnBookings[COLUMNS[mobileCol].id].length === 0 && (
+                <p className="text-white/20 text-xs text-center py-10">No jobs</p>
+              )}
+              {columnBookings[COLUMNS[mobileCol].id].map(b => (
+                <DraggableJobCard key={b.id} booking={b} column={COLUMNS[mobileCol]} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Drag overlay */}
+        <DragOverlay>
+          {activeBooking && activeColumn && (
+            <div
+              className="relative rounded-lg border overflow-hidden shadow-2xl"
+              style={{ background: "hsla(215, 50%, 8%, 0.9)", borderColor: activeColumn.border, width: 280 }}
+            >
+              <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg" style={{ background: activeColumn.strip }} />
+              <div className="pl-4 pr-3 py-3 space-y-2">
+                <div className="flex items-start justify-between gap-2">
+                  <span className="text-white font-semibold text-sm truncate">{activeBooking.customer_name || "Unknown"}</span>
+                  <span
+                    className="text-xs font-semibold px-2 py-0.5 rounded-full shrink-0"
+                    style={{ background: activeColumn.bg, color: activeColumn.color, border: `1px solid ${activeColumn.border}` }}
+                  >
+                    ${activeBooking.service_price}
+                  </span>
+                </div>
+                <p className="text-white/70 text-xs">{activeBooking.service_title}</p>
+                <div className="flex items-center gap-2 text-white/55 text-xs">
+                  <CalendarIcon className="w-3 h-3" />
+                  {format(new Date(activeBooking.booking_date + "T00:00"), "MMM d")} · {formatTimeShort(activeBooking.booking_time)}
+                </div>
+              </div>
+            </div>
+          )}
+        </DragOverlay>
+      </DndContext>
 
       {/* ── Job Detail Sheet ───────────────────────── */}
       <Sheet open={!!selectedJob} onOpenChange={open => { if (!open) setSelectedJob(null); }}>
