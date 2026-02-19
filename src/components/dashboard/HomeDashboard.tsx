@@ -119,19 +119,19 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
     : value;
 
   return (
-    <div className={`dash-card h-[120px] sm:h-[140px] flex flex-col justify-between overflow-hidden transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
+    <div className={`dash-card h-[110px] sm:h-[140px] flex flex-col justify-between overflow-hidden transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
       {/* Row 1: Label + Icon */}
       <div className="flex items-center justify-between">
-        <p className={`dash-label truncate mr-1 ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
-        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 dash-metric-icon ${highlighted ? "dash-metric-icon--highlight" : ""}`}>
+        <p className={`dash-label text-[10px] sm:text-xs truncate mr-1 ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
+        <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 dash-metric-icon ${highlighted ? "dash-metric-icon--highlight" : ""}`}>
           {icon}
         </div>
       </div>
 
       {/* Row 2: Big number + sparkline */}
-      <div className="mt-auto pt-2 sm:pt-3 flex items-end justify-between gap-2">
+      <div className="mt-auto pt-1 sm:pt-3 flex items-end justify-between gap-2">
         <div className="min-w-0">
-          <p className={`text-2xl sm:text-[28px] font-bold leading-none tracking-tight tabular-nums ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
+          <p className={`text-xl sm:text-[28px] font-bold leading-none tracking-tight tabular-nums ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
           {pct !== null && (
             <div className="flex items-center gap-1 sm:gap-1.5 mt-1">
               <span className={`inline-flex items-center gap-0.5 text-[11px] sm:text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
