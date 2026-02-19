@@ -113,7 +113,7 @@ const App = () => (
                 <Route path="/site/:slug/book/booking" element={<BookBooking />} />
                 <Route path="/site/:slug/book/checkout" element={<BookCheckout />} />
                 <Route path="/estimate/:id" element={<PublicEstimate />} />
-              <Route path="/terms" element={<Terms />} />
+                <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/cookies" element={<Cookies />} />
                 <Route path="/login" element={<Login />} />
