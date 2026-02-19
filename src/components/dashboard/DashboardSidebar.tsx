@@ -13,18 +13,18 @@ import darkerLogoDark from "@/assets/darker-logo-dark.png";
 import { cn } from "@/lib/utils";
 
 const items = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, alwaysUnlocked: true },
-  { title: "Business Info", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true },
-  { title: "Website", url: "/dashboard/website", icon: Globe, alwaysUnlocked: true },
-  { title: "Website Copy", url: "/dashboard/copy", icon: FileText, alwaysUnlocked: true },
-  { title: "Calendar", url: "/dashboard/calendar", icon: CalendarDays },
-  { title: "Jobs", url: "/dashboard/jobs", icon: KanbanSquare },
-  { title: "Estimates", url: "/dashboard/estimates", icon: ClipboardList },
-  { title: "Customers", url: "/dashboard/customers", icon: Users },
-  { title: "Services", url: "/dashboard/services", icon: Wrench },
-  { title: "Photos", url: "/dashboard/photos", icon: Camera },
-  { title: "Testimonials", url: "/dashboard/testimonials", icon: Star },
-  { title: "Offer Lab", url: "/dashboard/offer-lab", icon: FlaskConical },
+  { title: "Dashboard", subtitle: "Today's overview", url: "/dashboard", icon: LayoutDashboard, alwaysUnlocked: true },
+  { title: "Business Info", subtitle: "Shop & contact details", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true },
+  { title: "Website", subtitle: "Your live booking page", url: "/dashboard/website", icon: Globe, alwaysUnlocked: true },
+  { title: "Website Copy", subtitle: "Edit your site's text", url: "/dashboard/copy", icon: FileText, alwaysUnlocked: true },
+  { title: "Calendar", subtitle: "Upcoming schedule", url: "/dashboard/calendar", icon: CalendarDays },
+  { title: "Jobs", subtitle: "Track your work", url: "/dashboard/jobs", icon: KanbanSquare },
+  { title: "Estimates", subtitle: "Quotes for clients", url: "/dashboard/estimates", icon: ClipboardList },
+  { title: "Customers", subtitle: "Client profiles & history", url: "/dashboard/customers", icon: Users },
+  { title: "Services", subtitle: "Packages you offer", url: "/dashboard/services", icon: Wrench },
+  { title: "Photos", subtitle: "Your portfolio", url: "/dashboard/photos", icon: Camera },
+  { title: "Testimonials", subtitle: "Client reviews", url: "/dashboard/testimonials", icon: Star },
+  { title: "Offer Lab", subtitle: "Deals & promotions", url: "/dashboard/offer-lab", icon: FlaskConical },
 ];
 
 interface DashboardSidebarProps {
@@ -154,8 +154,8 @@ const DashboardSidebar = ({
                   end={item.url === "/dashboard"}
                   title={collapsed ? item.title : undefined}
                   className={cn(
-                    "flex items-center rounded-xl group/nav-item transition-all duration-150 ease-in-out",
-                    collapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3 py-2.5",
+                    "flex rounded-xl group/nav-item transition-all duration-150 ease-in-out",
+                    collapsed ? "items-center justify-center px-0 py-2.5" : "items-start gap-3 px-3 py-2.5",
                     isItemLocked && "opacity-60",
                     active
                       ? isDark
@@ -179,12 +179,26 @@ const DashboardSidebar = ({
                   />
                   {!collapsed && (
                     <>
-                      <span className={cn(
-                        "text-[14px] tracking-tight flex-1",
-                        active ? "font-semibold" : "font-medium"
-                      )}>
-                        {item.title}
-                      </span>
+                      <div className="flex-1 min-w-0">
+                        <span className={cn(
+                          "text-[14px] tracking-tight block leading-tight",
+                          active ? "font-semibold" : "font-medium"
+                        )}>
+                          {item.title}
+                        </span>
+                        <span className={cn(
+                          "text-[11px] block leading-tight mt-0.5 truncate",
+                          active
+                            ? isDark
+                              ? "text-[hsla(217,91%,80%,0.65)]"
+                              : "text-[hsla(217,91%,45%,0.7)]"
+                            : isDark
+                              ? "text-[hsla(0,0%,100%,0.3)]"
+                              : "text-[hsl(215,16%,60%)]"
+                        )}>
+                          {item.subtitle}
+                        </span>
+                      </div>
                       {badge > 0 && (
                         <span className="min-w-[20px] h-[20px] px-1.5 rounded-md text-xs font-bold flex items-center justify-center bg-[hsl(0,84%,60%)] text-white">
                           {badge > 9 ? "9+" : badge}
@@ -193,7 +207,7 @@ const DashboardSidebar = ({
                       {isItemLocked && !badge && (
                         <Lock
                           className={cn(
-                            "w-3 h-3 ml-auto flex-shrink-0",
+                            "w-3 h-3 flex-shrink-0",
                             isDark ? "text-[hsla(0,0%,100%,0.2)]" : "text-[hsl(215,16%,75%)]"
                           )}
                           strokeWidth={1.5}
