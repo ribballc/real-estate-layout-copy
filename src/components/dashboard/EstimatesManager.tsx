@@ -10,7 +10,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import {
   Loader2, Plus, X, Trash2, Copy, ExternalLink, CalendarIcon,
-  Search, ChevronDown, ArrowRight,
+  Search, ChevronDown, ArrowRight, FileDown,
 } from "lucide-react";
 import { format } from "date-fns";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
@@ -112,18 +112,25 @@ const EstimatesManager = () => {
   const [bookingDate, setBookingDate] = useState("");
   const [bookingTime, setBookingTime] = useState("10:00");
 
+  // Business profile for PDF
+  const [businessProfile, setBusinessProfile] = useState<{
+    business_name: string; phone: string; email: string; address: string; logo_url: string | null;
+  }>({ business_name: "", phone: "", email: "", address: "", logo_url: null });
+
   /* ── Fetch ─────────────────────────────────────────── */
 
   const fetchData = useCallback(async () => {
     if (!user) return;
-    const [estRes, custRes, svcRes] = await Promise.all([
+    const [estRes, custRes, svcRes, profileRes] = await Promise.all([
       supabase.from("estimates").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
       supabase.from("customers").select("name, email, phone, vehicle").eq("user_id", user.id),
       supabase.from("services").select("title, price").eq("user_id", user.id).order("sort_order"),
+      supabase.from("profiles").select("business_name, phone, email, address, logo_url").eq("user_id", user.id).single(),
     ]);
     if (estRes.data) setEstimates(estRes.data.map(e => ({ ...e, services: (e.services || []) as unknown as LineItem[] })) as Estimate[]);
     if (custRes.data) setCustomers(custRes.data as CustomerRow[]);
     if (svcRes.data) setServices(svcRes.data as ServiceRow[]);
+    if (profileRes.data) setBusinessProfile(profileRes.data as any);
     setLoading(false);
   }, [user]);
 
@@ -264,6 +271,128 @@ const EstimatesManager = () => {
     const url = `${window.location.origin}/estimate/${id}`;
     navigator.clipboard.writeText(url);
     toast({ title: "Link copied to clipboard!" });
+  };
+
+  /* ── Print / PDF Export ────────────────────────────── */
+
+  const handlePrintEstimate = (est: Estimate) => {
+    const bp = businessProfile;
+    const discountVal = est.discount_type === "percent"
+      ? est.subtotal * (est.discount_amount / 100)
+      : est.discount_amount;
+    const taxVal = (est.subtotal - discountVal) * (est.tax_rate / 100);
+
+    const lineRowsHtml = est.services.map(s => `
+      <tr>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:14px;">${s.title}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:center;font-size:14px;">${s.quantity}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;font-size:14px;">$${s.price.toFixed(2)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;text-align:right;font-size:14px;font-weight:600;">$${(s.price * s.quantity).toFixed(2)}</td>
+      </tr>
+    `).join("");
+
+    const logoHtml = bp.logo_url
+      ? `<img src="${bp.logo_url}" alt="${bp.business_name}" style="max-height:50px;max-width:180px;object-fit:contain;" />`
+      : "";
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Estimate — ${est.customer_name}</title>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1a1a2e; padding: 40px; max-width: 800px; margin: 0 auto; }
+          .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #2563eb; }
+          .header-left h1 { font-size: 22px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+          .header-left p { font-size: 12px; color: #666; line-height: 1.6; }
+          .estimate-title { font-size: 28px; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 2px; }
+          .meta { display: flex; justify-content: space-between; margin-bottom: 32px; }
+          .meta-block h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 6px; }
+          .meta-block p { font-size: 14px; color: #333; line-height: 1.5; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+          thead th { background: #f8fafc; padding: 10px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; border-bottom: 2px solid #e2e8f0; text-align: left; }
+          thead th:nth-child(2) { text-align: center; }
+          thead th:nth-child(3), thead th:nth-child(4) { text-align: right; }
+          .totals { display: flex; justify-content: flex-end; margin-bottom: 32px; }
+          .totals-table { width: 260px; }
+          .totals-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; color: #555; }
+          .totals-row.total { border-top: 2px solid #1a1a2e; padding-top: 10px; margin-top: 4px; font-size: 18px; font-weight: 700; color: #1a1a2e; }
+          .notes { background: #f8fafc; border-radius: 8px; padding: 16px; margin-bottom: 32px; font-size: 13px; color: #555; line-height: 1.6; }
+          .notes-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 6px; }
+          .footer { text-align: center; padding-top: 24px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #999; line-height: 1.8; }
+          @media print { body { padding: 20px; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="header-left">
+            ${logoHtml}
+            <h1>${bp.business_name || "Estimate"}</h1>
+            ${bp.address ? `<p>${bp.address}</p>` : ""}
+            ${bp.phone ? `<p>${bp.phone}</p>` : ""}
+            ${bp.email ? `<p>${bp.email}</p>` : ""}
+          </div>
+          <div class="estimate-title">Estimate</div>
+        </div>
+
+        <div class="meta">
+          <div class="meta-block">
+            <h3>Bill To</h3>
+            <p><strong>${est.customer_name}</strong></p>
+            ${est.customer_email ? `<p>${est.customer_email}</p>` : ""}
+            ${est.customer_phone ? `<p>${est.customer_phone}</p>` : ""}
+            ${est.vehicle ? `<p>${est.vehicle}</p>` : ""}
+          </div>
+          <div class="meta-block" style="text-align:right;">
+            <h3>Details</h3>
+            <p>Date: ${format(new Date(est.created_at), "MMM d, yyyy")}</p>
+            ${est.valid_until ? `<p>Valid Until: ${format(new Date(est.valid_until + "T00:00"), "MMM d, yyyy")}</p>` : ""}
+            <p>Status: ${(STATUS_CONFIG[est.status] || STATUS_CONFIG.draft).label}</p>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Qty</th>
+              <th>Unit Price</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${lineRowsHtml}
+          </tbody>
+        </table>
+
+        <div class="totals">
+          <div class="totals-table">
+            <div class="totals-row"><span>Subtotal</span><span>$${est.subtotal.toFixed(2)}</span></div>
+            ${est.discount_amount > 0 ? `<div class="totals-row"><span>Discount${est.discount_type === "percent" ? ` (${est.discount_amount}%)` : ""}</span><span>-$${discountVal.toFixed(2)}</span></div>` : ""}
+            ${est.tax_rate > 0 ? `<div class="totals-row"><span>Tax (${est.tax_rate}%)</span><span>$${taxVal.toFixed(2)}</span></div>` : ""}
+            <div class="totals-row total"><span>Total</span><span>$${est.total.toFixed(2)}</span></div>
+          </div>
+        </div>
+
+        ${est.notes ? `<div class="notes"><div class="notes-label">Notes</div>${est.notes}</div>` : ""}
+
+        <div class="footer">
+          ${bp.business_name || ""}${bp.phone ? ` · ${bp.phone}` : ""}${bp.email ? ` · ${bp.email}` : ""}
+          <br />Thank you for your business!
+        </div>
+      </body>
+      </html>
+    `;
+
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+    }
   };
 
   /* ── Loading ───────────────────────────────────────── */
@@ -515,6 +644,9 @@ const EstimatesManager = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
+                  <button onClick={() => handlePrintEstimate(est)} className="dash-btn dash-btn-ghost dash-btn-sm text-xs" title="Download PDF">
+                    <FileDown className="w-3.5 h-3.5" />
+                  </button>
                   {est.status === "accepted" && (
                     <button onClick={() => setConvertEstimate(est)} className="dash-btn dash-btn-primary dash-btn-sm text-xs">
                       <ArrowRight className="w-3.5 h-3.5" /> Book
