@@ -258,7 +258,6 @@ const DashboardLayout = () => {
                   ⌘K
                 </kbd>
               </button>
-              <NotificationBell isDark={isDark} />
               
             </div>
           </header>
