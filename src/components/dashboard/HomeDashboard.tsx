@@ -133,12 +133,12 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
         <div className="min-w-0">
           <p className={`text-xl sm:text-[28px] font-bold leading-none tracking-tight tabular-nums ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
           {pct !== null && (
-            <div className="flex items-center gap-1 sm:gap-1.5 mt-1">
-              <span className={`inline-flex items-center gap-0.5 text-[11px] sm:text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+            <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5 sm:mt-1">
+              <span className={`inline-flex items-center gap-0.5 text-[10px] sm:text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
                 {pct >= 0 ? <ArrowUpRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> : <ArrowDownRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
                 {Math.abs(pct)}%
               </span>
-              <span className={`text-[11px] sm:text-xs truncate ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
+              <span className={`hidden sm:inline text-xs truncate ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
                 {subtext || "vs last period"}
               </span>
             </div>
