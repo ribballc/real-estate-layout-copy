@@ -99,6 +99,20 @@ const Onboarding = () => {
     return () => { if (slugTimer.current) clearTimeout(slugTimer.current); };
   }, [shopName]);
 
+  // Pre-populate from existing profile on return visits
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("business_name, phone")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        if (data?.business_name) setShopName(data.business_name);
+        if (data?.phone) setPhone(formatPhone(data.phone));
+      });
+  }, [user]);
+
   // Validation
   const [error, setError] = useState<string | null>(null);
   const [shaking, setShaking] = useState(false);
