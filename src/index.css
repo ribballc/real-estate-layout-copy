@@ -494,6 +494,7 @@
   padding-bottom: 6rem;
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 @media (min-width: 768px) {
   .dash-content {

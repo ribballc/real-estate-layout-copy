@@ -119,34 +119,36 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
     : value;
 
   return (
-    <div className={`dash-card h-[140px] flex flex-col justify-between transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
+    <div className={`dash-card h-[120px] sm:h-[140px] flex flex-col justify-between overflow-hidden transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
       {/* Row 1: Label + Icon */}
       <div className="flex items-center justify-between">
-        <p className={`dash-label ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center dash-metric-icon ${highlighted ? "dash-metric-icon--highlight" : ""}`}>
+        <p className={`dash-label truncate mr-1 ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
+        <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 dash-metric-icon ${highlighted ? "dash-metric-icon--highlight" : ""}`}>
           {icon}
         </div>
       </div>
 
       {/* Row 2: Big number + sparkline */}
-      <div className="mt-auto pt-3 flex items-end justify-between gap-2">
-        <div>
-          <p className={`text-[28px] font-bold leading-none tracking-tight tabular-nums ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
+      <div className="mt-auto pt-2 sm:pt-3 flex items-end justify-between gap-2">
+        <div className="min-w-0">
+          <p className={`text-2xl sm:text-[28px] font-bold leading-none tracking-tight tabular-nums ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
           {pct !== null && (
-            <div className="flex items-center gap-1.5 mt-1">
-              <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
-                {pct >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
+            <div className="flex items-center gap-1 sm:gap-1.5 mt-1">
+              <span className={`inline-flex items-center gap-0.5 text-[11px] sm:text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                {pct >= 0 ? <ArrowUpRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> : <ArrowDownRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />}
                 {Math.abs(pct)}%
               </span>
-              <span className={`text-xs ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
+              <span className={`text-[11px] sm:text-xs truncate ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
                 {subtext || "vs last period"}
               </span>
             </div>
           )}
         </div>
-        {sparklineData && sparklineData.length >= 2 && (
-          <MiniSparkline data={sparklineData} color={highlighted ? "hsla(0,0%,100%,0.6)" : "hsl(217,91%,60%)"} />
-        )}
+        <div className="hidden sm:block">
+          {sparklineData && sparklineData.length >= 2 && (
+            <MiniSparkline data={sparklineData} color={highlighted ? "hsla(0,0%,100%,0.6)" : "hsl(217,91%,60%)"} />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -696,10 +698,10 @@ const HomeDashboard = () => {
       </div>
 
       {/* ═══ KPI Cards — 2x2 mobile, 4-col desktop ═══ */}
-      <div className="dash-grid-4">
+      <div className="dash-grid-4 overflow-hidden">
         <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
-            icon={<DollarSign className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
+            icon={<DollarSign className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Revenue"
             value={ghost.isIntro ? formatCurrency(gRevenue) : (currentRevenue > 0 ? formatCurrency(currentRevenue) : "—")}
             pct={ghost.isIntro ? 18 : revenuePct}
@@ -709,7 +711,7 @@ const HomeDashboard = () => {
         </div>
         <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
-            icon={<Briefcase className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
+            icon={<Briefcase className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Jobs Completed"
             value={ghost.isIntro ? String(gJobs) : (currentCompleted.length > 0 ? String(currentCompleted.length) : "—")}
             pct={ghost.isIntro ? 12 : completedPct}
@@ -720,7 +722,7 @@ const HomeDashboard = () => {
         </div>
         <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
-            icon={<TrendingUp className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
+            icon={<TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Avg. Ticket"
             value={ghost.isIntro ? formatCurrency(gAvg) : (avgTicket > 0 ? formatCurrency(avgTicket) : "—")}
             pct={ghost.isIntro ? 8 : avgTicketPct}
@@ -730,7 +732,7 @@ const HomeDashboard = () => {
         </div>
         <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
-            icon={<Car className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
+            icon={<Car className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Vehicles Serviced"
             value={ghost.isIntro ? String(gVehicles) : (vehiclesCurrent > 0 ? String(vehiclesCurrent) : "—")}
             pct={ghost.isIntro ? 15 : vehiclesPct}
