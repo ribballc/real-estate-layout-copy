@@ -10,6 +10,7 @@ import FaqSection from "@/components/FaqSection";
 import CtaFooter from "@/components/CtaFooter";
 import SurveyFunnelModal from "@/components/SurveyFunnelModal";
 import ScrollProgress from "@/components/ScrollProgress";
+import StickyNav from "@/components/StickyNav";
 
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 import { SurveyFunnelProvider } from "@/components/SurveyFunnelContext";
@@ -139,6 +140,7 @@ const Index = () => {
           canonicalUrl={SITE_URL}
           structuredData={MARKETING_STRUCTURED_DATA}
         />
+        <StickyNav />
         <ScrollProgress />
         <SpringBanner />
         <HeroSection />
