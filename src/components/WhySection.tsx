@@ -100,33 +100,25 @@ const WebsiteVisual = () => (
       <circle cx="54" cy="22" r="3.5" fill="hsl(142,71%,55%)" />
       <rect x="70" y="18" width="100" height="8" rx="4" fill="hsl(214,20%,90%)" />
 
-      {/* Hero section building */}
-      <rect x="28" y="42" width="80" height="10" rx="3" fill="hsl(215,25%,12%)" opacity="0.8">
-        <animate attributeName="width" values="0;80" dur="2s" fill="freeze" repeatCount="indefinite" />
-      </rect>
-      <rect x="28" y="56" width="55" height="6" rx="3" fill="hsl(214,20%,88%)">
-        <animate attributeName="width" values="0;55" dur="2s" begin="0.8s" fill="freeze" repeatCount="indefinite" />
-      </rect>
+      {/* Hero section — static */}
+      <rect x="28" y="42" width="80" height="10" rx="3" fill="hsl(215,25%,12%)" opacity="0.8" />
+      <rect x="28" y="56" width="55" height="6" rx="3" fill="hsl(214,20%,88%)" />
 
-      {/* CTA button */}
+      {/* CTA button — flickers only */}
       <rect x="28" y="70" width="60" height="14" rx="7" fill="hsl(217,91%,60%)">
-        <animate attributeName="opacity" values="0;1" dur="1s" begin="1.5s" fill="freeze" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="1;0.35;1" dur="2.5s" repeatCount="indefinite" />
       </rect>
-      <text x="58" y="80" textAnchor="middle" fontSize="7" fontWeight="600" fill="white" opacity="0">
+      <text x="58" y="80" textAnchor="middle" fontSize="7" fontWeight="600" fill="white">
         Book Now
-        <animate attributeName="opacity" values="0;1" dur="1s" begin="2s" fill="freeze" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="1;0.35;1" dur="2.5s" repeatCount="indefinite" />
       </text>
 
-      {/* Image area */}
-      <rect x="120" y="42" width="72" height="50" rx="6" fill="hsl(217,91%,96%)">
-        <animate attributeName="opacity" values="0;1" dur="1.2s" begin="1.2s" fill="freeze" repeatCount="indefinite" />
-      </rect>
+      {/* Image area — static */}
+      <rect x="120" y="42" width="72" height="50" rx="6" fill="hsl(217,91%,96%)" />
 
-      {/* Service cards */}
+      {/* Service cards — static */}
       {[0,1,2].map(i => (
-        <rect key={i} x={28 + i * 58} y="100" width="50" height="38" rx="5" fill="hsl(214,20%,96%)" stroke="hsl(214,20%,92%)" strokeWidth="1">
-          <animate attributeName="opacity" values="0;1" dur="1s" begin={`${2.5 + i * 0.5}s`} fill="freeze" repeatCount="indefinite" />
-        </rect>
+        <rect key={i} x={28 + i * 58} y="100" width="50" height="38" rx="5" fill="hsl(214,20%,96%)" stroke="hsl(214,20%,92%)" strokeWidth="1" />
       ))}
     </svg>
   </div>
