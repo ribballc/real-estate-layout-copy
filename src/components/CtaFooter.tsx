@@ -41,15 +41,14 @@ const CtaFooter = () => {
           <div style={{ opacity: 0, animation: "fadeSlideUp 0.5s ease-out 0.6s forwards" }}>
             <button
               onClick={() => navigate('/signup')}
-              className="group relative inline-flex items-center gap-2 font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 px-12 py-5 text-lg min-h-[48px] overflow-hidden"
+              className="group relative inline-flex items-center justify-center font-semibold rounded-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 h-14 px-8 text-base min-h-[48px] overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)",
                 color: "hsl(0, 0%, 100%)",
                 boxShadow: "0 8px 24px hsla(217, 91%, 60%, 0.35)",
               }}
             >
-              <span className="relative z-10">Claim My Free 14 Days →</span>
-              <ChevronRight className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-[3px]" />
+              <span className="relative z-10">Claim My Free 14 Days</span>
               <span
                 className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none"
                 style={{ background: "linear-gradient(90deg, transparent 0%, hsla(0, 0%, 100%, 0.2) 50%, transparent 100%)" }}
