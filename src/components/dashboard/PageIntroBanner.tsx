@@ -40,6 +40,11 @@ interface PageIntroBannerProps {
 const PageIntroBanner = ({ path }: PageIntroBannerProps) => {
   const flag = getFlag(path);
   const copy = PAGE_INTRO_COPY[path];
+  const isDark = localStorage.getItem("dashboard-theme") !== "light";
+
+  const textColor = isDark ? "white" : "hsl(215, 25%, 20%)";
+  const dismissBase = isDark ? "hsla(0,0%,100%,0.3)" : "hsl(215, 16%, 55%)";
+  const dismissHover = isDark ? "white" : "hsl(215, 25%, 12%)";
 
   const [visible, setVisible] = useState(false);
   const [dismissing, setDismissing] = useState(false);
@@ -84,16 +89,16 @@ const PageIntroBanner = ({ path }: PageIntroBannerProps) => {
       />
       <span
         className="flex-1 font-medium"
-        style={{ fontSize: "13px", color: "white" }}
+        style={{ fontSize: "13px", color: textColor }}
       >
         {copy}
       </span>
       <button
         onClick={handleDismiss}
         className="shrink-0 w-6 h-6 rounded flex items-center justify-center transition-colors"
-        style={{ color: "hsla(0,0%,100%,0.3)" }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "white")}
-        onMouseLeave={(e) => (e.currentTarget.style.color = "hsla(0,0%,100%,0.3)")}
+        style={{ color: dismissBase }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = dismissHover)}
+        onMouseLeave={(e) => (e.currentTarget.style.color = dismissBase)}
       >
         <X className="w-3.5 h-3.5" />
       </button>

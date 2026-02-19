@@ -772,7 +772,7 @@
 
 /* Page background */
 .dashboard-light {
-  background: linear-gradient(160deg, hsl(210, 40%, 99%) 0%, hsl(214, 35%, 97%) 50%, hsl(216, 30%, 97%) 100%) !important;
+  background: hsl(0, 0%, 98%) !important;
 }
 
 /* Secondary surfaces (inputs, selects, hover areas) */
@@ -897,6 +897,9 @@
 }
 .dashboard-light .hover\:border-white\/20:hover {
   border-color: hsl(214 20% 80%) !important;
+}
+.dashboard-light .hover\:text-white\/70:hover {
+  color: hsl(215 16% 35%) !important;
 }
 .dashboard-light .hover\:text-white\/80:hover {
   color: hsl(215 16% 25%) !important;
@@ -1200,7 +1203,7 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
    Dashboard Light Mode — CSS variable overrides
    ═══════════════════════════════════════════════════════ */
 .dashboard-light {
-  --background: 210 40% 98%;
+  --background: 0 0% 98%;
   --foreground: 215 25% 12%;
   --card: 0 0% 100%;
   --card-foreground: 215 25% 12%;
@@ -1208,16 +1211,16 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
   --popover-foreground: 215 25% 12%;
   --primary: 217 91% 60%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 214 20% 93%;
+  --secondary: 0 0% 95%;
   --secondary-foreground: 215 25% 12%;
-  --muted: 214 20% 96%;
-  --muted-foreground: 215 16% 42%;
+  --muted: 0 0% 97%;
+  --muted-foreground: 0 0% 44%;
   --accent: 217 91% 60%;
   --accent-foreground: 0 0% 100%;
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --border: 214 20% 90%;
-  --input: 214 20% 90%;
+  --border: 0 0% 91%;
+  --input: 0 0% 91%;
   --ring: 217 91% 60%;
 }
 
