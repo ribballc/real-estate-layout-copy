@@ -13,14 +13,9 @@ const CalendarVisual = () => (
       {/* Mini dashboard mockup */}
       <rect x="20" y="10" width="95" height="55" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,90%)" strokeWidth="1" />
       <text x="32" y="28" fontSize="8" fontWeight="500" fill="hsl(215,16%,55%)">MRR</text>
-      <text x="32" y="44" fontSize="16" fontWeight="700" fill="hsl(215,25%,12%)">$4,200</text>
-      <text x="80" y="28" fontSize="8" fontWeight="500" fill="hsl(215,16%,55%)">Bookings</text>
-      <text x="80" y="44" fontSize="16" fontWeight="700" fill="hsl(215,25%,12%)">42</text>
-
-      {/* Mini chart line */}
-      <polyline points="28,52 40,48 55,50 70,42 85,38 100,35 108,38" stroke="hsl(217,91%,60%)" strokeWidth="1.5" fill="none" strokeLinecap="round">
-        <animate attributeName="points" values="28,52 40,52 55,52 70,52 85,52 100,52 108,52;28,52 40,48 55,50 70,42 85,38 100,35 108,38" dur="5s" fill="freeze" repeatCount="indefinite" />
-      </polyline>
+      <text x="32" y="44" fontSize="14" fontWeight="700" fill="hsl(215,25%,12%)">$12,150</text>
+      <text x="100" y="28" fontSize="8" fontWeight="500" fill="hsl(215,16%,55%)">Bookings</text>
+      <text x="100" y="44" fontSize="16" fontWeight="700" fill="hsl(215,25%,12%)">60</text>
 
       {/* Calendar card */}
       <rect x="125" y="10" width="95" height="65" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,90%)" strokeWidth="1" />
