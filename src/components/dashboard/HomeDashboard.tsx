@@ -119,7 +119,7 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
     : value;
 
   return (
-    <div className={`dash-card min-h-[120px] flex flex-col justify-between transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
+    <div className={`dash-card h-[140px] flex flex-col justify-between transition-all duration-200 ${highlighted ? "dash-card-highlight" : "alytics-card"}`}>
       {/* Row 1: Label + Icon */}
       <div className="flex items-center justify-between">
         <p className={`dash-label ${highlighted ? "text-white/80" : "dash-card-label"}`}>{label}</p>
@@ -131,7 +131,7 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
       {/* Row 2: Big number + sparkline */}
       <div className="mt-auto pt-3 flex items-end justify-between gap-2">
         <div>
-          <p className={`dash-metric ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
+          <p className={`text-[28px] font-bold leading-none tracking-tight tabular-nums ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
           {pct !== null && (
             <div className="flex items-center gap-1.5 mt-1">
               <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
@@ -694,96 +694,6 @@ const HomeDashboard = () => {
           </SelectContent>
         </Select>
       </div>
-
-      {/* ═══ Quick Actions ═══ */}
-      <div className="flex items-center gap-2 flex-wrap -mt-1">
-        <button
-          onClick={() => navigate("/dashboard/jobs")}
-          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
-            isDark
-              ? "bg-[hsla(217,91%,60%,0.1)] border border-[hsla(217,91%,60%,0.2)] text-[hsl(217,91%,72%)] hover:bg-[hsla(217,91%,60%,0.18)]"
-              : "bg-[hsla(217,91%,60%,0.07)] border border-[hsla(217,91%,60%,0.2)] text-[hsl(217,91%,48%)] hover:bg-[hsla(217,91%,60%,0.13)]"
-          }`}
-        >
-          <Briefcase className="w-3.5 h-3.5" strokeWidth={1.5} />
-          New Job
-        </button>
-        {onboardingData?.slug && (
-          <button
-            onClick={() => {
-              const url = `${onboardingData.slug}.darkerdigital.com/book`;
-              navigator.clipboard.writeText(url);
-              toast({ title: "Booking link copied!" });
-            }}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
-              isDark
-                ? "bg-[hsla(0,0%,100%,0.05)] border border-[hsla(0,0%,100%,0.1)] text-[hsla(0,0%,100%,0.55)] hover:text-[hsla(0,0%,100%,0.8)] hover:bg-[hsla(0,0%,100%,0.08)]"
-                : "bg-[hsl(214,20%,97%)] border border-[hsl(214,20%,90%)] text-[hsl(215,16%,45%)] hover:text-[hsl(215,25%,20%)] hover:bg-[hsl(214,20%,94%)]"
-            }`}
-          >
-            <Copy className="w-3.5 h-3.5" strokeWidth={1.5} />
-            Share Link
-          </button>
-        )}
-        <button
-          onClick={() => navigate("/dashboard/calendar")}
-          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
-            isDark
-              ? "bg-[hsla(0,0%,100%,0.05)] border border-[hsla(0,0%,100%,0.1)] text-[hsla(0,0%,100%,0.55)] hover:text-[hsla(0,0%,100%,0.8)] hover:bg-[hsla(0,0%,100%,0.08)]"
-              : "bg-[hsl(214,20%,97%)] border border-[hsl(214,20%,90%)] text-[hsl(215,16%,45%)] hover:text-[hsl(215,25%,20%)] hover:bg-[hsl(214,20%,94%)]"
-          }`}
-        >
-          <CalendarDays className="w-3.5 h-3.5" strokeWidth={1.5} />
-          Calendar
-        </button>
-      </div>
-
-      {/* ═══ This Week at a Glance ═══ */}
-      {!ghost.isIntro && !loading && (
-        <div className="alytics-card overflow-hidden">
-          <div
-            className="px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
-            style={{ borderLeft: "3px solid hsl(217,91%,60%)" }}
-          >
-            <div className="flex items-center gap-2.5 shrink-0">
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ background: "hsla(217,91%,60%,0.1)" }}
-              >
-                <CalendarDays className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
-              </div>
-              <p className="text-sm font-semibold alytics-card-title">This Week</p>
-            </div>
-
-            <div className="flex items-center gap-5 sm:gap-8 flex-wrap flex-1">
-              <div className="flex flex-col">
-                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Bookings</span>
-                <span className="text-lg font-bold alytics-card-title">{thisWeekBookings.length}</span>
-              </div>
-
-              <div className="w-px h-8 hidden sm:block" style={{ background: "hsla(217,91%,60%,0.15)" }} />
-
-              <div className="flex flex-col">
-                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Revenue</span>
-                <span className="text-lg font-bold alytics-card-title">{formatCurrency(thisWeekRevenue)}</span>
-              </div>
-
-              <div className="w-px h-8 hidden sm:block" style={{ background: "hsla(217,91%,60%,0.15)" }} />
-
-              <div className="flex flex-col">
-                <span className="text-xs font-medium uppercase tracking-wider dash-card-label">Next Appointment</span>
-                {nextUpcoming ? (
-                  <span className="text-sm font-semibold alytics-card-title">
-                    {nextUpcoming.customer_name || "Customer"} · {format(parseISO(nextUpcoming.booking_date), "EEE, MMM d")} at {nextUpcoming.booking_time?.slice(0, 5)}
-                  </span>
-                ) : (
-                  <span className="text-sm alytics-card-sub">None scheduled</span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ═══ KPI Cards — 2x2 mobile, 4-col desktop ═══ */}
       <div className="dash-grid-4">
