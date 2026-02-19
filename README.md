@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# Darker — Detailer CRM
 
 ## Project info
 
