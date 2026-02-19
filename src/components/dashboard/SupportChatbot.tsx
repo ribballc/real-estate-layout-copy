@@ -403,7 +403,7 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                 placeholder="Ask about pricing, marketing, customers..."
                 disabled={loading}
-                className="flex-1 h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-[hsl(217,91%,60%)] disabled:opacity-50"
+                className="flex-1 h-10 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-[16px] sm:text-sm placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-[hsl(217,91%,60%)] disabled:opacity-50"
               />
               <button
                 type="submit"
