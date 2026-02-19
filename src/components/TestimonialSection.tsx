@@ -2,18 +2,16 @@ import FadeIn from "@/components/FadeIn";
 import { useCountUp } from "@/hooks/useCountUp";
 
 const reviews = [
-  { initials: "MT", name: "Marcus Thompson", role: "Dallas Mobile Detailing", quote: "I went from chasing texts to having a calendar that fills itself. Got my website in 2 days flat — the deposit thing alone paid for the subscription in the first week.", metric: "+$3,400/mo" },
-  { initials: "JR", name: "Jake Rivera", role: "Rivera's Auto Spa", quote: "No-shows used to cost me $600+ a week. Since adding deposits and SMS reminders, I've maybe had 2 cancellations in the last month.", metric: "+$2,800/mo" },
-  { initials: "DW", name: "DeShawn Williams", role: "Pristine Detail Co.", quote: "My old website was embarrassing. Darker gave me something that looks like I paid $5K for it, and customers can actually book from it.", metric: "+$1,900/mo" },
-  { initials: "KP", name: "Kyle Patterson", role: "KP Mobile Detail", quote: "I used to lose 2 hours a day just texting people back and forth. Now they book themselves and I just show up and work.", metric: "90 min saved/day" },
-  { initials: "AM", name: "Andre Mitchell", role: "Gloss Boss Detailing", quote: "The route optimization alone is worth the Pro plan. I'm fitting in 2 extra jobs a day because I'm not driving all over the city.", metric: "+$4,100/mo" },
-  { initials: "SL", name: "Sarah Langston", role: "Luxe Auto Care", quote: "Customers tell me all the time how professional my booking page looks. It's night and day from the old 'DM me to book' setup.", metric: "+$2,200/mo" },
-  { initials: "CB", name: "Chris Brooks", role: "Brooks Detail Studio", quote: "I was skeptical about the 48-hour setup but they actually delivered. Had my first online booking before the weekend was over.", metric: "+$1,600/mo" },
-  { initials: "TN", name: "Tony Nguyen", role: "Shine Pro Mobile", quote: "Big thanks to Darker for making my small operation look like a real business. The booking system is smooth and clients love it.", metric: "+$2,500/mo" },
+  { initials: "TB", name: "Trev B.", role: "@trevbdetail", quote: "I was using Square and a notes app to manage bookings. Switched to Darker and booked $4,200 my first month using the online booking link alone. Game changer.", metric: "+$4,200/mo" },
+  { initials: "MV", name: "Marco V.", role: "@marcovdetailing", quote: "Customers used to ghost me after quotes. Now they pay a deposit to hold the spot. I haven't had a no-show in 3 months.", metric: "0 no-shows" },
+  { initials: "JC", name: "Jordan C.", role: "@jcautofilm", quote: "I get DMs asking how my website looks so clean. I just send them the Darker link 😂 Easiest $54/mo I spend.", metric: "+$2,200/mo" },
+  { initials: "RG", name: "Ray G.", role: "@rayg_detail", quote: "Set it up in one afternoon. Now I get bookings while I'm under a car. My wife thought I hired someone.", metric: "+$1,800/mo" },
+  { initials: "SK", name: "Sam K.", role: "@samkprecision", quote: "I charged $175 for full details before Darker. After seeing how legit my site looked, I raised prices to $275. Clients didn't even blink.", metric: "+$100/job" },
+  { initials: "DM", name: "Dani M.", role: "@danimpro", quote: "The automated reminder texts cut my no-shows in half. I used to lose $300+ a week to last-minute ghosts. That alone pays for the tool 10x over.", metric: "+$1,200/mo" },
 ];
 
-const row1 = reviews.slice(0, 4);
-const row2 = reviews.slice(4);
+const row1 = reviews.slice(0, 3);
+const row2 = reviews.slice(3);
 
 const ReviewCard = ({ review }: { review: typeof reviews[0] }) => (
   <div
