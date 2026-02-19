@@ -12,10 +12,10 @@ const CalendarVisual = () => (
     <svg width="240" height="160" viewBox="0 0 240 160" fill="none">
       {/* Mini dashboard mockup */}
       <rect x="20" y="10" width="95" height="55" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,90%)" strokeWidth="1" />
-      <text x="32" y="28" fontSize="8" fontWeight="500" fill="hsl(215,16%,55%)">MRR</text>
-      <text x="32" y="44" fontSize="14" fontWeight="700" fill="hsl(215,25%,12%)">$12,150</text>
-      <text x="100" y="28" fontSize="8" fontWeight="500" fill="hsl(215,16%,55%)">Bookings</text>
-      <text x="100" y="44" fontSize="16" fontWeight="700" fill="hsl(215,25%,12%)">60</text>
+      <text x="32" y="28" fontSize="7" fontWeight="500" fill="hsl(215,16%,55%)">MRR</text>
+      <text x="32" y="42" fontSize="11" fontWeight="700" fill="hsl(215,25%,12%)">$12,150</text>
+      <text x="95" y="28" fontSize="7" fontWeight="500" fill="hsl(215,16%,55%)">Bookings</text>
+      <text x="95" y="42" fontSize="13" fontWeight="700" fill="hsl(215,25%,12%)">60</text>
 
       {/* Calendar card */}
       <rect x="125" y="10" width="95" height="65" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,90%)" strokeWidth="1" />
