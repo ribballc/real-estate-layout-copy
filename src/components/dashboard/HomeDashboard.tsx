@@ -11,6 +11,7 @@ import {
 import WeeklySummaryCard from "./WeeklySummaryCard";
 import BookingActivityFeed from "./BookingActivityFeed";
 import ChurnRiskBanner from "./ChurnRiskBanner";
+import DashboardPageSkeleton from "@/components/skeletons/DashboardPageSkeleton";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -696,7 +697,13 @@ const HomeDashboard = () => {
         </div>
       )}
 
-      {/* ═══ KPI Cards — 2x2 mobile, 4-col desktop ═══ */}
+      {/* ═══ Loading Skeleton — shown while data fetches on subsequent visits ═══ */}
+      {loading && !ghost.isIntro && <DashboardPageSkeleton />}
+
+      {/* ═══ KPI + Charts — hidden while loading real data ═══ */}
+      {(!loading || ghost.isIntro) && (<>
+
+      {/* KPI Cards — 2x2 mobile, 4-col desktop */}
       <div className="dash-grid-4">
         <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
           <MetricCard
@@ -987,6 +994,8 @@ const HomeDashboard = () => {
         </div>
         <p className="text-xs alytics-card-sub mt-3">Average bookings per day of week</p>
       </div>
+
+      </>)}
 
       {/* ═══ Ghost Intro Floating Pill ═══ */}
       {ghost.isIntro && ghost.phase !== "fadeIn" && (
