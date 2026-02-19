@@ -127,19 +127,24 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
         </div>
       </div>
 
-      {/* Row 2: Big number pinned to bottom */}
-      <div className="mt-auto pt-3">
-        <p className={`dash-metric ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
-        {pct !== null && (
-          <div className="flex items-center gap-1.5 mt-1">
-            <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
-              {pct >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-              {Math.abs(pct)}%
-            </span>
-            <span className={`text-xs ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
-              {subtext || "vs last period"}
-            </span>
-          </div>
+      {/* Row 2: Big number + sparkline */}
+      <div className="mt-auto pt-3 flex items-end justify-between gap-2">
+        <div>
+          <p className={`dash-metric ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
+          {pct !== null && (
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                {pct >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
+                {Math.abs(pct)}%
+              </span>
+              <span className={`text-xs ${highlighted ? "text-white/60" : "dash-card-sublabel"}`}>
+                {subtext || "vs last period"}
+              </span>
+            </div>
+          )}
+        </div>
+        {sparklineData && sparklineData.length >= 2 && (
+          <MiniSparkline data={sparklineData} color={highlighted ? "hsla(0,0%,100%,0.6)" : "hsl(217,91%,60%)"} />
         )}
       </div>
     </div>
@@ -189,6 +194,9 @@ const GHOST_METRICS = {
 };
 
 const GHOST_SPARKLINE = [120, 340, 280, 510, 390, 620, 580, 710, 490, 840, 760, 650, 920, 880];
+const GHOST_JOBS_SPARKLINE = [2, 3, 1, 4, 3, 5, 4, 5, 3, 6, 5, 4, 7, 6];
+const GHOST_AVG_SPARKLINE = [110, 130, 120, 145, 135, 150, 140, 155, 130, 160, 145, 140, 165, 150];
+const GHOST_VEHICLES_SPARKLINE = [1, 2, 1, 3, 2, 4, 3, 4, 2, 5, 4, 3, 6, 5];
 
 const GHOST_CHART_DATA = [
   { date: "Feb 14", revenue: 420, bookings: 3 },
@@ -400,18 +408,56 @@ const HomeDashboard = () => {
 
   const periodLabel = `vs last ${dateRange === "ytd" ? "year" : dateRange.replace("d", " days")}`;
 
-  // Revenue sparkline: daily revenue for sparkline in metric card
-  const revenueSparkline = useMemo(() => {
+  const sparklineDays = useMemo(() => {
     const days = eachDayOfInterval({ start, end });
-    // Downsample to ~14 points max
     const step = Math.max(1, Math.floor(days.length / 14));
-    const points: number[] = [];
-    for (let i = 0; i < days.length; i += step) {
-      const dayStr = format(days[i], "yyyy-MM-dd");
-      points.push(currentBookings.filter(b => b.booking_date === dayStr).reduce((s, b) => s + (Number(b.service_price) || 0), 0));
-    }
-    return points;
-  }, [currentBookings, start, end]);
+    const sampled: Date[] = [];
+    for (let i = 0; i < days.length; i += step) sampled.push(days[i]);
+    return sampled;
+  }, [start, end]);
+
+  // Revenue sparkline
+  const revenueSparkline = useMemo(() => {
+    return sparklineDays.map(day => {
+      const dayStr = format(day, "yyyy-MM-dd");
+      return currentBookings.filter(b => b.booking_date === dayStr).reduce((s, b) => s + (Number(b.service_price) || 0), 0);
+    });
+  }, [currentBookings, sparklineDays]);
+
+  // Jobs completed sparkline
+  const jobsSparkline = useMemo(() => {
+    return sparklineDays.map(day => {
+      const dayStr = format(day, "yyyy-MM-dd");
+      return currentBookings.filter(b => b.booking_date === dayStr && b.status === "completed").length;
+    });
+  }, [currentBookings, sparklineDays]);
+
+  // Avg ticket sparkline
+  const avgTicketSparkline = useMemo(() => {
+    return sparklineDays.map(day => {
+      const dayStr = format(day, "yyyy-MM-dd");
+      const completed = currentBookings.filter(b => b.booking_date === dayStr && b.status === "completed");
+      if (completed.length === 0) return 0;
+      return Math.round(completed.reduce((s, b) => s + (Number(b.service_price) || 0), 0) / completed.length);
+    });
+  }, [currentBookings, sparklineDays]);
+
+  // Vehicles serviced sparkline
+  const vehiclesSparkline = useMemo(() => {
+    return sparklineDays.map(day => {
+      const dayStr = format(day, "yyyy-MM-dd");
+      const dayBookings = currentBookings.filter(b => b.booking_date === dayStr);
+      const set = new Set<string>();
+      dayBookings.forEach(b => {
+        if (b.notes && b.notes.startsWith("Vehicle:")) {
+          set.add(b.notes.split("\n")[0].replace("Vehicle: ", "").trim().toLowerCase());
+        } else if (b.customer_name) {
+          set.add(`${b.customer_name}-${dayStr}`.toLowerCase());
+        }
+      });
+      return set.size;
+    });
+  }, [currentBookings, sparklineDays]);
 
   /* Bar chart: revenue by day */
   const chartData = useMemo(() => {
@@ -715,6 +761,7 @@ const HomeDashboard = () => {
             value={ghost.isIntro ? String(gJobs) : (currentCompleted.length > 0 ? String(currentCompleted.length) : "—")}
             pct={ghost.isIntro ? 12 : completedPct}
             subtext={periodLabel}
+            sparklineData={ghost.isIntro ? GHOST_JOBS_SPARKLINE : jobsSparkline}
             highlighted
           />
         </div>
@@ -725,6 +772,7 @@ const HomeDashboard = () => {
             value={ghost.isIntro ? formatCurrency(gAvg) : (avgTicket > 0 ? formatCurrency(avgTicket) : "—")}
             pct={ghost.isIntro ? 8 : avgTicketPct}
             subtext={periodLabel}
+            sparklineData={ghost.isIntro ? GHOST_AVG_SPARKLINE : avgTicketSparkline}
           />
         </div>
         <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>
@@ -734,6 +782,7 @@ const HomeDashboard = () => {
             value={ghost.isIntro ? String(gVehicles) : (vehiclesCurrent > 0 ? String(vehiclesCurrent) : "—")}
             pct={ghost.isIntro ? 15 : vehiclesPct}
             subtext={periodLabel}
+            sparklineData={ghost.isIntro ? GHOST_VEHICLES_SPARKLINE : vehiclesSparkline}
           />
         </div>
       </div>
