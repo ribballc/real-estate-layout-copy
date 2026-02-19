@@ -184,7 +184,7 @@ const DashboardLayout = () => {
         style={{
           background: isDark
             ? "linear-gradient(145deg, hsl(215 50% 9%) 0%, hsl(217 33% 13%) 60%, hsl(215 40% 11%) 100%)"
-            : "linear-gradient(160deg, hsl(210, 40%, 99%) 0%, hsl(214, 35%, 97%) 50%, hsl(216, 30%, 97%) 100%)",
+            : "hsl(0, 0%, 98%)",
         }}
       >
         <DashboardSidebar
