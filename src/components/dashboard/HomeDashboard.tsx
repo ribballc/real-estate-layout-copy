@@ -396,6 +396,10 @@ const HomeDashboard = () => {
   const vehiclesPrev = countUniqueVehicles(previousBookings);
   const vehiclesPct = pctChange(vehiclesCurrent, vehiclesPrev);
 
+  const todayStr = format(new Date(), "yyyy-MM-dd");
+  const todayBookings = useMemo(() => bookings.filter(b => b.booking_date === todayStr), [bookings, todayStr]);
+  const todayRevenue = todayBookings.reduce((s, b) => s + (Number(b.service_price) || 0), 0);
+
   const periodLabel = `vs last ${dateRange === "ytd" ? "year" : dateRange.replace("d", " days")}`;
 
   // Revenue sparkline: daily revenue for sparkline in metric card
@@ -623,6 +627,76 @@ const HomeDashboard = () => {
           </SelectContent>
         </Select>
       </div>
+
+      {/* ═══ Quick Actions ═══ */}
+      <div className="flex items-center gap-2 flex-wrap -mt-1">
+        <button
+          onClick={() => navigate("/dashboard/jobs")}
+          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+            isDark
+              ? "bg-[hsla(217,91%,60%,0.1)] border border-[hsla(217,91%,60%,0.2)] text-[hsl(217,91%,72%)] hover:bg-[hsla(217,91%,60%,0.18)]"
+              : "bg-[hsla(217,91%,60%,0.07)] border border-[hsla(217,91%,60%,0.2)] text-[hsl(217,91%,48%)] hover:bg-[hsla(217,91%,60%,0.13)]"
+          }`}
+        >
+          <Briefcase className="w-3.5 h-3.5" strokeWidth={1.5} />
+          New Job
+        </button>
+        {onboardingData?.slug && (
+          <button
+            onClick={() => {
+              const url = `${onboardingData.slug}.darkerdigital.com/book`;
+              navigator.clipboard.writeText(url);
+              toast({ title: "Booking link copied!" });
+            }}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+              isDark
+                ? "bg-[hsla(0,0%,100%,0.05)] border border-[hsla(0,0%,100%,0.1)] text-[hsla(0,0%,100%,0.55)] hover:text-[hsla(0,0%,100%,0.8)] hover:bg-[hsla(0,0%,100%,0.08)]"
+                : "bg-[hsl(214,20%,97%)] border border-[hsl(214,20%,90%)] text-[hsl(215,16%,45%)] hover:text-[hsl(215,25%,20%)] hover:bg-[hsl(214,20%,94%)]"
+            }`}
+          >
+            <Copy className="w-3.5 h-3.5" strokeWidth={1.5} />
+            Share Link
+          </button>
+        )}
+        <button
+          onClick={() => navigate("/dashboard/calendar")}
+          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 ${
+            isDark
+              ? "bg-[hsla(0,0%,100%,0.05)] border border-[hsla(0,0%,100%,0.1)] text-[hsla(0,0%,100%,0.55)] hover:text-[hsla(0,0%,100%,0.8)] hover:bg-[hsla(0,0%,100%,0.08)]"
+              : "bg-[hsl(214,20%,97%)] border border-[hsl(214,20%,90%)] text-[hsl(215,16%,45%)] hover:text-[hsl(215,25%,20%)] hover:bg-[hsl(214,20%,94%)]"
+          }`}
+        >
+          <CalendarDays className="w-3.5 h-3.5" strokeWidth={1.5} />
+          Calendar
+        </button>
+      </div>
+
+      {/* ═══ Today's at-a-glance ═══ */}
+      {!ghost.isIntro && todayBookings.length > 0 && (
+        <div className="alytics-card flex items-center justify-between px-5 py-3.5">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+              style={{ background: "hsla(217,91%,60%,0.1)", border: "1px solid hsla(217,91%,60%,0.15)" }}
+            >
+              <CalendarDays className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
+            </div>
+            <div>
+              <p className="alytics-card-title text-sm font-semibold">Today — {format(new Date(), "MMMM d")}</p>
+              <p className="alytics-card-sub text-xs">
+                {todayBookings.length} booking{todayBookings.length !== 1 ? "s" : ""}
+                {todayRevenue > 0 ? ` · ${formatCurrency(todayRevenue)}` : ""}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/dashboard/calendar")}
+            className="alytics-link text-xs font-medium inline-flex items-center gap-1"
+          >
+            View <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+      )}
 
       {/* ═══ KPI Cards — 2x2 mobile, 4-col desktop ═══ */}
       <div className="dash-grid-4">
