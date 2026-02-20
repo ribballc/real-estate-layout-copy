@@ -25,9 +25,10 @@ interface Props {
   services?: BusinessService[];
   addOns?: BusinessAddOn[];
   hours?: BusinessHour[];
+  slug?: string;
 }
 
-const DeluxeContactForm = ({ profile, services: cmsServices, addOns: cmsAddOns, hours }: Props) => {
+const DeluxeContactForm = ({ profile, services: cmsServices, addOns: cmsAddOns, hours, slug }: Props) => {
   const { toast } = useToast();
   const [showCalendly, setShowCalendly] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -15,7 +15,7 @@ const STATUS_MESSAGES = [
 ];
 
 const CYCLE_MS = 1300;
-const NAV_DELAY = 6000; // extended to allow AI call
+const MIN_NAV_DELAY = 3000; // minimum time to show progress
 const PROGRESS_DURATION = 5400;
 
 const Generating = () => {
@@ -37,12 +37,16 @@ const Generating = () => {
       if (leadData.businessName) setShopName(leadData.businessName);
     } catch {}
 
-    // Fire AI generation
-    if (!aiCalledRef.current && leadData.businessName) {
+    // Fire AI generation (or mark done immediately if no lead data)
+    if (!aiCalledRef.current) {
       aiCalledRef.current = true;
-      generateCopy(leadData).finally(() => {
+      if (leadData.businessName) {
+        generateCopy(leadData).finally(() => {
+          aiDoneRef.current = true;
+        });
+      } else {
         aiDoneRef.current = true;
-      });
+      }
     }
   }, []);
 
@@ -114,14 +118,22 @@ const Generating = () => {
     requestAnimationFrame(raf);
   }, []);
 
-  // Auto-navigate once AI is done or timeout
+  // Auto-navigate when AI is done AND min delay has elapsed (whichever is later)
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setNavigating(true);
-      setProgress(100);
-      setTimeout(() => navigate("/dashboard/website"), 220);
-    }, NAV_DELAY);
-    return () => clearTimeout(timer);
+    const check = () => {
+      const elapsed = Date.now() - startRef.current;
+      if (elapsed >= MIN_NAV_DELAY && aiDoneRef.current) {
+        setNavigating(true);
+        setProgress(100);
+        setTimeout(() => navigate("/dashboard/website"), 220);
+        return true;
+      }
+      return false;
+    };
+    const id = setInterval(() => {
+      if (check()) clearInterval(id);
+    }, 200);
+    return () => clearInterval(id);
   }, [navigate]);
 
   return (

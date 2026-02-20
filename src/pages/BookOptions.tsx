@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
+import StickyBookingCTA from "@/components/StickyBookingCTA";
 import { Slider } from "@/components/ui/slider";
+import { useBooking } from "@/contexts/BookingContext";
 import { supabase } from "@/integrations/supabase/client";
 
 interface OptionItem { id: string; label: string; description: string; price_modifier: number; sort_order: number; }
@@ -11,10 +13,9 @@ interface OptionGroup { id: string; title: string; description: string; option_t
 
 const BookOptions = () => {
   const navigate = useNavigate();
-  const { slug } = useParams<{ slug: string }>();
-  const [searchParams] = useSearchParams();
-  const serviceId = searchParams.get("service") || "";
-  const serviceName = searchParams.get("name") || "your service";
+  const { slug, service } = useBooking();
+  const serviceId = service?.id ?? "";
+  const serviceName = service?.title ?? "your service";
 
   const [groups, setGroups] = useState<OptionGroup[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +27,7 @@ const BookOptions = () => {
     const fetchOptions = async () => {
       if (!serviceId) { setLoading(false); return; }
       const { data: groupsData } = await supabase.from("service_option_groups").select("*").eq("service_id", serviceId).order("sort_order");
-      if (!groupsData || groupsData.length === 0) { setLoading(false); navigate(`/site/${slug}/book/add-ons?service=${serviceId}`, { replace: true }); return; }
+      if (!groupsData || groupsData.length === 0) { setLoading(false); if (slug) navigate(`/site/${slug}/book/add-ons`, { replace: true }); return; }
       const groupIds = groupsData.map((g) => g.id);
       const { data: itemsData } = await supabase.from("service_option_items").select("*").in("group_id", groupIds).order("sort_order");
       const enriched: OptionGroup[] = groupsData.map((g) => ({ ...g, slider_min: g.slider_min ?? 0, slider_max: g.slider_max ?? 100, slider_step: g.slider_step ?? 5, slider_unit: g.slider_unit ?? "%", slider_default: g.slider_default ?? 50, items: (itemsData || []).filter((i) => i.group_id === g.id) }));
@@ -35,7 +36,7 @@ const BookOptions = () => {
       setSliderValues(sd); setGroups(enriched); setLoading(false);
     };
     fetchOptions();
-  }, [serviceId, navigate]);
+  }, [serviceId, navigate, slug]);
 
   const toggleCheckbox = (id: string) => setSelectedItems((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const selectRadio = (gid: string, iid: string) => setRadioSelections((p) => ({ ...p, [gid]: iid }));
@@ -114,17 +115,19 @@ const BookOptions = () => {
         ))}
       </div>
 
-      <div className="flex items-center gap-3">
-        <button onClick={() => navigate(`/site/${slug}/book/vehicle`)} className="inline-flex items-center gap-2 font-semibold" style={{ height: 50, padding: "0 20px", borderRadius: 12, fontSize: 14, border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}>
-          <ArrowLeft size={15} /> Back
-        </button>
-        <button onClick={() => navigate(`/site/${slug}/book/add-ons?service=${serviceId}`)} disabled={!canContinue} className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 font-bold" style={{
-          height: 50, borderRadius: 12, fontSize: 15, padding: "0 24px",
-          ...(canContinue ? { background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)" } : { background: "hsl(210,40%,92%)", color: "hsl(215,16%,60%)", cursor: "not-allowed", opacity: 0.45 }),
-        }}>
-          Continue <ArrowRight size={15} />
-        </button>
-      </div>
+      <StickyBookingCTA>
+        <div className="flex items-center gap-3">
+          <button onClick={() => slug && navigate(`/site/${slug}/book/vehicle`)} className="public-touch-target inline-flex items-center gap-2 font-semibold min-w-[44px]" style={{ height: 50, padding: "0 20px", borderRadius: 12, fontSize: 14, border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}>
+            <ArrowLeft size={15} /> Back
+          </button>
+          <button onClick={() => slug && navigate(`/site/${slug}/book/add-ons`)} disabled={!canContinue} className="public-touch-target flex-1 md:flex-none inline-flex items-center justify-center gap-2 font-bold min-h-[44px]" style={{
+            height: 50, borderRadius: 12, fontSize: 15, padding: "0 24px",
+            ...(canContinue ? { background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)" } : { background: "hsl(210,40%,92%)", color: "hsl(215,16%,60%)", cursor: "not-allowed", opacity: 0.45 }),
+          }}>
+            Continue <ArrowRight size={15} />
+          </button>
+        </div>
+      </StickyBookingCTA>
     </BookingLayout>
   );
 };

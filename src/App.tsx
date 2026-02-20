@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React, { Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useOutletContext, useLocation } from "react-router-dom";
+import BookingFlowLayout from "./components/BookingFlowLayout";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -106,12 +107,15 @@ const App = () => (
                 <Route path="/loading" element={<ProtectedRoute><Loading /></ProtectedRoute>} />
                 <Route path="/generating" element={<ProtectedRoute><Generating /></ProtectedRoute>} />
                 <Route path="/preview" element={<Preview />} />
-                <Route path="/site/:slug/book" element={<Book />} />
-                <Route path="/site/:slug/book/vehicle" element={<BookVehicle />} />
-                <Route path="/site/:slug/book/options" element={<BookOptions />} />
-                <Route path="/site/:slug/book/add-ons" element={<BookAddOns />} />
-                <Route path="/site/:slug/book/booking" element={<BookBooking />} />
-                <Route path="/site/:slug/book/checkout" element={<BookCheckout />} />
+                <Route path="/site/:slug" element={<DeluxeLanding />} />
+                <Route path="/site/:slug/book" element={<BookingFlowLayout />}>
+                  <Route index element={<Book />} />
+                  <Route path="vehicle" element={<BookVehicle />} />
+                  <Route path="options" element={<BookOptions />} />
+                  <Route path="add-ons" element={<BookAddOns />} />
+                  <Route path="booking" element={<BookBooking />} />
+                  <Route path="checkout" element={<BookCheckout />} />
+                </Route>
                 <Route path="/estimate/:id" element={<PublicEstimate />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/privacy" element={<Privacy />} />
@@ -134,7 +138,6 @@ const App = () => (
                   <Route path="copy" element={<WebsiteCopyEditor />} />
                 </Route>
                 <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-                <Route path="/site/:slug" element={<DeluxeLanding />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

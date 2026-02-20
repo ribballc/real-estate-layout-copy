@@ -41,6 +41,23 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
+
+  /* Public site + booking utilities */
+  .public-touch-target {
+    min-height: var(--public-touch-min);
+  }
+  .animate-public-fade-in {
+    animation: publicFadeIn var(--public-motion-normal) ease-out both;
+  }
+  .animate-public-slide-up {
+    animation: publicSlideUp var(--public-motion-normal) ease-out both;
+  }
+  .animate-public-step-enter {
+    animation: publicStepEnter var(--public-motion-normal) ease-out both;
+  }
+  .animate-public-section-reveal {
+    animation: publicSectionReveal var(--public-motion-slow) ease-out both;
+  }
 }
 
 @layer base {
@@ -101,6 +118,38 @@
     --dash-body-size: 0.9375rem;    /* 15px — ALL body text      */
     --dash-title-size: 1.0625rem;   /* 17px — ALL card titles    */
     --dash-page-title: 1.375rem;    /* 22px — ALL page headings  */
+
+    /* ═══ Public Site + Booking Design Tokens (high-conversion SaaS) ═══ */
+    --public-space-xs: 0.5rem;       /* 8px  */
+    --public-space-sm: 1rem;        /* 16px */
+    --public-space-md: 1.25rem;     /* 20px */
+    --public-space-lg: 1.5rem;      /* 24px */
+    --public-space-xl: 2rem;        /* 32px */
+    --public-space-2xl: 3rem;       /* 48px */
+    --public-space-page: 1rem;      /* 16px mobile, 24px desktop */
+    --public-card-radius: 12px;
+    --public-card-radius-lg: 16px;
+    --public-input-radius: 10px;
+    --public-btn-radius: 10px;
+    --public-touch-min: 44px;
+    --public-surface: hsl(0, 0%, 100%);
+    --public-surface-subtle: hsl(210, 40%, 98%);
+    --public-border: hsl(214, 32%, 91%);
+    --public-border-subtle: hsl(214, 20%, 95%);
+    --public-text: hsl(218, 24%, 23%);
+    --public-text-muted: hsl(215, 14%, 51%);
+    --public-text-muted-2: hsl(215, 12%, 58%);
+    --public-accent: hsl(217, 91%, 55%);
+    --public-accent-hover: hsl(217, 91%, 48%);
+    --public-accent-subtle: hsl(217, 91%, 96%);
+    --public-success: hsl(142, 71%, 40%);
+    --public-success-subtle: hsl(142, 71%, 95%);
+    --public-shadow-sm: 0 1px 3px hsla(0, 0%, 0%, 0.06);
+    --public-shadow-md: 0 4px 12px hsla(0, 0%, 0%, 0.08);
+    --public-shadow-lg: 0 8px 24px hsla(0, 0%, 0%, 0.1);
+    --public-motion-fast: 150ms;
+    --public-motion-normal: 220ms;
+    --public-motion-slow: 320ms;
   }
 }
 
@@ -166,6 +215,24 @@
 @keyframes heroPhoneIn {
   0% { opacity: 0; transform: translateY(60px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══ Public / Booking motion primitives ═══ */
+@keyframes publicFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes publicSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes publicStepEnter {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes publicSectionReveal {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes heroFloat {
@@ -411,14 +478,18 @@
 }
 .dashboard-light .dash-card {
   background: hsl(0, 0%, 100%);
-  border: 1px solid hsl(214, 20%, 90%);
-  box-shadow: 0 1px 4px hsla(215, 30%, 15%, 0.06);
+  border: 1px solid hsl(214, 32%, 91%);
+  box-shadow: 0 1px 3px hsla(220, 14%, 50%, 0.06);
   backdrop-filter: none;
 }
 .dash-card:hover {
   border-color: hsla(217, 91%, 60%, 0.15) !important;
   box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.09), 0 8px 32px hsla(217, 91%, 60%, 0.08);
   transform: translateY(-1px);
+}
+.dashboard-light .dash-card:hover {
+  border-color: hsl(214, 32%, 85%) !important;
+  box-shadow: 0 2px 8px hsla(220, 14%, 50%, 0.08), 0 4px 16px hsla(220, 14%, 50%, 0.05);
 }
 
 /* ═══ Dashboard Metric Number ═══ */
@@ -495,6 +566,9 @@
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0; /* flex child: allow shrink */
 }
 @media (min-width: 768px) {
   .dash-content {
@@ -522,19 +596,19 @@
 }
 
 .dashboard-light .dash-card-label {
-  color: hsl(215, 20%, 45%);
+  color: hsl(215, 14%, 51%);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 .dashboard-light .dash-card-value {
-  color: hsl(215, 30%, 12%);
+  color: hsl(218, 24%, 23%);
   font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 .dashboard-light .dash-card-sublabel {
-  color: hsl(215, 20%, 55%);
+  color: hsl(215, 14%, 51%);
   font-size: 0.75rem;
 }
 
@@ -578,6 +652,11 @@
   padding-left: 0.75rem;
   padding-right: 0.75rem;
   font-size: 0.75rem;
+}
+@media (max-width: 767px) {
+  .dash-btn-sm {
+    min-height: 44px;
+  }
 }
 .dash-btn-lg {
   height: 2.75rem;
@@ -672,18 +751,18 @@
 .dashboard-light textarea,
 .dashboard-light select {
   background: hsl(0, 0%, 100%);
-  border: 1px solid hsl(210, 40%, 86%);
-  color: hsl(222, 47%, 11%);
+  border: 1px solid hsl(214, 32%, 91%);
+  color: hsl(218, 24%, 23%);
 }
 .dashboard-light input::placeholder,
 .dashboard-light textarea::placeholder {
-  color: hsl(215, 16%, 65%);
+  color: hsl(215, 14%, 58%);
 }
 .dashboard-light input:focus,
 .dashboard-light textarea:focus,
 .dashboard-light select:focus {
   border-color: hsl(217, 91%, 50%);
-  box-shadow: 0 0 0 3px hsla(217, 91%, 50%, 0.15);
+  box-shadow: 0 0 0 3px hsla(217, 91%, 50%, 0.12);
 }
 
 /* Body / paragraph text */
@@ -697,7 +776,7 @@
 .dashboard-light .dash-body {
   font-size: 0.875rem;
   line-height: 1.6;
-  color: hsl(215, 30%, 22%);
+  color: hsl(215, 19%, 35%);
 }
 
 /* Labels / captions */
@@ -713,7 +792,7 @@
 .dashboard-light caption {
   font-size: 0.75rem;
   letter-spacing: 0.03em;
-  color: hsl(215, 20%, 38%);
+  color: hsl(215, 14%, 51%);
 }
 
 /* Card values / big numbers */
@@ -727,7 +806,7 @@
   font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: hsl(222, 47%, 11%);
+  color: hsl(218, 24%, 23%);
 }
 
 /* Page titles */
@@ -741,7 +820,7 @@
   font-size: 1.25rem;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: hsl(222, 47%, 11%);
+  color: hsl(218, 24%, 23%);
 }
 @media (min-width: 768px) {
   .dashboard-dark .dash-title,
@@ -763,55 +842,56 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: hsl(215, 20%, 42%);
+  color: hsl(215, 14%, 51%);
 }
 
 /* ═══════════════════════════════════════════════════════
-   Dashboard light mode — surface hierarchy
+   Dashboard light mode — surface hierarchy (Shopify-style)
+   Soft grays, white cards, subtle shadows, clear text hierarchy.
    ═══════════════════════════════════════════════════════ */
 
-/* Page background */
+/* Page background — very light off-white gray */
 .dashboard-light {
-  background: hsl(0, 0%, 98%) !important;
+  background: hsl(220, 14%, 97%) !important;
 }
 
 /* Secondary surfaces (inputs, selects, hover areas) */
 .dashboard-light .dash-surface-secondary {
-  background-color: hsl(214, 30%, 96%);
+  background-color: hsl(210, 40%, 98%);
 }
 
-/* Borders — unified */
+/* Borders — subtle, light gray */
 .dashboard-light .dash-card,
 .dashboard-light .dash-border {
-  border-color: hsl(214, 20%, 88%);
+  border-color: hsl(214, 32%, 91%);
 }
 
-/* Sidebar */
+/* Sidebar — pure white, soft shadow */
 .dashboard-light .dash-sidebar {
   background: hsl(0, 0%, 100%);
-  border-right: 1px solid hsl(214, 20%, 90%);
-  box-shadow: 4px 0 20px hsla(215, 25%, 12%, 0.04);
+  border-right: 1px solid hsl(214, 32%, 91%);
+  box-shadow: 2px 0 12px hsla(220, 14%, 50%, 0.06);
 }
 
-/* Sidebar nav items */
+/* Sidebar nav — primary text charcoal, icons medium gray */
 .dashboard-light .dash-sidebar .dash-nav-text {
-  color: hsl(222, 47%, 11%);
+  color: hsl(218, 24%, 23%);
 }
 .dashboard-light .dash-sidebar .dash-nav-icon {
-  color: hsl(215, 20%, 40%);
+  color: hsl(215, 14%, 51%);
 }
 
 /* Mobile bottom nav */
 .dashboard-light .dash-bottom-nav {
   background: hsl(0, 0%, 100%);
-  border-top: 1px solid hsl(214, 20%, 88%);
+  border-top: 1px solid hsl(214, 32%, 91%);
 }
 
-/* Header bar */
+/* Header bar — white, subtle border */
 .dashboard-light .dash-header {
-  background: hsla(210, 40%, 97%, 0.85);
+  background: hsla(0, 0%, 100%, 0.92);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid hsl(214, 20%, 88%);
+  border-bottom: 1px solid hsl(214, 32%, 91%);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -821,41 +901,48 @@
    Chatbot excluded via .support-chatbot scoping at the end.
    ═══════════════════════════════════════════════════════ */
 
-/* --- Text colors (exclude highlighted cards which need white text on blue bg) --- */
-.dashboard-light :not(.dash-card-highlight) > .text-white,
-.dashboard-light .text-white:not(.dash-card-highlight *) {
-  color: hsl(222 47% 11%) !important;
+/* --- Text colors (exclude highlighted cards and onboarding header which need white text on blue bg) --- */
+.dashboard-light :not(.dash-card-highlight):not(.onboarding-checklist-header) > .text-white,
+.dashboard-light .text-white:not(.dash-card-highlight *):not(.onboarding-checklist-header *) {
+  color: hsl(218, 24%, 23%) !important;
 }
-.dashboard-light .dash-card-highlight .text-white { color: hsl(0 0% 100%) !important; }
-.dashboard-light .dash-card-highlight .text-white\/80 { color: hsla(0, 0%, 100%, 0.8) !important; }
-.dashboard-light .dash-card-highlight .text-white\/70 { color: hsla(0, 0%, 100%, 0.7) !important; }
-.dashboard-light .dash-card-highlight .text-white\/60 { color: hsla(0, 0%, 100%, 0.6) !important; }
-.dashboard-light .dash-card-highlight .text-white\/50 { color: hsla(0, 0%, 100%, 0.5) !important; }
+.dashboard-light .dash-card-highlight .text-white,
+.dashboard-light .onboarding-checklist-header .text-white { color: hsl(0 0% 100%) !important; }
+.dashboard-light .dash-card-highlight .text-white\/80,
+.dashboard-light .onboarding-checklist-header .text-white\/80 { color: hsla(0, 0%, 100%, 0.8) !important; }
+.dashboard-light .dash-card-highlight .text-white\/70,
+.dashboard-light .onboarding-checklist-header .text-white\/70 { color: hsla(0, 0%, 100%, 0.7) !important; }
+.dashboard-light .dash-card-highlight .text-white\/60,
+.dashboard-light .onboarding-checklist-header .text-white\/60 { color: hsla(0, 0%, 100%, 0.6) !important; }
+.dashboard-light .dash-card-highlight .text-white\/50,
+.dashboard-light .onboarding-checklist-header .text-white\/50 { color: hsla(0, 0%, 100%, 0.5) !important; }
+.dashboard-light .onboarding-checklist-header .hover\:bg-white\/10:hover { background-color: hsla(0,0%,100%,0.1) !important; }
+.dashboard-light .onboarding-checklist-header .hover\:text-white\/80:hover { color: hsla(0,0%,100%,0.8) !important; }
 
-/* Opacity variants → high-contrast equivalents on white */
-.dashboard-light *:not(.dash-card-highlight *).text-white\/80 {
-  color: hsl(222 47% 18%) !important;
+/* Opacity variants → reference grays (exclude dash-card-highlight and onboarding header) */
+.dashboard-light *:not(.dash-card-highlight *):not(.onboarding-checklist-header *).text-white\/80 {
+  color: hsl(215, 19%, 35%) !important;
 }
-.dashboard-light *:not(.dash-card-highlight *).text-white\/70 {
-  color: hsl(215 25% 25%) !important;
+.dashboard-light *:not(.dash-card-highlight *):not(.onboarding-checklist-header *).text-white\/70 {
+  color: hsl(215, 16%, 43%) !important;
 }
-.dashboard-light *:not(.dash-card-highlight *).text-white\/60 {
-  color: hsl(215 20% 33%) !important;
+.dashboard-light *:not(.dash-card-highlight *):not(.onboarding-checklist-header *).text-white\/60 {
+  color: hsl(215, 14%, 51%) !important;
 }
-.dashboard-light *:not(.dash-card-highlight *).text-white\/50 {
-  color: hsl(215 18% 40%) !important;
+.dashboard-light *:not(.dash-card-highlight *):not(.onboarding-checklist-header *).text-white\/50 {
+  color: hsl(215, 12%, 58%) !important;
 }
-.dashboard-light *:not(.dash-card-highlight *).text-white\/40 {
-  color: hsl(215 16% 47%) !important;
+.dashboard-light *:not(.dash-card-highlight *):not(.onboarding-checklist-header *).text-white\/40 {
+  color: hsl(215, 12%, 63%) !important;
 }
-.dashboard-light *:not(.dash-card-highlight *).text-white\/30 {
-  color: hsl(215 14% 55%) !important;
+.dashboard-light *:not(.dash-card-highlight *):not(.onboarding-checklist-header *).text-white\/30 {
+  color: hsl(214, 25%, 67%) !important;
 }
-.dashboard-light *:not(.dash-card-highlight *).text-white\/20 {
-  color: hsl(215 12% 65%) !important;
+.dashboard-light *:not(.dash-card-highlight *):not(.onboarding-checklist-header *).text-white\/20 {
+  color: hsl(214, 20%, 75%) !important;
 }
-.dashboard-light *:not(.dash-card-highlight *).text-white\/10 {
-  color: hsl(215 10% 75%) !important;
+.dashboard-light *:not(.dash-card-highlight *):not(.onboarding-checklist-header *).text-white\/10 {
+  color: hsl(214, 18%, 82%) !important;
 }
 
 /* --- Background colors --- */
@@ -866,51 +953,51 @@
   background-color: hsl(0 0% 100%) !important;
 }
 .dashboard-light .bg-white\/10 {
-  background-color: hsl(214 20% 96%) !important;
+  background-color: hsl(210, 40%, 98%) !important;
 }
 
 /* --- Border colors --- */
 .dashboard-light .border-white\/5 {
-  border-color: hsl(214 20% 92%) !important;
+  border-color: hsl(214, 32%, 93%) !important;
 }
 .dashboard-light .border-white\/10 {
-  border-color: hsl(214 20% 88%) !important;
+  border-color: hsl(214, 32%, 91%) !important;
 }
 .dashboard-light .border-white\/20 {
-  border-color: hsl(214 20% 82%) !important;
+  border-color: hsl(214, 32%, 88%) !important;
 }
 
 /* --- Dashed border --- */
 .dashboard-light .border-dashed.border-white\/10,
 .dashboard-light .border-dashed.border-white\/20 {
-  border-color: hsl(214 20% 85%) !important;
+  border-color: hsl(214 32% 88%) !important;
 }
 
 /* --- Hover states --- */
 .dashboard-light .hover\:bg-white\/5:hover,
 .dashboard-light .hover\:bg-white\/10:hover,
 .dashboard-light .hover\:bg-white\/\[0\.06\]:hover {
-  background-color: hsl(214 20% 96%) !important;
+  background-color: hsl(210, 40%, 98%) !important;
 }
 .dashboard-light .hover\:text-white:hover {
-  color: hsl(215 25% 12%) !important;
+  color: hsl(218, 24%, 23%) !important;
 }
 .dashboard-light .hover\:border-white\/20:hover {
-  border-color: hsl(214 20% 80%) !important;
+  border-color: hsl(214, 32%, 85%) !important;
 }
 .dashboard-light .hover\:text-white\/70:hover {
-  color: hsl(215 16% 35%) !important;
+  color: hsl(215, 16%, 43%) !important;
 }
 .dashboard-light .hover\:text-white\/80:hover {
-  color: hsl(215 16% 25%) !important;
+  color: hsl(215, 19%, 35%) !important;
 }
 .dashboard-light .hover\:text-white\/40:hover {
-  color: hsl(215 16% 45%) !important;
+  color: hsl(215, 12%, 58%) !important;
 }
 
 /* --- Placeholders --- */
 .dashboard-light .placeholder\:text-white\/30::placeholder {
-  color: hsl(215 16% 65%) !important;
+  color: hsl(215 14% 58%) !important;
 }
 
 /* --- Ring offsets --- */
@@ -921,12 +1008,12 @@
 /* --- Fix select dropdowns in light mode --- */
 .dashboard-light select {
   background-color: hsl(0 0% 100%) !important;
-  color: hsl(215 25% 12%) !important;
-  border-color: hsl(214 20% 88%) !important;
+  color: hsl(218 24% 23%) !important;
+  border-color: hsl(214 32% 91%) !important;
 }
 .dashboard-light select option {
   background-color: hsl(0 0% 100%) !important;
-  color: hsl(215 25% 12%) !important;
+  color: hsl(218 24% 23%) !important;
 }
 
 /* --- Fix inline style dark backgrounds in modals/dropdowns --- */
@@ -1022,10 +1109,10 @@
 }
 
 /* Fix text-gray-* and text-slate-* used without dark/light conditionals */
-.dashboard-light .text-gray-400 { color: hsl(215, 16%, 45%) !important; }
-.dashboard-light .text-gray-500 { color: hsl(215, 16%, 38%) !important; }
-.dashboard-light .text-slate-400 { color: hsl(215, 16%, 45%) !important; }
-.dashboard-light .text-slate-500 { color: hsl(215, 16%, 38%) !important; }
+.dashboard-light .text-gray-400 { color: hsl(215, 14%, 51%) !important; }
+.dashboard-light .text-gray-500 { color: hsl(215, 14%, 51%) !important; }
+.dashboard-light .text-slate-400 { color: hsl(215, 14%, 51%) !important; }
+.dashboard-light .text-slate-500 { color: hsl(215, 14%, 51%) !important; }
 
 /* Fix bg-gray-* used without conditionals */
 .dashboard-light .bg-gray-800,
@@ -1085,10 +1172,10 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 /* --- Additional missing light mode overrides --- */
 
 /* bg-white/[0.02] and bg-white/[0.05] */
-.dashboard-light .bg-white\/\[0\.02\] { background-color: hsl(214 20% 97%) !important; }
-.dashboard-light .hover\:bg-white\/\[0\.05\]:hover { background-color: hsl(214 20% 96%) !important; }
+.dashboard-light .bg-white\/\[0\.02\] { background-color: hsl(210 40% 98%) !important; }
+.dashboard-light .hover\:bg-white\/\[0\.05\]:hover { background-color: hsl(210 40% 98%) !important; }
 .dashboard-light .hover\:bg-white\/\[0\.10\]:hover,
-.dashboard-light .hover\:bg-white\/10:hover { background-color: hsl(214 20% 95%) !important; }
+.dashboard-light .hover\:bg-white\/10:hover { background-color: hsl(210 40% 97%) !important; }
 
 /* emerald-500 text */
 .dashboard-light .text-emerald-500 { color: hsl(142, 71%, 35%) !important; }
@@ -1096,8 +1183,8 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 .dashboard-light .text-amber-500 { color: hsl(40, 100%, 40%) !important; }
 
 /* hover text-white/* in interactive elements — higher contrast */
-.dashboard-light .hover\:text-white\/60:hover { color: hsl(215 20% 33%) !important; }
-.dashboard-light .hover\:text-white\/70:hover { color: hsl(215 25% 25%) !important; }
+.dashboard-light .hover\:text-white\/60:hover { color: hsl(215 14% 51%) !important; }
+.dashboard-light .hover\:text-white\/70:hover { color: hsl(215 16% 43%) !important; }
 .dashboard-light .hover\:text-white\/80:hover { color: hsl(222 47% 18%) !important; }
 
 /* Fix bg-accent/20 */
@@ -1110,7 +1197,7 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 }
 
 /* Fix text-white/[0.02] style inline backgrounds in light mode */
-.dashboard-light .bg-white\/\[0\.04\] { background-color: hsl(214 20% 97%) !important; }
+.dashboard-light .bg-white\/\[0\.04\] { background-color: hsl(210 40% 98%) !important; }
 
 /* ═══ Skeleton Shimmer ═══ */
 @keyframes skeleton-shimmer {
@@ -1255,8 +1342,8 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 .dash-row-hover:hover { background: hsla(0, 0%, 100%, 0.03); }
 
 /* --- Light mode overrides --- */
-.dashboard-light .dash-title { color: hsl(215, 25%, 12%); }
-.dashboard-light .dash-subtitle { color: hsl(215, 20%, 45%) !important; }
+.dashboard-light .dash-title { color: hsl(218, 24%, 23%); }
+.dashboard-light .dash-subtitle { color: hsl(215, 14%, 51%) !important; }
 .dashboard-light .dash-select {
   background: hsl(0, 0%, 100%);
   border-color: hsl(214, 20%, 88%);
@@ -1280,14 +1367,14 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 .dashboard-light .dash-card-highlight .dash-card-value { color: hsl(0, 0%, 100%) !important; }
 .dashboard-light .dash-card-highlight .dash-card-sublabel { color: hsla(0, 0%, 100%, 0.65) !important; }
 .dashboard-light .dash-card-highlight .dash-menu-btn { color: hsla(0, 0%, 100%, 0.5); }
-.dashboard-light .dash-card-label { color: hsl(215, 16%, 42%); }
-.dashboard-light .dash-card-value { color: hsl(215, 25%, 12%); }
-.dashboard-light .dash-card-sublabel { color: hsl(215, 16%, 55%); }
-.dashboard-light .dash-menu-btn { color: hsl(215, 16%, 68%); }
-.dashboard-light .dash-menu-btn:hover { background: hsl(214, 20%, 95%); color: hsl(215, 16%, 35%); }
-.dashboard-light .dash-card-border-b { border-color: hsl(214, 20%, 92%); }
-.dashboard-light .dash-divide > * + * { border-color: hsl(214, 20%, 93%); }
-.dashboard-light .dash-row-hover:hover { background: hsl(214, 20%, 97%); }
+.dashboard-light .dash-card-label { color: hsl(215, 14%, 51%); }
+.dashboard-light .dash-card-value { color: hsl(218, 24%, 23%); }
+.dashboard-light .dash-card-sublabel { color: hsl(215, 14%, 51%); }
+.dashboard-light .dash-menu-btn { color: hsl(215, 14%, 51%); }
+.dashboard-light .dash-menu-btn:hover { background: hsl(210, 40%, 98%); color: hsl(215, 19%, 35%); }
+.dashboard-light .dash-card-border-b { border-color: hsl(214, 32%, 93%); }
+.dashboard-light .dash-divide > * + * { border-color: hsl(214, 32%, 93%); }
+.dashboard-light .dash-row-hover:hover { background: hsl(210, 40%, 98%); }
 
 /* ═══════════════════════════════════════════════════════
    Alytics-inspired clean card tokens
@@ -1317,21 +1404,21 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 /* Light overrides */
 .dashboard-light .alytics-card {
   background: hsl(0, 0%, 100%);
-  border: 1px solid hsl(214, 20%, 91%);
-  color: hsl(215, 25%, 12%);
-  box-shadow: 0 1px 3px hsla(215, 25%, 12%, 0.04), 0 4px 12px hsla(215, 25%, 12%, 0.04);
+  border: 1px solid hsl(214, 32%, 91%);
+  color: hsl(218, 24%, 23%);
+  box-shadow: 0 1px 3px hsla(220, 14%, 50%, 0.06);
 }
 .dashboard-light .alytics-card:hover {
-  border-color: hsl(214, 20%, 83%);
-  box-shadow: 0 2px 8px hsla(215, 25%, 12%, 0.05), 0 12px 28px hsla(217, 91%, 60%, 0.06);
+  border-color: hsl(214, 32%, 85%);
+  box-shadow: 0 2px 8px hsla(220, 14%, 50%, 0.08), 0 4px 16px hsla(220, 14%, 50%, 0.05);
 }
-.dashboard-light .alytics-card-title { color: hsl(215, 25%, 12%); }
-.dashboard-light .alytics-card-big { color: hsl(215, 25%, 12%); }
-.dashboard-light .alytics-card-sub { color: hsl(215, 16% , 45%); }
+.dashboard-light .alytics-card-title { color: hsl(218, 24%, 23%); }
+.dashboard-light .alytics-card-big { color: hsl(218, 24%, 23%); }
+.dashboard-light .alytics-card-sub { color: hsl(215, 14%, 51%); }
 .dashboard-light .alytics-link { color: hsl(217, 91%, 52%); }
 .dashboard-light .alytics-link:hover { color: hsl(217, 91%, 42%); }
-.dashboard-light .alytics-divide > * + * { border-top: 1px solid hsl(214, 20%, 93%); }
-.dashboard-light .alytics-row-hover:hover { background: hsl(214, 20%, 97%); }
+.dashboard-light .alytics-divide > * + * { border-top: 1px solid hsl(214, 32%, 93%); }
+.dashboard-light .alytics-row-hover:hover { background: hsl(210, 40%, 98%); }
 .dashboard-light .alytics-row-active { background: hsl(217, 91%, 97%); border-left: 3px solid hsl(217, 91%, 60%); }
 
 /* ═══ Metric card icon box ═══ */
@@ -1353,8 +1440,8 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 }
 
 /* Grid stroke theming for charts in light mode */
-.dashboard-light .dash-grid-stroke line { stroke: hsl(214, 20%, 93%); }
-.dashboard-light .dash-axis-tick text { fill: hsl(215, 16%, 55%); }
+.dashboard-light .dash-grid-stroke line { stroke: hsl(214, 32%, 93%); }
+.dashboard-light .dash-axis-tick text { fill: hsl(215, 14%, 51%); }
 
 /* CTA Footer animations */
 @keyframes ctaRing {
@@ -1500,6 +1587,9 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
   pointer-events: none;
   border-radius: inherit;
 }
+.dashboard-light .ghost-shimmer::after {
+  background: linear-gradient(90deg, transparent 0%, hsla(215,25%,12%,0.06) 50%, transparent 100%);
+}
 
 @keyframes ghostPillIn {
   from { opacity: 0; transform: translateX(-50%) translateY(20px); }
@@ -1562,6 +1652,11 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 }
 .intro-banner-out {
   animation: introBannerOut 0.3s ease-in forwards;
+}
+
+/* Onboarding checklist — header gradient (original values) */
+.onboarding-checklist-header {
+  background: linear-gradient(135deg, hsl(217, 91%, 60%), hsl(230, 80%, 55%));
 }
 
 /* Locked page pulse */

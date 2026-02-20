@@ -73,6 +73,35 @@ Deno.serve(async (req) => {
 
     const ownerUserId = profile.user_id;
 
+    // 1b. Stale-slot guard: verify slot still available before inserting
+    const { data: existingBookings } = await supabase
+      .from("bookings")
+      .select("booking_time")
+      .eq("user_id", ownerUserId)
+      .eq("booking_date", booking_date)
+      .in("status", ["confirmed", "pending"]);
+
+    const toMinutes = (t: string): number => {
+      const m = t.match(/(\d+):(\d+)\s*(AM|PM)?/i);
+      if (!m) {
+        const [h, min] = t.split(":").map(Number);
+        return (h ?? 0) * 60 + (min ?? 0);
+      }
+      let h = parseInt(m[1]);
+      const min = parseInt(m[2]);
+      if (m[3]?.toUpperCase() === "PM" && h !== 12) h += 12;
+      if (m[3]?.toUpperCase() === "AM" && h === 12) h = 0;
+      return h * 60 + min;
+    };
+    const requestedMinutes = toMinutes(booking_time);
+    const isTaken = existingBookings?.some((b) => toMinutes(b.booking_time) === requestedMinutes);
+    if (isTaken) {
+      return new Response(
+        JSON.stringify({ error: "This time slot is no longer available. Please choose another." }),
+        { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // 2. Insert booking
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")

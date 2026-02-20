@@ -109,7 +109,7 @@ const DeluxePackages = ({ services, slug }: Props) => {
                     </ul>
                   </div>
                 )}
-                <a href={slug ? `/site/${slug}/book` : "#contact"}>
+                <a href={slug ? `/site/${slug}/book` : "#contact"} className={slug ? "book-now-link" : undefined}>
                   <Button variant={pkg.popular ? 'gold' : 'goldOutline'} className="w-full">Book Now</Button>
                 </a>
               </div>

@@ -60,7 +60,7 @@ const ChurnRiskBanner = () => {
           </button>
         </div>
       </div>
-      <button onClick={handleDismiss} className="w-6 h-6 rounded-lg flex items-center justify-center text-white/30 hover:text-white/70 hover:bg-white/5 transition-colors shrink-0">
+      <button onClick={handleDismiss} className="min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center text-white/30 hover:text-white/70 hover:bg-white/5 transition-colors shrink-0" aria-label="Dismiss">
         <X className="w-3.5 h-3.5" />
       </button>
     </div>

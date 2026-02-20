@@ -5,20 +5,21 @@ import SEOHead from '@/components/SEOHead';
 import { buildHoursSchema } from '@/lib/seo';
 import DeluxeNavbar from '@/components/deluxe/DeluxeNavbar';
 import DeluxeHero from '@/components/deluxe/DeluxeHero';
-import DeluxeWhyChooseUs from '@/components/deluxe/DeluxeWhyChooseUs';
 import DeluxeServicesOverview from '@/components/deluxe/DeluxeServicesOverview';
 import DeluxePackages from '@/components/deluxe/DeluxePackages';
+import DeluxeTestimonials from '@/components/deluxe/DeluxeTestimonials';
 import DeluxeAddOnServices from '@/components/deluxe/DeluxeAddOnServices';
 import DeluxeGallery from '@/components/deluxe/DeluxeGallery';
-import DeluxeTestimonials from '@/components/deluxe/DeluxeTestimonials';
 import DeluxeCTASection from '@/components/deluxe/DeluxeCTASection';
+import DeluxeWhyChooseUs from '@/components/deluxe/DeluxeWhyChooseUs';
 import DeluxeFAQ from '@/components/deluxe/DeluxeFAQ';
 import DeluxeContactForm from '@/components/deluxe/DeluxeContactForm';
 import DeluxeFooter from '@/components/deluxe/DeluxeFooter';
+import DeluxeLandingSkeleton from '@/components/deluxe/DeluxeLandingSkeleton';
 
 const DeluxeLanding = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { profile, services, hours, testimonials, photos, addOns, loading } = useBusinessDataBySlug(slug || null);
+  const { profile, services, hours, testimonials, photos, addOns, loading, error } = useBusinessDataBySlug(slug || null);
 
   // When rendered inside the dashboard iframe, intercept "Book Now" clicks
   useEffect(() => {
@@ -105,6 +106,26 @@ const DeluxeLanding = () => {
     { name: 'geo.placename', content: city },
   ] : [];
 
+  if (loading) return <DeluxeLandingSkeleton />;
+
+  if (error || !slug) {
+    return (
+      <main className="min-h-screen bg-background font-montserrat flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <h1 className="text-xl font-semibold text-foreground mb-2">
+            {error || "Page not found"}
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            We couldn&apos;t load this page. Check the link or try again later.
+          </p>
+          <a href="/" className="inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium text-white bg-accent hover:opacity-90 transition-opacity">
+            Go home
+          </a>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className={`min-h-screen bg-background font-montserrat ${isDark ? "site-dark" : ""}`}>
       <SEOHead
@@ -115,17 +136,17 @@ const DeluxeLanding = () => {
         structuredData={structuredData}
         extraMeta={geoMeta}
       />
-      <DeluxeNavbar profile={profile} />
+      <DeluxeNavbar profile={profile} slug={slug} />
       <DeluxeHero profile={profile} slug={slug} />
-      <DeluxeServicesOverview services={services} />
-      <DeluxeWhyChooseUs profile={profile} />
+      <DeluxeServicesOverview services={services} slug={slug} />
       <DeluxePackages services={services} slug={slug} />
-      <DeluxeAddOnServices addOns={addOns} />
+      <DeluxeTestimonials testimonials={testimonials} />
+      <DeluxeAddOnServices addOns={addOns} slug={slug} />
       <DeluxeGallery photos={photos} />
       <DeluxeCTASection profile={profile} slug={slug} />
-      <DeluxeTestimonials testimonials={testimonials} />
+      <DeluxeWhyChooseUs profile={profile} />
       <DeluxeFAQ profile={profile} />
-      <DeluxeContactForm profile={profile} services={services} addOns={addOns} hours={hours} />
+      <DeluxeContactForm profile={profile} services={services} addOns={addOns} hours={hours} slug={slug} />
       <DeluxeFooter profile={profile} hours={hours} />
     </main>
   );

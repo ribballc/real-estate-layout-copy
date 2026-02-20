@@ -15,9 +15,10 @@ const defaultIcons = [Lightbulb, Shield, Wrench, CircleDot, Dog, AlertTriangle];
 
 interface Props {
   addOns?: BusinessAddOn[];
+  slug?: string;
 }
 
-const DeluxeAddOnServices = ({ addOns }: Props) => {
+const DeluxeAddOnServices = ({ addOns, slug }: Props) => {
   const hasCms = addOns && addOns.length > 0;
 
   const displayAddons = hasCms
@@ -56,8 +57,8 @@ const DeluxeAddOnServices = ({ addOns }: Props) => {
         </div>
 
         <div className="text-center mt-12">
-          <a href="#contact">
-            <Button variant="gold" size="xl">Get a Quote</Button>
+          <a href={slug ? `/site/${slug}/book` : "#contact"} className={slug ? "book-now-link" : undefined}>
+            <Button variant="gold" size="xl">{slug ? "Book Now" : "Get a Quote"}</Button>
           </a>
         </div>
       </div>

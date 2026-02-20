@@ -38,17 +38,21 @@ const WelcomeModal = ({ firstName, isDark }: WelcomeModalProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 overflow-y-auto"
       style={{
         background: "hsla(0,0%,0%,0.6)",
         backdropFilter: "blur(8px)",
         opacity: closing ? 0 : 1,
         transition: "opacity 0.3s ease",
+        paddingTop: "max(1rem, env(safe-area-inset-top))",
+        paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+        paddingLeft: "max(1rem, env(safe-area-inset-left))",
+        paddingRight: "max(1rem, env(safe-area-inset-right))",
       }}
       onClick={(e) => { if (e.target === e.currentTarget) dismiss(); }}
     >
       <div
-        className="relative w-full max-w-[480px]"
+        className="relative w-full max-w-[480px] max-h-[90dvh] overflow-y-auto rounded-2xl"
         style={{
           background: isDark
             ? "linear-gradient(180deg, hsl(215,50%,12%) 0%, hsl(217,33%,14%) 100%)"
@@ -65,7 +69,7 @@ const WelcomeModal = ({ firstName, isDark }: WelcomeModalProps) => {
         {/* Close button */}
         <button
           onClick={dismiss}
-          className="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
+          className="absolute top-4 right-4 min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center transition-colors"
           style={{ color: "hsla(0,0%,100%,0.3)" }}
           onMouseEnter={(e) => (e.currentTarget.style.color = "white")}
           onMouseLeave={(e) => (e.currentTarget.style.color = "hsla(0,0%,100%,0.3)")}

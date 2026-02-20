@@ -186,9 +186,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-/* ─── Ghost Metrics Intro ─── */
-const INTRO_FLAG = "darker_dashboard_intro_seen";
-
+/* ─── Ghost Metrics Intro (disabled: show real data from first load) ─── */
 const GHOST_METRICS = {
   revenue: 6840,
   jobsCompleted: 47,
@@ -250,28 +248,11 @@ const GHOST_HEATMAP = [
 type IntroPhase = "hidden" | "fadeIn" | "visible" | "fadeOut" | "done";
 
 function useGhostIntro() {
-  const [phase, setPhase] = useState<IntroPhase>(() =>
-    localStorage.getItem(INTRO_FLAG) ? "done" : "fadeIn"
-  );
+  const [phase, setPhase] = useState<IntroPhase>("done");
 
-  useEffect(() => {
-    if (phase === "done") return;
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    // Phase 1: fade in 0-400ms
-    timers.push(setTimeout(() => setPhase("visible"), 400));
-    // Phase 2→3: visible until 4500ms then fade out
-    timers.push(setTimeout(() => setPhase("fadeOut"), 4500));
-    // Phase 4: done at 6000ms
-    timers.push(setTimeout(() => {
-      setPhase("done");
-      localStorage.setItem(INTRO_FLAG, "1");
-    }, 6000));
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
-  const isIntro = phase !== "done";
-  const showShimmer = phase === "visible";
-  const opacity = phase === "fadeIn" ? 0 : phase === "fadeOut" ? 0.3 : 1;
+  const isIntro = false;
+  const showShimmer = false;
+  const opacity = 1;
   return { phase, isIntro, showShimmer, opacity };
 }
 
@@ -594,8 +575,8 @@ const HomeDashboard = () => {
         transition: "opacity 0.4s ease-out",
       }}
     >
-      {/* ═══ Churn Risk Banner ═══ */}
-      <ChurnRiskBanner />
+      {/* ═══ Churn Risk Banner — only when onboarding checklist not shown ═══ */}
+      {!showOnboarding && <ChurnRiskBanner />}
 
 
       {/* ═══ Weekly Summary Card ═══ */}
@@ -610,14 +591,14 @@ const HomeDashboard = () => {
             <p className="text-white/70 text-sm mt-1">Your shop is ready to go. Start booking customers!</p>
           </div>
         ) : !allComplete ? (
-          <div className="overflow-hidden alytics-card" style={{ border: "1px solid hsla(217,91%,60%,0.2)" }}>
+          <div className="overflow-hidden alytics-card onboarding-checklist">
             {/* Header */}
-            <div className="px-5 py-4 flex items-center justify-between" style={{ background: "linear-gradient(135deg, hsl(217,91%,60%), hsl(230,80%,55%))" }}>
+            <div className="px-5 py-4 flex items-center justify-between onboarding-checklist-header">
               <div>
                 <h3 className="text-white font-bold text-sm">Get your shop ready — 5 quick steps</h3>
                 <p className="text-white/70 text-xs mt-0.5">{completedSteps}/5 complete</p>
               </div>
-              <button onClick={handleDismissOnboarding} className="w-7 h-7 rounded-lg flex items-center justify-center text-white/60 hover:text-white/80 hover:bg-white/10 transition-colors">
+              <button onClick={handleDismissOnboarding} className="min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center text-white/60 hover:text-white/80 hover:bg-white/10 transition-colors" aria-label="Dismiss">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -628,7 +609,7 @@ const HomeDashboard = () => {
             {/* Steps */}
             <Collapsible open={onboardingOpen} onOpenChange={setOnboardingOpen}>
               <CollapsibleTrigger asChild>
-                <button className="w-full px-5 py-2.5 flex items-center justify-between text-xs font-medium alytics-card-sub hover:bg-[hsla(217,91%,60%,0.04)] transition-colors">
+                <button className="w-full px-5 py-2.5 flex items-center justify-between text-xs font-medium alytics-card-sub hover:bg-white/5 transition-colors">
                   <span>{onboardingOpen ? "Hide steps" : "Show steps"}</span>
                   <ChevronDown className={`w-3.5 h-3.5 transition-transform ${onboardingOpen ? "rotate-180" : ""}`} />
                 </button>
@@ -717,7 +698,6 @@ const HomeDashboard = () => {
             pct={ghost.isIntro ? 12 : completedPct}
             subtext={periodLabel}
             sparklineData={ghost.isIntro ? GHOST_JOBS_SPARKLINE : jobsSparkline}
-            highlighted
           />
         </div>
         <div className={ghost.showShimmer ? "ghost-shimmer rounded-[14px]" : ""}>

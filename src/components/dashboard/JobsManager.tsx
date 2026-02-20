@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -8,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { DndContext, DragOverlay, useDraggable, useDroppable, PointerSensor, useSensor, useSensors, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core";
+import { DndContext, DragOverlay, useDraggable, useDroppable, PointerSensor, TouchSensor, useSensor, useSensors, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
 import {
@@ -125,10 +126,49 @@ const formatTimeShort = (time: string) => {
 
 /* ── Main component ──────────────────────────────────── */
 
+/* ── Light mode design tokens ────────────────────────── */
+
+const LIGHT = {
+  cardBg: "hsl(0, 0%, 100%)",
+  cardBorder: "hsl(214, 32%, 91%)",
+  columnBg: "hsl(210, 40%, 98%)",
+  columnBorder: "hsl(214, 32%, 91%)",
+  tabBarBg: "hsl(214, 20%, 94%)",
+  tabBarBorder: "hsl(214, 32%, 88%)",
+  tabInactive: "hsl(215, 14%, 51%)",
+  tabInactiveMuted: "hsl(215, 12%, 63%)",
+  surfaceBg: "hsl(220, 14%, 97%)",
+  sheetGradient: "linear-gradient(180deg, hsl(0,0%,100%) 0%, hsl(210,40%,98%) 100%)",
+  modalBg: "hsl(0, 0%, 100%)",
+  text: "hsl(218, 24%, 23%)",
+  textMuted: "hsl(215, 14%, 51%)",
+  textMuted2: "hsl(215, 16%, 43%)",
+} as const;
+
+const DARK = {
+  cardBg: "hsla(215, 50%, 8%, 0.5)",
+  cardBorder: "hsla(0, 0%, 100%, 0.08)",
+  columnBg: "hsla(215, 50%, 8%, 0.3)",
+  columnBorder: "hsla(0, 0%, 100%, 0.08)",
+  tabBarBg: "hsla(215, 50%, 8%, 0.5)",
+  tabBarBorder: "hsla(0, 0%, 100%, 0.08)",
+  tabInactive: "hsla(0, 0%, 100%, 0.4)",
+  tabInactiveMuted: "hsla(0, 0%, 100%, 0.25)",
+  surfaceBg: "hsl(215, 50%, 10%)",
+  sheetGradient: "linear-gradient(180deg, hsl(215, 50%, 10%) 0%, hsl(217, 33%, 12%) 100%)",
+  modalBg: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)",
+  text: "hsl(0, 0%, 100%)",
+  textMuted: "hsla(0, 0%, 100%, 0.6)",
+  textMuted2: "hsla(0, 0%, 100%, 0.7)",
+} as const;
+
 const JobsManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const outletCtx = useOutletContext<{ isDark?: boolean } | null>();
+  const isDark = outletCtx?.isDark ?? true;
+  const th = isDark ? DARK : LIGHT;
 
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -177,7 +217,10 @@ const JobsManager = () => {
 
   /* ── dnd-kit sensors & handlers ────────────────── */
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
+  );
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(String(event.active.id));
@@ -247,8 +290,8 @@ const JobsManager = () => {
     const style = {
       transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
       opacity: isDragging ? 0.4 : 1,
-      background: "hsla(215, 50%, 8%, 0.5)",
-      borderColor: "hsla(0, 0%, 100%, 0.08)",
+      background: th.cardBg,
+      borderColor: th.cardBorder,
     };
     return (
       <div
@@ -262,7 +305,7 @@ const JobsManager = () => {
         <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg" style={{ background: column.strip }} />
         <div className="pl-4 pr-3 py-3 space-y-2">
           <div className="flex items-start justify-between gap-2">
-            <span className="text-white font-semibold text-sm truncate">{booking.customer_name || "Unknown"}</span>
+            <span className="font-semibold text-sm truncate" style={{ color: th.text }}>{booking.customer_name || "Unknown"}</span>
             <span
               className="text-xs font-semibold px-2 py-0.5 rounded-full shrink-0"
               style={{ background: column.bg, color: column.color, border: `1px solid ${column.border}` }}
@@ -270,9 +313,9 @@ const JobsManager = () => {
               ${booking.service_price}
             </span>
           </div>
-          {vehicle && <p className="text-white/60 text-xs truncate">{vehicle}</p>}
-          <p className="text-white/70 text-xs">{booking.service_title}</p>
-          <div className="flex items-center gap-2 text-white/55 text-xs">
+          {vehicle && <p className="text-xs truncate" style={{ color: th.textMuted }}>{vehicle}</p>}
+          <p className="text-xs" style={{ color: th.textMuted2 }}>{booking.service_title}</p>
+          <div className="flex items-center gap-2 text-xs" style={{ color: th.textMuted }}>
             <CalendarIcon className="w-3 h-3" />
             {format(new Date(booking.booking_date + "T00:00"), "MMM d")} · {formatTimeShort(booking.booking_time)}
           </div>
@@ -286,12 +329,12 @@ const JobsManager = () => {
   const DroppableColumn = ({ col, children }: { col: Column; children: React.ReactNode }) => {
     const { setNodeRef, isOver } = useDroppable({ id: col.id });
     return (
-      <div
+          <div
         ref={setNodeRef}
-        className="flex flex-col rounded-[14px] border min-h-[400px] transition-colors duration-200"
+        className="flex flex-col rounded-[14px] border min-h-[400px] min-w-[240px] transition-colors duration-200"
         style={{
-          borderColor: isOver ? col.border : "hsla(0, 0%, 100%, 0.08)",
-          background: isOver ? col.bg : "hsla(215, 50%, 8%, 0.3)",
+          borderColor: isOver ? col.border : th.columnBorder,
+          background: isOver ? col.bg : th.columnBg,
         }}
       >
         <div
@@ -325,14 +368,17 @@ const JobsManager = () => {
   /* ── Render ──────────────────────────────────────── */
 
   return (
-    <div className="max-w-[1400px]">
+    <div className={`max-w-[1400px] ${isMobile ? "safe-area-pb" : ""}`}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="dash-page-title text-white">Jobs</h2>
-          <p className="text-white/40 text-sm mt-1">Manage your work orders</p>
+          <h2 className="dash-page-title" style={{ color: th.text }}>Jobs</h2>
+          <p className="text-sm mt-1" style={{ color: th.textMuted }}>Manage your work orders</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="dash-btn dash-btn-primary dash-btn-sm">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="dash-btn dash-btn-primary dash-btn-sm min-h-[44px] sm:min-h-0"
+        >
           <Plus className="w-4 h-4" /> New Job
         </button>
       </div>
@@ -340,11 +386,11 @@ const JobsManager = () => {
       {/* ── Kanban Board ─────────────────────────────── */}
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         {!isMobile ? (
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-auto pb-2 -mx-1 px-1">
             {COLUMNS.map(col => (
               <DroppableColumn key={col.id} col={col}>
                 {columnBookings[col.id].length === 0 && (
-                  <p className="text-white/40 text-xs text-center py-6">No jobs</p>
+                  <p className="text-xs text-center py-6" style={{ color: th.textMuted }}>No jobs</p>
                 )}
                 {columnBookings[col.id].map(b => (
                   <DraggableJobCard key={b.id} booking={b} column={col} />
@@ -353,50 +399,40 @@ const JobsManager = () => {
             ))}
           </div>
         ) : (
-          /* ── Mobile: single column + swipe ──────────── */
+          /* ── Mobile: tappable tabs + swipe ──────────── */
           <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-            <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={() => setMobileCol(prev => Math.max(0, prev - 1))}
-                disabled={mobileCol === 0}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white/60 hover:text-white disabled:opacity-20"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <div className="text-center">
-                <span className="font-semibold text-sm" style={{ color: COLUMNS[mobileCol].color }}>
-                  {COLUMNS[mobileCol].label}
-                </span>
-                <span
-                  className="ml-2 inline-flex min-w-[20px] h-[20px] px-1 rounded-md text-xs font-bold items-center justify-center"
-                  style={{ background: COLUMNS[mobileCol].bg, color: COLUMNS[mobileCol].color }}
+            <div
+              className="flex rounded-xl p-1.5 mb-4 gap-1"
+              style={{ background: th.tabBarBg, border: `1px solid ${th.tabBarBorder}` }}
+            >
+              {COLUMNS.map((col, i) => (
+                <button
+                  key={col.id}
+                  onClick={() => setMobileCol(i)}
+                  className="flex-1 flex flex-col items-center justify-center gap-0.5 min-h-[44px] py-2 rounded-lg transition-all duration-200"
+                  style={{
+                    background: i === mobileCol ? col.bg : "transparent",
+                    border: i === mobileCol ? `1px solid ${col.border}` : "1px solid transparent",
+                  }}
                 >
-                  {columnBookings[COLUMNS[mobileCol].id].length}
-                </span>
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  {COLUMNS.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setMobileCol(i)}
-                      className="w-2 h-2 rounded-full transition-all"
-                      style={{
-                        background: i === mobileCol ? COLUMNS[mobileCol].color : "hsla(0, 0%, 100%, 0.15)",
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-              <button
-                onClick={() => setMobileCol(prev => Math.min(COLUMNS.length - 1, prev + 1))}
-                disabled={mobileCol === COLUMNS.length - 1}
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white disabled:opacity-20"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
+                  <span
+                    className="text-[11px] font-semibold leading-tight"
+                    style={{ color: i === mobileCol ? col.color : th.tabInactive }}
+                  >
+                    {col.label}
+                  </span>
+                  <span
+                    className="text-[10px] font-bold leading-tight"
+                    style={{ color: i === mobileCol ? col.color : th.tabInactiveMuted }}
+                  >
+                    {columnBookings[col.id].length}
+                  </span>
+                </button>
+              ))}
             </div>
             <div className="space-y-3 min-h-[300px]">
               {columnBookings[COLUMNS[mobileCol].id].length === 0 && (
-                <p className="text-white/20 text-xs text-center py-10">No jobs</p>
+                <p className="text-xs text-center py-10" style={{ color: th.tabInactiveMuted }}>No jobs</p>
               )}
               {columnBookings[COLUMNS[mobileCol].id].map(b => (
                 <DraggableJobCard key={b.id} booking={b} column={COLUMNS[mobileCol]} />
@@ -410,12 +446,12 @@ const JobsManager = () => {
           {activeBooking && activeColumn && (
             <div
               className="relative rounded-lg border overflow-hidden shadow-2xl"
-              style={{ background: "hsla(215, 50%, 8%, 0.9)", borderColor: activeColumn.border, width: 280 }}
+              style={{ background: th.cardBg, borderColor: activeColumn.border, width: 280 }}
             >
               <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-lg" style={{ background: activeColumn.strip }} />
               <div className="pl-4 pr-3 py-3 space-y-2">
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-white font-semibold text-sm truncate">{activeBooking.customer_name || "Unknown"}</span>
+                  <span className="font-semibold text-sm truncate" style={{ color: th.text }}>{activeBooking.customer_name || "Unknown"}</span>
                   <span
                     className="text-xs font-semibold px-2 py-0.5 rounded-full shrink-0"
                     style={{ background: activeColumn.bg, color: activeColumn.color, border: `1px solid ${activeColumn.border}` }}
@@ -423,8 +459,8 @@ const JobsManager = () => {
                     ${activeBooking.service_price}
                   </span>
                 </div>
-                <p className="text-white/70 text-xs">{activeBooking.service_title}</p>
-                <div className="flex items-center gap-2 text-white/55 text-xs">
+                <p className="text-xs" style={{ color: th.textMuted2 }}>{activeBooking.service_title}</p>
+                <div className="flex items-center gap-2 text-xs" style={{ color: th.textMuted }}>
                   <CalendarIcon className="w-3 h-3" />
                   {format(new Date(activeBooking.booking_date + "T00:00"), "MMM d")} · {formatTimeShort(activeBooking.booking_time)}
                 </div>
@@ -440,7 +476,7 @@ const JobsManager = () => {
           side={isMobile ? "bottom" : "right"}
           className="p-0 border-none overflow-y-auto"
           style={{
-            background: "linear-gradient(180deg, hsl(215, 50%, 10%) 0%, hsl(217, 33%, 12%) 100%)",
+            background: th.sheetGradient,
             maxHeight: isMobile ? "85vh" : undefined,
             width: isMobile ? undefined : "420px",
           }}
@@ -458,7 +494,7 @@ const JobsManager = () => {
                 {/* Header */}
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-white font-bold text-lg">{selectedJob.customer_name || "Job"}</h3>
+                    <h3 className="font-bold text-lg" style={{ color: th.text }}>{selectedJob.customer_name || "Job"}</h3>
                     <span
                      className="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full"
                       style={{ background: col.bg, color: col.color, border: `1px solid ${col.border}` }}
@@ -466,24 +502,30 @@ const JobsManager = () => {
                       {col.label}
                     </span>
                   </div>
-                  <button onClick={() => setSelectedJob(null)} className="text-white/50 hover:text-white">
+                  <button
+                    onClick={() => setSelectedJob(null)}
+                    className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg transition-colors ${isDark ? "text-white/50 hover:text-white" : "text-[hsl(215,14%,51%)] hover:text-[hsl(218,24%,23%)]"}`}
+                    aria-label="Close"
+                  >
                     <X className="w-5 h-5" />
                   </button>
                 </div>
 
                 {/* Details */}
                 <div className="space-y-2">
-                  <DetailRow icon={<FileText className="w-3.5 h-3.5" />} label={selectedJob.service_title} />
-                  {vehicle && <DetailRow icon={<User className="w-3.5 h-3.5" />} label={vehicle} />}
+                  <DetailRow icon={<FileText className="w-3.5 h-3.5" />} label={selectedJob.service_title} textMuted={th.textMuted} textMuted2={th.textMuted2} />
+                  {vehicle && <DetailRow icon={<User className="w-3.5 h-3.5" />} label={vehicle} textMuted={th.textMuted} textMuted2={th.textMuted2} />}
                   <DetailRow
                     icon={<CalendarIcon className="w-3.5 h-3.5" />}
                     label={`${format(new Date(selectedJob.booking_date + "T00:00"), "MMM d, yyyy")} · ${formatTimeShort(selectedJob.booking_time)}`}
+                    textMuted={th.textMuted}
+                    textMuted2={th.textMuted2}
                   />
-                  <DetailRow icon={<Clock className="w-3.5 h-3.5" />} label={`${selectedJob.duration_minutes} min`} />
-                  <DetailRow icon={<DollarSign className="w-3.5 h-3.5" />} label={`$${selectedJob.service_price}`} />
-                  {selectedJob.customer_email && <DetailRow icon={<Mail className="w-3.5 h-3.5" />} label={selectedJob.customer_email} />}
-                  {selectedJob.customer_phone && <DetailRow icon={<Phone className="w-3.5 h-3.5" />} label={selectedJob.customer_phone} />}
-                  {selectedJob.notes && <DetailRow icon={<FileText className="w-3.5 h-3.5" />} label={selectedJob.notes} />}
+                  <DetailRow icon={<Clock className="w-3.5 h-3.5" />} label={`${selectedJob.duration_minutes} min`} textMuted={th.textMuted} textMuted2={th.textMuted2} />
+                  <DetailRow icon={<DollarSign className="w-3.5 h-3.5" />} label={`$${selectedJob.service_price}`} textMuted={th.textMuted} textMuted2={th.textMuted2} />
+                  {selectedJob.customer_email && <DetailRow icon={<Mail className="w-3.5 h-3.5" />} label={selectedJob.customer_email} textMuted={th.textMuted} textMuted2={th.textMuted2} />}
+                  {selectedJob.customer_phone && <DetailRow icon={<Phone className="w-3.5 h-3.5" />} label={selectedJob.customer_phone} textMuted={th.textMuted} textMuted2={th.textMuted2} />}
+                  {selectedJob.notes && <DetailRow icon={<FileText className="w-3.5 h-3.5" />} label={selectedJob.notes} textMuted={th.textMuted} textMuted2={th.textMuted2} />}
                 </div>
 
                 {/* Contact buttons */}
@@ -502,12 +544,12 @@ const JobsManager = () => {
 
                 {/* Checklist */}
                 <div>
-                  <h4 className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-3">Service Steps</h4>
+                  <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: th.textMuted2 }}>Service Steps</h4>
                   <div className="space-y-2">
                     {steps.map(step => {
                       const checked = checkedSteps.has(step);
                       return (
-                        <label key={step} className="flex items-center gap-3 cursor-pointer group">
+                        <label key={step} className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
                           <Checkbox
                             checked={checked}
                             onCheckedChange={() => {
@@ -518,7 +560,10 @@ const JobsManager = () => {
                               });
                             }}
                           />
-                          <span className={`text-sm transition-colors ${checked ? "text-white/30 line-through" : "text-white/70"}`}>
+                          <span
+                            className={`text-sm transition-colors ${checked ? "line-through" : ""}`}
+                            style={{ color: checked ? th.tabInactiveMuted : th.textMuted2 }}
+                          >
                             {step}
                           </span>
                         </label>
@@ -544,43 +589,58 @@ const JobsManager = () => {
 
       {/* ── Add Job Modal ──────────────────────────── */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="w-full max-w-md dash-card p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          style={{
+            paddingTop: "max(1rem, env(safe-area-inset-top))",
+            paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+            paddingLeft: "max(1rem, env(safe-area-inset-left))",
+            paddingRight: "max(1rem, env(safe-area-inset-right))",
+          }}
+        >
+          <div
+            className="w-full max-w-md dash-card p-6 space-y-4 overflow-y-auto"
+            style={{
+              background: th.modalBg,
+              maxHeight: "min(90vh, calc(100dvh - 2rem))",
+              border: `1px solid ${th.cardBorder}`,
+            }}
+          >
             <div className="flex items-center justify-between">
-              <h3 className="text-white font-semibold text-lg">New Job</h3>
-              <button onClick={() => setShowAddModal(false)} className="text-white/30 hover:text-white"><X className="w-5 h-5" /></button>
+              <h3 className="font-semibold text-lg" style={{ color: th.text }}>New Job</h3>
+              <button onClick={() => setShowAddModal(false)} className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg ${isDark ? "text-white/30 hover:text-white" : "text-[hsl(215,12%,63%)] hover:text-[hsl(218,24%,23%)]"}`} aria-label="Close"><X className="w-5 h-5" /></button>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className={`grid gap-3 ${isMobile ? "grid-cols-1" : "grid-cols-2"}`}>
               <div className="col-span-2 space-y-1">
-                <Label className="text-white/60 text-xs">Customer Name *</Label>
+                <Label className="text-xs" style={{ color: th.textMuted }}>Customer Name *</Label>
                 <Input value={newBooking.customer_name} onChange={e => setNewBooking({ ...newBooking, customer_name: e.target.value })} placeholder="John Doe" />
               </div>
               <div className="space-y-1">
-                <Label className="text-white/60 text-xs">Email</Label>
+                <Label className="text-xs" style={{ color: th.textMuted }}>Email</Label>
                 <Input value={newBooking.customer_email} onChange={e => setNewBooking({ ...newBooking, customer_email: e.target.value })} placeholder="john@email.com" />
               </div>
               <div className="space-y-1">
-                <Label className="text-white/60 text-xs">Phone</Label>
+                <Label className="text-xs" style={{ color: th.textMuted }}>Phone</Label>
                 <Input value={newBooking.customer_phone} onChange={e => setNewBooking({ ...newBooking, customer_phone: e.target.value })} placeholder="(555) 123-4567" />
               </div>
               <div className="space-y-1">
-                <Label className="text-white/60 text-xs">Service</Label>
+                <Label className="text-xs" style={{ color: th.textMuted }}>Service</Label>
                 <Input value={newBooking.service_title} onChange={e => setNewBooking({ ...newBooking, service_title: e.target.value })} placeholder="Full Detail" />
               </div>
               <div className="space-y-1">
-                <Label className="text-white/60 text-xs">Price ($)</Label>
+                <Label className="text-xs" style={{ color: th.textMuted }}>Price ($)</Label>
                 <Input type="number" value={newBooking.service_price} onChange={e => setNewBooking({ ...newBooking, service_price: parseFloat(e.target.value) || 0 })} />
               </div>
               <div className="space-y-1">
-                <Label className="text-white/60 text-xs">Date *</Label>
+                <Label className="text-xs" style={{ color: th.textMuted }}>Date *</Label>
                 <Input type="date" value={newBooking.booking_date} onChange={e => setNewBooking({ ...newBooking, booking_date: e.target.value })} />
               </div>
               <div className="space-y-1">
-                <Label className="text-white/60 text-xs">Time</Label>
+                <Label className="text-xs" style={{ color: th.textMuted }}>Time</Label>
                 <Input type="time" value={newBooking.booking_time} onChange={e => setNewBooking({ ...newBooking, booking_time: e.target.value })} />
               </div>
               <div className="col-span-2 space-y-1">
-                <Label className="text-white/60 text-xs">Notes</Label>
+                <Label className="text-xs" style={{ color: th.textMuted }}>Notes</Label>
                 <Input value={newBooking.notes} onChange={e => setNewBooking({ ...newBooking, notes: e.target.value })} placeholder="Any additional notes..." />
               </div>
             </div>
@@ -596,9 +656,9 @@ const JobsManager = () => {
 
 /* ── Detail row helper ─────────────────────────────── */
 
-const DetailRow = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
-  <div className="flex items-center gap-2.5 text-white/50 text-sm">
-    <span className="text-white/30">{icon}</span>
+const DetailRow = ({ icon, label, textMuted = "hsla(0,0%,100%,0.5)", textMuted2 = "hsla(0,0%,100%,0.3)" }: { icon: React.ReactNode; label: string; textMuted?: string; textMuted2?: string }) => (
+  <div className="flex items-center gap-2.5 text-sm" style={{ color: textMuted }}>
+    <span style={{ color: textMuted2 }}>{icon}</span>
     {label}
   </div>
 );

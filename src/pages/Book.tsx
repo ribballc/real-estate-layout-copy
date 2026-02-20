@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowRight, Loader2, CheckCircle2, Sparkles, Car, Paintbrush, Shield, Droplets } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
+import StickyBookingCTA from "@/components/StickyBookingCTA";
+import { useBooking } from "@/contexts/BookingContext";
 import type { BusinessData } from "@/hooks/useBusinessData";
 
 /* Map service keywords to icons */
@@ -25,22 +27,24 @@ const cardStyle: React.CSSProperties = {
 
 const Book = () => {
   const navigate = useNavigate();
-  const { slug } = useParams<{ slug: string }>();
-  const [selectedService, setSelectedService] = useState<string | null>(null);
-  const [selectedName, setSelectedName] = useState("");
+  const { slug, service, setService } = useBooking();
+  const [selectedService, setSelectedService] = useState<string | null>(service?.id ?? null);
   const [bounceKey, setBounceKey] = useState(0);
+
+  useEffect(() => {
+    if (service?.id && !selectedService) setSelectedService(service.id);
+  }, [service?.id, selectedService]);
 
   const handleSelect = (id: string, title: string, price: number) => {
     const wasNull = !selectedService;
     setSelectedService(id);
-    setSelectedName(title);
-    sessionStorage.setItem("booking_service", JSON.stringify({ id, title, price }));
+    setService({ id, title, price });
     if (wasNull) setBounceKey((k) => k + 1);
   };
 
   const handleContinue = () => {
     if (!selectedService) return;
-    navigate(`/site/${slug}/book/vehicle?service=${selectedService}&name=${encodeURIComponent(selectedName)}`);
+    navigate(`/site/${slug}/book/vehicle`);
   };
 
   return (
@@ -151,7 +155,7 @@ const Book = () => {
             </div>
 
             {/* CTA */}
-            <div className="mt-6">
+            <StickyBookingCTA>
               <button
                 key={bounceKey}
                 onClick={handleContinue}
@@ -180,7 +184,7 @@ const Book = () => {
                 Continue
                 <ArrowRight size={16} />
               </button>
-            </div>
+            </StickyBookingCTA>
 
             <style>{`
               @keyframes ctaBounce {

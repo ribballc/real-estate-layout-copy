@@ -14,6 +14,7 @@ import { UpgradeModalProvider } from "@/contexts/UpgradeModalContext";
 import { useSubscription } from "@/hooks/useSubscription";
 
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -70,6 +71,7 @@ const DashboardLayout = () => {
   const chatbotRef = useRef<SupportChatbotHandle>(null);
   const [trialActive, setTrialActive] = useState<boolean | null>(null);
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
+  const [onboardingIncomplete, setOnboardingIncomplete] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [firstName, setFirstName] = useState("");
   const subscription = useSubscription();
@@ -87,13 +89,19 @@ const DashboardLayout = () => {
     Promise.all([
       supabase.from("profiles").select("trial_active, onboarding_complete, business_name").eq("user_id", user.id).single(),
       supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle(),
-    ]).then(([profileRes, roleRes]) => {
+      supabase.from("services").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("photos").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("business_hours").select("id", { count: "exact", head: true }).eq("user_id", user.id),
+    ]).then(([profileRes, roleRes, servicesRes, photosRes, hoursRes]) => {
       setTrialActive(profileRes.data?.trial_active ?? false);
       setOnboardingComplete(profileRes.data?.onboarding_complete ?? false);
       setIsAdmin(!!roleRes.data);
-      // Extract first word of business name as a rough first name for welcome
       const bName = profileRes.data?.business_name || "";
       setFirstName(bName.split(" ")[0] || "");
+      const servicesCount = servicesRes.count ?? 0;
+      const photosCount = photosRes.count ?? 0;
+      const hasHours = (hoursRes.count ?? 0) > 0;
+      setOnboardingIncomplete(servicesCount === 0 || photosCount === 0 || !hasHours);
     });
   }, [user]);
 
@@ -129,7 +137,7 @@ const DashboardLayout = () => {
 
   // Set html background for overscroll matching
   useEffect(() => {
-    const color = dashboardTheme === "dark" ? "hsl(215, 50%, 10%)" : "hsl(210, 40%, 98%)";
+    const color = dashboardTheme === "dark" ? "hsl(215, 50%, 10%)" : "hsl(220, 14%, 97%)";
     document.documentElement.style.backgroundColor = color;
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute("content", color);
@@ -180,7 +188,7 @@ const DashboardLayout = () => {
     <>
       <SEOHead title={page.title} noIndex />
       <div
-        className={`min-h-screen flex w-full ${isDark ? "dashboard-dark" : "dashboard-light"} ${showEntryAnim ? "animate-dashboard-entry" : ""}`}
+        className={`min-h-screen flex w-full overflow-x-hidden ${isDark ? "dashboard-dark" : "dashboard-light"} ${showEntryAnim ? "animate-dashboard-entry" : ""}`}
         style={{
           background: isDark
             ? "linear-gradient(145deg, hsl(215 50% 9%) 0%, hsl(217 33% 13%) 60%, hsl(215 40% 11%) 100%)"
@@ -201,16 +209,16 @@ const DashboardLayout = () => {
             });
           }}
         />
-        <main className="flex-1 flex flex-col min-w-0">
+        <main className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
           {/* Header bar */}
           <header
-            className={`shrink-0 border-b ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}
+            className={`shrink-0 border-b ${isDark ? "border-white/10" : "border-[hsl(214,32%,91%)]"}`}
             style={{
               background: isDark ? "hsla(215,50%,10%,0.85)" : "hsla(0, 0%, 100%, 0.92)",
               backdropFilter: "blur(20px)",
               boxShadow: isDark
                 ? "0 1px 0 hsla(0,0%,100%,0.05)"
-                : "0 1px 0 hsl(214,20%,92%), 0 2px 12px hsla(215,25%,12%,0.04)",
+                : "0 1px 0 hsl(214,32%,91%), 0 2px 12px hsla(220,14%,50%,0.06)",
             }}
           >
             <div className="h-14 flex items-center gap-3 px-4 md:px-8">
@@ -219,12 +227,12 @@ const DashboardLayout = () => {
                 <img src={isDark ? darkerLogo : darkerLogoDark} alt="Darker" className="h-7" />
                 <div className="flex items-center gap-1">
                   <NotificationBell isDark={isDark} />
-                  <button onClick={() => setMobileOpen(true)} className={`w-10 h-10 rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`}><Menu className="w-5 h-5" /></button>
+                  <button onClick={() => setMobileOpen(true)} className={`min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,14%,51%)] hover:text-[hsl(218,24%,23%)] hover:bg-[hsl(210,40%,98%)]"}`} aria-label="Open menu"><Menu className="w-5 h-5" /></button>
                 </div>
               </div>
               {/* Desktop: standard header */}
               <div className="hidden md:flex items-center gap-3 flex-1 min-w-0">
-                <button onClick={() => setSidebarCollapsed(prev => { const next = !prev; localStorage.setItem("sidebar-collapsed", String(next)); return next; })} className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,16%,50%)] hover:text-[hsl(215,25%,12%)] hover:bg-[hsl(214,20%,96%)]"}`}><Menu className="w-4 h-4" /></button>
+                <button onClick={() => setSidebarCollapsed(prev => { const next = !prev; localStorage.setItem("sidebar-collapsed", String(next)); return next; })} className={`w-8 h-8 rounded-xl flex items-center justify-center transition-colors ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,14%,51%)] hover:text-[hsl(218,24%,23%)] hover:bg-[hsl(210,40%,98%)]"}`}><Menu className="w-4 h-4" /></button>
                 <div
                   className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
                   style={{
@@ -235,10 +243,10 @@ const DashboardLayout = () => {
                   <PageIcon className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />
                 </div>
                 <div className="min-w-0">
-                  <h1 className={`font-semibold text-sm truncate tracking-tight ${isDark ? "text-white" : "text-[hsl(215,25%,12%)]"}`}>
+                  <h1 className={`font-semibold text-sm truncate tracking-tight ${isDark ? "text-white" : "text-[hsl(218,24%,23%)]"}`}>
                     {page.title}
                   </h1>
-                  <p className={`text-xs ${isDark ? "text-white/40" : "text-[hsl(215,16%,55%)]"}`}>
+                  <p className={`text-xs ${isDark ? "text-white/40" : "text-[hsl(215,14%,51%)]"}`}>
                     {page.description}
                   </p>
                 </div>
@@ -249,12 +257,12 @@ const DashboardLayout = () => {
                 className={`hidden md:flex items-center gap-2 px-3 h-9 rounded-xl border text-sm transition-colors w-56 ${
                   isDark
                     ? "bg-white/5 border-white/10 text-white/40 hover:bg-white/[0.08] hover:text-white/60"
-                    : "bg-[hsl(210,40%,98%)] border-[hsl(214,20%,90%)] text-[hsl(215,16%,55%)] hover:bg-[hsl(214,20%,96%)]"
+                    : "bg-[hsl(210,40%,98%)] border-[hsl(214,32%,91%)] text-[hsl(215,14%,51%)] hover:bg-[hsl(210,40%,97%)]"
                 }`}
               >
                 <Search className="w-4 h-4 shrink-0" />
                 <span className="flex-1 text-left truncate">Search...</span>
-                <kbd className={`text-[10px] px-1.5 py-0.5 rounded font-mono shrink-0 ${isDark ? "bg-white/10 text-white/30" : "bg-[hsl(214,20%,92%)] text-[hsl(215,16%,50%)]"}`}>
+                <kbd className={`text-[10px] px-1.5 py-0.5 rounded font-mono shrink-0 ${isDark ? "bg-white/10 text-white/30" : "bg-[hsl(214,32%,93%)] text-[hsl(215,14%,51%)]"}`}>
                   ⌘K
                 </kbd>
               </button>
@@ -266,19 +274,21 @@ const DashboardLayout = () => {
           {subscription.isPastDue && <PastDueBanner isDark={isDark} />}
 
           <div className="dash-content">
-            <PageIntroBanner path={location.pathname} />
+            <PageIntroBanner path={location.pathname} isDark={isDark} hideWhenOnboardingIncomplete={onboardingIncomplete} />
             {isLocked ? (
               <LockedPageOverlay path={location.pathname} isDark={isDark} />
             ) : (
-              <PageTransition key={location.pathname}>
-                <Outlet context={{ chatbotRef, isDark }} />
-              </PageTransition>
+              <AnimatePresence mode="wait" initial={false}>
+                <PageTransition key={location.pathname}>
+                  <Outlet context={{ chatbotRef, isDark }} />
+                </PageTransition>
+              </AnimatePresence>
             )}
           </div>
 
           {/* Dashboard Footer — hidden on mobile where bottom nav shows */}
-          <footer className={`hidden md:block border-t px-4 md:px-8 py-4 shrink-0 ${isDark ? "border-white/10" : "border-[hsl(214,20%,92%)]"}`}>
-            <div className={`flex flex-col sm:flex-row items-center justify-between gap-2 text-xs ${isDark ? "text-white/30" : "text-[hsl(215,16%,60%)]"}`}>
+          <footer className={`hidden md:block border-t px-4 md:px-8 py-4 shrink-0 ${isDark ? "border-white/10" : "border-[hsl(214,32%,91%)]"}`}>
+            <div className={`flex flex-col sm:flex-row items-center justify-between gap-2 text-xs ${isDark ? "text-white/30" : "text-[hsl(215,14%,51%)]"}`}>
               <span>© {new Date().getFullYear()} Darker. All rights reserved.</span>
               <div className="flex items-center gap-4">
                 <a href="/terms" className="hover:opacity-70 transition-colors">Terms</a>
@@ -292,7 +302,7 @@ const DashboardLayout = () => {
           {/* Mobile Bottom Navigation */}
           <MobileBottomNav isDark={isDark} currentPath={location.pathname} onNavigate={navigate} />
 
-          <SupportChatbot ref={chatbotRef} />
+          <SupportChatbot ref={chatbotRef} isDark={isDark} />
         </main>
       </div>
 

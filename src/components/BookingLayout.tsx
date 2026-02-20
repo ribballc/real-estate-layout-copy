@@ -2,6 +2,7 @@ import { ReactNode, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import BookingSidebar from "@/components/BookingSidebar";
 import BookingBreadcrumb from "@/components/BookingBreadcrumb";
+import SEOHead from "@/components/SEOHead";
 import darkerLogo from "@/assets/darker-logo.png";
 import { ShieldCheck } from "lucide-react";
 import { useBusinessDataBySlug, type BusinessData } from "@/hooks/useBusinessData";
@@ -30,12 +31,22 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
   }, [location.pathname]);
 
   const businessName = businessData.profile?.business_name || "";
+  const ogImage = businessData.photos?.length
+    ? businessData.photos[0].url
+    : "https://darkerdigital.com/og-default.jpg";
+  const canonicalUrl = slug ? `https://darkerdigital.com/site/${slug}/book` : undefined;
 
   return (
     <div
       className="min-h-[100dvh] overflow-x-hidden"
       style={{ background: "hsl(210,40%,97%)" }}
     >
+      <SEOHead
+        title={businessName ? `Book with ${businessName}` : "Book Online"}
+        description={businessName ? `Schedule your detail appointment with ${businessName}. Book online 24/7, instant confirmation.` : "Book your detailing appointment online 24/7."}
+        ogImage={ogImage.startsWith("http") ? ogImage : `https://darkerdigital.com${ogImage.startsWith("/") ? "" : "/"}${ogImage}`}
+        canonicalUrl={canonicalUrl}
+      />
       {/* ── Booksy-style sticky header ── */}
       <header
         className="sticky top-0 z-30"

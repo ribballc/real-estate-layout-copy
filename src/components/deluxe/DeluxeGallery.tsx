@@ -63,7 +63,7 @@ const DeluxeGallery = ({ photos }: Props) => {
             {galleryItems.map((item, index) => (
               <div key={index} className="flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_25%] min-w-0 pl-4 first:pl-0">
                 <div className="group relative overflow-hidden rounded-xl aspect-square cursor-pointer">
-                  <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  <img src={item.image} alt={item.title || "Gallery photo"} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                     {item.category && <span className="text-primary text-sm font-semibold uppercase tracking-wider">{item.category}</span>}

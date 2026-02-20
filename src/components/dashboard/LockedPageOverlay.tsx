@@ -1,4 +1,4 @@
-import { Lock, ChevronRight } from "lucide-react";
+import { Rocket, ChevronRight, CheckCircle2 } from "lucide-react";
 import { useUpgradeModal } from "@/contexts/UpgradeModalContext";
 
 const PAGE_DESCRIPTIONS: Record<string, string> = {
@@ -11,6 +11,18 @@ const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/dashboard/testimonials": "automated review collection and management",
   "/dashboard/offer-lab": "proven revenue growth strategies and templates",
   "/dashboard/website": "your live website and booking page customization",
+};
+
+const PAGE_BENEFITS: Record<string, string[]> = {
+  "/dashboard/calendar": ["Online booking calendar", "Automated reminders", "Block off days"],
+  "/dashboard/jobs": ["Kanban job board", "Drag-and-drop workflow", "Service checklists"],
+  "/dashboard/estimates": ["Professional estimates", "One-tap send to customer", "Convert to booking"],
+  "/dashboard/customers": ["Full customer list", "Vehicle history", "Import from CSV"],
+  "/dashboard/services": ["Service menu builder", "Custom pricing", "Add-ons & packages"],
+  "/dashboard/photos": ["Before/after gallery", "Portfolio showcase", "Auto-display on site"],
+  "/dashboard/testimonials": ["Automated review requests", "Display on your site", "Build customer trust"],
+  "/dashboard/offer-lab": ["Revenue growth strategies", "Proven templates", "Seasonal promotions"],
+  "/dashboard/website": ["Live website editor", "Custom branding", "SEO optimization"],
 };
 
 function getPageName(path: string): string {
@@ -39,129 +51,94 @@ const LockedPageOverlay = ({ path, isDark }: LockedPageOverlayProps) => {
 
   const pageName = getPageName(path);
   const description = PAGE_DESCRIPTIONS[path] || "this feature";
+  const benefits = PAGE_BENEFITS[path] || ["Full access to this feature"];
 
   return (
-    <div className="relative">
-      {/* Blurred background content placeholder */}
+    <div
+      className="flex flex-col items-center justify-center text-center px-6 py-16 min-h-[60vh]"
+      style={{
+        background: isDark
+          ? "linear-gradient(180deg, hsl(215,50%,10%) 0%, hsl(217,33%,12%) 100%)"
+          : "hsl(210,40%,98%)",
+      }}
+    >
       <div
+        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
         style={{
-          opacity: 0.25,
-          filter: "blur(3px)",
-          pointerEvents: "none",
-          userSelect: "none",
+          background: "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,80%,55%) 100%)",
+          boxShadow: "0 8px 32px hsla(217,91%,60%,0.3)",
         }}
       >
-        {/* Skeleton content to fill space behind the overlay */}
-        <div className="space-y-4 p-4">
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="rounded-2xl h-32"
-              style={{
-                background: isDark
-                  ? "hsla(217,91%,60%,0.04)"
-                  : "hsla(215,20%,93%,0.5)",
-              }}
+        <Rocket className="w-7 h-7 text-white" strokeWidth={1.5} />
+      </div>
+
+      <h2
+        className="font-bold tracking-tight"
+        style={{
+          fontSize: "22px",
+          color: isDark ? "white" : "hsl(215,25%,12%)",
+        }}
+      >
+        Activate your trial to use {pageName}
+      </h2>
+
+      <p
+        className="mt-2 max-w-sm"
+        style={{
+          fontSize: "15px",
+          lineHeight: 1.6,
+          color: isDark ? "hsla(0,0%,100%,0.5)" : "hsl(215,16%,47%)",
+        }}
+      >
+        Start your free 14-day trial to unlock {description}.
+      </p>
+
+      <div className="mt-6 flex flex-col items-start gap-2.5">
+        {benefits.map((benefit) => (
+          <div key={benefit} className="flex items-center gap-2.5">
+            <CheckCircle2
+              className="w-4 h-4 flex-shrink-0"
+              style={{ color: "hsl(160,84%,39%)" }}
+              strokeWidth={2}
             />
-          ))}
-          <div className="grid grid-cols-2 gap-4">
-            {[...Array(4)].map((_, i) => (
-              <div
-                key={i}
-                className="rounded-2xl h-24"
-                style={{
-                  background: isDark
-                    ? "hsla(217,91%,60%,0.03)"
-                    : "hsla(215,20%,93%,0.4)",
-                }}
-              />
-            ))}
+            <span
+              className="text-sm"
+              style={{ color: isDark ? "hsla(0,0%,100%,0.65)" : "hsl(215,16%,35%)" }}
+            >
+              {benefit}
+            </span>
           </div>
-        </div>
+        ))}
       </div>
 
-      {/* Gradient overlay */}
-      <div
-        className="absolute inset-0 z-20 flex flex-col items-center justify-center text-center"
+      <button
+        onClick={openUpgradeModal}
+        className="mt-8 font-semibold inline-flex items-center gap-2 transition-all hover:brightness-110 hover:-translate-y-0.5 active:translate-y-0"
         style={{
-          padding: "40px 24px",
-          background: isDark
-            ? "linear-gradient(to bottom, transparent 0%, hsla(215,50%,10%,0.6) 30%, hsl(215,50%,10%) 70%)"
-            : "linear-gradient(to bottom, transparent 0%, hsla(210,40%,98%,0.6) 30%, hsl(210,40%,98%) 70%)",
+          height: "52px",
+          borderRadius: "12px",
+          padding: "0 32px",
+          background: "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,80%,55%) 100%)",
+          color: "white",
+          fontSize: "15px",
+          border: "none",
+          cursor: "pointer",
+          boxShadow: "0 8px 24px hsla(217,91%,60%,0.35)",
         }}
       >
-        {/* Lock icon with pulse */}
-        <div
-          className="w-16 h-16 rounded-full flex items-center justify-center"
-          style={{
-            background: "hsla(217,91%,60%,0.1)",
-            border: "1px solid hsla(217,91%,60%,0.25)",
-            animation: "lockedPulse 3s ease-in-out infinite",
-          }}
-        >
-          <Lock
-            className="w-7 h-7"
-            style={{ color: "hsl(217,91%,60%)" }}
-            strokeWidth={1.5}
-          />
-        </div>
+        Start Free Trial
+        <ChevronRight className="w-4 h-4" />
+      </button>
 
-        {/* Heading */}
-        <h2
-          className="mt-5 font-bold tracking-tight"
-          style={{
-            fontSize: "20px",
-            color: isDark ? "white" : "hsl(215,25%,12%)",
-          }}
-        >
-          {pageName} is locked
-        </h2>
-
-        {/* Subtext */}
-        <p
-          className="mt-2"
-          style={{
-            fontSize: "14px",
-            color: isDark ? "hsla(0,0%,100%,0.5)" : "hsl(215,16%,55%)",
-            maxWidth: "320px",
-          }}
-        >
-          Activate your 14-day free trial to unlock this page and start
-          using {description}.
-        </p>
-
-        {/* CTA */}
-        <button
-          onClick={openUpgradeModal}
-          className="mt-6 font-semibold inline-flex items-center gap-2 transition-all hover:brightness-110"
-          style={{
-            height: "48px",
-            borderRadius: "10px",
-            padding: "0 28px",
-            background:
-              "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,80%,55%) 100%)",
-            color: "white",
-            fontSize: "15px",
-            border: "none",
-            cursor: "pointer",
-            boxShadow: "0 4px 20px hsla(217,91%,60%,0.3)",
-          }}
-        >
-          Activate Free Trial
-          <ChevronRight className="w-4 h-4" />
-        </button>
-
-        {/* Fine print */}
-        <p
-          className="mt-2.5"
-          style={{
-            fontSize: "12px",
-            color: isDark ? "hsla(0,0%,100%,0.3)" : "hsl(215,16%,65%)",
-          }}
-        >
-          14-day free trial · Card required · Cancel anytime
-        </p>
-      </div>
+      <p
+        className="mt-3"
+        style={{
+          fontSize: "13px",
+          color: isDark ? "hsla(0,0%,100%,0.3)" : "hsl(215,16%,65%)",
+        }}
+      >
+        14 days free · Cancel anytime
+      </p>
     </div>
   );
 };

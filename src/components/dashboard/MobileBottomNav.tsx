@@ -26,7 +26,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
     <nav
       className={cn(
         "fixed bottom-0 left-0 right-0 z-50 md:hidden border-t safe-area-pb",
-        isDark ? "border-[hsla(215,25%,20%,1)]" : "border-[hsl(214,20%,90%)]"
+        isDark ? "border-[hsla(215,25%,20%,1)]" : "border-[hsl(214,32%,91%)]"
       )}
       style={{
         background: isDark ? "hsla(215,50%,10%,0.85)" : "hsla(0,0%,100%,0.85)",
@@ -50,7 +50,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                   ? "text-[hsl(217,91%,60%)]"
                   : isDark
                     ? "text-[hsla(0,0%,100%,0.45)]"
-                    : "text-[hsl(215,16%,50%)]"
+                    : "text-[hsl(215,14%,51%)]"
               )}
             >
               <motion.span

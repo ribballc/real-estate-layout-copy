@@ -114,7 +114,7 @@ const WeeklySummaryCard = () => {
           <CalendarDays className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} />
           <h3 className="text-sm font-semibold text-white">Last Week</h3>
         </div>
-        <button onClick={handleDismiss} className="w-6 h-6 rounded-lg flex items-center justify-center text-white/30 hover:text-white/70 hover:bg-white/5 transition-colors">
+        <button onClick={handleDismiss} className="min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center text-white/30 hover:text-white/70 hover:bg-white/5 transition-colors" aria-label="Dismiss">
           <X className="w-3.5 h-3.5" />
         </button>
       </div>

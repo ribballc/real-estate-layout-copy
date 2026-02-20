@@ -5,13 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CreditCard, XCircle, Trash2, AlertTriangle, Globe, Bell } from "lucide-react";
+import { Loader2, CreditCard, XCircle, Trash2, AlertTriangle, Globe, Bell, ListChecks, Sun, Moon, Bug } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import CancelFlowModal from "./CancelFlowModal";
 import { useAllFeatureFlags } from "@/hooks/useFeatureFlag";
 
 const AccountSettings = () => {
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
@@ -114,6 +116,44 @@ const AccountSettings = () => {
         <div>
           <Label className="text-sm font-medium text-white/75">Current Email</Label>
           <p className="text-white text-sm mt-1">{user?.email}</p>
+        </div>
+      </div>
+
+      {/* Preferences */}
+      <div className="dash-card space-y-3">
+        <h3 className="dash-card-title text-white">Preferences</h3>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            {(localStorage.getItem("dashboard-theme") || "light") === "dark"
+              ? <Moon className="w-4 h-4 text-white/50" strokeWidth={1.5} />
+              : <Sun className="w-4 h-4 text-white/50" strokeWidth={1.5} />}
+            <span className="text-sm text-white/70">Theme</span>
+          </div>
+          <button
+            onClick={() => {
+              const current = localStorage.getItem("dashboard-theme") || "light";
+              const next = current === "dark" ? "light" : "dark";
+              localStorage.setItem("dashboard-theme", next);
+              window.location.reload();
+            }}
+            className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+            style={{ background: "hsla(217,91%,60%,0.1)", color: "hsl(217,91%,60%)", border: "1px solid hsla(217,91%,60%,0.2)" }}
+          >
+            {(localStorage.getItem("dashboard-theme") || "light") === "dark" ? "Switch to Light" : "Switch to Dark"}
+          </button>
+        </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <Bug className="w-4 h-4 text-white/50" strokeWidth={1.5} />
+            <span className="text-sm text-white/70">Found a problem?</span>
+          </div>
+          <a
+            href="mailto:support@darkerdigital.com?subject=Bug Report"
+            className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+            style={{ background: "hsla(45,93%,47%,0.1)", color: "hsl(45,93%,47%)", border: "1px solid hsla(45,93%,47%,0.2)" }}
+          >
+            Report a Bug
+          </a>
         </div>
       </div>
 
@@ -248,6 +288,32 @@ const AccountSettings = () => {
             {savingPassword ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Updating…</> : "Update Password"}
           </Button>
         </form>
+      </div>
+
+      {/* Setup Guide */}
+      <div className="dash-card">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="dash-card-title text-white">Setup Guide</h3>
+            <p className="text-white/50 text-sm mt-1">Re-open the onboarding checklist to finish setting up your shop.</p>
+          </div>
+          <button
+            onClick={() => {
+              localStorage.removeItem("dashboard-onboarding-dismissed");
+              navigate("/dashboard");
+              window.location.reload();
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all hover:brightness-110"
+            style={{
+              background: "hsla(217,91%,60%,0.1)",
+              color: "hsl(217,91%,60%)",
+              border: "1px solid hsla(217,91%,60%,0.2)",
+            }}
+          >
+            <ListChecks className="w-4 h-4" />
+            Restart
+          </button>
+        </div>
       </div>
 
       {/* Delete Account */}

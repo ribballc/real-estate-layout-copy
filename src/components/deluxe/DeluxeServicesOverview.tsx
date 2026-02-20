@@ -17,9 +17,10 @@ const defaultImages = [service1, service2, service3, service4];
 
 interface Props {
   services?: BusinessService[];
+  slug?: string;
 }
 
-const DeluxeServicesOverview = ({ services }: Props) => {
+const DeluxeServicesOverview = ({ services, slug }: Props) => {
   const displayServices = services && services.length > 0
     ? services.slice(0, 4).map((s, i) => ({
         image: s.image_url || defaultImages[i % defaultImages.length],
@@ -40,14 +41,14 @@ const DeluxeServicesOverview = ({ services }: Props) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {displayServices.map((service, index) => (
             <div key={index} className="group relative overflow-hidden rounded-xl aspect-[3/4] cursor-pointer">
-              <img src={service.image} alt={service.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <img src={typeof service.image === "string" ? service.image : String(service.image)} alt={service.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">{service.title}</h3>
                 <p className="text-white/80 text-sm mb-4">{service.description}</p>
-                <a href="#packages">
+                <a href={slug ? `/site/${slug}/book` : "#packages"} className={slug ? "book-now-link" : undefined}>
                   <Button variant="gold" size="sm" className="group/btn">
-                    View Packages
+                    {slug ? "Book Now" : "View Packages"}
                     <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                   </Button>
                 </a>

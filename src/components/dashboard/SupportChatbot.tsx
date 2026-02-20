@@ -39,7 +39,11 @@ export interface SupportChatbotHandle {
   openWithPrompt: (prompt: string) => void;
 }
 
-const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
+interface SupportChatbotProps {
+  isDark?: boolean;
+}
+
+const SupportChatbot = forwardRef<SupportChatbotHandle, SupportChatbotProps>(({ isDark = true }, ref) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
@@ -227,19 +231,31 @@ const SupportChatbot = forwardRef<SupportChatbotHandle>((_, ref) => {
       {/* FAB */}
       <button
         onClick={() => setOpen(!open)}
-        className={`fixed bottom-[88px] md:bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-105 ${
-          open ? "bg-white/10 backdrop-blur-xl border border-white/20" : ""
+        className={`fixed bottom-[5rem] md:bottom-8 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-105 ${
+          open
+            ? isDark
+              ? "bg-white/10 backdrop-blur-xl border border-white/20"
+              : "bg-[hsl(0,0%,100%)] border border-[hsl(214,32%,88%)]"
+            : ""
         }`}
         style={
           !open
             ? {
-                background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 45%) 100%)",
-                boxShadow: "0 8px 32px hsla(217, 91%, 50%, 0.4)",
+                background: "hsl(217, 91%, 60%)",
+                boxShadow: "0 10px 26px hsla(217, 91%, 50%, 0.36)",
               }
             : {}
         }
       >
-        {open ? <X className="w-5 h-5 text-white" /> : <MessageCircle className="w-5 h-5 text-white" />}
+        {open ? (
+          <X className="w-5 h-5" style={{ color: isDark ? "#fff" : "hsl(218, 24%, 23%)" }} strokeWidth={2.2} />
+        ) : (
+          <MessageCircle
+            className="w-6 h-6"
+            style={{ color: "#fff", filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.28))" }}
+            strokeWidth={2.2}
+          />
+        )}
       </button>
 
       {/* Chat panel */}

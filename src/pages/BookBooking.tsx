@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ArrowRight, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
+import StickyBookingCTA from "@/components/StickyBookingCTA";
+import { useBooking } from "@/contexts/BookingContext";
 import { supabase } from "@/integrations/supabase/client";
 import { format, addDays, startOfTomorrow, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, getDay, isSameDay, isBefore, startOfToday } from "date-fns";
 
@@ -10,9 +12,11 @@ const TIME_SLOTS = ["8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1
 
 const BookBooking = () => {
   const navigate = useNavigate();
-  const { slug } = useParams<{ slug: string }>();
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const { slug, dateTime, setDateTime } = useBooking();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(() =>
+    dateTime?.date ? new Date(dateTime.date + "T12:00:00") : null
+  );
+  const [selectedTime, setSelectedTime] = useState<string | null>(() => dateTime?.time ?? null);
   const [blockedDates, setBlockedDates] = useState<Set<string>>(new Set());
   const [bookedTimes, setBookedTimes] = useState<Set<string>>(new Set());
   const [currentMonth, setCurrentMonth] = useState(startOfMonth(startOfTomorrow()));
@@ -54,7 +58,7 @@ const BookBooking = () => {
 
   const handleContinue = () => {
     if (selectedDate && selectedTime) {
-      sessionStorage.setItem("booking_datetime", JSON.stringify({ date: format(selectedDate, "yyyy-MM-dd"), time: selectedTime }));
+      setDateTime({ date: format(selectedDate, "yyyy-MM-dd"), time: selectedTime });
       navigate(`/site/${slug}/book/checkout`);
     }
   };
@@ -75,11 +79,11 @@ const BookBooking = () => {
         <div className="rounded-[14px] p-4 md:p-5 mb-5" style={{ background: "white", border: "1px solid hsl(210,40%,90%)", boxShadow: "0 2px 12px hsla(0,0%,0%,0.06)" }}>
           {/* Month nav */}
           <div className="flex items-center justify-between mb-4">
-            <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="flex items-center justify-center" style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid hsl(210,40%,88%)", background: "white" }}>
+            <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="public-touch-target flex items-center justify-center min-w-[44px] min-h-[44px]" style={{ width: 44, height: 44, borderRadius: 8, border: "1px solid hsl(210,40%,88%)", background: "white" }}>
               <ChevronLeft size={16} style={{ color: "hsl(217,91%,50%)" }} />
             </button>
             <span className="font-semibold" style={{ fontSize: 15, color: "hsl(222,47%,11%)" }}>{format(currentMonth, "MMMM yyyy")}</span>
-            <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="flex items-center justify-center" style={{ width: 32, height: 32, borderRadius: 8, border: "1px solid hsl(210,40%,88%)", background: "white" }}>
+            <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="public-touch-target flex items-center justify-center min-w-[44px] min-h-[44px]" style={{ width: 44, height: 44, borderRadius: 8, border: "1px solid hsl(210,40%,88%)", background: "white" }}>
               <ChevronRight size={16} style={{ color: "hsl(217,91%,50%)" }} />
             </button>
           </div>
@@ -105,7 +109,7 @@ const BookBooking = () => {
                   disabled={unavail}
                   className="flex items-center justify-center transition-all duration-150"
                   style={{
-                    width: "100%", aspectRatio: "1", minHeight: 40, borderRadius: 8, fontSize: 14,
+                    width: "100%", aspectRatio: "1", minHeight: 44, borderRadius: 8, fontSize: 14,
                     fontWeight: isT || isSel ? 700 : 400,
                     ...(unavail
                       ? { color: "hsl(215,16%,75%)", cursor: "not-allowed" }
@@ -162,17 +166,19 @@ const BookBooking = () => {
       )}
 
       {/* CTA */}
-      <div className="flex items-center gap-3 mt-2">
-        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 font-semibold" style={{ height: 50, padding: "0 20px", borderRadius: 12, fontSize: 14, border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}>
-          <ArrowLeft size={15} /> Back
-        </button>
-        <button onClick={handleContinue} disabled={!canContinue} className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 font-bold" style={{
-          height: 50, borderRadius: 12, fontSize: 15, padding: "0 24px",
-          ...(canContinue ? { background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)" } : { background: "hsl(210,40%,92%)", color: "hsl(215,16%,60%)", cursor: "not-allowed", opacity: 0.45 }),
-        }}>
-          Continue <ArrowRight size={15} />
-        </button>
-      </div>
+      <StickyBookingCTA>
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="public-touch-target inline-flex items-center gap-2 font-semibold min-w-[44px]" style={{ height: 50, padding: "0 20px", borderRadius: 12, fontSize: 14, border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}>
+            <ArrowLeft size={15} /> Back
+          </button>
+          <button onClick={handleContinue} disabled={!canContinue} className="public-touch-target flex-1 md:flex-none inline-flex items-center justify-center gap-2 font-bold min-h-[44px]" style={{
+            height: 50, borderRadius: 12, fontSize: 15, padding: "0 24px",
+            ...(canContinue ? { background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)" } : { background: "hsl(210,40%,92%)", color: "hsl(215,16%,60%)", cursor: "not-allowed", opacity: 0.45 }),
+          }}>
+            Continue <ArrowRight size={15} />
+          </button>
+        </div>
+      </StickyBookingCTA>
     </BookingLayout>
   );
 };

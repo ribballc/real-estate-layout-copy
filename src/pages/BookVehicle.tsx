@@ -1,8 +1,10 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from "react";
-import { useNavigate, useSearchParams, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Calendar, Car, Truck, ArrowLeft, ArrowRight, CheckCircle2, ChevronDown, Check } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
+import StickyBookingCTA from "@/components/StickyBookingCTA";
+import { useBooking } from "@/contexts/BookingContext";
 import { vehicleYears, vehicleMakes, vehicleModels } from "@/data/vehicles";
 
 const GhostCar = ({ className }: { className?: string }) => (
@@ -17,13 +19,10 @@ const GhostCar = ({ className }: { className?: string }) => (
 
 const BookVehicle = () => {
   const navigate = useNavigate();
-  const { slug } = useParams<{ slug: string }>();
-  const [searchParams] = useSearchParams();
-  const serviceId = searchParams.get("service") || "";
-  const serviceName = searchParams.get("name") || "";
-  const [year, setYear] = useState("");
-  const [make, setMake] = useState("");
-  const [model, setModel] = useState("");
+  const { slug, service, vehicle, setVehicle } = useBooking();
+  const [year, setYear] = useState(vehicle?.year ?? "");
+  const [make, setMake] = useState(vehicle?.make ?? "");
+  const [model, setModel] = useState(vehicle?.model ?? "");
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [showImage, setShowImage] = useState(false);
@@ -51,8 +50,8 @@ const BookVehicle = () => {
   }, []);
 
   const handleContinue = () => {
-    sessionStorage.setItem("booking_vehicle", JSON.stringify({ year, make, model }));
-    navigate(`/site/${slug}/book/options?service=${serviceId}&name=${encodeURIComponent(serviceName)}`);
+    setVehicle({ year, make, model });
+    navigate(`/site/${slug}/book/options`);
   };
 
   const selStyle = (on: boolean): React.CSSProperties => ({
@@ -143,19 +142,21 @@ const BookVehicle = () => {
       </div>
 
       {/* CTA */}
-      <div className="mt-6 flex items-center gap-3">
-        <button onClick={() => navigate(`/site/${slug}/book`)} className="inline-flex items-center gap-2 font-semibold" style={{ height: 50, padding: "0 20px", borderRadius: 12, fontSize: 14, border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}>
-          <ArrowLeft size={15} /> Back
-        </button>
-        <button onClick={handleContinue} disabled={!canContinue} className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 font-bold" style={{
-          height: 50, borderRadius: 12, fontSize: 15, padding: "0 24px",
-          ...(canContinue
-            ? { background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)" }
-            : { background: "hsl(210,40%,92%)", color: "hsl(215,16%,60%)", cursor: "not-allowed", opacity: 0.45 }),
-        }}>
-          Continue <ArrowRight size={15} />
-        </button>
-      </div>
+      <StickyBookingCTA>
+        <div className="flex items-center gap-3">
+          <button onClick={() => slug && navigate(`/site/${slug}/book`)} className="public-touch-target inline-flex items-center gap-2 font-semibold min-w-[44px]" style={{ height: 50, padding: "0 20px", borderRadius: 12, fontSize: 14, border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}>
+            <ArrowLeft size={15} /> Back
+          </button>
+          <button onClick={handleContinue} disabled={!canContinue} className="public-touch-target flex-1 md:flex-none inline-flex items-center justify-center gap-2 font-bold min-h-[44px]" style={{
+            height: 50, borderRadius: 12, fontSize: 15, padding: "0 24px",
+            ...(canContinue
+              ? { background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)" }
+              : { background: "hsl(210,40%,92%)", color: "hsl(215,16%,60%)", cursor: "not-allowed", opacity: 0.45 }),
+          }}>
+            Continue <ArrowRight size={15} />
+          </button>
+        </div>
+      </StickyBookingCTA>
     </BookingLayout>
   );
 };

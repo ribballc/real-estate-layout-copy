@@ -1,8 +1,10 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { CheckCircle2, Loader2, User, Mail, Phone, MessageSquare, Lock, ShieldCheck, Zap, Clock } from "lucide-react";
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { CheckCircle2, Loader2, User, Mail, Phone, MessageSquare, Lock, ShieldCheck, Zap, Clock, RefreshCw, Calendar } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
+import StickyBookingCTA from "@/components/StickyBookingCTA";
+import { useBooking } from "@/contexts/BookingContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,46 +20,46 @@ const inputStyle: React.CSSProperties = {
   transition: "border-color 0.15s, box-shadow 0.15s",
 };
 const onFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => { e.target.style.borderColor = "hsl(217,91%,55%)"; e.target.style.boxShadow = "0 0 0 3px hsla(217,91%,55%,0.12)"; };
-const onBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => { e.target.style.borderColor = "hsl(210,40%,86%)"; e.target.style.boxShadow = "none"; };
+const onBlurDefault = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => { e.target.style.borderColor = "hsl(210,40%,86%)"; e.target.style.boxShadow = "none"; };
 const labelStyle: React.CSSProperties = { display: "block", fontSize: 13, fontWeight: 600, color: "hsl(215,16%,55%)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 };
 const iconPos: React.CSSProperties = { position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "hsl(215,16%,60%)", pointerEvents: "none" };
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const BookCheckout = () => {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const { toast } = useToast();
+  const { service, vehicle, addons, dateTime, clearBooking } = useBooking();
   const [name, setName] = useState(""); const [email, setEmail] = useState(""); const [phone, setPhone] = useState(""); const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false); const [success, setSuccess] = useState(false);
-  const [service, setService] = useState<BookingService | null>(null);
-  const [vehicle, setVehicle] = useState<BookingVehicle | null>(null);
-  const [addons, setAddons] = useState<BookingAddon[]>([]);
-  const [dateTime, setDateTime] = useState<BookingDateTime | null>(null);
-
-  useEffect(() => {
-    try {
-      const s = sessionStorage.getItem("booking_service"); if (s) setService(JSON.parse(s));
-      const v = sessionStorage.getItem("booking_vehicle"); if (v) setVehicle(JSON.parse(v));
-      const a = sessionStorage.getItem("booking_addons"); if (a) setAddons(JSON.parse(a));
-      const dt = sessionStorage.getItem("booking_datetime"); if (dt) setDateTime(JSON.parse(dt));
-    } catch {}
-  }, []);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [touched, setTouched] = useState({ name: false, email: false, phone: false });
 
   const servicePrice = service?.price || 0;
   const addonsTotal = addons.reduce((s, a) => s + a.price, 0);
   const totalPrice = servicePrice + addonsTotal;
-  const canSubmit = name.trim() && email.trim() && phone.trim() && dateTime && service;
+
+  const nameValid = name.trim().length >= 2;
+  const emailValid = EMAIL_RE.test(email.trim());
+  const phoneValid = phone.replace(/\D/g, "").length >= 10;
+  const canSubmit = nameValid && emailValid && phoneValid && dateTime && service;
 
   const handleSubmit = async () => {
     if (!canSubmit || submitting) return;
+    setSubmitError(null);
     setSubmitting(true);
     try {
       const { error } = await supabase.functions.invoke("send-booking-notification", {
         body: { slug, customer_name: name.trim(), customer_email: email.trim(), customer_phone: phone.trim(), service_title: service!.title, service_price: totalPrice, booking_date: dateTime!.date, booking_time: dateTime!.time, vehicle: vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : "", addons: addons.map((a) => a.title), notes: notes.trim() },
       });
       if (error) throw error;
-      sessionStorage.removeItem("booking_service"); sessionStorage.removeItem("booking_vehicle"); sessionStorage.removeItem("booking_addons"); sessionStorage.removeItem("booking_datetime");
+      clearBooking();
       setSuccess(true);
     } catch (err: any) {
-      toast({ title: "Booking failed", description: err.message || "Something went wrong.", variant: "destructive" });
+      const msg = err?.message || "Something went wrong. Please try again.";
+      setSubmitError(msg);
+      toast({ title: "Booking failed", description: msg, variant: "destructive" });
     } finally { setSubmitting(false); }
   };
 
@@ -99,17 +101,32 @@ const BookCheckout = () => {
           </FadeIn>
 
           {[
-            { label: "Full Name", icon: User, val: name, set: setName, ph: "John Doe", type: "text", max: 100 },
-            { label: "Email", icon: Mail, val: email, set: setEmail, ph: "john@example.com", type: "email", max: 255 },
-            { label: "Phone", icon: Phone, val: phone, set: setPhone, ph: "(555) 123-4567", type: "tel", max: 20 },
-          ].map(({ label, icon: Ic, val, set, ph, type, max }, idx) => (
+            { label: "Full Name", icon: User, val: name, set: setName, ph: "John Doe", type: "text", max: 100, autoComplete: "name", valid: nameValid, touchedKey: "name" as const, errMsg: "Enter at least 2 characters" },
+            { label: "Email", icon: Mail, val: email, set: setEmail, ph: "john@example.com", type: "email", max: 255, autoComplete: "email", valid: emailValid, touchedKey: "email" as const, errMsg: "Enter a valid email" },
+            { label: "Phone", icon: Phone, val: phone, set: setPhone, ph: "(555) 123-4567", type: "tel", max: 20, autoComplete: "tel", valid: phoneValid, touchedKey: "phone" as const, errMsg: "Enter at least 10 digits" },
+          ].map(({ label, icon: Ic, val, set, ph, type, max, autoComplete, valid, touchedKey, errMsg }, idx) => (
             <FadeIn key={label} delay={80 + idx * 30}>
               <div className="space-y-1">
                 <label style={{ fontSize: 13, fontWeight: 500, color: "hsl(222,47%,11%)" }}>{label} *</label>
                 <div className="relative">
                   <Ic size={15} style={iconPos} />
-                  <input type={type} value={val} onChange={(e) => set(e.target.value)} placeholder={ph} maxLength={max} style={inputStyle} onFocus={onFocus} onBlur={onBlur} />
+                  <input
+                    type={type}
+                    value={val}
+                    onChange={(e) => { set(e.target.value); setSubmitError(null); }}
+                    onBlur={(e) => {
+                      setTouched((t) => ({ ...t, [touchedKey]: true }));
+                      if (valid) onBlurDefault(e);
+                      else { e.target.style.borderColor = "hsl(0,84%,60%)"; e.target.style.boxShadow = "0 0 0 1px hsl(0,84%,60%)"; }
+                    }}
+                    placeholder={ph}
+                    maxLength={max}
+                    autoComplete={autoComplete}
+                    style={{ ...inputStyle, ...(touched[touchedKey] && !valid ? { borderColor: "hsl(0,84%,60%)", boxShadow: "0 0 0 1px hsl(0,84%,60%)" } : {}) }}
+                    onFocus={onFocus}
+                  />
                 </div>
+                {touched[touchedKey] && !valid && <p style={{ fontSize: 12, color: "hsl(0,84%,50%)", marginTop: 4 }}>{errMsg}</p>}
               </div>
             </FadeIn>
           ))}
@@ -119,45 +136,62 @@ const BookCheckout = () => {
               <label style={{ fontSize: 13, fontWeight: 500, color: "hsl(222,47%,11%)" }}>Notes (optional)</label>
               <div className="relative">
                 <MessageSquare size={15} style={{ ...iconPos, top: 16, transform: "none" }} />
-                <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Special requests..." maxLength={1000} style={{ ...inputStyle, minHeight: 90, paddingTop: 12, resize: "vertical" }} onFocus={onFocus as any} onBlur={onBlur as any} />
+                <textarea value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Special requests..." maxLength={1000} style={{ ...inputStyle, minHeight: 90, paddingTop: 12, resize: "vertical" }} onFocus={onFocus as any} onBlur={onBlurDefault} />
               </div>
             </div>
           </FadeIn>
 
-          {/* Submit */}
-          <FadeIn delay={200}>
-            <button onClick={handleSubmit} disabled={!canSubmit || submitting}
-              className="w-full inline-flex items-center justify-center gap-2 font-bold transition-all duration-150"
-              style={{
-                height: 52, borderRadius: 12, fontSize: 16,
-                ...(canSubmit && !submitting
-                  ? { background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 20px hsla(217,91%,55%,0.4)" }
-                  : { background: "hsl(210,40%,92%)", color: "hsl(215,16%,60%)", cursor: "not-allowed", opacity: 0.45 }),
-              }}
-              onMouseEnter={(e) => { if (canSubmit && !submitting) e.currentTarget.style.filter = "brightness(1.06)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.filter = "none"; }}
-              onMouseDown={(e) => { if (canSubmit) e.currentTarget.style.transform = "scale(0.99)"; }}
-              onMouseUp={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
-            >
-              {submitting ? (<><Loader2 size={16} className="animate-spin" /> Processing...</>) : (<><Lock size={16} /> Confirm & Book</>)}
-            </button>
-          </FadeIn>
-
-          {/* Trust row */}
-          <FadeIn delay={220}>
-            <div className="flex items-center justify-center gap-5 pt-2 flex-wrap">
-              {[
-                { icon: ShieldCheck, text: "SSL Secured" },
-                { icon: Clock, text: "No-show protection" },
-                { icon: Zap, text: "Instant confirmation" },
-              ].map(({ icon: Ic, text }) => (
-                <div key={text} className="flex items-center gap-1.5">
-                  <Ic size={13} style={{ color: "hsl(142,71%,45%)" }} />
-                  <span style={{ fontSize: 12, color: "hsl(215,16%,55%)" }}>{text}</span>
+          {/* Submit error + retry */}
+          {submitError && (
+            <FadeIn delay={0}>
+              <div className="rounded-xl p-4 mb-4 flex flex-col gap-3" style={{ background: "hsl(0,84%,97%)", border: "1px solid hsl(0,84%,85%)" }}>
+                <p className="text-sm" style={{ color: "hsl(0,84%,35%)" }}>{submitError}</p>
+                <div className="flex flex-wrap gap-2">
+                  {(submitError.toLowerCase().includes("no longer available") || submitError.toLowerCase().includes("time slot")) && (
+                    <button onClick={() => { setSubmitError(null); navigate(`/site/${slug}/book/booking`); }} className="public-touch-target inline-flex items-center gap-2 font-semibold" style={{ minHeight: 44, padding: "0 16px", borderRadius: 8, fontSize: 13, background: "hsl(217,91%,55%)", color: "white" }}>
+                      <Calendar size={14} /> Choose different time
+                    </button>
+                  )}
+                  <button onClick={() => { setSubmitError(null); handleSubmit(); }} disabled={submitting} className="public-touch-target inline-flex items-center gap-2 font-semibold" style={{ minHeight: 44, padding: "0 16px", borderRadius: 8, fontSize: 13, background: "hsl(0,84%,45%)", color: "white" }}>
+                    <RefreshCw size={14} className={submitting ? "animate-spin" : ""} /> Retry
+                  </button>
                 </div>
-              ))}
-            </div>
-          </FadeIn>
+              </div>
+            </FadeIn>
+          )}
+
+          {/* Submit + Trust */}
+          <StickyBookingCTA>
+            <FadeIn delay={200}>
+              <button onClick={handleSubmit} disabled={!canSubmit || submitting}
+                className="public-touch-target w-full inline-flex items-center justify-center gap-2 font-bold transition-all duration-150 min-h-[52px]"
+                style={{
+                  height: 52, borderRadius: 12, fontSize: 16,
+                  ...(canSubmit && !submitting
+                    ? { background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 20px hsla(217,91%,55%,0.4)" }
+                    : { background: "hsl(210,40%,92%)", color: "hsl(215,16%,60%)", cursor: "not-allowed", opacity: 0.45 }),
+                }}
+                onMouseEnter={(e) => { if (canSubmit && !submitting) e.currentTarget.style.filter = "brightness(1.06)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.filter = "none"; }}
+                onMouseDown={(e) => { if (canSubmit) e.currentTarget.style.transform = "scale(0.99)"; }}
+                onMouseUp={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+              >
+                {submitting ? (<><Loader2 size={16} className="animate-spin" /> Processing...</>) : (<><Lock size={16} /> Confirm & Book</>)}
+              </button>
+              <div className="flex items-center justify-center gap-5 pt-3 flex-wrap">
+                {[
+                  { icon: ShieldCheck, text: "SSL Secured" },
+                  { icon: Clock, text: "No-show protection" },
+                  { icon: Zap, text: "Instant confirmation" },
+                ].map(({ icon: Ic, text }) => (
+                  <div key={text} className="flex items-center gap-1.5">
+                    <Ic size={13} style={{ color: "hsl(142,71%,45%)" }} />
+                    <span style={{ fontSize: 12, color: "hsl(215,16%,55%)" }}>{text}</span>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+          </StickyBookingCTA>
         </div>
 
         {/* Summary */}

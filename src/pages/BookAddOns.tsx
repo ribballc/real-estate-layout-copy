@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ArrowRight, ArrowLeft, Check, Plus } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
+import StickyBookingCTA from "@/components/StickyBookingCTA";
+import { useBooking } from "@/contexts/BookingContext";
 
 interface AddOn { id: string; title: string; description: string; price: number; popular?: boolean; }
 
@@ -41,18 +43,17 @@ const defaultAddOns: AddOn[] = addOnsByService.full;
 
 const BookAddOns = () => {
   const navigate = useNavigate();
-  const { slug } = useParams<{ slug: string }>();
-  const [searchParams] = useSearchParams();
-  const serviceId = searchParams.get("service") || "full";
+  const { slug, service, addons: contextAddons, setAddons } = useBooking();
+  const serviceId = service?.id ?? "full";
   const addOns = addOnsByService[serviceId] ?? defaultAddOns;
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Set<string>>(() => new Set(contextAddons.map((a) => a.id)));
 
   const toggle = (id: string) => setSelected((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const total = addOns.filter((a) => selected.has(a.id)).reduce((s, a) => s + a.price, 0);
 
   const handleContinue = () => {
     const sel = addOns.filter(a => selected.has(a.id)).map(a => ({ id: a.id, title: a.title, price: a.price }));
-    sessionStorage.setItem("booking_addons", JSON.stringify(sel));
+    setAddons(sel);
     navigate(`/site/${slug}/book/booking`);
   };
 
@@ -116,17 +117,19 @@ const BookAddOns = () => {
         </FadeIn>
       )}
 
-      <div className="flex items-center gap-3">
-        <button onClick={() => navigate(-1)} className="inline-flex items-center gap-2 font-semibold" style={{ height: 50, padding: "0 20px", borderRadius: 12, fontSize: 14, border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}>
-          <ArrowLeft size={15} /> Back
-        </button>
-        <button onClick={handleContinue} className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 font-bold" style={{
-          height: 50, borderRadius: 12, fontSize: 15, padding: "0 24px",
-          background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)",
-        }}>
-          {selected.size > 0 ? "Continue" : "Skip"} <ArrowRight size={15} />
-        </button>
-      </div>
+      <StickyBookingCTA>
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="public-touch-target inline-flex items-center gap-2 font-semibold min-w-[44px]" style={{ height: 50, padding: "0 20px", borderRadius: 12, fontSize: 14, border: "1px solid hsl(210,40%,90%)", color: "hsl(222,47%,11%)", background: "white" }}>
+            <ArrowLeft size={15} /> Back
+          </button>
+          <button onClick={handleContinue} className="public-touch-target flex-1 md:flex-none inline-flex items-center justify-center gap-2 font-bold min-h-[44px]" style={{
+            height: 50, borderRadius: 12, fontSize: 15, padding: "0 24px",
+            background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))", color: "white", boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)",
+          }}>
+            {selected.size > 0 ? "Continue" : "Skip"} <ArrowRight size={15} />
+          </button>
+        </div>
+      </StickyBookingCTA>
     </BookingLayout>
   );
 };

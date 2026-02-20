@@ -6,9 +6,10 @@ import type { BusinessProfile } from '@/hooks/useBusinessData';
 
 interface Props {
   profile?: BusinessProfile | null;
+  slug?: string;
 }
 
-const DeluxeNavbar = ({ profile }: Props) => {
+const DeluxeNavbar = ({ profile, slug }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -49,10 +50,17 @@ const DeluxeNavbar = ({ profile }: Props) => {
           </div>
 
           <div className="hidden lg:flex items-center gap-4">
+            {slug && (
+              <a href={`/site/${slug}/book`} className="book-now-link">
+                <Button variant="gold" size="lg">
+                  Book Now
+                </Button>
+              </a>
+            )}
             <a href={phoneHref}>
-              <Button variant="gold" size="lg">
+              <Button variant="goldOutline" size="lg">
                 <Phone className="w-4 h-4" />
-                Call Now
+                Call
               </Button>
             </a>
           </div>
@@ -70,11 +78,18 @@ const DeluxeNavbar = ({ profile }: Props) => {
                   {link.label}
                 </a>
               ))}
-              <div className="px-4 pt-4">
+              <div className="px-4 pt-4 space-y-2">
+                {slug && (
+                  <a href={`/site/${slug}/book`} className="book-now-link block" onClick={() => setIsOpen(false)}>
+                    <Button variant="gold" className="w-full">
+                      Book Now
+                    </Button>
+                  </a>
+                )}
                 <a href={phoneHref}>
-                  <Button variant="gold" className="w-full">
+                  <Button variant="goldOutline" className="w-full">
                     <Phone className="w-4 h-4" />
-                    Call Now
+                    Call
                   </Button>
                 </a>
               </div>

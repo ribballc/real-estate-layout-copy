@@ -35,16 +35,23 @@ function getFlag(path: string) {
 
 interface PageIntroBannerProps {
   path: string;
+  isDark?: boolean;
+  hideWhenOnboardingIncomplete?: boolean;
 }
 
-const PageIntroBanner = ({ path }: PageIntroBannerProps) => {
+const PageIntroBanner = ({ path, isDark: isDarkProp, hideWhenOnboardingIncomplete }: PageIntroBannerProps) => {
   const flag = getFlag(path);
   const copy = PAGE_INTRO_COPY[path];
-  const isDark = localStorage.getItem("dashboard-theme") !== "light";
+  const isDark = isDarkProp ?? (localStorage.getItem("dashboard-theme") !== "light");
 
-  const textColor = isDark ? "white" : "hsl(215, 25%, 20%)";
-  const dismissBase = isDark ? "hsla(0,0%,100%,0.3)" : "hsl(215, 16%, 55%)";
-  const dismissHover = isDark ? "white" : "hsl(215, 25%, 12%)";
+  if (path === "/dashboard" && hideWhenOnboardingIncomplete) return null;
+
+  const textColor = isDark ? "white" : "hsl(218, 24%, 23%)";
+  const dismissBase = isDark ? "hsla(0,0%,100%,0.3)" : "hsl(215, 14%, 51%)";
+  const dismissHover = isDark ? "white" : "hsl(218, 24%, 23%)";
+  const bgColor = isDark ? "hsla(217,91%,60%,0.08)" : "hsl(207, 60%, 96%)";
+  const borderColor = isDark ? "hsla(217,91%,60%,0.2)" : "hsl(214, 32%, 91%)";
+  const iconColor = isDark ? "hsl(217,91%,60%)" : "hsl(215, 14%, 51%)";
 
   const [visible, setVisible] = useState(false);
   const [dismissing, setDismissing] = useState(false);
@@ -72,8 +79,8 @@ const PageIntroBanner = ({ path }: PageIntroBannerProps) => {
     <div
       className={dismissing ? "intro-banner-out" : "intro-banner-in"}
       style={{
-        background: "hsla(217,91%,60%,0.08)",
-        border: "1px solid hsla(217,91%,60%,0.2)",
+        background: bgColor,
+        border: `1px solid ${borderColor}`,
         borderRadius: "10px",
         padding: "14px 18px",
         display: "flex",
@@ -84,7 +91,7 @@ const PageIntroBanner = ({ path }: PageIntroBannerProps) => {
     >
       <Info
         className="shrink-0"
-        style={{ width: "16px", height: "16px", color: "hsl(217,91%,60%)" }}
+        style={{ width: "16px", height: "16px", color: iconColor }}
         strokeWidth={1.5}
       />
       <span
@@ -95,7 +102,7 @@ const PageIntroBanner = ({ path }: PageIntroBannerProps) => {
       </span>
       <button
         onClick={handleDismiss}
-        className="shrink-0 w-6 h-6 rounded flex items-center justify-center transition-colors"
+        className="shrink-0 min-w-[44px] min-h-[44px] rounded flex items-center justify-center transition-colors"
         style={{ color: dismissBase }}
         onMouseEnter={(e) => (e.currentTarget.style.color = dismissHover)}
         onMouseLeave={(e) => (e.currentTarget.style.color = dismissBase)}
