@@ -20,7 +20,7 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
-  TrendingUp, Users, CalendarDays, Search, Menu, KanbanSquare, ClipboardList, FlaskConical,
+  TrendingUp, Users, CalendarDays, Search, Menu, KanbanSquare, ClipboardList, FlaskConical, HelpCircle,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
@@ -222,12 +222,25 @@ const DashboardLayout = () => {
             }}
           >
             <div className="h-14 flex items-center gap-3 px-4 md:px-8">
-              {/* Mobile: Logo left, hamburger right */}
+              {/* Mobile: Logo left, chat + avatar right */}
               <div className="flex md:hidden items-center justify-between w-full">
                 <img src={isDark ? darkerLogo : darkerLogoDark} alt="Darker" className="h-7" />
-                <div className="flex items-center gap-1">
-                  <NotificationBell isDark={isDark} />
-                  <button onClick={() => setMobileOpen(true)} className={`min-w-[44px] min-h-[44px] rounded-xl flex items-center justify-center ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,14%,51%)] hover:text-[hsl(218,24%,23%)] hover:bg-[hsl(210,40%,98%)]"}`} aria-label="Open menu"><Menu className="w-5 h-5" /></button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => chatbotRef.current?.openWithPrompt("")}
+                    className={`min-w-[40px] min-h-[40px] rounded-full flex items-center justify-center transition-colors ${isDark ? "text-white/50 hover:text-white/80" : "text-[hsl(215,14%,51%)] hover:text-[hsl(218,24%,23%)]"}`}
+                    aria-label="Open chat"
+                  >
+                    <HelpCircle className="w-[22px] h-[22px]" strokeWidth={1.5} />
+                  </button>
+                  {user?.email && (
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
+                      style={{ background: "hsla(217,91%,60%,0.15)", color: "hsl(217,91%,60%)" }}
+                    >
+                      {user.email.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </div>
               </div>
               {/* Desktop: standard header */}
@@ -300,7 +313,7 @@ const DashboardLayout = () => {
           </footer>
 
           {/* Mobile Bottom Navigation */}
-          <MobileBottomNav isDark={isDark} currentPath={location.pathname} onNavigate={navigate} onMenuOpen={() => setMobileOpen(true)} />
+          <MobileBottomNav isDark={isDark} currentPath={location.pathname} onNavigate={navigate} />
 
           <SupportChatbot ref={chatbotRef} isDark={isDark} />
         </main>
