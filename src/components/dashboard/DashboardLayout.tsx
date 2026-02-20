@@ -300,7 +300,7 @@ const DashboardLayout = () => {
           </footer>
 
           {/* Mobile Bottom Navigation */}
-          <MobileBottomNav isDark={isDark} currentPath={location.pathname} onNavigate={navigate} />
+          <MobileBottomNav isDark={isDark} currentPath={location.pathname} onNavigate={navigate} onMenuOpen={() => setMobileOpen(true)} />
 
           <SupportChatbot ref={chatbotRef} isDark={isDark} />
         </main>
