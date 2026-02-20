@@ -60,12 +60,13 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="fixed inset-0 z-[60] md:hidden"
+              className="fixed inset-0 z-[60] md:hidden cursor-pointer"
               style={{
                 background: isDark ? "hsla(215,50%,5%,0.5)" : "hsla(0,0%,0%,0.2)",
                 backdropFilter: "blur(8px)",
                 WebkitBackdropFilter: "blur(8px)",
               }}
+              onPointerDown={() => { setMenuOpen(false); setSearch(""); }}
               onClick={() => { setMenuOpen(false); setSearch(""); }}
             />
             <motion.div

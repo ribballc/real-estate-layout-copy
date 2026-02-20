@@ -227,9 +227,9 @@ const DashboardLayout = () => {
                 <img src={isDark ? darkerLogo : darkerLogoDark} alt="Darker" className="h-7" />
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => chatbotRef.current?.openWithPrompt("")}
+                    onClick={() => chatbotRef.current?.toggle()}
                     className={`min-w-[40px] min-h-[40px] rounded-full flex items-center justify-center transition-colors ${isDark ? "text-white/50 hover:text-white/80" : "text-[hsl(215,14%,51%)] hover:text-[hsl(218,24%,23%)]"}`}
-                    aria-label="Open chat"
+                    aria-label="Toggle chat"
                   >
                     <MessageCircle className="w-[22px] h-[22px]" strokeWidth={1.5} />
                   </button>
