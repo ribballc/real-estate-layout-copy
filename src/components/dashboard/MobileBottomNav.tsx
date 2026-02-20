@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   LayoutDashboard, CalendarDays, KanbanSquare, Users, Menu, X,
-  Wrench, Building2, Camera, Star, Settings, Globe, ClipboardList, FlaskConical,
+  Wrench, Building2, Camera, Star, Settings, Globe, ClipboardList, FlaskConical, Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -36,13 +36,18 @@ interface MobileBottomNavProps {
 
 const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   const isActive = (path: string) => {
     if (path === "/dashboard") return currentPath === "/dashboard";
     return currentPath.startsWith(path);
   };
 
-  const anyTabActive = TABS.some((t) => isActive(t.path));
+  const filtered = useMemo(() => {
+    if (!search.trim()) return MENU_ITEMS;
+    const q = search.toLowerCase();
+    return MENU_ITEMS.filter((i) => i.label.toLowerCase().includes(q));
+  }, [search]);
 
   return (
     <>
@@ -50,7 +55,6 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
       <AnimatePresence>
         {menuOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -58,29 +62,64 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
               transition={{ duration: 0.15 }}
               className="fixed inset-0 z-[60] md:hidden"
               style={{
-                background: isDark ? "hsla(215,50%,5%,0.6)" : "hsla(0,0%,0%,0.25)",
-                backdropFilter: "blur(6px)",
-                WebkitBackdropFilter: "blur(6px)",
+                background: isDark ? "hsla(215,50%,5%,0.5)" : "hsla(0,0%,0%,0.2)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
               }}
-              onClick={() => setMenuOpen(false)}
+              onClick={() => { setMenuOpen(false); setSearch(""); }}
             />
-            {/* Menu card */}
             <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              initial={{ opacity: 0, y: 24, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 28 }}
-              className="fixed bottom-24 left-4 right-4 z-[61] md:hidden rounded-2xl overflow-hidden shadow-2xl"
+              exit={{ opacity: 0, y: 24, scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 420, damping: 30 }}
+              className="fixed bottom-[88px] left-4 right-4 z-[61] md:hidden rounded-2xl overflow-hidden"
               style={{
-                background: isDark ? "hsl(215,40%,13%)" : "hsl(0,0%,100%)",
-                border: `1px solid ${isDark ? "hsla(215,25%,25%,0.8)" : "hsl(0,0%,92%)"}`,
+                background: isDark ? "hsla(215,40%,13%,0.95)" : "hsla(0,0%,100%,0.97)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                border: `1px solid ${isDark ? "hsla(215,25%,25%,0.6)" : "hsl(0,0%,91%)"}`,
                 boxShadow: isDark
-                  ? "0 20px 60px hsla(0,0%,0%,0.5), 0 0 0 1px hsla(215,25%,25%,0.3)"
-                  : "0 20px 60px hsla(220,14%,50%,0.15), 0 0 0 1px hsla(0,0%,0%,0.04)",
+                  ? "0 20px 60px hsla(0,0%,0%,0.5)"
+                  : "0 20px 60px hsla(220,14%,50%,0.15)",
               }}
             >
-              <div className="py-2 max-h-[60vh] overflow-y-auto">
-                {MENU_ITEMS.map((item) => {
+              {/* Search bar */}
+              <div className="px-4 pt-4 pb-2">
+                <div
+                  className="flex items-center gap-2.5 h-10 px-3 rounded-xl"
+                  style={{
+                    background: isDark ? "hsla(0,0%,100%,0.06)" : "hsl(0,0%,96%)",
+                    border: `1px solid ${isDark ? "hsla(0,0%,100%,0.08)" : "hsl(0,0%,90%)"}`,
+                  }}
+                >
+                  <Search
+                    className="w-4 h-4 flex-shrink-0"
+                    style={{ color: isDark ? "hsla(0,0%,100%,0.3)" : "hsl(215,14%,65%)" }}
+                    strokeWidth={1.8}
+                  />
+                  <input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search pages..."
+                    autoFocus
+                    className={cn(
+                      "flex-1 bg-transparent border-none outline-none text-sm placeholder:opacity-40",
+                      isDark ? "text-white placeholder:text-white" : "text-[hsl(218,24%,23%)] placeholder:text-[hsl(215,14%,51%)]"
+                    )}
+                    style={{ fontSize: 16 }}
+                  />
+                </div>
+              </div>
+
+              {/* Menu items */}
+              <div className="py-1 max-h-[50vh] overflow-y-auto">
+                {filtered.length === 0 && (
+                  <p className={cn("text-center py-6 text-sm", isDark ? "text-white/30" : "text-[hsl(215,14%,51%)]")}>
+                    No results
+                  </p>
+                )}
+                {filtered.map((item) => {
                   const active = isActive(item.path);
                   return (
                     <button
@@ -88,6 +127,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                       onClick={() => {
                         if (navigator.vibrate) navigator.vibrate(8);
                         setMenuOpen(false);
+                        setSearch("");
                         onNavigate(item.path);
                       }}
                       className={cn(
@@ -97,8 +137,8 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                             ? "bg-[hsla(217,91%,60%,0.1)]"
                             : "bg-[hsla(217,91%,60%,0.06)]"
                           : isDark
-                            ? "hover:bg-[hsla(0,0%,100%,0.04)]"
-                            : "hover:bg-[hsl(0,0%,97%)]"
+                            ? "active:bg-[hsla(0,0%,100%,0.06)]"
+                            : "active:bg-[hsl(0,0%,96%)]"
                       )}
                     >
                       <item.icon
@@ -134,23 +174,21 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
       </AnimatePresence>
 
       {/* Floating bottom nav bar */}
-      <nav
-        className="fixed bottom-4 left-4 right-4 z-50 md:hidden safe-area-pb"
-      >
-        <div
-          className="flex items-center rounded-2xl overflow-hidden"
-          style={{
-            background: isDark ? "hsla(215,40%,13%,0.92)" : "hsla(0,0%,100%,0.95)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            border: `1px solid ${isDark ? "hsla(215,25%,25%,0.6)" : "hsl(0,0%,90%)"}`,
-            boxShadow: isDark
-              ? "0 8px 32px hsla(0,0%,0%,0.4)"
-              : "0 8px 32px hsla(220,14%,50%,0.12)",
-          }}
-        >
-          {/* Icon tabs */}
-          <div className="flex items-center flex-1">
+      <nav className="fixed bottom-4 left-4 right-4 z-50 md:hidden safe-area-pb">
+        <div className="flex items-center gap-2">
+          {/* Icon tabs pill */}
+          <div
+            className="flex items-center flex-1 rounded-2xl overflow-hidden"
+            style={{
+              background: isDark ? "hsla(215,40%,13%,0.92)" : "hsla(0,0%,100%,0.95)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              border: `1px solid ${isDark ? "hsla(215,25%,25%,0.6)" : "hsl(0,0%,90%)"}`,
+              boxShadow: isDark
+                ? "0 8px 32px hsla(0,0%,0%,0.4)"
+                : "0 8px 32px hsla(220,14%,50%,0.12)",
+            }}
+          >
             {TABS.map((tab) => {
               const active = isActive(tab.path);
               return (
@@ -166,7 +204,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                   {active && (
                     <motion.span
                       layoutId="mobile-nav-indicator"
-                      className="absolute top-1 left-1/2 -translate-x-1/2 w-5 h-[3px] rounded-full"
+                      className="absolute top-1.5 left-1/2 -translate-x-1/2 w-5 h-[3px] rounded-full"
                       style={{ background: "hsl(217,91%,60%)" }}
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
@@ -187,34 +225,43 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
             })}
           </div>
 
-          {/* Separator */}
-          <div
-            className="w-px h-7 flex-shrink-0"
-            style={{
-              background: isDark ? "hsla(0,0%,100%,0.08)" : "hsl(0,0%,90%)",
-            }}
-          />
-
-          {/* Hamburger / close */}
+          {/* Separated hamburger button */}
           <button
             onClick={() => {
               if (navigator.vibrate) navigator.vibrate(8);
-              setMenuOpen((prev) => !prev);
+              setMenuOpen((prev) => {
+                if (prev) setSearch("");
+                return !prev;
+              });
             }}
-            className={cn(
-              "flex items-center justify-center min-h-[52px] px-4 transition-colors duration-150",
-              !anyTabActive && !menuOpen
-                ? "text-[hsl(217,91%,60%)]"
-                : isDark
-                  ? "text-[hsla(0,0%,100%,0.4)]"
-                  : "text-[hsl(215,14%,51%)]"
-            )}
+            className="flex items-center justify-center w-[52px] h-[52px] rounded-2xl flex-shrink-0 transition-colors duration-150"
+            style={{
+              background: isDark
+                ? menuOpen ? "hsla(217,91%,60%,0.15)" : "hsla(215,40%,13%,0.92)"
+                : menuOpen ? "hsla(217,91%,60%,0.08)" : "hsla(0,0%,100%,0.95)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              border: `1px solid ${isDark ? "hsla(215,25%,25%,0.6)" : "hsl(0,0%,90%)"}`,
+              boxShadow: isDark
+                ? "0 8px 32px hsla(0,0%,0%,0.4)"
+                : "0 8px 32px hsla(220,14%,50%,0.12)",
+            }}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
           >
             {menuOpen ? (
-              <X className="w-[22px] h-[22px]" strokeWidth={1.8} />
+              <X
+                className="w-[22px] h-[22px]"
+                style={{ color: "hsl(217,91%,60%)" }}
+                strokeWidth={2}
+              />
             ) : (
-              <Menu className="w-[22px] h-[22px]" strokeWidth={1.5} />
+              <Menu
+                className={cn(
+                  "w-[22px] h-[22px]",
+                  isDark ? "text-[hsla(0,0%,100%,0.5)]" : "text-[hsl(215,14%,41%)]"
+                )}
+                strokeWidth={1.8}
+              />
             )}
           </button>
         </div>

@@ -20,7 +20,7 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Building2, Share2, Wrench, PuzzleIcon, Clock, Camera, Star, Settings,
-  TrendingUp, Users, CalendarDays, Search, Menu, KanbanSquare, ClipboardList, FlaskConical, HelpCircle,
+  TrendingUp, Users, CalendarDays, Search, Menu, KanbanSquare, ClipboardList, FlaskConical, MessageCircle,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
@@ -231,7 +231,7 @@ const DashboardLayout = () => {
                     className={`min-w-[40px] min-h-[40px] rounded-full flex items-center justify-center transition-colors ${isDark ? "text-white/50 hover:text-white/80" : "text-[hsl(215,14%,51%)] hover:text-[hsl(218,24%,23%)]"}`}
                     aria-label="Open chat"
                   >
-                    <HelpCircle className="w-[22px] h-[22px]" strokeWidth={1.5} />
+                    <MessageCircle className="w-[22px] h-[22px]" strokeWidth={1.5} />
                   </button>
                   {user?.email && (
                     <div
