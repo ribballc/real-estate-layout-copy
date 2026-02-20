@@ -244,13 +244,6 @@ const PhoneDashboard = () => {
         ))}
       </div>
 
-      {/* Caption */}
-      <p
-        className="text-center text-xs sm:text-sm font-semibold tracking-[-0.2px]"
-        style={{ color: "hsla(0,0%,100%,0.6)" }}
-      >
-        Bookings while you sleep
-      </p>
     </div>
   );
 };

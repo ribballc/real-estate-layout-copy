@@ -9,7 +9,6 @@ import PricingSection from "@/components/PricingSection";
 import FaqSection from "@/components/FaqSection";
 import CtaFooter from "@/components/CtaFooter";
 import SurveyFunnelModal from "@/components/SurveyFunnelModal";
-import ScrollProgress from "@/components/ScrollProgress";
 import StickyNav from "@/components/StickyNav";
 
 import ExitIntentPopup from "@/components/ExitIntentPopup";
@@ -141,7 +140,6 @@ const Index = () => {
           structuredData={MARKETING_STRUCTURED_DATA}
         />
         <StickyNav />
-        <ScrollProgress />
         <SpringBanner />
         <HeroSection />
         <LogoTicker />
