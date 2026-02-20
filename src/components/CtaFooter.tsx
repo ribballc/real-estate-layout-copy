@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import darkerLogo from "@/assets/darker-logo.png";
+import mascotPenguin from "@/assets/mascot-penguin.png";
 
 const CtaFooter = () => {
   const navigate = useNavigate();
@@ -64,7 +65,15 @@ const CtaFooter = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 md:py-16 px-5 md:px-8" style={{ background: "hsl(222, 47%, 11%)" }}>
+      <footer className="relative py-12 md:py-16 px-5 md:px-8" style={{ background: "hsl(222, 47%, 11%)" }}>
+        {/* Mascot penguin – mobile only, bottom-left corner */}
+        <img
+          src={mascotPenguin}
+          alt=""
+          aria-hidden="true"
+          className="block md:hidden absolute bottom-0 left-0 pointer-events-none select-none"
+          style={{ width: 90, height: "auto", zIndex: 1 }}
+        />
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-center gap-6 mb-8 text-xs" style={{ color: "hsl(215, 20%, 65%)" }}>
             <span>🔒 Bank-level encryption</span>
