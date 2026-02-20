@@ -37,6 +37,7 @@ function getFilteredSuggestions(input: string): Suggestion[] {
 
 export interface SupportChatbotHandle {
   openWithPrompt: (prompt: string) => void;
+  toggle: () => void;
 }
 
 interface SupportChatbotProps {
@@ -61,6 +62,9 @@ const SupportChatbot = forwardRef<SupportChatbotHandle, SupportChatbotProps>(({ 
       setOpen(true);
       setInput(prompt);
       setTimeout(() => inputRef.current?.focus(), 100);
+    },
+    toggle: () => {
+      setOpen((prev) => !prev);
     },
   }));
 
@@ -261,10 +265,9 @@ const SupportChatbot = forwardRef<SupportChatbotHandle, SupportChatbotProps>(({ 
       {/* Chat panel */}
       {open && (
         <div
-          className="fixed md:bottom-24 md:right-6 md:w-[400px] md:max-w-[calc(100vw-48px)] md:rounded-2xl inset-x-0 top-[56px] bottom-0 md:inset-auto z-50 border-white/10 md:border md:shadow-2xl overflow-hidden flex flex-col"
+          className="fixed inset-x-0 top-[56px] bottom-0 md:top-auto md:bottom-24 md:right-6 md:left-auto md:w-[400px] md:max-w-[calc(100vw-48px)] md:rounded-2xl md:h-[min(560px,calc(100vh-140px))] z-[55] border-white/10 md:border md:shadow-2xl overflow-hidden flex flex-col"
           style={{
             background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)",
-            height: "min(560px, calc(100vh - 140px))",
           }}
         >
           {/* Header */}
@@ -289,6 +292,13 @@ const SupportChatbot = forwardRef<SupportChatbotHandle, SupportChatbotProps>(({ 
                 Clear
               </button>
             )}
+            <button
+              onClick={() => setOpen(false)}
+              className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-white/[0.06] transition-colors"
+              aria-label="Close chat"
+            >
+              <X className="w-5 h-5" strokeWidth={2} />
+            </button>
           </div>
 
           {/* Messages */}
