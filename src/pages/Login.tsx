@@ -43,8 +43,7 @@ const Login = () => {
         if (profile && !profile.onboarding_complete) {
           navigate("/onboarding");
         } else {
-          sessionStorage.setItem("loginTransition", profile?.business_name || "Your Dashboard");
-          navigate("/loading");
+          navigate("/dashboard");
         }
       }
     });
@@ -67,8 +66,7 @@ const Login = () => {
       if (profile && !profile.onboarding_complete) {
         navigate("/onboarding");
       } else {
-        sessionStorage.setItem("loginTransition", profile?.business_name || "Your Dashboard");
-        navigate("/loading");
+        navigate("/dashboard");
       }
     }
   };
