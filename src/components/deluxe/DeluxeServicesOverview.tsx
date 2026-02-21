@@ -55,7 +55,7 @@ const DeluxeServicesOverview = ({ services, slug }: Props) => {
           </div>
         </SiteFadeIn>
 
-        <div className="flex flex-wrap justify-center gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {displayServices.map((service, index) => {
             const Icon = serviceIcons[index % serviceIcons.length];
             const accent = serviceAccents[index % serviceAccents.length];
@@ -65,45 +65,54 @@ const DeluxeServicesOverview = ({ services, slug }: Props) => {
                   href={slug ? `/site/${slug}/book` : "#packages"}
                   className={slug ? "book-now-link group block" : "group block"}
                 >
-                  <div className="relative overflow-hidden rounded-2xl aspect-[3/4] w-[calc(50vw-24px)] sm:w-[240px] lg:w-[260px] border border-white/[0.06] hover:border-white/[0.14] transition-all duration-500"
+                  <div className="relative overflow-hidden rounded-2xl border border-white/[0.06] hover:border-white/[0.14] transition-all duration-500"
                     style={{
-                      boxShadow: '0 8px 32px -12px hsla(0,0%,0%,0.4)',
+                      background: 'hsl(0,0%,7%)',
+                      boxShadow: '0 8px 32px -12px hsla(0,0%,0%,0.5)',
                     }}
                   >
-                    <img
-                      src={typeof service.image === "string" ? service.image : String(service.image)}
-                      alt={service.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-                    {/* Icon badge */}
-                    <div className="absolute top-3 left-3 w-8 h-8 rounded-xl flex items-center justify-center"
-                      style={{
-                        background: `${accent}18`,
-                        backdropFilter: 'blur(12px)',
-                        border: `1px solid ${accent}25`,
-                      }}
-                    >
-                      <Icon className="w-3.5 h-3.5" style={{ color: accent }} />
+                    {/* Image */}
+                    <div className="relative w-full aspect-[16/9] overflow-hidden">
+                      <img
+                        src={typeof service.image === "string" ? service.image : String(service.image)}
+                        alt={service.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[hsl(0,0%,7%)] via-transparent to-transparent opacity-60" />
                     </div>
 
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <div className="flex items-end justify-between">
-                        <div className="min-w-0">
-                          <h3 className="text-white font-semibold text-base mb-0.5 truncate">{service.title}</h3>
-                          <p className="text-white/45 text-[12px] leading-relaxed line-clamp-1">{service.description}</p>
-                        </div>
-                        <div className="flex-shrink-0 ml-2 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300"
-                          style={{ background: `${accent}25` }}
+                    {/* Content */}
+                    <div className="p-5 sm:p-6">
+                      {/* Icon + Title row */}
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                          style={{
+                            background: `${accent}18`,
+                            border: `1px solid ${accent}25`,
+                          }}
                         >
-                          <ArrowRight className="w-3 h-3 text-white" />
+                          <Icon className="w-4 h-4" style={{ color: accent }} />
                         </div>
+                        <h3 className="text-white font-semibold text-lg truncate">{service.title}</h3>
                       </div>
-                      <div className="mt-2.5 pt-2.5 border-t border-white/[0.08]">
-                        <span className="text-white/50 text-[12px]">From </span>
-                        <span className="text-white font-semibold text-sm">${service.price}</span>
+
+                      {/* Description */}
+                      <p className="text-white/45 text-sm leading-relaxed line-clamp-3 mb-4" style={{ overflowWrap: 'break-word' }}>
+                        {service.description}
+                      </p>
+
+                      {/* Price */}
+                      <div className="flex items-center justify-between pt-3 border-t border-white/[0.06]">
+                        <div>
+                          <span className="text-white/40 text-xs">Starting at </span>
+                          <span className="text-white font-semibold text-base">${service.price}</span>
+                        </div>
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300"
+                          style={{ background: `${accent}20` }}
+                        >
+                          <ArrowRight className="w-3.5 h-3.5 text-white" />
+                        </div>
                       </div>
                     </div>
                   </div>
