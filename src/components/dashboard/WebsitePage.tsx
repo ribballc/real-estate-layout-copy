@@ -7,6 +7,7 @@ import { useSubscription } from "@/hooks/useSubscription";
 import {
   Lock, Copy, Check, Pencil, X, Globe, CalendarCheck,
   BarChart3, Palette, Search, Zap, Clock, Share2,
+  Maximize2, Minimize2,
 } from "lucide-react";
 import CopyButton from "@/components/CopyButton";
 import type { SupportChatbotHandle } from "./SupportChatbot";
@@ -65,6 +66,7 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
 
   // Welcome banner (session-only, first arrival from /generating)
   const [showWelcome, setShowWelcome] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const showTrialCTAs = !canAccessFeature();
 
@@ -330,12 +332,31 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
         </span>
         <CopyButton
           text={`https://${demoUrl}`}
-          label="Copy Link"
+          label="Copy"
           copiedLabel="Copied!"
           variant="inline"
-          className="ml-auto shrink-0 px-2.5 py-1 rounded-md"
+          className="shrink-0 px-2 py-1 rounded-md"
           toastMessage={{ title: "Link copied", description: `${demoUrl} is on your clipboard.` }}
         />
+        <div style={{ width: 1, height: 18, background: cardBorder, margin: "0 2px" }} />
+        <button
+          onClick={() => setIsFullscreen(true)}
+          className="shrink-0 inline-flex items-center gap-1.5 font-semibold transition-all duration-150 rounded-md px-2.5 py-1"
+          style={{
+            fontSize: 13,
+            color: isDark ? "hsla(0,0%,100%,0.7)" : "hsl(222,47%,11%)",
+            background: isDark ? "hsla(0,0%,100%,0.06)" : "hsl(210,40%,92%)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = isDark ? "hsla(0,0%,100%,0.12)" : "hsl(210,40%,88%)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = isDark ? "hsla(0,0%,100%,0.06)" : "hsl(210,40%,92%)";
+          }}
+        >
+          <Maximize2 className="w-3.5 h-3.5" />
+          View
+        </button>
       </div>
 
       {/* ═══ Iframe wrapper ═══ */}
@@ -553,6 +574,63 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
               : "Your site is live and accepting bookings"
             }
           </p>
+        </div>
+      )}
+
+      {/* ═══ Fullscreen Overlay ═══ */}
+      {isFullscreen && (
+        <div
+          className="fixed inset-0 z-[9999] flex flex-col"
+          style={{
+            background: isDark ? "hsl(215,50%,8%)" : "hsl(0,0%,100%)",
+          }}
+        >
+          {/* Fullscreen header */}
+          <div
+            className="flex items-center justify-between shrink-0"
+            style={{
+              height: 52,
+              padding: "0 16px",
+              borderBottom: `1px solid ${cardBorder}`,
+              background: isDark ? "hsl(215,50%,10%)" : "hsl(0,0%,98%)",
+            }}
+          >
+            <div className="flex items-center gap-2">
+              {activeTab === "website" ? <Globe className="w-4 h-4" style={{ color: mutedText }} /> : <CalendarCheck className="w-4 h-4" style={{ color: mutedText }} />}
+              <span className="font-medium truncate" style={{ fontSize: 14, color: headingText }}>
+                {activeTab === "website" ? "Website Preview" : "Booking Page Preview"}
+              </span>
+            </div>
+            <button
+              onClick={() => setIsFullscreen(false)}
+              className="inline-flex items-center gap-1.5 font-semibold transition-all duration-150 rounded-lg"
+              style={{
+                height: 36,
+                padding: "0 14px",
+                fontSize: 13,
+                color: isDark ? "white" : "hsl(222,47%,11%)",
+                background: isDark ? "hsla(0,0%,100%,0.1)" : "hsl(210,40%,92%)",
+                border: `1px solid ${cardBorder}`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = isDark ? "hsla(0,0%,100%,0.16)" : "hsl(210,40%,86%)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = isDark ? "hsla(0,0%,100%,0.1)" : "hsl(210,40%,92%)";
+              }}
+            >
+              <X className="w-4 h-4" />
+              Close
+            </button>
+          </div>
+
+          {/* Fullscreen iframe */}
+          <iframe
+            src={iframeSrc!}
+            title={activeTab === "booking" ? "Booking Page Fullscreen" : "Website Fullscreen"}
+            className="flex-1 w-full border-0"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+          />
         </div>
       )}
     </div>
