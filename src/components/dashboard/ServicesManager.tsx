@@ -3,24 +3,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import {
   Loader2,
   Plus,
-  Trash2,
-  Star,
   ChevronDown,
-  X,
-  ImageIcon,
-  Settings2,
   Camera,
-  Sparkles,
   PlusCircle,
   Pencil,
+  ImageIcon,
 } from "lucide-react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import EmptyState from "@/components/EmptyState";
 import {
   Dialog,
@@ -29,8 +21,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import ServiceOptionsManager from "./ServiceOptionsManager";
 import AddOnsManager from "./AddOnsManager";
+import ServiceFullEditor from "./ServiceFullEditor";
 import { ServiceListSkeleton } from "@/components/skeletons/ServiceCardSkeleton";
 
 interface Service {
@@ -61,8 +53,7 @@ const ServicesManager = () => {
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
-  const [optionsServiceId, setOptionsServiceId] = useState<string | null>(null);
-  const [optionsServiceName, setOptionsServiceName] = useState("");
+  const [editingService, setEditingService] = useState<Service | null>(null);
   const [showScanDialog, setShowScanDialog] = useState(false);
   const [showManualMenu, setShowManualMenu] = useState(false);
   const [scanning, setScanning] = useState(false);
@@ -213,16 +204,15 @@ const ServicesManager = () => {
   const existingTitles = new Set(services.map(s => s.title.toLowerCase()));
   const availablePresets = PRESET_SERVICES.filter(p => !existingTitles.has(p.title.toLowerCase()));
 
-  if (optionsServiceId) {
-    const svc = services.find((s) => s.id === optionsServiceId);
+  // Full-screen editor
+  if (editingService) {
     return (
-      <div className="max-w-2xl">
-        <ServiceOptionsManager
-          serviceId={optionsServiceId}
-          serviceName={svc?.title || optionsServiceName}
-          onClose={() => setOptionsServiceId(null)}
-        />
-      </div>
+      <ServiceFullEditor
+        service={editingService}
+        onClose={() => { setEditingService(null); fetchServices(); }}
+        onUpdate={updateService}
+        onDelete={deleteService}
+      />
     );
   }
 
@@ -344,91 +334,33 @@ const ServicesManager = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Service Cards — tap to edit */}
       <div className="space-y-3">
         {services.map((service) => (
-          <Collapsible key={service.id}>
-            <div className="dash-card !p-0 overflow-hidden">
-              <CollapsibleTrigger className="w-full flex items-center gap-3 px-4 py-3.5 text-left group">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <Pencil className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <span className="text-sm font-semibold text-foreground truncate block">{service.title}</span>
-                  <span className="text-xs text-muted-foreground">${service.price.toFixed(0)}{service.popular ? " · Popular" : ""}</span>
-                </div>
-                <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180 shrink-0" />
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <div className="px-4 pb-4 pt-1 space-y-3 border-t border-border">
-                  <div className="flex items-center gap-3">
-                    {service.image_url ? (
-                      <div className="relative group">
-                        <img src={service.image_url} alt={service.title} className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-border" />
-                        <button
-                          onClick={() => updateService(service.id, { image_url: null } as any)}
-                          className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ) : (
-                      <label className="w-14 h-14 rounded-lg border-2 border-dashed border-border flex items-center justify-center cursor-pointer hover:border-primary/40 transition-colors flex-shrink-0">
-                        <ImageIcon className="w-5 h-5 text-muted-foreground/40" />
-                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (!file || !user) return;
-                          const path = `${user.id}/services/${Date.now()}-${file.name}`;
-                          const { error } = await supabase.storage.from("user-photos").upload(path, file, { upsert: true });
-                          if (error) { toast({ title: "Upload failed", description: error.message, variant: "destructive" }); return; }
-                          const { data: { publicUrl } } = supabase.storage.from("user-photos").getPublicUrl(path);
-                          updateService(service.id, { image_url: publicUrl } as any);
-                        }} />
-                      </label>
-                    )}
-                    <Input
-                      value={service.title}
-                      onChange={(e) => updateService(service.id, { title: e.target.value })}
-                      className="h-11 text-foreground font-semibold"
-                    />
-                  </div>
-                  <Textarea
-                    value={service.description}
-                    onChange={(e) => updateService(service.id, { description: e.target.value })}
-                    placeholder="Description…"
-                    className="text-foreground placeholder:text-muted-foreground/40 min-h-[60px]"
-                  />
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <div className="flex items-center gap-2">
-                      <Label className="text-muted-foreground text-xs">Price $</Label>
-                      <Input
-                        type="number"
-                        value={service.price}
-                        onChange={(e) => updateService(service.id, { price: parseFloat(e.target.value) || 0 })}
-                        className="w-28 h-11 text-foreground"
-                      />
-                    </div>
-                    <button
-                      onClick={() => updateService(service.id, { popular: !service.popular })}
-                      className={`flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors ${service.popular ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground hover:text-foreground"}`}
-                    >
-                      <Star className="w-3 h-3" /> Popular
-                    </button>
-                    <button
-                      onClick={() => { setOptionsServiceId(service.id); setOptionsServiceName(service.title); }}
-                      className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-md transition-colors bg-muted text-muted-foreground hover:text-foreground"
-                    >
-                      <Settings2 className="w-3 h-3" /> Options
-                    </button>
-                  </div>
-                  <div className="flex justify-end pt-1">
-                    <button onClick={() => deleteService(service.id)} aria-label="Delete service" className="text-muted-foreground/30 hover:text-destructive transition-colors p-1 flex items-center gap-1 text-xs">
-                      <Trash2 className="w-3.5 h-3.5" /> Delete
-                    </button>
-                  </div>
-                </div>
-              </CollapsibleContent>
+          <button
+            key={service.id}
+            onClick={() => setEditingService(service)}
+            className="dash-card !p-0 overflow-hidden w-full text-left group"
+          >
+            <div className="flex items-center gap-3 px-4 py-3.5">
+              {/* Service photo or placeholder */}
+              <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-border bg-muted flex items-center justify-center">
+                {service.image_url ? (
+                  <img src={service.image_url} alt={service.title} className="w-full h-full object-cover" />
+                ) : (
+                  <ImageIcon className="w-4 h-4 text-muted-foreground/30" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-sm font-semibold text-foreground truncate block">{service.title}</span>
+                <span className="text-xs text-muted-foreground">${service.price.toFixed(0)}{service.popular ? " · Popular" : ""}</span>
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <Pencil className="w-4 h-4 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors" />
+                <ChevronDown className="w-4 h-4 text-muted-foreground/40 -rotate-90" />
+              </div>
             </div>
-          </Collapsible>
+          </button>
         ))}
         {services.length === 0 && (
           <EmptyState
