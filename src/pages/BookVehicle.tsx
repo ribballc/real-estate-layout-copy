@@ -40,11 +40,10 @@ const BookVehicle = () => {
 
   const handleImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
     const img = e.currentTarget;
-    try {
-      const canvas = document.createElement("canvas"); canvas.width = 1; canvas.height = 1;
-      const ctx = canvas.getContext("2d");
-      if (ctx) { ctx.drawImage(img, 0, 0, 1, 1); const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data; if (r > 150 && g < 100 && b < 100) { setImageError(true); return; } }
-    } catch {}
+    if (img.naturalWidth < 50 || img.naturalHeight < 50) {
+      setImageError(true);
+      return;
+    }
     setImageLoaded(true);
     requestAnimationFrame(() => setShowImage(true));
   }, []);
@@ -83,7 +82,7 @@ const BookVehicle = () => {
         <FadeIn delay={120} className="order-first md:order-last flex-1">
           <div className="flex flex-col items-center justify-center min-h-[240px] md:min-h-[300px] rounded-2xl" style={{ background: "white", border: "1px solid hsl(210,40%,90%)", boxShadow: "0 2px 12px hsla(0,0%,0%,0.06)" }}>
             {carImageUrl && !imageError && !imageLoaded && (
-              <img key={imageKey.current} src={carImageUrl} alt="" crossOrigin="anonymous" onLoad={handleImageLoad} onError={() => setImageError(true)} className="hidden" />
+              <img key={imageKey.current} src={carImageUrl} alt="" onLoad={handleImageLoad} onError={() => setImageError(true)} className="hidden" />
             )}
             {canContinue && imageLoaded && !imageError && showImage ? (
               <div className="flex flex-col items-center w-full p-4">
