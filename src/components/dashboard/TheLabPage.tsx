@@ -52,7 +52,7 @@ const TheLabPage = () => {
                     ? isDark ? "hsla(217,91%,60%,0.15)" : "white"
                     : "transparent",
                   color: isActive
-                    ? isDark ? "white" : "hsl(222,47%,11%)"
+                    ? isDark ? "hsl(217,91%,75%)" : "hsl(222,47%,11%)"
                     : isDark ? "hsla(0,0%,100%,0.5)" : "hsl(215,16%,47%)",
                   boxShadow: isActive
                     ? isDark ? "0 1px 4px hsla(0,0%,0%,0.3)" : "0 1px 4px hsla(0,0%,0%,0.1)"
