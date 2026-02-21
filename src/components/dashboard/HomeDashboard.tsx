@@ -56,11 +56,20 @@ function formatCurrency(val: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(val);
 }
 
+function formatCurrencyCompact(val: number) {
+  if (val >= 1000) {
+    const k = val / 1000;
+    return `$${k % 1 === 0 ? k.toFixed(0) : k.toFixed(1)}k`;
+  }
+  return formatCurrency(val);
+}
+
 /* ─── Metric Card ─── */
 interface MetricCardProps {
   icon: React.ReactNode;
   label: string;
   value: string;
+  mobileValue?: string;
   pct: number | null;
   subtext?: string;
   highlighted?: boolean;
@@ -81,7 +90,7 @@ const MiniSparkline = ({ data, color }: { data: number[]; color: string }) => {
   );
 };
 
-const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineData }: MetricCardProps) => {
+const MetricCard = ({ icon, label, value, mobileValue, pct, subtext, highlighted, sparklineData }: MetricCardProps) => {
   // Count-up animation for numeric values
   const numericValue = useMemo(() => {
     const cleaned = value.replace(/[^0-9.]/g, "");
@@ -131,7 +140,14 @@ const MetricCard = ({ icon, label, value, pct, subtext, highlighted, sparklineDa
       {/* Row 2: Big number + sparkline */}
       <div className="mt-auto pt-1 sm:pt-3 flex items-end justify-between gap-2">
         <div className="min-w-0">
-          <p className={`text-xl sm:text-[28px] font-bold leading-none tracking-tight tabular-nums ${highlighted ? "text-white" : "dash-card-value"}`}>{displayValue}</p>
+          <p className={`text-xl sm:text-[28px] font-bold leading-none tracking-tight tabular-nums ${highlighted ? "text-white" : "dash-card-value"}`}>
+            {mobileValue ? (
+              <>
+                <span className="sm:hidden">{mobileValue}</span>
+                <span className="hidden sm:inline">{displayValue}</span>
+              </>
+            ) : displayValue}
+          </p>
           {pct !== null && (
             <div className="flex items-center gap-1 sm:gap-1.5 mt-0.5 sm:mt-1">
               <span className={`inline-flex items-center gap-0.5 text-[10px] sm:text-xs font-semibold ${pct >= 0 ? "text-emerald-400" : "text-rose-400"}`}>
@@ -357,9 +373,9 @@ const HomeDashboard = () => {
       return isWithinInterval(d, { start: prev.start, end: prev.end });
     }), [bookings, prev]);
 
-  // KPI computations
-  const currentRevenue = currentBookings.reduce((sum, b) => sum + (Number(b.service_price) || 0), 0);
-  const previousRevenue = previousBookings.reduce((sum, b) => sum + (Number(b.service_price) || 0), 0);
+  // KPI computations — revenue = completed jobs only
+  const currentRevenue = currentBookings.filter(b => b.status === "completed").reduce((sum, b) => sum + (Number(b.service_price) || 0), 0);
+  const previousRevenue = previousBookings.filter(b => b.status === "completed").reduce((sum, b) => sum + (Number(b.service_price) || 0), 0);
   const revenuePct = pctChange(currentRevenue, previousRevenue);
 
   const currentCompleted = useMemo(() => currentBookings.filter(b => b.status === "completed"), [currentBookings]);
@@ -425,7 +441,7 @@ const HomeDashboard = () => {
   const revenueSparkline = useMemo(() => {
     return sparklineDays.map(day => {
       const dayStr = format(day, "yyyy-MM-dd");
-      return currentBookings.filter(b => b.booking_date === dayStr).reduce((s, b) => s + (Number(b.service_price) || 0), 0);
+      return currentBookings.filter(b => b.booking_date === dayStr && b.status === "completed").reduce((s, b) => s + (Number(b.service_price) || 0), 0);
     });
   }, [currentBookings, sparklineDays]);
 
@@ -685,6 +701,7 @@ const HomeDashboard = () => {
             icon={<DollarSign className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Revenue"
             value={ghost.isIntro ? formatCurrency(gRevenue) : (currentRevenue > 0 ? formatCurrency(currentRevenue) : "—")}
+            mobileValue={ghost.isIntro ? formatCurrencyCompact(gRevenue) : (currentRevenue > 0 ? formatCurrencyCompact(currentRevenue) : undefined)}
             pct={ghost.isIntro ? 18 : revenuePct}
             subtext={periodLabel}
             sparklineData={ghost.isIntro ? GHOST_SPARKLINE : revenueSparkline}
