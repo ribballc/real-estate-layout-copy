@@ -1,82 +1,53 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Check, ChevronRight, ArrowLeft } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
-
-const STEPS = [
-  {
-    id: 1,
-    title: "Tell Us About Your Shop",
-    subtitle: "Quick details so we can start building. Takes 60 seconds.",
-    fields: [
-      { name: "businessName", label: "Business Name", type: "text", placeholder: "e.g. Elite Mobile Detailing" },
-      { name: "industry", label: "What do you specialize in?", type: "select", placeholder: "Select your specialty", options: ["Mobile Detailing", "Paint Protection Film (PPF)", "Window Tinting", "Ceramic Coating", "Full Detail Shop", "Car Wash", "Other"] },
-    ],
-  },
-  {
-    id: 2,
-    title: "What's Eating Your Revenue?",
-    subtitle: "Pick the problems you want fixed.",
-    fields: [
-      { name: "goals", label: "Select All That Apply", type: "multiselect", options: ["No-shows & last-minute cancels", "Missing calls while I'm working", "No professional website", "Losing jobs to competitors online", "Too much texting back and forth", "Can't collect deposits upfront"] },
-    ],
-  },
-  {
-    id: 3,
-    title: "Where Should We Send Your New Site?",
-    subtitle: "Your preview will be ready in 48 hours.",
-    fields: [
-      { name: "fullName", label: "Your Name", type: "text", placeholder: "Jake Smith" },
-      { name: "phone", label: "Phone", type: "tel", placeholder: "(555) 123-4567" },
-      { name: "email", label: "Email", type: "email", placeholder: "you@business.com" },
-    ],
-  },
-];
+import { FUNNEL_STEPS } from "@/components/SurveyFunnelModal";
+import { trackEvent } from "@/lib/tracking";
 
 const FormFunnelSection = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<Record<string, string | string[]>>({});
   const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent<string>).detail;
-      if (detail) setFormData((prev) => ({ ...prev, email: detail }));
-    };
-    window.addEventListener("hero-email", handler);
-    return () => window.removeEventListener("hero-email", handler);
-  }, []);
-
-  const step = STEPS[currentStep];
+  const step = FUNNEL_STEPS[currentStep];
 
   const updateField = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const toggleGoal = (goal: string) => {
-    const current = (formData.goals as string[]) || [];
-    const updated = current.includes(goal)
-      ? current.filter((g) => g !== goal)
-      : [...current, goal];
-    setFormData((prev) => ({ ...prev, goals: updated }));
+  const toggleMultiselect = (fieldName: string, option: string) => {
+    const current = (formData[fieldName] as string[]) || [];
+    const updated = current.includes(option)
+      ? current.filter((g) => g !== option)
+      : [...current, option];
+    setFormData((prev) => ({ ...prev, [fieldName]: updated }));
   };
 
   const canProceed = () => {
-    if (currentStep === 0) {
-      return !!(formData.businessName as string)?.trim() && !!(formData.industry as string)?.trim();
-    }
-    if (currentStep === 1) {
-      return ((formData.goals as string[]) || []).length > 0;
-    }
-    if (currentStep === 2) {
-      return !!(formData.fullName as string)?.trim() && !!(formData.phone as string)?.trim() && !!(formData.email as string)?.trim();
-    }
+    if (currentStep === 0) return !!(formData.businessName as string)?.trim() && !!(formData.industry as string)?.trim();
+    if (currentStep === 1) return !!(formData.phone as string)?.trim();
+    if (currentStep === 2) return ((formData.services as string[]) || []).length > 0;
+    if (currentStep === 3) return ((formData.goals as string[]) || []).length > 0;
     return true;
   };
 
   const handleNext = () => {
-    if (currentStep < STEPS.length - 1) {
+    if (currentStep < FUNNEL_STEPS.length - 1) {
       setCurrentStep((s) => s + 1);
     } else {
+      trackEvent({
+        eventName: 'Lead',
+        type: 'track',
+        userData: {
+          phone: formData.phone as string,
+          email: (formData.email as string) || undefined,
+        },
+        customData: {
+          content_name: 'Inline Form Submission',
+          content_category: 'Lead',
+          funnel_source: 'inline',
+        },
+      });
       setSubmitted(true);
     }
   };
@@ -96,7 +67,11 @@ const FormFunnelSection = () => {
             You're All Set!
           </h2>
           <p className="text-lg text-primary-foreground/70 leading-relaxed">
-            We'll have your site ready to preview in 48 hours. Check your email at <span className="text-primary-foreground font-medium">{formData.email as string}</span> for next steps!
+            We'll have your site ready to preview in 48 hours. {formData.email ? (
+              <>Check your email at <span className="text-primary-foreground font-medium">{formData.email as string}</span> for next steps!</>
+            ) : (
+              <>We'll text you at <span className="text-primary-foreground font-medium">{formData.phone as string}</span>.</>
+            )}
           </p>
         </div>
       </section>
@@ -108,7 +83,7 @@ const FormFunnelSection = () => {
       <div className="max-w-2xl mx-auto">
         {/* Progress bar */}
         <div className="flex items-center gap-2 mb-12 max-w-xs mx-auto">
-          {STEPS.map((s, i) => (
+          {FUNNEL_STEPS.map((s, i) => (
             <div key={s.id} className="flex-1">
               <div
                 className={`h-2 rounded-full transition-colors duration-300 ${
@@ -122,7 +97,7 @@ const FormFunnelSection = () => {
         <FadeIn>
           <div className="text-center mb-10">
             <p className="text-sm font-medium text-accent uppercase tracking-wider mb-3">
-              {currentStep === 0 ? "est. takes <1 min" : `Step ${step.id} of ${STEPS.length}`}
+              {currentStep === 0 ? "est. takes <1 min" : `Step ${step.id} of ${FUNNEL_STEPS.length}`}
             </p>
             <h2 className="font-heading text-[26px] md:text-4xl font-extrabold tracking-tight leading-[1.15] text-primary-foreground mb-3">
               {step.title}
@@ -135,7 +110,7 @@ const FormFunnelSection = () => {
         <div className="space-y-5">
           {step.fields.map((field) => {
             if (field.type === "multiselect") {
-              const selected = (formData.goals as string[]) || [];
+              const selected = (formData[field.name] as string[]) || [];
               return (
                 <div key={field.name}>
                   <label className="block text-sm font-medium text-primary-foreground mb-3">{field.label}</label>
@@ -144,7 +119,7 @@ const FormFunnelSection = () => {
                       <button
                         key={option}
                         type="button"
-                        onClick={() => toggleGoal(option)}
+                        onClick={() => toggleMultiselect(field.name, option)}
                         className={`p-4 rounded-xl text-sm font-medium transition-all duration-200 text-left min-h-[48px] ${
                           selected.includes(option)
                             ? "bg-accent text-accent-foreground shadow-md"
@@ -216,7 +191,7 @@ const FormFunnelSection = () => {
                 : "bg-primary-foreground/20 text-primary-foreground/40 cursor-not-allowed"
             }`}
           >
-            {currentStep < STEPS.length - 1 ? (
+            {currentStep < FUNNEL_STEPS.length - 1 ? (
               <>
                 Continue
                 <ChevronRight className="w-5 h-5" />

@@ -2,12 +2,14 @@ import { createContext, useContext, useState, useCallback, ReactNode } from "rea
 
 type SurveyFunnelContextType = {
   isOpen: boolean;
-  openFunnel: () => void;
+  initialPhone: string;
+  openFunnel: (phone?: string) => void;
   closeFunnel: () => void;
 };
 
 const SurveyFunnelContext = createContext<SurveyFunnelContextType>({
   isOpen: false,
+  initialPhone: "",
   openFunnel: () => {},
   closeFunnel: () => {},
 });
@@ -16,11 +18,18 @@ export const useSurveyFunnel = () => useContext(SurveyFunnelContext);
 
 export const SurveyFunnelProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const openFunnel = useCallback(() => setIsOpen(true), []);
-  const closeFunnel = useCallback(() => setIsOpen(false), []);
+  const [initialPhone, setInitialPhone] = useState("");
+  const openFunnel = useCallback((phone?: string) => {
+    if (phone) setInitialPhone(phone);
+    setIsOpen(true);
+  }, []);
+  const closeFunnel = useCallback(() => {
+    setIsOpen(false);
+    setInitialPhone("");
+  }, []);
 
   return (
-    <SurveyFunnelContext.Provider value={{ isOpen, openFunnel, closeFunnel }}>
+    <SurveyFunnelContext.Provider value={{ isOpen, initialPhone, openFunnel, closeFunnel }}>
       {children}
     </SurveyFunnelContext.Provider>
   );

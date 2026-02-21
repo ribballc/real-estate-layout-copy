@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { Check, ChevronRight, ArrowLeft, X } from "lucide-react";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import { trackEvent } from "@/lib/tracking";
 
-const STEPS = [
+export const FUNNEL_STEPS = [
   {
     id: 1,
-    title: "Tell Us About Your Shop",
-    subtitle: "Quick details so we can start building. Takes 60 seconds.",
+    title: "What's your shop called?",
+    subtitle: "We'll use this to build your site.",
     fields: [
       { name: "businessName", label: "Business Name", type: "text", placeholder: "e.g. Elite Mobile Detailing" },
       { name: "industry", label: "What do you specialize in?", type: "select", placeholder: "Select your specialty", options: ["Mobile Detailing", "Paint Protection Film (PPF)", "Window Tinting", "Ceramic Coating", "Full Detail Shop", "Car Wash", "Other"] },
@@ -14,38 +15,44 @@ const STEPS = [
   },
   {
     id: 2,
-    title: "What's Eating Your Revenue?",
+    title: "How should we reach you?",
+    subtitle: "Your preview will be ready in 48 hours.",
+    fields: [
+      { name: "phone", label: "Phone", type: "tel", placeholder: "(555) 123-4567" },
+      { name: "fullName", label: "Your Name", type: "text", placeholder: "Jake Smith" },
+      { name: "email", label: "Email (optional)", type: "email", placeholder: "you@business.com" },
+    ],
+  },
+  {
+    id: 3,
+    title: "What services do you offer?",
+    subtitle: "Select all that apply so we can customize your site.",
+    fields: [
+      { name: "services", label: "Select All That Apply", type: "multiselect", options: ["Interior Detailing", "Exterior Detailing", "Full Detail", "Ceramic Coating", "Paint Protection Film (PPF)", "Window Tinting", "Paint Correction", "Car Wash", "Other"] },
+    ],
+  },
+  {
+    id: 4,
+    title: "What's costing you money right now?",
     subtitle: "Pick the problems you want fixed.",
     fields: [
       { name: "goals", label: "Select All That Apply", type: "multiselect", options: ["No-shows & last-minute cancels", "Missing calls while I'm working", "No professional website", "Losing jobs to competitors online", "Too much texting back and forth", "Can't collect deposits upfront"] },
     ],
   },
-  {
-    id: 3,
-    title: "Where Should We Send Your New Site?",
-    subtitle: "Your preview will be ready in 48 hours.",
-    fields: [
-      { name: "fullName", label: "Your Name", type: "text", placeholder: "Jake Smith" },
-      { name: "phone", label: "Phone", type: "tel", placeholder: "(555) 123-4567" },
-      { name: "email", label: "Email", type: "email", placeholder: "you@business.com" },
-    ],
-  },
 ];
 
 const SurveyFunnelModal = () => {
-  const { isOpen, closeFunnel } = useSurveyFunnel();
+  const { isOpen, initialPhone, closeFunnel } = useSurveyFunnel();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<Record<string, string | string[]>>({});
   const [submitted, setSubmitted] = useState(false);
 
+  // Pre-fill phone from hero step 0
   useEffect(() => {
-    const handler = (e: Event) => {
-      const detail = (e as CustomEvent<string>).detail;
-      if (detail) setFormData((prev) => ({ ...prev, email: detail }));
-    };
-    window.addEventListener("hero-email", handler);
-    return () => window.removeEventListener("hero-email", handler);
-  }, []);
+    if (isOpen && initialPhone) {
+      setFormData((prev) => ({ ...prev, phone: initialPhone }));
+    }
+  }, [isOpen, initialPhone]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -60,23 +67,55 @@ const SurveyFunnelModal = () => {
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
-  const step = STEPS[currentStep];
+  const step = FUNNEL_STEPS[currentStep];
   const updateField = (name: string, value: string) => setFormData((prev) => ({ ...prev, [name]: value }));
 
-  const toggleGoal = (goal: string) => {
-    const current = (formData.goals as string[]) || [];
-    const updated = current.includes(goal) ? current.filter((g) => g !== goal) : [...current, goal];
-    setFormData((prev) => ({ ...prev, goals: updated }));
+  const toggleMultiselect = (fieldName: string, option: string) => {
+    const current = (formData[fieldName] as string[]) || [];
+    const updated = current.includes(option) ? current.filter((g) => g !== option) : [...current, option];
+    setFormData((prev) => ({ ...prev, [fieldName]: updated }));
   };
 
   const canProceed = () => {
     if (currentStep === 0) return !!(formData.businessName as string)?.trim() && !!(formData.industry as string)?.trim();
-    if (currentStep === 1) return ((formData.goals as string[]) || []).length > 0;
-    if (currentStep === 2) return !!(formData.fullName as string)?.trim() && !!(formData.phone as string)?.trim() && !!(formData.email as string)?.trim();
+    if (currentStep === 1) return !!(formData.phone as string)?.trim();
+    if (currentStep === 2) return ((formData.services as string[]) || []).length > 0;
+    if (currentStep === 3) return ((formData.goals as string[]) || []).length > 0;
     return true;
   };
 
-  const handleNext = () => { if (currentStep < STEPS.length - 1) setCurrentStep((s) => s + 1); else setSubmitted(true); };
+  const handleNext = () => {
+    if (currentStep < FUNNEL_STEPS.length - 1) {
+      setCurrentStep((s) => s + 1);
+    } else {
+      // Track submission
+      trackEvent({
+        eventName: 'Lead',
+        type: 'track',
+        userData: {
+          phone: formData.phone as string,
+          email: (formData.email as string) || undefined,
+          firstName: (formData.fullName as string)?.split(' ')[0] || undefined,
+        },
+        customData: {
+          content_name: 'Hero Funnel Submission',
+          content_category: 'Lead',
+          funnel_source: 'hero',
+          business_name: formData.businessName,
+          industry: formData.industry,
+          services: formData.services,
+          goals: formData.goals,
+        },
+      });
+      trackEvent({
+        eventName: 'hero_multistep_submitted',
+        type: 'trackCustom',
+        customData: { business_name: formData.businessName },
+      });
+      setSubmitted(true);
+    }
+  };
+
   const handleBack = () => { if (currentStep > 0) setCurrentStep((s) => s - 1); };
 
   if (!isOpen) return null;
@@ -89,7 +128,7 @@ const SurveyFunnelModal = () => {
         <div className="sticky top-0 bg-card z-10 px-5 pt-5 pb-4 border-b border-border">
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm font-medium text-muted-foreground">
-              {submitted ? "Complete" : `Step ${currentStep + 1} of ${STEPS.length}`}
+              {submitted ? "Complete" : `Step ${currentStep + 1} of ${FUNNEL_STEPS.length}`}
             </span>
             <button onClick={closeFunnel} className="w-10 h-10 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors min-h-[48px] min-w-[48px]" aria-label="Close">
               <X className="w-5 h-5" />
@@ -97,7 +136,7 @@ const SurveyFunnelModal = () => {
           </div>
           {!submitted && (
             <div className="flex items-center gap-2">
-              {STEPS.map((s, i) => (
+              {FUNNEL_STEPS.map((s, i) => (
                 <div key={s.id} className="flex-1">
                   <div className={`h-1.5 rounded-full transition-colors duration-300 ${i <= currentStep ? "bg-accent" : "bg-border"}`} />
                 </div>
@@ -114,7 +153,11 @@ const SurveyFunnelModal = () => {
               </div>
               <h2 className="font-heading text-[22px] md:text-3xl font-bold text-foreground mb-3">You're All Set!</h2>
               <p className="text-muted-foreground leading-relaxed">
-                We'll have your site ready in 48 hours. Check your email at <span className="text-foreground font-medium">{formData.email as string}</span>.
+                We'll have your site ready in 48 hours. {formData.email ? (
+                  <>Check your email at <span className="text-foreground font-medium">{formData.email as string}</span>.</>
+                ) : (
+                  <>We'll text you at <span className="text-foreground font-medium">{formData.phone as string}</span>.</>
+                )}
               </p>
               <button onClick={closeFunnel} className="mt-8 inline-flex items-center justify-center px-8 py-3.5 bg-accent text-accent-foreground font-semibold rounded-xl shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 min-h-[48px]">
                 Done
@@ -130,13 +173,13 @@ const SurveyFunnelModal = () => {
               <div className="space-y-4">
                 {step.fields.map((field) => {
                   if (field.type === "multiselect") {
-                    const selected = (formData.goals as string[]) || [];
+                    const selected = (formData[field.name] as string[]) || [];
                     return (
                       <div key={field.name}>
                         <label className="block text-sm font-medium text-foreground mb-3">{field.label}</label>
                         <div className="grid grid-cols-1 gap-2.5">
                           {field.options!.map((option) => (
-                            <button key={option} type="button" onClick={() => toggleGoal(option)}
+                            <button key={option} type="button" onClick={() => toggleMultiselect(field.name, option)}
                               className={`p-4 rounded-xl text-sm font-medium transition-all duration-200 text-left min-h-[48px] flex items-center gap-3 ${
                                 selected.includes(option) ? "bg-accent/10 text-foreground border-2 border-accent" : "bg-muted text-foreground border-2 border-transparent hover:border-border"
                               }`}>
@@ -183,7 +226,7 @@ const SurveyFunnelModal = () => {
                   className={`ml-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-base font-semibold transition-all duration-200 shadow-md min-h-[48px] ${
                     canProceed() ? "bg-accent text-accent-foreground hover:shadow-lg active:scale-[0.98]" : "bg-muted text-muted-foreground cursor-not-allowed"
                   }`}>
-                  {currentStep < STEPS.length - 1 ? (<>Next <ChevronRight className="w-5 h-5" /></>) : "Build My Site Free →"}
+                  {currentStep < FUNNEL_STEPS.length - 1 ? (<>Next <ChevronRight className="w-5 h-5" /></>) : "Build My Site Free →"}
                 </button>
               </div>
             </>

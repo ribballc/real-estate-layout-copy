@@ -1,25 +1,61 @@
 import { useState, useCallback } from "react";
 import darkerLogo from "@/assets/darker-logo.png";
 import mascotPenguin from "@/assets/mascot-penguin.png";
-import { ChevronRight, ChevronDown, Zap, Shield, Mail } from "lucide-react";
+import { ChevronRight, ChevronDown, Zap, Shield, Phone } from "lucide-react";
 import { lazy, Suspense } from "react";
-import { useNavigate } from "react-router-dom";
+import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
+import { trackEvent } from "@/lib/tracking";
 const PhoneDashboard = lazy(() => import("@/components/PhoneDashboard"));
 
-const HeroSection = () => {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+/** Basic US phone validation — 10 digits after stripping formatting */
+function isValidPhone(raw: string): boolean {
+  const digits = raw.replace(/\D/g, "");
+  return digits.length >= 10 && digits.length <= 15;
+}
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+/** Auto-format as user types: (555) 123-4567 */
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, "").slice(0, 10);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+const HeroSection = () => {
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState("");
+  const [showPhoneInput, setShowPhoneInput] = useState(false);
+  const { openFunnel } = useSurveyFunnel();
+
+  const handleCtaClick = useCallback(() => {
+    trackEvent({
+      eventName: "hero_phone_step_started",
+      type: "trackCustom",
+      customData: { content_name: "Hero Phone Step" },
+    });
+    setShowPhoneInput(true);
+  }, []);
+
+  const handlePhoneSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const trimmed = email.trim();
-    if (!trimmed) { setError("Please enter your email"); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError("Please enter a valid email"); return; }
-    localStorage.setItem("leadData", JSON.stringify({ email: trimmed }));
-    navigate("/loading");
-  }, [email, navigate]);
+    const trimmed = phone.trim();
+    if (!trimmed) { setError("Please enter your phone number"); return; }
+    if (!isValidPhone(trimmed)) { setError("Please enter a valid phone number"); return; }
+
+    trackEvent({
+      eventName: "hero_phone_step_completed",
+      type: "trackCustom",
+      userData: { phone: trimmed },
+      customData: { content_name: "Hero Phone Captured" },
+    });
+
+    // Open the multi-step funnel modal with the phone pre-filled
+    openFunnel(trimmed);
+    // Reset local state for next time
+    setShowPhoneInput(false);
+    setPhone("");
+  }, [phone, openFunnel]);
 
   return (
     <section className="relative overflow-hidden" style={{
@@ -129,52 +165,86 @@ const HeroSection = () => {
               Get a professional website with 24/7 booking. Customers book themselves while you're in the field. Automated reminders, deposits, and a calendar that fills itself.
             </p>
 
-            {/* Email form + CTA */}
-            <form
-              onSubmit={handleSubmit}
-              className="mt-7 flex flex-col sm:flex-row gap-3 max-w-lg"
+            {/* Phone-first CTA */}
+            <div
+              className="mt-7 max-w-lg"
               style={{ opacity: 0, animation: 'heroFormIn 0.5s ease-out 1.2s forwards' }}
             >
-              <div className="relative w-full sm:flex-1" style={{ opacity: 0, animation: 'heroScaleIn 0.4s ease-out 1.2s forwards' }}>
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-foreground/30" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
-                  placeholder="Enter Your Email"
-                  maxLength={100}
-                  className="h-14 w-full rounded-xl pl-10 pr-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none transition-all duration-200"
+              {!showPhoneInput ? (
+                /* Initial CTA button */
+                <button
+                  type="button"
+                  onClick={handleCtaClick}
+                  data-event="hero_cta_click"
+                  className="group h-14 px-8 text-base font-semibold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
                   style={{
-                    background: 'hsla(0, 0%, 100%, 0.08)',
-                    border: '1px solid hsla(0, 0%, 100%, 0.15)',
+                    background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
+                    color: 'hsl(0 0% 100%)',
+                    boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
+                    opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
                   }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.border = '2px solid hsl(217 91% 60%)';
-                    e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.12)';
-                    e.currentTarget.style.boxShadow = '0 0 0 4px hsla(217, 91%, 60%, 0.1)';
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.border = '1px solid hsla(0, 0%, 100%, 0.15)';
-                    e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.08)';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }}
-                />
-              </div>
-              <button
-                type="submit"
-                className="group h-14 px-8 text-base font-semibold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
-                style={{
-                  background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
-                  color: 'hsl(0 0% 100%)',
-                  boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
-                  opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
-                }}
-              >
-                Launch My Site Free
-                <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
-            </form>
-            {error && <p className="text-sm text-destructive mt-2">{error}</p>}
+                >
+                  Get My Free Demo
+                  <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                </button>
+              ) : (
+                /* Inline phone capture */
+                <form
+                  onSubmit={handlePhoneSubmit}
+                  className="flex flex-col sm:flex-row gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                >
+                  <div className="relative w-full sm:flex-1">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-foreground/30" />
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(formatPhone(e.target.value));
+                        if (error) setError("");
+                      }}
+                      placeholder="(555) 123-4567"
+                      maxLength={16}
+                      autoFocus
+                      className="h-14 w-full rounded-xl pl-10 pr-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none transition-all duration-200"
+                      style={{
+                        background: 'hsla(0, 0%, 100%, 0.08)',
+                        border: '1px solid hsla(0, 0%, 100%, 0.15)',
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.border = '2px solid hsl(217 91% 60%)';
+                        e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.12)';
+                        e.currentTarget.style.boxShadow = '0 0 0 4px hsla(217, 91%, 60%, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.border = '1px solid hsla(0, 0%, 100%, 0.15)';
+                        e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.08)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="group h-14 px-8 text-base font-semibold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+                    style={{
+                      background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
+                      color: 'hsl(0 0% 100%)',
+                      boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
+                    }}
+                  >
+                    Get My Demo
+                    <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                  </button>
+                </form>
+              )}
+
+              {/* Label or error */}
+              {showPhoneInput && !error && (
+                <p className="text-xs mt-2 animate-in fade-in duration-200" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
+                  Enter your mobile number to start your free demo
+                </p>
+              )}
+              {error && <p className="text-sm text-destructive mt-2 animate-in fade-in duration-200">{error}</p>}
+            </div>
 
             {/* Trust line */}
             <div className="mt-5 flex items-center gap-4 flex-wrap" style={{
