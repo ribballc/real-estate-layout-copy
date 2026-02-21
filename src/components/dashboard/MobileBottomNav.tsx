@@ -72,7 +72,6 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                 backdropFilter: "blur(8px)",
                 WebkitBackdropFilter: "blur(8px)",
               }}
-              onPointerDown={() => { setMenuOpen(false); setSearch(""); }}
               onClick={() => { setMenuOpen(false); setSearch(""); }}
             />
             <motion.div
@@ -131,11 +130,11 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                   return (
                     <button
                       key={item.path}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         if (navigator.vibrate) navigator.vibrate(8);
-                        setMenuOpen(false);
-                        setSearch("");
                         onNavigate(item.path);
+                        // Menu closes via useEffect on currentPath change
                       }}
                       className={cn(
                         "flex items-center gap-3 w-full px-5 py-3 text-left transition-colors duration-100",
