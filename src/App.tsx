@@ -46,6 +46,7 @@ const CalendarManager = React.lazy(() => import("./components/dashboard/Calendar
 const JobsManager = React.lazy(() => import("./components/dashboard/JobsManager"));
 const EstimatesManager = React.lazy(() => import("./components/dashboard/EstimatesManager"));
 const AccountSettings = React.lazy(() => import("./components/dashboard/AccountSettings"));
+const BillingPage = React.lazy(() => import("./components/dashboard/BillingPage"));
 const CustomersManager = React.lazy(() => import("./components/dashboard/CustomersManager"));
 const TheLabPage = React.lazy(() => import("./components/dashboard/TheLabPage"));
 const WebsitePage = React.lazy(() => import("./components/dashboard/WebsitePage"));
@@ -135,6 +136,7 @@ const App = () => (
                   <Route path="testimonials" element={<TestimonialsManager />} />
                   <Route path="the-lab" element={<TheLabPage />} />
                   <Route path="account" element={<AccountSettings />} />
+                  <Route path="billing" element={<BillingPage />} />
                   <Route path="copy" element={<WebsiteCopyEditor />} />
                 </Route>
                 <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
