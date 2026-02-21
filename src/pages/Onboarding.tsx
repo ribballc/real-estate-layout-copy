@@ -78,8 +78,7 @@ const Onboarding = () => {
   const [step, setStep] = useState(1);
   const [shopName, setShopName] = useState("");
   const [phone, setPhone] = useState("");
-  const [primaryService, setPrimaryService] = useState("");
-  const [secondaryServices, setSecondaryServices] = useState<string[]>([]);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [showMore, setShowMore] = useState(false);
   const [goals, setGoals] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -126,11 +125,11 @@ const Onboarding = () => {
         if (nameErr) return nameErr;
         return validatePhone(phone);
       }
-      case 2: return !primaryService ? "Pick your main service to continue" : null;
+      case 2: return selectedServices.length === 0 ? "Select at least one service to continue" : null;
       case 3: return goals.length === 0 ? "Select at least one to continue" : null;
       default: return null;
     }
-  }, [step, shopName, phone, primaryService, goals]);
+  }, [step, shopName, phone, selectedServices, goals]);
 
   const canContinue = useCallback(() => getStepError() === null, [getStepError]);
 
@@ -145,8 +144,9 @@ const Onboarding = () => {
     setError(null);
   };
 
-  const toggleSecondary = (s: string) => {
-    setSecondaryServices((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
+  const toggleService = (s: string) => {
+    setSelectedServices((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
+    setError(null);
   };
 
   // ── Submit ──
@@ -154,7 +154,7 @@ const Onboarding = () => {
     if (!user) return;
     setSubmitting(true);
 
-    const allServices = [primaryService, ...secondaryServices.filter((s) => s !== primaryService)];
+    const allServices = [...selectedServices];
 
     const { error: dbErr } = await supabase
       .from("profiles")
@@ -204,7 +204,7 @@ const Onboarding = () => {
 
     const stepEventMap: Record<number, { name: string; customData?: Record<string, unknown> }> = {
       1: { name: "OnboardingStep1_ShopPhone", customData: { shop_name: shopName } },
-      2: { name: "OnboardingStep2_Services", customData: { primary: primaryService, secondary: secondaryServices.join(",") } },
+      2: { name: "OnboardingStep2_Services", customData: { services: selectedServices.join(","), num_services: selectedServices.length } },
     };
     const ev = stepEventMap[step];
     if (ev) trackEvent({ eventName: ev.name, type: "trackCustom", customData: ev.customData });
@@ -384,22 +384,22 @@ const Onboarding = () => {
           </div>
         )}
 
-        {/* ═══ STEP 2 — Service Specialty ═══ */}
+        {/* ═══ STEP 2 — Services (multi-select) ═══ */}
         {step === 2 && (
           <div className="animate-fade-in">
-            <h2 className="text-white font-bold mb-1" style={{ fontSize: 22 }}>What's your main service?</h2>
+            <h2 className="text-white font-bold mb-1" style={{ fontSize: 22 }}>What services do you offer?</h2>
             <p className="mb-5" style={{ color: "hsla(0,0%,100%,0.5)", fontSize: 14 }}>
-              Pick one to start — you can add more later.
+              Select all that apply — we'll add them to your site.
             </p>
 
             <div className="grid grid-cols-1 gap-2.5">
               {SERVICES.map((svc) => {
-                const selected = primaryService === svc.name;
+                const selected = selectedServices.includes(svc.name);
                 return (
                   <button
                     key={svc.name}
                     type="button"
-                    onClick={() => { setPrimaryService(svc.name); setError(null); }}
+                    onClick={() => toggleService(svc.name)}
                     className="relative flex items-start gap-3 px-4 py-3.5 rounded-xl text-left transition-all duration-200 min-h-[52px]"
                     style={{
                       border: selected ? "1.5px solid hsl(217,91%,60%)" : "1px solid hsla(0,0%,100%,0.1)",
@@ -423,49 +423,6 @@ const Onboarding = () => {
                 );
               })}
             </div>
-
-            {/* Expand for secondary services */}
-            {primaryService && (
-              <div className="mt-4">
-                {!showMore ? (
-                  <button
-                    type="button"
-                    onClick={() => setShowMore(true)}
-                    className="text-sm font-medium transition-colors"
-                    style={{ color: "hsl(217,91%,60%)" }}
-                  >
-                    + Want to add more?
-                  </button>
-                ) : (
-                  <div className="animate-fade-in">
-                    <p className="text-xs font-medium mb-2" style={{ color: "hsla(0,0%,100%,0.5)" }}>
-                      Also offer:
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {SERVICES.filter((s) => s.name !== primaryService).map((svc) => {
-                        const checked = secondaryServices.includes(svc.name);
-                        return (
-                          <button
-                            key={svc.name}
-                            type="button"
-                            onClick={() => toggleSecondary(svc.name)}
-                            className="px-3 py-2 rounded-full text-xs font-medium transition-all min-h-[36px]"
-                            style={{
-                              border: checked ? "1px solid hsl(217,91%,60%)" : "1px solid hsla(0,0%,100%,0.12)",
-                              background: checked ? "hsla(217,91%,60%,0.15)" : "transparent",
-                              color: checked ? "white" : "hsla(0,0%,100%,0.55)",
-                            }}
-                          >
-                            {checked && <Check className="w-3 h-3 inline mr-1 -mt-0.5" />}
-                            {svc.name}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
             {errorEl}
           </div>
         )}
@@ -556,7 +513,11 @@ const Onboarding = () => {
           ) : (
             <>
               {step === 3 && goals.length > 0 && <Sparkles className="w-4 h-4" />}
-              {CTA_TEXT[step]}
+              {step === 2
+                ? selectedServices.length > 0
+                  ? `Add ${selectedServices.length} Service${selectedServices.length > 1 ? "s" : ""} →`
+                  : "Select Services →"
+                : CTA_TEXT[step]}
             </>
           )}
         </button>
