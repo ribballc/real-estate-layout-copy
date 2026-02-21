@@ -250,7 +250,11 @@ const ServicesManager = () => {
                       onClick={() => { setShowAddMenu(false); setShowScanDialog(true); }}
                       className="w-full text-left px-4 py-2.5 text-sm text-foreground hover:bg-accent/10 transition-colors flex items-center gap-2"
                     >
-                      <Sparkles className="w-4 h-4 text-amber-500" /> Magic Upload
+                      <span className="relative flex items-center justify-center">
+                        <span className="absolute inset-0 rounded-full" style={{ background: "radial-gradient(circle, hsla(217,91%,60%,0.25) 0%, transparent 70%)", filter: "blur(3px)", width: "24px", height: "24px", margin: "-2px" }} />
+                        <Camera className="w-4 h-4 text-muted-foreground relative" />
+                      </span>
+                      Magic Upload
                     </button>
                   </>
                 ) : (
@@ -304,7 +308,7 @@ const ServicesManager = () => {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-500" /> Scan Your Price List
+              <Camera className="w-5 h-5 text-muted-foreground" /> Scan Your Price List
             </DialogTitle>
             <DialogDescription>
               Upload or take a photo of your price list, menu, or flyer. We'll automatically extract your services, packages, and pricing.
