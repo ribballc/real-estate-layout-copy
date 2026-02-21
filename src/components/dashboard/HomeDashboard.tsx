@@ -34,6 +34,14 @@ const DATE_OPTIONS: { value: DateRange; label: string }[] = [
   { value: "ytd", label: "Year to date" },
 ];
 
+/** Returns an inclusive range: today back to (days-1) days ago */
+function getDateRangeLabel(range: DateRange): string {
+  if (range === "ytd") return `Jan 1 – Today`;
+  const days = range === "7d" ? 7 : range === "14d" ? 14 : range === "30d" ? 30 : 90;
+  const start = subDays(new Date(), days - 1);
+  return `${format(start, "MMM d")} – Today`;
+}
+
 function getDateRange(range: DateRange): { start: Date; end: Date } {
   const end = endOfDay(new Date());
   if (range === "ytd") return { start: startOfYear(new Date()), end };
@@ -443,7 +451,7 @@ const HomeDashboard = () => {
     return upcoming[0] || null;
   }, [bookings]);
 
-  const periodLabel = `vs last ${dateRange === "ytd" ? "year" : dateRange.replace("d", " days")}`;
+  const periodLabel = getDateRangeLabel(dateRange);
 
   const sparklineDays = useMemo(() => {
     const days = eachDayOfInterval({ start, end });
@@ -716,8 +724,8 @@ const HomeDashboard = () => {
           <MetricCard
             icon={<DollarSign className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Revenue"
-            value={ghost.isIntro ? formatCurrency(gRevenue) : (currentCompleted.length > 0 ? formatCurrency(currentRevenue) : "—")}
-            mobileValue={ghost.isIntro ? formatCurrencyCompact(gRevenue) : (currentCompleted.length > 0 ? formatCurrencyCompact(currentRevenue) : undefined)}
+            value={ghost.isIntro ? formatCurrency(gRevenue) : formatCurrency(currentRevenue)}
+            mobileValue={ghost.isIntro ? formatCurrencyCompact(gRevenue) : formatCurrencyCompact(currentRevenue)}
             pct={ghost.isIntro ? 18 : revenuePct}
             subtext={periodLabel}
             sparklineData={ghost.isIntro ? GHOST_SPARKLINE : revenueSparkline}
@@ -727,7 +735,7 @@ const HomeDashboard = () => {
           <MetricCard
             icon={<Briefcase className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Jobs Completed"
-            value={ghost.isIntro ? String(gJobs) : (currentCompleted.length > 0 ? String(currentCompleted.length) : "—")}
+            value={ghost.isIntro ? String(gJobs) : String(currentCompleted.length)}
             pct={ghost.isIntro ? 12 : completedPct}
             subtext={periodLabel}
             sparklineData={ghost.isIntro ? GHOST_JOBS_SPARKLINE : jobsSparkline}
@@ -737,7 +745,7 @@ const HomeDashboard = () => {
           <MetricCard
             icon={<TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Avg. Ticket"
-            value={ghost.isIntro ? formatCurrency(gAvg) : (currentCompleted.length > 0 ? formatCurrency(avgTicket) : "—")}
+            value={ghost.isIntro ? formatCurrency(gAvg) : formatCurrency(avgTicket)}
             pct={ghost.isIntro ? 8 : avgTicketPct}
             subtext={periodLabel}
             sparklineData={ghost.isIntro ? GHOST_AVG_SPARKLINE : avgTicketSparkline}
@@ -747,7 +755,7 @@ const HomeDashboard = () => {
           <MetricCard
             icon={<Car className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Vehicles Serviced"
-            value={ghost.isIntro ? String(gVehicles) : (vehiclesCurrent > 0 ? String(vehiclesCurrent) : "—")}
+            value={ghost.isIntro ? String(gVehicles) : String(vehiclesCurrent)}
             pct={ghost.isIntro ? 15 : vehiclesPct}
             subtext={periodLabel}
             sparklineData={ghost.isIntro ? GHOST_VEHICLES_SPARKLINE : vehiclesSparkline}
