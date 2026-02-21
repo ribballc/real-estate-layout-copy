@@ -30,12 +30,15 @@ const DeluxeContactForm = ({ profile, hours, slug }: Props) => {
   ];
 
   return (
-    <section id="contact" className="site-section">
+    <section id="contact" className="site-section relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse at 20% 80%, hsla(217,91%,60%,0.03) 0%, transparent 60%)',
+      }} />
       <div className="max-w-5xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <SiteFadeIn>
             <div>
-              <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Contact</p>
+              <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Contact</p>
               <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-8">
                 Get in touch
               </h2>
@@ -47,7 +50,7 @@ const DeluxeContactForm = ({ profile, hours, slug }: Props) => {
                       <item.icon className="w-4 h-4 text-white/50" />
                     </div>
                     <div>
-                      <p className="text-white/30 text-[12px] uppercase tracking-wider mb-0.5">{item.label}</p>
+                      <p className="text-white/40 text-[12px] uppercase tracking-wider mb-0.5">{item.label}</p>
                       {item.href ? (
                         <a href={item.href} className="text-white/70 text-sm hover:text-white transition-colors duration-300">{item.value}</a>
                       ) : (
@@ -64,9 +67,9 @@ const DeluxeContactForm = ({ profile, hours, slug }: Props) => {
                     <Clock className="w-4 h-4 text-white/50" />
                   </div>
                   <div>
-                    <p className="text-white/30 text-[12px] uppercase tracking-wider mb-1">Hours</p>
+                    <p className="text-white/40 text-[12px] uppercase tracking-wider mb-1">Hours</p>
                     {hoursDisplay.map((h, i) => (
-                      <p key={i} className="text-white/50 text-sm">{h.day}: {h.time}</p>
+                      <p key={i} className="text-white/60 text-sm">{h.day}: {h.time}</p>
                     ))}
                   </div>
                 </div>
@@ -103,7 +106,7 @@ const DeluxeContactForm = ({ profile, hours, slug }: Props) => {
                   </svg>
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">Book Online</h3>
-                <p className="text-white/40 text-sm mb-6 leading-relaxed">
+                <p className="text-white/50 text-sm mb-6 leading-relaxed">
                   Skip the phone call. Pick your service, choose a time, and get instant confirmation.
                 </p>
                 <a href={slug ? `/site/${slug}/book` : "#"} className={slug ? "book-now-link" : undefined}>

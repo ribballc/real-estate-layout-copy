@@ -20,11 +20,14 @@ const DeluxeFAQ = ({ profile }: Props) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="site-section">
+    <section id="faq" className="site-section relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse at 50% 50%, hsla(217,91%,60%,0.03) 0%, transparent 70%)',
+      }} />
       <div className="max-w-3xl mx-auto px-6">
         <SiteFadeIn>
           <div className="text-center mb-16">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">FAQ</p>
+            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">FAQ</p>
             <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
               Common questions
             </h2>
@@ -63,7 +66,7 @@ const DeluxeFAQ = ({ profile }: Props) => {
                   }}
                 >
                   <div className="px-5 pb-4">
-                    <p className="text-white/40 text-sm leading-relaxed">{faq.answer}</p>
+                    <p className="text-white/55 text-sm leading-relaxed">{faq.answer}</p>
                   </div>
                 </div>
               </div>

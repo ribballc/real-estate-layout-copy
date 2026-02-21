@@ -107,7 +107,7 @@ const DeluxeGallery = ({ photos }: Props) => {
         {/* Section tag */}
         <SiteFadeIn>
           <div className="mb-10">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium">Our Work</p>
+            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium">Our Work</p>
           </div>
         </SiteFadeIn>
 
@@ -138,7 +138,7 @@ const DeluxeGallery = ({ photos }: Props) => {
                 <br />
                 <span style={{ color: 'hsl(217,91%,60%)' }}>for themselves</span>
               </h2>
-              <p className="text-white/25 text-sm mt-2 hidden sm:block">Swipe-worthy results, every single time.</p>
+              <p className="text-white/35 text-sm mt-2 hidden sm:block">Swipe-worthy results, every single time.</p>
             </div>
           </div>
 

@@ -43,19 +43,19 @@ const DeluxeServicesOverview = ({ services, slug }: Props) => {
       <div className="max-w-7xl mx-auto px-6">
         <SiteFadeIn>
           <div className="max-w-2xl mb-14">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Services</p>
+            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Services</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-3"
               style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
             >
               What we do best
             </h2>
-            <p className="text-white/35 text-base leading-relaxed line-clamp-2" style={{ overflowWrap: 'break-word' }}>
+            <p className="text-white/50 text-base leading-relaxed line-clamp-2" style={{ overflowWrap: 'break-word' }}>
               From quick refreshes to complete transformations.
             </p>
           </div>
         </SiteFadeIn>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="flex flex-wrap justify-center gap-3">
           {displayServices.map((service, index) => {
             const Icon = serviceIcons[index % serviceIcons.length];
             const accent = serviceAccents[index % serviceAccents.length];
@@ -65,7 +65,7 @@ const DeluxeServicesOverview = ({ services, slug }: Props) => {
                   href={slug ? `/site/${slug}/book` : "#packages"}
                   className={slug ? "book-now-link group block" : "group block"}
                 >
-                  <div className="relative overflow-hidden rounded-2xl aspect-[3/4] border border-white/[0.06] hover:border-white/[0.14] transition-all duration-500"
+                  <div className="relative overflow-hidden rounded-2xl aspect-[3/4] w-[calc(50vw-24px)] sm:w-[240px] lg:w-[260px] border border-white/[0.06] hover:border-white/[0.14] transition-all duration-500"
                     style={{
                       boxShadow: '0 8px 32px -12px hsla(0,0%,0%,0.4)',
                     }}
@@ -93,7 +93,7 @@ const DeluxeServicesOverview = ({ services, slug }: Props) => {
                       <div className="flex items-end justify-between">
                         <div className="min-w-0">
                           <h3 className="text-white font-semibold text-base mb-0.5 truncate">{service.title}</h3>
-                          <p className="text-white/35 text-[12px] leading-relaxed line-clamp-1">{service.description}</p>
+                          <p className="text-white/45 text-[12px] leading-relaxed line-clamp-1">{service.description}</p>
                         </div>
                         <div className="flex-shrink-0 ml-2 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300"
                           style={{ background: `${accent}25` }}

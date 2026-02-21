@@ -30,7 +30,7 @@ const DeluxeTestimonials = ({ testimonials }: Props) => {
       <div className="max-w-7xl mx-auto px-6">
         <SiteFadeIn>
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Reviews</p>
+            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Reviews</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
               The word on the street
             </h2>
@@ -53,7 +53,7 @@ const DeluxeTestimonials = ({ testimonials }: Props) => {
                       <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <p className="text-white/60 text-[14px] leading-relaxed mb-5 line-clamp-3">
+                  <p className="text-white/70 text-[14px] leading-relaxed mb-5 line-clamp-3">
                     &ldquo;{testimonial.text}&rdquo;
                   </p>
                   <div className="flex items-center gap-3 pt-3 border-t border-white/[0.06]">

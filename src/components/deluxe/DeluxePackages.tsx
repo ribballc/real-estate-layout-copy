@@ -51,25 +51,30 @@ const DeluxePackages = ({ services, slug }: Props) => {
     : defaultPackages;
 
   return (
-    <section id="packages" className="site-section">
+    <section id="packages" className="site-section relative overflow-hidden">
+      {/* Subtle gradient fill */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: 'linear-gradient(180deg, hsla(0,0%,100%,0.015) 0%, transparent 40%, hsla(217,91%,60%,0.02) 100%)',
+      }} />
       <div className="max-w-7xl mx-auto px-6">
         <SiteFadeIn>
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Pricing</p>
+            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Pricing</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-3">
               Pick your package
             </h2>
-            <p className="text-white/35 text-base">
+            <p className="text-white/50 text-base">
               No hidden fees. Book in under 60 seconds.
             </p>
           </div>
         </SiteFadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-5xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-3 max-w-5xl mx-auto">
           {packages.map((pkg, index) => {
             const popular = pkg.popular;
             return (
               <SiteFadeIn key={index} delay={index * 100}>
+                <div className="w-full sm:w-[320px]">
                 <div
                   className={`relative rounded-2xl p-6 transition-all duration-500 group overflow-hidden ${
                     popular
@@ -105,7 +110,7 @@ const DeluxePackages = ({ services, slug }: Props) => {
                   <div className="relative z-10">
                     <div className="mb-5 pt-2">
                       <h3 className="text-white font-semibold text-lg mb-0.5 truncate">{pkg.title}</h3>
-                      <p className="text-white/35 text-[13px] line-clamp-1" style={{ overflowWrap: 'break-word' }}>{pkg.description}</p>
+                      <p className="text-white/45 text-[13px] line-clamp-1" style={{ overflowWrap: 'break-word' }}>{pkg.description}</p>
                     </div>
 
                     <div className="mb-5">
@@ -136,11 +141,12 @@ const DeluxePackages = ({ services, slug }: Props) => {
                           }`}>
                             <Check className={`w-2.5 h-2.5 ${popular ? 'text-[hsl(217,91%,60%)]' : 'text-white/50'}`} />
                           </div>
-                          <span className="text-white/45">{feature}</span>
+                          <span className="text-white/55">{feature}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
+                </div>
                 </div>
               </SiteFadeIn>
             );

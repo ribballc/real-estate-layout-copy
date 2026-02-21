@@ -32,15 +32,18 @@ const DeluxeAddOnServices = ({ addOns, slug }: Props) => {
     : defaultAddons;
 
   return (
-    <section className="site-section">
+    <section className="site-section relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: 'linear-gradient(180deg, transparent 0%, hsla(0,0%,100%,0.01) 50%, transparent 100%)',
+      }} />
       <div className="max-w-7xl mx-auto px-6">
         <SiteFadeIn>
           <div className="max-w-2xl mb-14">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Add-ons</p>
+            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Add-ons</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-3">
               Level up your detail
             </h2>
-            <p className="text-white/35 text-base">
+            <p className="text-white/50 text-base">
               Stack extras onto any package.
             </p>
           </div>
@@ -60,7 +63,7 @@ const DeluxeAddOnServices = ({ addOns, slug }: Props) => {
                     </div>
                     <div className="min-w-0">
                       <h3 className="text-white font-medium text-[14px] mb-0 truncate">{addon.title}</h3>
-                      <p className="text-white/25 text-[12px] truncate">{addon.description}</p>
+                      <p className="text-white/40 text-[12px] truncate">{addon.description}</p>
                     </div>
                   </div>
                   <span className="text-white font-semibold text-[14px] flex-shrink-0">${addon.price}</span>

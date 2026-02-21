@@ -21,18 +21,22 @@ const DeluxeWhyChooseUs = ({ profile, websiteCopy }: Props) => {
   const aboutText = websiteCopy?.about_paragraph || '';
 
   return (
-    <section className="site-section">
+    <section className="site-section relative overflow-hidden">
+      {/* Subtle gradient background */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse at 50% 0%, hsla(217,91%,60%,0.04) 0%, transparent 60%), radial-gradient(ellipse at 80% 100%, hsla(280,60%,60%,0.03) 0%, transparent 50%)',
+      }} />
       <div className="max-w-7xl mx-auto px-6">
         <SiteFadeIn>
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Why {businessName}</p>
+            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Why {businessName}</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-3"
               style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
             >
               Built different
             </h2>
             {aboutText && (
-              <p className="text-white/35 text-base leading-relaxed mt-3 line-clamp-3"
+              <p className="text-white/50 text-base leading-relaxed mt-3 line-clamp-3"
                 style={{ overflowWrap: 'break-word' }}
               >
                 {aboutText}
@@ -56,7 +60,7 @@ const DeluxeWhyChooseUs = ({ profile, websiteCopy }: Props) => {
                     <feature.icon className="w-4.5 h-4.5" style={{ color: feature.accent }} />
                   </div>
                   <h3 className="text-white font-semibold mb-1 text-[14px]">{feature.title}</h3>
-                  <p className="text-white/35 text-[12px] leading-relaxed">{feature.description}</p>
+                  <p className="text-white/50 text-[12px] leading-relaxed">{feature.description}</p>
                 </div>
               </div>
             </SiteFadeIn>
