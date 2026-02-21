@@ -59,7 +59,7 @@ const DeluxeHero = ({ profile, slug, websiteCopy }: Props) => {
         </h1>
 
         <p
-          className="text-base sm:text-lg text-white/45 max-w-md mb-8 leading-relaxed line-clamp-2"
+          className="text-base sm:text-lg text-white/60 max-w-md mb-8 leading-relaxed line-clamp-2"
           style={{
             animation: 'siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both',
             overflowWrap: 'break-word',
@@ -102,12 +102,12 @@ const DeluxeHero = ({ profile, slug, websiteCopy }: Props) => {
                 <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
               ))}
             </div>
-            <span className="text-[12px] text-white/35 font-medium">5.0</span>
+            <span className="text-[12px] text-white/45 font-medium">5.0</span>
           </div>
           <div className="w-px h-3 bg-white/10" />
           <div className="flex items-center gap-1.5">
             <Sparkles className="w-3 h-3 text-[hsl(217,91%,60%)]" />
-            <span className="text-[12px] text-white/35">Instant confirmation</span>
+            <span className="text-[12px] text-white/45">Instant confirmation</span>
           </div>
         </div>
       </div>

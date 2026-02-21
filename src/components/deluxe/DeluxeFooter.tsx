@@ -59,11 +59,11 @@ const DeluxeFooter = ({ profile }: Props) => {
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-col md:flex-row items-center justify-between gap-3">
-            <p className="text-white/20 text-[12px]">© {currentYear} {businessName}. All rights reserved.</p>
+          <div className="mt-8 pt-6 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-3">
+            <p className="text-white/30 text-[12px]">© {currentYear} {businessName}. All rights reserved.</p>
             <div className="flex items-center gap-4">
               {['Services', 'Work', 'Contact'].map((label) => (
-                <a key={label} href={`#${label.toLowerCase()}`} className="text-white/20 text-[12px] hover:text-white/50 transition-colors duration-300 flex items-center gap-0.5">
+                <a key={label} href={`#${label.toLowerCase()}`} className="text-white/30 text-[12px] hover:text-white/60 transition-colors duration-300 flex items-center gap-0.5">
                   {label}
                   <ArrowUpRight className="w-2.5 h-2.5" />
                 </a>
