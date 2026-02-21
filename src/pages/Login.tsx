@@ -38,13 +38,15 @@ const Login = () => {
       if (event === "SIGNED_IN" && session?.user) {
         const { data: profile } = await supabase
           .from("profiles")
-          .select("onboarding_complete")
+          .select("onboarding_complete, business_name")
           .eq("user_id", session.user.id)
           .single();
         if (profile && !profile.onboarding_complete) {
           navigate("/onboarding");
         } else {
-          navigate("/dashboard");
+          // Store name for loading screen, then show it
+          sessionStorage.setItem("loginTransition", profile?.business_name || "Your Dashboard");
+          navigate("/loading");
         }
       }
     });
@@ -61,14 +63,15 @@ const Login = () => {
     } else {
       const { data: profile } = await supabase
         .from("profiles")
-        .select("onboarding_complete")
+        .select("onboarding_complete, business_name")
         .eq("user_id", authData.user.id)
         .single();
 
       if (profile && !profile.onboarding_complete) {
         navigate("/onboarding");
       } else {
-        navigate("/dashboard");
+        sessionStorage.setItem("loginTransition", profile?.business_name || "Your Dashboard");
+        navigate("/loading");
       }
     }
   };
