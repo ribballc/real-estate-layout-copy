@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X, ArrowRight, Sparkles } from 'lucide-react';
 import type { BusinessProfile } from '@/hooks/useBusinessData';
 
 interface Props {
@@ -13,9 +13,15 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
 
   const navLinks = [
     { href: '#services', label: 'Services' },
@@ -63,27 +69,42 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
             )}
           </div>
 
-          <button className="md:hidden text-white/80 p-2" onClick={() => setIsOpen(!isOpen)}>
+          <button
+            className="md:hidden text-white/80 p-2 -mr-2"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? 'Close menu' : 'Open menu'}
+          >
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
+        {/* Mobile menu — full-height overlay */}
         {isOpen && (
-          <div className="md:hidden bg-[hsl(0,0%,4%)]/95 backdrop-blur-xl border-t border-white/[0.06] pb-6">
-            <div className="flex flex-col pt-2">
-              {navLinks.map((link) => (
+          <div
+            className="md:hidden fixed inset-0 top-16 bg-[hsl(0,0%,4%)]/98 backdrop-blur-2xl z-40"
+            style={{ animation: 'siteFadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}
+          >
+            <div className="flex flex-col px-6 pt-8 gap-1">
+              {navLinks.map((link, i) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="px-2 py-3 text-white/70 hover:text-white transition-colors text-sm font-medium"
+                  className="py-3.5 text-white/80 hover:text-white transition-colors text-lg font-medium border-b border-white/[0.04]"
+                  style={{ animation: `siteFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${i * 50}ms both` }}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}
                 </a>
               ))}
               {slug && (
-                <a href={`/site/${slug}/book`} className="book-now-link mt-4" onClick={() => setIsOpen(false)}>
-                  <button className="site-btn-primary w-full text-sm px-5 py-3 rounded-full font-medium">
+                <a
+                  href={`/site/${slug}/book`}
+                  className="book-now-link mt-6"
+                  onClick={() => setIsOpen(false)}
+                  style={{ animation: `siteFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${navLinks.length * 50}ms both` }}
+                >
+                  <button className="site-btn-primary w-full text-base px-5 py-4 rounded-full font-semibold flex items-center justify-center gap-2">
+                    <Sparkles className="w-4 h-4" />
                     Book Now
                   </button>
                 </a>

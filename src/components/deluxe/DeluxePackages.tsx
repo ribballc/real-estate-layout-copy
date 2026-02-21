@@ -1,4 +1,4 @@
-import { Check, ArrowRight } from 'lucide-react';
+import { Check, ArrowRight, Crown } from 'lucide-react';
 import type { BusinessService } from '@/hooks/useBusinessData';
 import SiteFadeIn from './SiteFadeIn';
 
@@ -77,7 +77,8 @@ const DeluxePackages = ({ services, slug }: Props) => {
               >
                 {pkg.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="text-[11px] uppercase tracking-widest font-semibold bg-[hsl(0,0%,4%)] text-white px-4 py-1 rounded-full">
+                    <span className="text-[11px] uppercase tracking-widest font-semibold bg-[hsl(0,0%,4%)] text-white px-4 py-1 rounded-full flex items-center gap-1.5">
+                      <Crown className="w-3 h-3" />
                       Most Popular
                     </span>
                   </div>
@@ -93,7 +94,7 @@ const DeluxePackages = ({ services, slug }: Props) => {
                 </div>
 
                 <div className="mb-6">
-                  <span className={`text-4xl font-bold ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white'}`}>
+                  <span className={`text-4xl font-bold tracking-tight ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white'}`}>
                     {pkg.price}
                   </span>
                   <span className={`text-sm ml-1 ${pkg.popular ? 'text-[hsl(0,0%,4%)]/40' : 'text-white/30'}`}>
@@ -102,9 +103,9 @@ const DeluxePackages = ({ services, slug }: Props) => {
                 </div>
 
                 <a href={slug ? `/site/${slug}/book` : "#contact"} className={slug ? "book-now-link block mb-6" : "block mb-6"}>
-                  <button className={`w-full py-3 rounded-full text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 group/btn ${
+                  <button className={`w-full py-3.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 group/btn ${
                     pkg.popular
-                      ? 'bg-[hsl(0,0%,4%)] text-white hover:bg-[hsl(0,0%,15%)]'
+                      ? 'bg-[hsl(0,0%,4%)] text-white hover:bg-[hsl(0,0%,15%)] hover:shadow-lg'
                       : 'bg-white/[0.08] text-white hover:bg-white/[0.14] border border-white/[0.1]'
                   }`}>
                     Book Now
@@ -115,7 +116,11 @@ const DeluxePackages = ({ services, slug }: Props) => {
                 <ul className="space-y-3">
                   {pkg.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-3 text-[13px]">
-                      <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white/50'}`} />
+                      <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                        pkg.popular ? 'bg-[hsl(0,0%,4%)]/10' : 'bg-white/[0.08]'
+                      }`}>
+                        <Check className={`w-2.5 h-2.5 ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white/60'}`} />
+                      </div>
                       <span className={pkg.popular ? 'text-[hsl(0,0%,4%)]/70' : 'text-white/50'}>
                         {feature}
                       </span>

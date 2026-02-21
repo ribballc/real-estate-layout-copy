@@ -1,4 +1,4 @@
-import { Instagram, Facebook, Mail, Phone } from 'lucide-react';
+import { Instagram, Facebook, Mail, Phone, ArrowUpRight } from 'lucide-react';
 import type { BusinessProfile, BusinessHour } from '@/hooks/useBusinessData';
 import SiteFadeIn from './SiteFadeIn';
 
@@ -21,7 +21,10 @@ const DeluxeFooter = ({ profile }: Props) => {
       <SiteFadeIn distance={16}>
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center">
+                <span className="text-white font-bold text-sm">{businessName.charAt(0)}</span>
+              </div>
               <span className="text-white font-semibold text-lg tracking-tight">{businessName}</span>
             </div>
 
@@ -59,9 +62,12 @@ const DeluxeFooter = ({ profile }: Props) => {
           <div className="mt-8 pt-6 border-t border-white/[0.04] flex flex-col md:flex-row items-center justify-between gap-3">
             <p className="text-white/20 text-[12px]">© {currentYear} {businessName}. All rights reserved.</p>
             <div className="flex items-center gap-4">
-              <a href="#services" className="text-white/20 text-[12px] hover:text-white/50 transition-colors duration-300">Services</a>
-              <a href="#gallery" className="text-white/20 text-[12px] hover:text-white/50 transition-colors duration-300">Work</a>
-              <a href="#contact" className="text-white/20 text-[12px] hover:text-white/50 transition-colors duration-300">Contact</a>
+              {['Services', 'Work', 'Contact'].map((label) => (
+                <a key={label} href={`#${label.toLowerCase()}`} className="text-white/20 text-[12px] hover:text-white/50 transition-colors duration-300 flex items-center gap-0.5">
+                  {label}
+                  <ArrowUpRight className="w-2.5 h-2.5" />
+                </a>
+              ))}
             </div>
           </div>
         </div>

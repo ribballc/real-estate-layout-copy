@@ -33,12 +33,18 @@ const DeluxeWhyChooseUs = ({ profile }: Props) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
           {features.map((feature, index) => (
             <SiteFadeIn key={index} delay={index * 80}>
-              <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 hover:border-white/[0.14] hover:bg-white/[0.05] transition-all duration-500 group">
-                <div className="w-10 h-10 rounded-xl bg-white/[0.06] flex items-center justify-center mb-4 group-hover:bg-white/[0.12] group-hover:scale-110 transition-all duration-300">
-                  <feature.icon className="w-5 h-5 text-white/60 group-hover:text-white/80 transition-colors" />
+              <div className="relative bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 hover:border-white/[0.14] hover:bg-white/[0.05] transition-all duration-500 group overflow-hidden">
+                {/* Subtle gradient glow on hover */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
+                  style={{ background: 'radial-gradient(circle at 30% 20%, hsla(0,0%,100%,0.04) 0%, transparent 60%)' }}
+                />
+                <div className="relative z-10">
+                  <div className="w-11 h-11 rounded-xl bg-white/[0.06] flex items-center justify-center mb-4 group-hover:bg-white/[0.12] group-hover:scale-110 transition-all duration-300">
+                    <feature.icon className="w-5 h-5 text-white/60 group-hover:text-white transition-colors duration-300" />
+                  </div>
+                  <h3 className="text-white font-semibold mb-2 text-[15px]">{feature.title}</h3>
+                  <p className="text-white/40 text-sm leading-relaxed">{feature.description}</p>
                 </div>
-                <h3 className="text-white font-semibold mb-2">{feature.title}</h3>
-                <p className="text-white/40 text-sm leading-relaxed">{feature.description}</p>
               </div>
             </SiteFadeIn>
           ))}
