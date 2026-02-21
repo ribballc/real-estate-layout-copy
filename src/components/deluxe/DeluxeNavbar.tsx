@@ -42,7 +42,7 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
             {logoSrc ? (
               <img src={logoSrc} alt={businessName} className="h-8 w-auto" />
             ) : (
-              <span className="text-white font-semibold text-lg tracking-tight">{businessName}</span>
+              <span className="text-white font-semibold text-lg tracking-tight truncate max-w-[200px]">{businessName}</span>
             )}
           </a>
 

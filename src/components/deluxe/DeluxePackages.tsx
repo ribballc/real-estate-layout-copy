@@ -85,10 +85,12 @@ const DeluxePackages = ({ services, slug }: Props) => {
                 )}
 
                 <div className="mb-6">
-                  <h3 className={`text-lg font-semibold mb-1 ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white'}`}>
+                  <h3 className={`text-lg font-semibold mb-1 truncate ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white'}`}>
                     {pkg.title}
                   </h3>
-                  <p className={`text-[13px] ${pkg.popular ? 'text-[hsl(0,0%,4%)]/50' : 'text-white/40'}`}>
+                  <p className={`text-[13px] line-clamp-2 ${pkg.popular ? 'text-[hsl(0,0%,4%)]/50' : 'text-white/40'}`}
+                    style={{ overflowWrap: 'break-word' }}
+                  >
                     {pkg.description}
                   </p>
                 </div>
