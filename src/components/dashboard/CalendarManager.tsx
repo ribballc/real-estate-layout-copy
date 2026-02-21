@@ -604,7 +604,7 @@ const CalendarManager = () => {
 
       {/* Add Booking Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[55] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-md dash-card p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">Add Booking</h3>
@@ -675,7 +675,7 @@ const CalendarManager = () => {
 
       {/* Google Calendar Sync Modal */}
       {showSyncModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[55] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="w-full max-w-sm dash-card p-6 space-y-4" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
             <div className="flex items-center justify-between">
               <h3 className="text-white font-semibold text-lg">Sync Google Calendar</h3>

@@ -178,6 +178,14 @@ const JobsManager = () => {
   const [mobileCol, setMobileCol] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  // Lock body scroll when add-job modal is open (prevents mobile scroll leak)
+  useEffect(() => {
+    if (showAddModal) {
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = ""; };
+    }
+  }, [showAddModal]);
   const [newBooking, setNewBooking] = useState({
     customer_name: "", customer_email: "", customer_phone: "",
     service_title: "", service_price: 0, booking_date: "",
@@ -590,7 +598,7 @@ const JobsManager = () => {
       {/* ── Add Job Modal ──────────────────────────── */}
       {showAddModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[55] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           style={{
             paddingTop: "max(1rem, env(safe-area-inset-top))",
             paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
