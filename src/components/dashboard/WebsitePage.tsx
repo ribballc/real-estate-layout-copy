@@ -122,9 +122,10 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
     }
   }, [loading, slug]);
 
-  const websiteUrl = slug ? `${slug}.darkerdigital.com` : "";
-  const bookingUrl = slug ? `${slug}.darkerdigital.com/book` : "";
-  const demoUrl = activeTab === "booking" ? bookingUrl : websiteUrl;
+  const publishedOrigin = "https://darker-digital.lovable.app";
+  const websiteUrl = slug ? `${publishedOrigin}/site/${slug}` : "";
+  const bookingUrl = slug ? `${publishedOrigin}/site/${slug}/book` : "";
+  const displayUrl = activeTab === "booking" ? bookingUrl : websiteUrl;
   const websiteIframeSrc = slug ? `${window.location.origin}/site/${slug}` : null;
   const bookingIframeSrc = slug ? `${window.location.origin}/site/${slug}/book` : null;
   const iframeSrc = activeTab === "booking" ? bookingIframeSrc : websiteIframeSrc;
@@ -328,15 +329,15 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
           className="font-mono truncate flex-1 transition-all duration-200"
           style={{ fontSize: 13, color: mutedText }}
         >
-          {demoUrl}
+          {displayUrl}
         </span>
         <CopyButton
-          text={`https://${demoUrl}`}
+          text={displayUrl}
           label="Copy"
           copiedLabel="Copied!"
           variant="inline"
           className="shrink-0 px-2 py-1 rounded-md"
-          toastMessage={{ title: "Link copied", description: `${demoUrl} is on your clipboard.` }}
+          toastMessage={{ title: "Link copied", description: `${displayUrl} is on your clipboard.` }}
         />
         <div style={{ width: 1, height: 18, background: cardBorder, margin: "0 2px" }} />
         <button
