@@ -172,13 +172,6 @@ const AccountSettings = () => {
           >
             {openingPortal ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening…</> : <><CreditCard className="w-4 h-4" /> Manage Subscription</>}
           </Button>
-          <Button
-            onClick={() => setCancelFlowOpen(true)}
-            variant="ghost"
-            className="h-11 gap-2 text-red-400 hover:text-red-300 hover:bg-red-500/10"
-          >
-            <XCircle className="w-4 h-4" /> Cancel
-          </Button>
         </div>
       </div>
 
