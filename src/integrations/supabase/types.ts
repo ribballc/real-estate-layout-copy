@@ -444,6 +444,7 @@ export type Database = {
           secondary_color: string | null
           service_areas: string[] | null
           slug: string | null
+          sms_consent: boolean
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
           subscription_ends_at: string | null
@@ -487,6 +488,7 @@ export type Database = {
           secondary_color?: string | null
           service_areas?: string[] | null
           slug?: string | null
+          sms_consent?: boolean
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_ends_at?: string | null
@@ -530,6 +532,7 @@ export type Database = {
           secondary_color?: string | null
           service_areas?: string[] | null
           slug?: string | null
+          sms_consent?: boolean
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           subscription_ends_at?: string | null
@@ -766,6 +769,39 @@ export type Database = {
           photo_url?: string | null
           rating?: number
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trial_retention_sms: {
+        Row: {
+          created_at: string
+          error: string | null
+          id: string
+          is_test: boolean
+          phone: string
+          sent_at: string
+          step: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          is_test?: boolean
+          phone?: string
+          sent_at?: string
+          step: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          is_test?: boolean
+          phone?: string
+          sent_at?: string
+          step?: number
           user_id?: string
         }
         Relationships: []
