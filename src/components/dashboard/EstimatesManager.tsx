@@ -94,6 +94,7 @@ const EstimatesManager = () => {
   const [customerPhone, setCustomerPhone] = useState("");
   const [vehicle, setVehicle] = useState("");
   const [lineItems, setLineItems] = useState<LineItem[]>([{ title: "", price: 0, quantity: 1 }]);
+  const [customLineIdxs, setCustomLineIdxs] = useState<Set<number>>(new Set());
   const [discountAmount, setDiscountAmount] = useState(0);
   const [discountType, setDiscountType] = useState<"percent" | "flat">("percent");
   const [taxRate, setTaxRate] = useState(0);
@@ -149,6 +150,7 @@ const EstimatesManager = () => {
     setEditingId(null);
     setCustomerName(""); setCustomerEmail(""); setCustomerPhone(""); setVehicle("");
     setLineItems([{ title: "", price: 0, quantity: 1 }]);
+    setCustomLineIdxs(new Set());
     setDiscountAmount(0); setDiscountType("percent"); setTaxRate(0);
     setNotes(""); setValidUntil(undefined);
     setCustomerSearch("");
@@ -160,7 +162,14 @@ const EstimatesManager = () => {
     setEditingId(e.id);
     setCustomerName(e.customer_name); setCustomerEmail(e.customer_email);
     setCustomerPhone(e.customer_phone); setVehicle(e.vehicle);
-    setLineItems(e.services.length > 0 ? e.services : [{ title: "", price: 0, quantity: 1 }]);
+    const items = e.services.length > 0 ? e.services : [{ title: "", price: 0, quantity: 1 }];
+    setLineItems(items);
+    // Mark items that don't match any existing service as custom
+    const customIdxs = new Set<number>();
+    items.forEach((item, i) => {
+      if (item.title && !services.some(s => s.title === item.title)) customIdxs.add(i);
+    });
+    setCustomLineIdxs(customIdxs);
     setDiscountAmount(e.discount_amount); setDiscountType(e.discount_type as "percent" | "flat");
     setTaxRate(e.tax_rate); setNotes(e.notes);
     setValidUntil(e.valid_until ? new Date(e.valid_until + "T00:00") : undefined);
@@ -460,37 +469,57 @@ const EstimatesManager = () => {
             <div className="hidden sm:grid grid-cols-[1fr_80px_100px_80px_32px] gap-2 text-xs text-white/40 uppercase tracking-wider px-1">
               <span>Service</span><span>Qty</span><span>Price</span><span>Total</span><span />
             </div>
-            {lineItems.map((item, idx) => (
-              <div key={idx} className="grid grid-cols-1 sm:grid-cols-[1fr_80px_100px_80px_32px] gap-2 items-center">
-                <div className="relative">
-                  <Input
-                    value={item.title}
-                    onChange={e => updateLineItem(idx, "title", e.target.value)}
-                    placeholder="Service name..."
-                    list={`svc-list-${idx}`}
-                  />
-                  <datalist id={`svc-list-${idx}`}>
-                    {services.map((s, i) => <option key={i} value={s.title} />)}
-                  </datalist>
+            {lineItems.map((item, idx) => {
+              const isCustom = customLineIdxs.has(idx);
+              const isKnownService = services.some(s => s.title === item.title);
+              return (
+                <div key={idx} className="grid grid-cols-1 sm:grid-cols-[1fr_80px_100px_80px_32px] gap-2 items-center">
+                  <div className="space-y-1.5">
+                    <select
+                      value={isCustom ? "__custom__" : (isKnownService ? item.title : "")}
+                      onChange={e => {
+                        const val = e.target.value;
+                        if (val === "__custom__") {
+                          setCustomLineIdxs(prev => new Set(prev).add(idx));
+                          updateLineItem(idx, "title", "");
+                          updateLineItem(idx, "price", 0);
+                        } else {
+                          setCustomLineIdxs(prev => { const n = new Set(prev); n.delete(idx); return n; });
+                          updateLineItem(idx, "title", val);
+                          const svc = services.find(s => s.title === val);
+                          if (svc) updateLineItem(idx, "price", svc.price);
+                        }
+                      }}
+                      className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsla(217,91%,60%,0.4)] focus-visible:border-[hsl(217,91%,60%)] transition-shadow duration-150"
+                    >
+                      <option value="" disabled>Select a service…</option>
+                      {services.map((s, i) => (
+                        <option key={i} value={s.title}>{s.title} — ${s.price.toFixed(0)}</option>
+                      ))}
+                      <option value="__custom__">✏️ Custom</option>
+                    </select>
+                    {isCustom && (
+                      <Input
+                        value={item.title}
+                        onChange={e => updateLineItem(idx, "title", e.target.value)}
+                        placeholder="Type custom service name…"
+                        autoFocus
+                      />
+                    )}
+                  </div>
+                  <Input type="number" min={1} value={item.quantity} onChange={e => updateLineItem(idx, "quantity", parseInt(e.target.value) || 1)} />
+                  <Input type="number" min={0} step="0.01" value={item.price} onChange={e => {
+                    updateLineItem(idx, "price", parseFloat(e.target.value) || 0);
+                  }} />
+                  <span className="text-foreground/60 text-sm font-medium text-center">${(item.price * item.quantity).toFixed(2)}</span>
+                  {lineItems.length > 1 && (
+                    <button onClick={() => removeLineItem(idx)} aria-label="Remove line item" className="text-muted-foreground hover:text-destructive transition-colors justify-self-center">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
                 </div>
-                <Input type="number" min={1} value={item.quantity} onChange={e => updateLineItem(idx, "quantity", parseInt(e.target.value) || 1)} />
-                <Input type="number" min={0} step="0.01" value={item.price} onChange={e => {
-                  updateLineItem(idx, "price", parseFloat(e.target.value) || 0);
-                }} onFocus={() => {
-                  // Auto-fill price from service list
-                  if (item.price === 0 && item.title) {
-                    const svc = services.find(s => s.title.toLowerCase() === item.title.toLowerCase());
-                    if (svc) updateLineItem(idx, "price", svc.price);
-                  }
-                }} />
-                <span className="text-white/60 text-sm font-medium text-center">${(item.price * item.quantity).toFixed(2)}</span>
-                {lineItems.length > 1 && (
-                  <button onClick={() => removeLineItem(idx)} aria-label="Remove line item" className="text-white/40 hover:text-red-400 transition-colors justify-self-center">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Totals */}
