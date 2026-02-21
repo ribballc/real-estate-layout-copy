@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import { Zap, ChevronRight } from "lucide-react";
 
 interface EmptyStateProps {
   icon: LucideIcon;
@@ -13,6 +14,11 @@ interface EmptyStateProps {
     onClick: () => void;
   };
   variant?: "default" | "compact";
+  /** When true and trialCta is provided, shows a trial nudge */
+  trialCta?: {
+    show: boolean;
+    onActivate: () => void;
+  };
 }
 
 const EmptyState = ({
@@ -22,6 +28,7 @@ const EmptyState = ({
   action,
   secondaryAction,
   variant = "default",
+  trialCta,
 }: EmptyStateProps) => {
   const isCompact = variant === "compact";
 
@@ -85,6 +92,27 @@ const EmptyState = ({
             </button>
           )}
         </div>
+      )}
+
+      {/* Trial nudge CTA — FOMO style */}
+      {trialCta?.show && (
+        <button
+          onClick={trialCta.onActivate}
+          className="mt-5 flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:brightness-110 group"
+          style={{
+            background: "linear-gradient(135deg, hsla(30,100%,50%,0.10) 0%, hsla(15,100%,50%,0.06) 100%)",
+            border: "1px solid hsla(30,100%,50%,0.20)",
+          }}
+        >
+          <Zap className="w-3.5 h-3.5" style={{ color: "hsl(30,100%,50%)" }} strokeWidth={2} />
+          <span className="text-xs font-semibold" style={{ color: "hsl(30,100%,60%)" }}>
+            Don't miss out — start your free trial
+          </span>
+          <ChevronRight
+            className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5"
+            style={{ color: "hsl(30,100%,60%)" }}
+          />
+        </button>
       )}
     </div>
   );

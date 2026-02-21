@@ -3,6 +3,7 @@ import PageTransition from "@/components/PageTransition";
 import DashboardSidebar from "./DashboardSidebar";
 import SupportChatbot, { type SupportChatbotHandle } from "./SupportChatbot";
 import LockedPageOverlay from "./LockedPageOverlay";
+import TrialNudgeBanner from "./TrialNudgeBanner";
 import MobileBottomNav from "./MobileBottomNav";
 import CommandBar from "./CommandBar";
 import WelcomeModal from "./WelcomeModal";
@@ -288,6 +289,7 @@ const DashboardLayout = () => {
 
           <div className="dash-content">
             <PageIntroBanner path={location.pathname} isDark={isDark} hideWhenOnboardingIncomplete={onboardingIncomplete} />
+            <TrialNudgeBanner path={location.pathname} isDark={isDark} isSubscribed={subscription.isActive} />
             {isLocked ? (
               <LockedPageOverlay path={location.pathname} isDark={isDark} />
             ) : (

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Building2, Wrench, Camera, Star, Settings, LogOut,
   CalendarDays, Users, LayoutDashboard, Lock,
-  Globe, ChevronLeft, ChevronRight, KanbanSquare, ClipboardList, FlaskConical,
+  Globe, ChevronLeft, ChevronRight, KanbanSquare, ClipboardList, FlaskConical, Zap,
 } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import darkerLogo from "@/assets/darker-logo.png";
 import darkerLogoDark from "@/assets/darker-logo-dark.png";
 import { cn } from "@/lib/utils";
+import { useUpgradeModal } from "@/contexts/UpgradeModalContext";
 
 interface NavItem {
   title: string;
@@ -199,6 +200,11 @@ const DashboardSidebar = ({
         </ul>
       </nav>
 
+      {/* Sidebar upgrade pill — visible when no trial/subscription */}
+      {!trialActive && !collapsed && (
+        <SidebarUpgradePill isDark={isDark} />
+      )}
+
       {/* Settings */}
       <div className="px-2 pb-1">
         <RouterNavLink
@@ -278,6 +284,49 @@ const DashboardSidebar = ({
         )}
       </div>
     </aside>
+  );
+};
+
+const SidebarUpgradePill = ({ isDark }: { isDark: boolean }) => {
+  const { openUpgradeModal } = useUpgradeModal();
+
+  return (
+    <div className="px-2 pb-2">
+      <button
+        onClick={openUpgradeModal}
+        className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 transition-all hover:brightness-110 group"
+        style={{
+          background: isDark
+            ? "linear-gradient(135deg, hsla(30,100%,50%,0.12) 0%, hsla(15,100%,50%,0.08) 100%)"
+            : "linear-gradient(135deg, hsla(30,100%,50%,0.10) 0%, hsla(15,100%,50%,0.05) 100%)",
+          border: `1px solid ${isDark ? "hsla(30,100%,50%,0.20)" : "hsla(30,100%,50%,0.15)"}`,
+        }}
+      >
+        <Zap
+          className="w-4 h-4 shrink-0"
+          style={{ color: "hsl(30,100%,50%)" }}
+          strokeWidth={2}
+        />
+        <div className="flex-1 text-left min-w-0">
+          <p
+            className="text-[13px] font-bold leading-tight"
+            style={{ color: isDark ? "hsl(30,100%,65%)" : "hsl(25,90%,38%)" }}
+          >
+            Go live today
+          </p>
+          <p
+            className="text-[11px] leading-tight mt-0.5"
+            style={{ color: isDark ? "hsla(0,0%,100%,0.4)" : "hsl(215,16%,55%)" }}
+          >
+            14-day free trial · No card
+          </p>
+        </div>
+        <ChevronRight
+          className="w-3.5 h-3.5 shrink-0 transition-transform group-hover:translate-x-0.5"
+          style={{ color: isDark ? "hsl(30,100%,65%)" : "hsl(25,90%,38%)" }}
+        />
+      </button>
+    </div>
   );
 };
 
