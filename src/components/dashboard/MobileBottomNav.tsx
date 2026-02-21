@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import {
   LayoutDashboard, CalendarDays, KanbanSquare, Users, Menu, X,
-  Wrench, Building2, Camera, Star, Settings, Globe, ClipboardList, FlaskConical, Search,
+  Wrench, Building2, Camera, Star, Settings, Globe, ClipboardList, FlaskConical, Search, CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -25,6 +25,7 @@ const MENU_ITEMS = [
   { label: "Photos", icon: Camera, path: "/dashboard/photos" },
   { label: "Testimonials", icon: Star, path: "/dashboard/testimonials" },
   { label: "The Lab", icon: FlaskConical, path: "/dashboard/the-lab" },
+  { label: "Billing", icon: CreditCard, path: "/dashboard/billing" },
   { label: "Settings", icon: Settings, path: "/dashboard/account" },
 ];
 
@@ -91,18 +92,24 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                   : "0 20px 60px hsla(220,14%,50%,0.15)",
               }}
             >
-              {/* Search bar */}
+              {/* Search bar — matches popup surface in both themes */}
               <div className="px-4 pt-4 pb-2">
                 <div
                   className="flex items-center gap-2.5 h-10 px-3 rounded-xl"
                   style={{
-                    background: isDark ? "hsla(0,0%,100%,0.06)" : "hsl(0,0%,96%)",
-                    border: `1px solid ${isDark ? "hsla(0,0%,100%,0.08)" : "hsl(0,0%,90%)"}`,
+                    background: isDark
+                      ? "hsla(215,28%,18%,0.9)"
+                      : "hsla(0,0%,98%,0.95)",
+                    border: isDark
+                      ? "1px solid hsla(215,25%,28%,0.7)"
+                      : "1px solid hsl(0,0%,90%)",
                   }}
                 >
                   <Search
                     className="w-4 h-4 flex-shrink-0"
-                    style={{ color: isDark ? "hsla(0,0%,100%,0.3)" : "hsl(215,14%,65%)" }}
+                    style={{
+                      color: isDark ? "hsla(0,0%,100%,0.4)" : "hsl(215,14%,55%)",
+                    }}
                     strokeWidth={1.8}
                   />
                   <input
@@ -111,8 +118,10 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                     placeholder="Search pages..."
                     autoFocus={false}
                     className={cn(
-                      "flex-1 bg-transparent border-none outline-none text-sm placeholder:opacity-40",
-                      isDark ? "text-white placeholder:text-white" : "text-[hsl(218,24%,23%)] placeholder:text-[hsl(215,14%,51%)]"
+                      "flex-1 bg-transparent border-none outline-none text-sm placeholder:opacity-50",
+                      isDark
+                        ? "text-white placeholder:text-white/50"
+                        : "text-[hsl(218,24%,20%)] placeholder:text-[hsl(215,14%,48%)]"
                     )}
                     style={{ fontSize: 16 }}
                   />

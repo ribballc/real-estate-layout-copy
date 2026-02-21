@@ -8,6 +8,7 @@ import {
   ArrowUpRight, Activity, UserCheck, CreditCard, X, Download, Trash2,
   MessageSquare, BarChart3,
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
 } from "recharts";
@@ -40,6 +41,9 @@ interface UserRow {
   trialEndsAt: string | null;
   activated: boolean;
   onboardingComplete: boolean;
+  requestedDomain: string | null;
+  domainRequestedAt: string | null;
+  customDomain: string | null;
 }
 
 // ━━━ Helpers ━━━
@@ -67,12 +71,15 @@ const StatusBadge = ({ status }: { status: string }) => {
 const AdminDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [data, setData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState<UserRow | null>(null);
   const [activeTab, setActiveTab] = useState<"overview" | "retention">("overview");
+  const [customDomainInput, setCustomDomainInput] = useState("");
+  const [syncingDomain, setSyncingDomain] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -118,6 +125,41 @@ const AdminDashboard = () => {
   ) ?? [];
 
   const deletionsPending = data?.users.filter(u => u.email.includes("deleted_user_")).length ?? 0;
+
+  const GODADDY_URL = (domain: string) => `https://www.godaddy.com/domainsearch/find?checkAvail=1&domainToCheck=${encodeURIComponent(domain)}`;
+
+  const handleQuickSyncDomain = async () => {
+    if (!selectedUser) return;
+    setSyncingDomain(true);
+    try {
+      const { data: res, error: err } = await supabase.functions.invoke("admin-set-custom-domain", {
+        body: { user_id: selectedUser.id, custom_domain: customDomainInput.trim() || null },
+      });
+      if (err) throw err;
+      if (res?.error) throw new Error(res.error);
+      setData((prev) => prev ? {
+        ...prev,
+        users: prev.users.map((u) =>
+          u.id === selectedUser.id ? { ...u, customDomain: customDomainInput.trim() || null } : u
+        ),
+      } : null);
+      setSelectedUser((u) => u ? { ...u, customDomain: customDomainInput.trim() || null } : null);
+      toast({ title: "Custom domain saved", description: "User's site can now be linked to this domain." });
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message || "Failed to save custom domain", variant: "destructive" });
+    } finally {
+      setSyncingDomain(false);
+    }
+  };
+
+  const openUserDetail = (u: UserRow) => {
+    setSelectedUser(u);
+    setCustomDomainInput(u.customDomain ?? u.requestedDomain ?? "");
+  };
+
+  useEffect(() => {
+    if (selectedUser) setCustomDomainInput(selectedUser.customDomain ?? selectedUser.requestedDomain ?? "");
+  }, [selectedUser?.id]);
 
   const exportCsv = (d: AdminData) => {
     const rows = [
@@ -292,14 +334,14 @@ const AdminDashboard = () => {
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ borderBottom: "1px solid hsla(0,0%,100%,0.07)" }}>
-                  {["Email", "Name", "Signed Up", "Status", "Plan", "Trial Ends", "Activated", "Onboarded"].map(h => (
+                  {["Email", "Name", "Signed Up", "Status", "Plan", "Trial Ends", "Domain", "Activated", "Onboarded"].map(h => (
                     <th key={h} className="text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-wider" style={{ color: "hsla(0,0%,100%,0.5)" }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {filteredUsers.map(u => (
-                  <tr key={u.id} onClick={() => setSelectedUser(u)} className="cursor-pointer transition-colors"
+                  <tr key={u.id} onClick={() => openUserDetail(u)} className="cursor-pointer transition-colors"
                     style={{ borderBottom: "1px solid hsla(0,0%,100%,0.04)" }}
                     onMouseEnter={e => (e.currentTarget.style.background = "hsla(0,0%,100%,0.03)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
@@ -312,6 +354,18 @@ const AdminDashboard = () => {
                     <td className="px-4 py-2.5 text-xs capitalize" style={{ color: "hsla(0,0%,100%,0.65)" }}>{u.plan || "—"}</td>
                     <td className="px-4 py-2.5 text-xs" style={{ color: "hsla(0,0%,100%,0.55)" }}>
                       {u.trialEndsAt ? new Date(u.trialEndsAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
+                    </td>
+                    <td className="px-4 py-2.5 text-xs" style={{ color: "hsla(0,0%,100%,0.7)" }}>
+                      {u.customDomain ? (
+                        <span>{u.customDomain} ✓</span>
+                      ) : u.requestedDomain ? (
+                        <span className="flex items-center gap-1.5 flex-wrap">
+                          <span>{u.requestedDomain} (pending)</span>
+                          <a href={GODADDY_URL(u.requestedDomain)} target="_blank" rel="noopener noreferrer" className="text-[10px] font-medium hover:underline" style={{ color: "hsl(217,91%,60%)" }} onClick={(e) => e.stopPropagation()}>
+                            Open GoDaddy
+                          </a>
+                        </span>
+                      ) : "—"}
                     </td>
                     <td className="px-4 py-2.5">
                       <span className={`w-2 h-2 rounded-full inline-block ${u.activated ? "bg-green-500" : "bg-white/10"}`} />
@@ -331,7 +385,7 @@ const AdminDashboard = () => {
       {/* User detail panel */}
       {selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "hsla(0,0%,0%,0.5)" }} onClick={() => setSelectedUser(null)}>
-          <div className="w-full max-w-md rounded-xl p-6" style={{ background: "hsl(222,47%,10%)", border: "1px solid hsla(0,0%,100%,0.1)" }} onClick={e => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-xl p-6 max-h-[90vh] overflow-y-auto" style={{ background: "hsl(222,47%,10%)", border: "1px solid hsla(0,0%,100%,0.1)" }} onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold">User Detail</h3>
               <button onClick={() => setSelectedUser(null)}><X className="w-4 h-4" style={{ color: "hsla(0,0%,100%,0.6)" }} /></button>
@@ -343,6 +397,37 @@ const AdminDashboard = () => {
               <DetailRow label="Status" value={<StatusBadge status={selectedUser.status} />} />
               <DetailRow label="Plan" value={selectedUser.plan || "None"} />
               <DetailRow label="Trial Ends" value={selectedUser.trialEndsAt ? new Date(selectedUser.trialEndsAt).toLocaleString() : "—"} />
+              <DetailRow label="Requested domain" value={
+                selectedUser.requestedDomain ? (
+                  <span className="flex items-center gap-2 flex-wrap">
+                    <span>{selectedUser.requestedDomain}</span>
+                    <a href={GODADDY_URL(selectedUser.requestedDomain)} target="_blank" rel="noopener noreferrer" className="text-xs font-medium hover:underline" style={{ color: "hsl(217,91%,60%)" }}>Open GoDaddy</a>
+                  </span>
+                ) : "—"
+              } />
+              <DetailRow label="Custom domain (live)" value={selectedUser.customDomain ? `${selectedUser.customDomain} ✓` : "—"} />
+              <div className="pt-3 border-t border-white/10">
+                <label className="block text-xs font-medium mb-1.5" style={{ color: "hsla(0,0%,100%,0.55)" }}>Set custom domain (quick sync)</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={customDomainInput}
+                    onChange={(e) => setCustomDomainInput(e.target.value)}
+                    placeholder="e.g. www.mybusiness.com"
+                    className="flex-1 min-w-0 px-3 py-2 rounded-lg text-sm outline-none"
+                    style={{ background: "hsla(0,0%,100%,0.06)", border: "1px solid hsla(0,0%,100%,0.1)", color: "white" }}
+                  />
+                  <button
+                    onClick={handleQuickSyncDomain}
+                    disabled={syncingDomain}
+                    className="shrink-0 px-4 py-2 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50"
+                    style={{ background: "hsl(217,91%,60%)", color: "white" }}
+                  >
+                    {syncingDomain ? "Saving…" : "Quick sync"}
+                  </button>
+                </div>
+                <p className="text-[11px] mt-1" style={{ color: "hsla(0,0%,100%,0.45)" }}>After you buy the domain on GoDaddy, enter it here and sync.</p>
+              </div>
               <DetailRow label="Activated" value={selectedUser.activated ? "Yes" : "No"} />
               <DetailRow label="Onboarding" value={selectedUser.onboardingComplete ? "Complete" : "Incomplete"} />
               <DetailRow label="User ID" value={<span className="font-mono text-[11px] break-all">{selectedUser.id}</span>} />

@@ -13,6 +13,7 @@ import HoursManager from "./HoursManager";
 import SocialMediaForm from "./SocialMediaForm";
 import AddressAutocomplete from "./AddressAutocomplete";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { LIMITS, trimAndCap, normalizeHexColor } from "@/lib/businessValidation";
 
 const ACCENT_COLORS = [
   "#3B82F6", "#6366F1", "#8B5CF6", "#EC4899", "#EF4444",
@@ -60,11 +61,24 @@ const BusinessInfoForm = () => {
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
+    const safeForm = {
+      business_name: trimAndCap(form.business_name, LIMITS.business_name),
+      tagline: trimAndCap(form.tagline, LIMITS.tagline),
+      email: trimAndCap(form.email, LIMITS.email),
+      phone: trimAndCap(form.phone, LIMITS.phone),
+      address: trimAndCap(form.address, LIMITS.address),
+      map_query: trimAndCap(form.map_query, LIMITS.map_query),
+    };
+    const safeAreas = serviceAreas
+      .map((a) => trimAndCap(a, LIMITS.service_area))
+      .filter(Boolean)
+      .slice(0, LIMITS.service_areas_max);
+    const safePrimary = normalizeHexColor(primaryColor, "#3B82F6");
     const updateData: any = {
-      ...form,
+      ...safeForm,
       no_business_address: noBusinessAddress,
-      service_areas: serviceAreas,
-      primary_color: primaryColor,
+      service_areas: safeAreas,
+      primary_color: safePrimary,
       secondary_color: themeMode === "light" ? "#FFFFFF" : "#1E3A5F",
     };
     if (noBusinessAddress) {
@@ -90,8 +104,10 @@ const BusinessInfoForm = () => {
   };
 
   const addServiceArea = (city: string) => {
-    const trimmed = city.trim();
-    if (trimmed && !serviceAreas.includes(trimmed)) setServiceAreas([...serviceAreas, trimmed]);
+    const trimmed = trimAndCap(city, LIMITS.service_area);
+    if (trimmed && !serviceAreas.includes(trimmed) && serviceAreas.length < LIMITS.service_areas_max) {
+      setServiceAreas([...serviceAreas, trimmed]);
+    }
     setCitySearch("");
   };
 
@@ -99,10 +115,23 @@ const BusinessInfoForm = () => {
 
   if (loading) return <FormSkeleton rows={6} />;
 
+  const maxFor = (key: keyof typeof form) => (key === "business_name" ? LIMITS.business_name : key === "tagline" ? LIMITS.tagline : key === "email" ? LIMITS.email : key === "phone" ? LIMITS.phone : key === "address" ? LIMITS.address : LIMITS.map_query);
+  const showCount = (key: keyof typeof form) => {
+    const max = maxFor(key);
+    return form[key].length >= max * 0.8;
+  };
   const field = (label: string, key: keyof typeof form, type = "text", placeholder = "") => (
     <div className="space-y-2">
       <Label className="text-sm font-medium text-white/75">{label}</Label>
-      <Input type={type} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} placeholder={placeholder} className="h-11 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent" />
+      <Input
+        type={type}
+        value={form[key]}
+        onChange={(e) => setForm({ ...form, [key]: trimAndCap(e.target.value, maxFor(key)) })}
+        placeholder={placeholder}
+        maxLength={maxFor(key)}
+        className="h-11 text-base bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent"
+      />
+      {showCount(key) && <p className="text-xs text-white/40">{form[key].length}/{maxFor(key)}</p>}
     </div>
   );
 
@@ -113,21 +142,29 @@ const BusinessInfoForm = () => {
         {ACCENT_COLORS.map(c => (
           <button
             key={c}
+            type="button"
             onClick={() => setPrimaryColor(c)}
-            className={`w-8 h-8 rounded-lg transition-all hover:scale-110 ${primaryColor === c ? "ring-2 ring-white ring-offset-2 ring-offset-[hsl(215,50%,10%)] scale-110" : "ring-1 ring-white/10"}`}
+            className={`min-w-[44px] min-h-[44px] w-11 h-11 rounded-lg flex items-center justify-center transition-all hover:scale-110 ${primaryColor === c ? "ring-2 ring-white ring-offset-2 ring-offset-[hsl(215,50%,10%)] scale-110" : "ring-1 ring-white/10"}`}
             style={{ background: c }}
+            aria-label="Select accent color"
           />
         ))}
-        <label className="relative cursor-pointer">
+        <label className="relative cursor-pointer min-w-[44px] min-h-[44px] w-11 h-11 flex items-center justify-center rounded-lg">
           <div className="w-8 h-8 rounded-lg border-2 border-dashed border-white/20 flex items-center justify-center hover:border-white/40 transition-colors" style={{ background: primaryColor }}>
             <Plus className="w-3 h-3 text-white/60" />
           </div>
-          <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer" />
+          <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(normalizeHexColor(e.target.value, "#3B82F6"))} className="absolute inset-0 opacity-0 cursor-pointer" />
         </label>
       </div>
       <div className="flex items-center gap-2">
         <div className="w-6 h-6 rounded-md border border-white/10" style={{ background: primaryColor }} />
-        <Input value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="h-8 w-28 bg-white/5 border-white/10 text-white text-xs font-mono focus-visible:ring-accent" />
+        <Input
+          value={primaryColor}
+          onChange={(e) => setPrimaryColor(normalizeHexColor(e.target.value, "#3B82F6") || primaryColor)}
+          className="h-8 w-28 bg-white/5 border-white/10 text-white text-xs font-mono focus-visible:ring-accent"
+          maxLength={7}
+          placeholder="#3B82F6"
+        />
       </div>
     </div>
   );
@@ -158,7 +195,14 @@ const BusinessInfoForm = () => {
         {field("Business Name", "business_name", "text", "Your Business Name")}
         <div className="space-y-2">
           <Label className="text-sm font-medium text-white/75">Tagline</Label>
-          <Textarea value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} placeholder="A short description of your business" className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent min-h-[80px]" />
+          <Textarea
+            value={form.tagline}
+            onChange={(e) => setForm({ ...form, tagline: trimAndCap(e.target.value, LIMITS.tagline) })}
+            placeholder="A short description of your business"
+            maxLength={LIMITS.tagline}
+            className="text-base bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-accent min-h-[80px]"
+          />
+          {form.tagline.length >= LIMITS.tagline * 0.8 && <p className="text-xs text-white/40">{form.tagline.length}/{LIMITS.tagline}</p>}
         </div>
         {field("Email", "email", "email", "contact@business.com")}
         {field("Phone", "phone", "tel", "(555) 123-4567")}

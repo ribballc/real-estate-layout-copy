@@ -18,6 +18,8 @@ export interface BusinessProfile {
   tiktok: string;
   youtube: string;
   google_business: string;
+  /** Optional custom hero background image URL for generated site */
+  hero_background_url?: string | null;
 }
 
 export interface BusinessService {
@@ -59,6 +61,16 @@ export interface BusinessAddOn {
   image_url: string | null;
 }
 
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface WhyChooseUsItem {
+  title: string;
+  description: string;
+}
+
 export interface WebsiteCopy {
   hero_headline: string;
   hero_subheadline: string;
@@ -66,6 +78,12 @@ export interface WebsiteCopy {
   cta_tagline: string;
   seo_meta_description: string;
   services_descriptions: Record<string, string> | null;
+  /** Optional CMS overrides for section titles (section_services, section_packages, etc.) */
+  section_titles?: Record<string, string>;
+  /** Optional CMS FAQ; when set, used instead of defaultFaqs */
+  faq_items?: FaqItem[] | null;
+  /** Optional CMS Why Choose Us; when set, used instead of default features */
+  why_choose_us_items?: WhyChooseUsItem[] | null;
 }
 
 export interface BusinessData {
@@ -160,7 +178,7 @@ function fetchBusinessData(
         supabase.from("testimonials").select("*").eq("user_id", userId).order("created_at"),
         supabase.from("photos").select("*").eq("user_id", userId).order("sort_order"),
         supabase.from("add_ons").select("*").eq("user_id", userId).order("sort_order"),
-        supabase.from("website_copy").select("hero_headline, hero_subheadline, about_paragraph, cta_tagline, seo_meta_description, services_descriptions").eq("user_id", userId).single(),
+        supabase.from("website_copy").select("hero_headline, hero_subheadline, about_paragraph, cta_tagline, seo_meta_description, services_descriptions, section_titles, faq_items, why_choose_us_items").eq("user_id", userId).single(),
       ]);
 
       if (profileRes.data) setProfile(profileRes.data as unknown as BusinessProfile);

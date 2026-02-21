@@ -7,7 +7,7 @@ import {
   DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, ArrowRight,
   CalendarDays, Star, MoreHorizontal, Briefcase,
   CheckCircle2, Circle, Store, Wrench, Clock, Users, Sparkles, ChevronDown, X,
-  Car, Hash, Camera, ExternalLink, CalendarOff, Copy, Check,
+  Car, Hash, Camera, ExternalLink, CalendarOff, Copy, Check, QrCode,
 } from "lucide-react";
 import WeeklySummaryCard from "./WeeklySummaryCard";
 import BookingActivityFeed from "./BookingActivityFeed";
@@ -210,13 +210,15 @@ interface OnboardingData {
   photosCount: number;
   testimonialsCount: number;
   slug: string | null;
+  qrCodeUrl: string | null;
 }
 
 const ONBOARDING_STEPS: OnboardingStep[] = [
   { id: "services", icon: Wrench, title: "Add your first service", description: "So customers can see what you offer", route: "/dashboard/services", check: d => d.servicesCount > 0 },
   { id: "photos", icon: Camera, title: "Upload a photo of your work", description: "Show off your best details", route: "/dashboard/photos", check: d => d.photosCount > 0 },
-  { id: "hours", icon: Clock, title: "Set your business hours", description: "So customers book the right times", route: "/dashboard/hours", check: d => d.hasHours },
+  { id: "hours", icon: Clock, title: "Set your business hours", description: "So customers book the right times", route: "/dashboard/business#hours", check: d => d.hasHours },
   { id: "link", icon: ExternalLink, title: "Share your booking link", description: "Start getting bookings today", copyAction: true, check: () => false },
+  { id: "qr", icon: QrCode, title: "Get your booking QR code", description: "Print or share your site as a QR code", route: "/dashboard/the-lab", check: d => !!d.qrCodeUrl },
   { id: "review", icon: Star, title: "Collect your first review", description: "Build trust with new visitors", route: "/dashboard/testimonials", check: d => d.testimonialsCount > 0 },
 ];
 
@@ -356,7 +358,7 @@ const HomeDashboard = () => {
       supabase.from("services").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("photos").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("testimonials").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-      supabase.from("profiles").select("business_name, phone, slug").eq("user_id", user.id).single(),
+      supabase.from("profiles").select("business_name, phone, slug, qr_code_url").eq("user_id", user.id).single(),
       supabase.from("business_hours").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       supabase.from("customers").select("id", { count: "exact", head: true }).eq("user_id", user.id),
     ]).then(([b, s, p, t, profile, hours, customers]) => {
@@ -375,6 +377,7 @@ const HomeDashboard = () => {
         photosCount,
         testimonialsCount,
         slug: (profile.data as any)?.slug || null,
+        qrCodeUrl: (profile.data as any)?.qr_code_url || null,
       });
 
       setLoading(false);

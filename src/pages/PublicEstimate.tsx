@@ -152,7 +152,8 @@ const PublicEstimate = () => {
           </div>
 
           {/* Line items */}
-          <table className="w-full mb-6">
+          <div className="overflow-x-auto mb-6">
+          <table className="w-full min-w-[280px]">
             <thead>
               <tr className="text-xs uppercase tracking-wider" style={{ color: "hsl(215, 16%, 55%)" }}>
                 <th className="text-left pb-3 font-semibold">Service</th>
@@ -172,6 +173,7 @@ const PublicEstimate = () => {
               ))}
             </tbody>
           </table>
+          </div>
 
           {/* Totals */}
           <div className="border-t pt-4 space-y-2" style={{ borderColor: "hsl(214, 20%, 92%)" }}>

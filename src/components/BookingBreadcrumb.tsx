@@ -23,7 +23,7 @@ const BookingBreadcrumb = ({ activeStep, totalSteps, label }: BookingBreadcrumbP
             height: "100%",
             width: `${progress}%`,
             borderRadius: 2,
-            background: "hsl(217,91%,55%)",
+            background: "var(--site-primary, hsl(217,91%,55%))",
             transition: "width 0.4s ease",
           }}
         />

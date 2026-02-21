@@ -458,6 +458,9 @@ export type Database = {
           updated_at: string
           user_id: string
           wants_custom_domain: boolean
+          requested_domain: string | null
+          domain_requested_at: string | null
+          custom_domain: string | null
           youtube: string
         }
         Insert: {
@@ -502,6 +505,9 @@ export type Database = {
           updated_at?: string
           user_id: string
           wants_custom_domain?: boolean
+          requested_domain?: string | null
+          domain_requested_at?: string | null
+          custom_domain?: string | null
           youtube?: string
         }
         Update: {
@@ -546,6 +552,9 @@ export type Database = {
           updated_at?: string
           user_id?: string
           wants_custom_domain?: boolean
+          requested_domain?: string | null
+          domain_requested_at?: string | null
+          custom_domain?: string | null
           youtube?: string
         }
         Relationships: []

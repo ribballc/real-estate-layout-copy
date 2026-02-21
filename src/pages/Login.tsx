@@ -95,7 +95,7 @@ const Login = () => {
     padding: "12px 16px",
     paddingLeft: 40,
     outline: "none",
-    fontSize: 14,
+    fontSize: 16,
     transition: "border-color 0.2s, box-shadow 0.2s",
   });
 
@@ -155,7 +155,7 @@ const Login = () => {
               <div className="relative">
                 <Lock className="absolute top-1/2 -translate-y-1/2 pointer-events-none" style={{ left: 13, color: "hsla(0,0%,100%,0.35)", width: 15, height: 15 }} />
                 <input id="password" type={showPassword ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ ...inputStyle("password"), paddingRight: 44 }} onFocus={() => setFocusedField("password")} onBlur={() => setFocusedField(null)} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute top-1/2 -translate-y-1/2 transition-opacity hover:opacity-80" style={{ right: 12, color: "hsla(0,0%,100%,0.35)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute top-1/2 -translate-y-1/2 transition-opacity hover:opacity-80 flex items-center justify-center min-w-[44px] min-h-[44px]" style={{ right: 4, color: "hsla(0,0%,100%,0.35)", background: "none", border: "none", cursor: "pointer" }} aria-label={showPassword ? "Hide password" : "Show password"}>
                   {showPassword ? <EyeOff style={{ width: 15, height: 15 }} /> : <Eye style={{ width: 15, height: 15 }} />}
                 </button>
               </div>
@@ -200,11 +200,6 @@ const Login = () => {
               Continue with Apple
             </button>
           </motion.div>
-
-          {/* Muted one-liner */}
-          <motion.p className="text-center mt-4" style={{ color: "hsla(0,0%,100%,0.28)", fontSize: 12, fontStyle: "italic" }} {...fadeIn(1.1)}>
-            Your 9-to-5 just called. It wants your schedule.
-          </motion.p>
 
           {/* Bottom signup link */}
           <motion.p className="text-center mt-4" style={{ fontSize: 13, color: "hsla(0,0%,100%,0.45)" }} {...fadeIn(1.1)}>

@@ -16,6 +16,7 @@ import DeluxeFAQ from '@/components/deluxe/DeluxeFAQ';
 import DeluxeContactForm from '@/components/deluxe/DeluxeContactForm';
 import DeluxeFooter from '@/components/deluxe/DeluxeFooter';
 import DeluxeLandingSkeleton from '@/components/deluxe/DeluxeLandingSkeleton';
+import { getSiteThemeStyle } from '@/lib/siteTheme';
 
 const DeluxeLanding = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -122,8 +123,13 @@ const DeluxeLanding = () => {
     );
   }
 
+  const themeStyle = getSiteThemeStyle(profile);
+
   return (
-    <main className="min-h-screen bg-[hsl(0,0%,4%)] site-page" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
+    <main
+      className="min-h-screen bg-[hsl(0,0%,4%)] site-page"
+      style={{ ...themeStyle, fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" } as React.CSSProperties}
+    >
       <SEOHead
         title={`${businessName} — Auto Detailing${city ? ` in ${city}` : ''} | Book Online`}
         description={`${businessName} offers professional ${servicesList || 'auto detailing'}${city ? ` in ${city}` : ''}. Book online 24/7. Deposits accepted, instant confirmation, SMS reminders.`}
@@ -133,16 +139,16 @@ const DeluxeLanding = () => {
         extraMeta={geoMeta}
       />
       <DeluxeNavbar profile={profile} slug={slug} />
-      <DeluxeHero profile={profile} slug={slug} websiteCopy={websiteCopy} />
-      <DeluxeServicesOverview services={services} slug={slug} />
-      <DeluxePackages services={services} slug={slug} />
-      <DeluxeGallery photos={photos} />
-      <DeluxeTestimonials testimonials={testimonials} />
+      <DeluxeHero profile={profile} slug={slug} websiteCopy={websiteCopy} testimonials={testimonials} />
+      <DeluxeServicesOverview services={services} slug={slug} websiteCopy={websiteCopy} />
+      <DeluxePackages services={services} slug={slug} websiteCopy={websiteCopy} />
+      <DeluxeGallery photos={photos} websiteCopy={websiteCopy} />
+      <DeluxeTestimonials testimonials={testimonials} websiteCopy={websiteCopy} />
       <DeluxeWhyChooseUs profile={profile} websiteCopy={websiteCopy} />
       <DeluxeAddOnServices addOns={addOns} slug={slug} />
       <DeluxeCTASection profile={profile} slug={slug} websiteCopy={websiteCopy} />
-      <DeluxeFAQ profile={profile} />
-      <DeluxeContactForm profile={profile} services={services} addOns={addOns} hours={hours} slug={slug} />
+      <DeluxeFAQ profile={profile} websiteCopy={websiteCopy} />
+      <DeluxeContactForm profile={profile} services={services} addOns={addOns} hours={hours} slug={slug} websiteCopy={websiteCopy} />
       <DeluxeFooter profile={profile} hours={hours} />
     </main>
   );

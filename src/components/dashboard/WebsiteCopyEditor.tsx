@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, Sparkles, Save, RotateCcw } from "lucide-react";
+import { trimAndCap } from "@/lib/businessValidation";
 
 interface CopyField {
   key: string;
@@ -73,15 +74,22 @@ const WebsiteCopyEditor = () => {
   const handleSave = async () => {
     if (!user || !copy) return;
     setSaving(true);
+    const safeCopy = {
+      hero_headline: trimAndCap(copy.hero_headline, 80),
+      hero_subheadline: trimAndCap(copy.hero_subheadline, 200),
+      about_paragraph: trimAndCap(copy.about_paragraph, 600),
+      seo_meta_description: trimAndCap(copy.seo_meta_description, 160),
+      cta_tagline: trimAndCap(copy.cta_tagline, 60),
+    };
     const { error } = await supabase
       .from("website_copy")
       .update({
-        hero_headline: copy.hero_headline,
-        hero_subheadline: copy.hero_subheadline,
-        about_paragraph: copy.about_paragraph,
+        hero_headline: safeCopy.hero_headline,
+        hero_subheadline: safeCopy.hero_subheadline,
+        about_paragraph: safeCopy.about_paragraph,
         services_descriptions: copy.services_descriptions as any,
-        seo_meta_description: copy.seo_meta_description,
-        cta_tagline: copy.cta_tagline,
+        seo_meta_description: safeCopy.seo_meta_description,
+        cta_tagline: safeCopy.cta_tagline,
         hero_headline_edited: copy.hero_headline_edited,
         hero_subheadline_edited: copy.hero_subheadline_edited,
         about_paragraph_edited: copy.about_paragraph_edited,

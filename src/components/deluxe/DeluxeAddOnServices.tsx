@@ -36,11 +36,11 @@ const DeluxeAddOnServices = ({ addOns, slug }: Props) => {
       <div className="absolute inset-0 pointer-events-none" style={{
         background: 'linear-gradient(180deg, transparent 0%, hsla(0,0%,100%,0.01) 50%, transparent 100%)',
       }} />
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="site-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SiteFadeIn>
           <div className="max-w-2xl mb-14">
             <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Add-ons</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-3">
+            <h2 className="site-heading-2 font-bold text-white mb-3">
               Level up your detail
             </h2>
             <p className="text-white/50 text-base">

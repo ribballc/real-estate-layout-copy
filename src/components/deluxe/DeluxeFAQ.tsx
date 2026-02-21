@@ -1,6 +1,7 @@
 import { Plus, Minus } from 'lucide-react';
 import { useState } from 'react';
-import type { BusinessProfile } from '@/hooks/useBusinessData';
+import type { BusinessProfile, WebsiteCopy } from '@/hooks/useBusinessData';
+import { getSectionTitle } from '@/lib/siteSectionCopy';
 import SiteFadeIn from './SiteFadeIn';
 
 const defaultFaqs = [
@@ -14,28 +15,32 @@ const defaultFaqs = [
 
 interface Props {
   profile?: BusinessProfile | null;
+  websiteCopy?: WebsiteCopy | null;
 }
 
-const DeluxeFAQ = ({ profile }: Props) => {
+const DeluxeFAQ = ({ profile, websiteCopy }: Props) => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const faqs = websiteCopy?.faq_items && websiteCopy.faq_items.length > 0
+    ? websiteCopy.faq_items
+    : defaultFaqs;
 
   return (
     <section id="faq" className="site-section relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse at 50% 50%, hsla(217,91%,60%,0.03) 0%, transparent 70%)',
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
+        background: 'radial-gradient(ellipse at 50% 50%, var(--site-primary, hsl(217,91%,60%)) 0%, transparent 70%)',
       }} />
-      <div className="max-w-3xl mx-auto px-6">
+      <div className="site-container max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <SiteFadeIn>
           <div className="text-center mb-16">
             <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">FAQ</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
-              Common questions
+            <h2 className="site-heading-2 font-bold text-white">
+              {getSectionTitle(websiteCopy, 'section_faq')}
             </h2>
           </div>
         </SiteFadeIn>
 
         <div className="space-y-2">
-          {defaultFaqs.map((faq, index) => (
+          {faqs.map((faq, index) => (
             <SiteFadeIn key={index} delay={index * 60} distance={16}>
               <div
                 className={`border rounded-xl overflow-hidden transition-all duration-400 ${
@@ -45,7 +50,7 @@ const DeluxeFAQ = ({ profile }: Props) => {
                 }`}
               >
                 <button
-                  className="w-full px-5 py-4 flex items-center justify-between text-left"
+                  className="site-tap-target w-full px-5 py-4 flex items-center justify-between text-left min-h-[48px]"
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
                 >
                   <span className="font-medium text-white/80 text-[15px] pr-4">{faq.question}</span>
@@ -61,7 +66,7 @@ const DeluxeFAQ = ({ profile }: Props) => {
                 <div
                   className="overflow-hidden transition-all duration-400 ease-out"
                   style={{
-                    maxHeight: openIndex === index ? '200px' : '0px',
+                    maxHeight: openIndex === index ? '2000px' : '0px',
                     opacity: openIndex === index ? 1 : 0,
                   }}
                 >

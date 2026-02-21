@@ -238,9 +238,18 @@ const DashboardLayout = () => {
             }}
           >
             <div className="h-14 flex items-center gap-3 px-4 md:px-8">
-              {/* Mobile: Logo left, chat + avatar right */}
+              {/* Mobile: Menu + Logo left, chat + avatar right */}
               <div className="flex md:hidden items-center justify-between w-full">
-                <img src={isDark ? darkerLogo : darkerLogoDark} alt="Darker" className="h-7" />
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setMobileOpen(true)}
+                    className={`min-w-[44px] min-h-[44px] -ml-2 rounded-xl flex items-center justify-center transition-colors ${isDark ? "text-white/60 hover:text-white hover:bg-white/[0.06]" : "text-[hsl(215,14%,51%)] hover:text-[hsl(218,24%,23%)] hover:bg-[hsl(210,40%,96%)]"}`}
+                    aria-label="Open menu"
+                  >
+                    <Menu className="w-5 h-5" />
+                  </button>
+                  <img src={isDark ? darkerLogo : darkerLogoDark} alt="Darker" className="h-7" />
+                </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => chatbotRef.current?.toggle()}

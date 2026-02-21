@@ -244,7 +244,7 @@ const Onboarding = () => {
 
       <div
         ref={cardRef}
-        className="relative z-10 w-full"
+        className="relative z-10 w-full max-h-[90dvh] overflow-y-auto"
         style={{
           maxWidth: 520,
           background: "hsla(215,50%,10%,0.85)",

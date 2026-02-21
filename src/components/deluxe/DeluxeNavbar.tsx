@@ -43,9 +43,9 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
         WebkitBackdropFilter: 'blur(24px) saturate(180%)',
       } : undefined}
     >
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
-          <a href="#home" className="flex items-center gap-3">
+          <a href="#home" className="flex items-center gap-3 min-h-[44px] items-center">
             {logoSrc ? (
               <img src={logoSrc} alt={businessName} className="h-7 w-auto" />
             ) : (
@@ -68,9 +68,10 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
           <div className="hidden md:flex items-center">
             {slug && (
               <a href={`/site/${slug}/book`} className="book-now-link">
-                <button className="text-[12px] px-5 py-2 rounded-full font-semibold flex items-center gap-2 group text-white transition-all duration-300"
+                <button
+                  className="site-tap-target text-[12px] px-5 py-2 rounded-full font-semibold flex items-center gap-2 group text-white transition-all duration-300"
                   style={{
-                    background: 'linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,91%,52%) 100%)',
+                    background: 'linear-gradient(135deg, var(--site-primary, hsl(217,91%,60%)) 0%, var(--site-secondary, hsl(230,91%,52%)) 100%)',
                     boxShadow: '0 2px 12px -2px hsla(217,91%,60%,0.3)',
                   }}
                 >
@@ -82,7 +83,7 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
           </div>
 
           <button
-            className="md:hidden text-white/70 p-2 -mr-2"
+            className="md:hidden site-tap-target text-white/70 p-2 -mr-2 flex items-center justify-center"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? 'Close menu' : 'Open menu'}
           >
@@ -100,12 +101,12 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
               animation: 'siteFadeUp 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           >
-            <div className="flex flex-col px-6 pt-6 gap-0.5">
+            <div className="flex flex-col px-4 sm:px-6 pt-6 gap-0.5">
               {navLinks.map((link, i) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="py-3 text-white/70 hover:text-white transition-colors text-lg font-medium border-b border-white/[0.04]"
+                  className="site-tap-target py-3 min-h-[44px] flex items-center text-white/70 hover:text-white transition-colors text-lg font-medium border-b border-white/[0.04]"
                   style={{ animation: `siteFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) ${i * 40}ms both` }}
                   onClick={() => setIsOpen(false)}
                 >
@@ -119,9 +120,10 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
                   onClick={() => setIsOpen(false)}
                   style={{ animation: `siteFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) ${navLinks.length * 40}ms both` }}
                 >
-                  <button className="w-full text-base px-5 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 text-white"
+                  <button
+                    className="site-tap-target w-full text-base px-5 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 text-white"
                     style={{
-                      background: 'linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,91%,52%) 100%)',
+                      background: 'linear-gradient(135deg, var(--site-primary, hsl(217,91%,60%)) 0%, var(--site-secondary, hsl(230,91%,52%)) 100%)',
                     }}
                   >
                     <Sparkles className="w-4 h-4" />

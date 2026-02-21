@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import CopyButton from "@/components/CopyButton";
 import type { SupportChatbotHandle } from "./SupportChatbot";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface WebsitePageProps {
   chatbotRef?: React.RefObject<SupportChatbotHandle>;
@@ -69,6 +70,7 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const showTrialCTAs = !canAccessFeature();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!user) return;
@@ -392,8 +394,8 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
           title={activeTab === "booking" ? "Booking Page" : "Your Website"}
           className="w-full border-0"
           style={{
-            height: "calc(100vh - 320px)",
-            minHeight: 480,
+            height: isMobile ? "50dvh" : "calc(100vh - 320px)",
+            minHeight: isMobile ? 320 : 480,
             borderRadius: 12,
             opacity: revealPhase === "done" ? 1 : 0,
             transform: revealPhase === "done" ? "scale(1)" : "scale(0.98)",

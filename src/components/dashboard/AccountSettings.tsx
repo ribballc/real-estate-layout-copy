@@ -1,14 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CreditCard, XCircle, Globe, Bell, ListChecks, Sun, Moon, Bug } from "lucide-react";
+import { Loader2, CreditCard, XCircle, Globe, Bell, ListChecks, Sun, Moon, Bug, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CancelFlowModal from "./CancelFlowModal";
 import { useAllFeatureFlags } from "@/hooks/useFeatureFlag";
+import { getDomainSuggestions } from "@/lib/domainSuggestions";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 const AccountSettings = () => {
   const { user, signOut } = useAuth();
@@ -23,23 +32,37 @@ const AccountSettings = () => {
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [wantsCustomDomain, setWantsCustomDomain] = useState(false);
+  const [businessName, setBusinessName] = useState("");
+  const [profileSlug, setProfileSlug] = useState("");
+  const [requestedDomain, setRequestedDomain] = useState<string | null>(null);
+  const [customDomain, setCustomDomain] = useState<string | null>(null);
+  const [selectedDomainSuggestion, setSelectedDomainSuggestion] = useState("");
+  const [savingDomainRequest, setSavingDomainRequest] = useState(false);
+  const [existingDomainOpen, setExistingDomainOpen] = useState(false);
+  const [existingDomainInput, setExistingDomainInput] = useState("");
+  const [savingExistingDomain, setSavingExistingDomain] = useState(false);
   const [showDataPrefs, setShowDataPrefs] = useState(false);
   const [showDeleteFlow, setShowDeleteFlow] = useState(false);
   const { flags, loading: flagsLoading } = useAllFeatureFlags();
   const [waitlistToggles, setWaitlistToggles] = useState<Record<string, boolean>>({});
 
-  // Load custom domain preference
-  useState(() => {
+  useEffect(() => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("wants_custom_domain")
+      .select("business_name, slug, wants_custom_domain, requested_domain, custom_domain")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
-        if (data) setWantsCustomDomain(data.wants_custom_domain ?? false);
+        if (data) {
+          setBusinessName((data.business_name as string) || "");
+          setProfileSlug((data.slug as string) || "");
+          setWantsCustomDomain((data.wants_custom_domain as boolean) ?? false);
+          setRequestedDomain((data.requested_domain as string) || null);
+          setCustomDomain((data.custom_domain as string) || null);
+        }
       });
-  });
+  }, [user]);
 
   const handleManageSubscription = () => {
     navigate("/dashboard/billing");
@@ -93,6 +116,71 @@ const AccountSettings = () => {
       await supabase.from("profiles").update({ wants_custom_domain: next }).eq("user_id", user.id);
       toast({ title: next ? "You're on the waitlist!" : "Removed from waitlist", description: next ? "We'll notify you when custom domains launch." : "" });
     }
+  };
+
+  const domainSuggestions = getDomainSuggestions(businessName || profileSlug);
+
+  /** Normalize domain: lowercase, trim, strip protocol and www. */
+  const normalizeDomain = (raw: string): string => {
+    let s = raw.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/^www\./, "");
+    const slash = s.indexOf("/");
+    if (slash !== -1) s = s.slice(0, slash);
+    return s.trim().slice(0, 253);
+  };
+
+  const handleRequestDomain = async () => {
+    const domain = selectedDomainSuggestion.trim() || requestedDomain;
+    if (!domain || !user) {
+      toast({ title: "Select a domain", description: "Choose one of the suggested domains below.", variant: "destructive" });
+      return;
+    }
+    setSavingDomainRequest(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        requested_domain: domain,
+        domain_requested_at: new Date().toISOString(),
+        wants_custom_domain: true,
+      })
+      .eq("user_id", user.id);
+    setSavingDomainRequest(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    setRequestedDomain(domain);
+    setSelectedDomainSuggestion(domain);
+    toast({
+      title: "Request received",
+      description: "Our team will purchase the domain and connect it to your site. We'll notify you when it's live.",
+    });
+  };
+
+  const handleSaveExistingDomain = async () => {
+    const domain = normalizeDomain(existingDomainInput);
+    if (!domain || !/^[a-z0-9][a-z0-9.-]*\.[a-z]{2,}$/i.test(domain)) {
+      toast({ title: "Invalid domain", description: "Enter a domain like example.com", variant: "destructive" });
+      return;
+    }
+    if (!user) return;
+    setSavingExistingDomain(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        requested_domain: domain,
+        domain_requested_at: new Date().toISOString(),
+        wants_custom_domain: true,
+      })
+      .eq("user_id", user.id);
+    setSavingExistingDomain(false);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    setRequestedDomain(domain);
+    setExistingDomainOpen(false);
+    setExistingDomainInput("");
+    toast({ title: "Domain saved", description: "Follow the steps below to link it to your site." });
   };
 
   // Compute slug from profile (we can infer from user context)
@@ -170,30 +258,130 @@ const AccountSettings = () => {
         onProceedToStripe={handleManageSubscription}
       />
 
-      {/* Custom Domain Placeholder */}
+      {/* Website Domain */}
       <div className="dash-card">
-        <div className="flex items-center gap-3 mb-3">
+        <div className="flex items-center gap-3 mb-2">
           <Globe className="w-5 h-5" style={{ color: "hsl(217,91%,60%)" }} />
-          <h3 className="dash-card-title text-white">Custom Domain</h3>
-          <span className="dash-badge" style={{ background: "hsla(217,91%,60%,0.15)", color: "hsl(217,91%,60%)" }}>
-            COMING SOON
-          </span>
+          <h3 className="dash-card-title text-white">Website Domain</h3>
         </div>
-        <p className="text-white/50 text-sm mb-4">Use your own domain instead of darkerdigital.com. Get notified when this launches.</p>
-        <label className="flex items-center gap-3 cursor-pointer">
-          <button
-            onClick={toggleCustomDomain}
-            className="relative w-10 h-5 rounded-full transition-colors"
-            style={{ background: wantsCustomDomain ? "hsl(217,91%,60%)" : "hsla(0,0%,100%,0.15)" }}
-          >
-            <span
-              className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform"
-              style={{ transform: wantsCustomDomain ? "translateX(20px)" : "translateX(0)" }}
-            />
-          </button>
-          <span className="text-sm text-white/70">Notify me when available</span>
-        </label>
+        <p className="text-white/50 text-sm mb-4">Use your own domain. Pick one of the suggested domains for your business and we&apos;ll connect it to your site.</p>
+
+        {customDomain ? (
+          <div className="rounded-lg p-3 flex items-center gap-2" style={{ background: "hsla(142,71%,45%,0.1)", border: "1px solid hsla(142,71%,45%,0.25)" }}>
+            <Check className="w-4 h-4 text-green-400 flex-shrink-0" />
+            <span className="text-sm text-white/90 font-medium">Live: {customDomain}</span>
+          </div>
+        ) : requestedDomain ? (
+          <div className="rounded-lg p-3 mb-4" style={{ background: "hsla(217,91%,60%,0.08)", border: "1px solid hsla(217,91%,60%,0.2)" }}>
+            <p className="text-sm text-white/80 font-medium mb-1">Requested: {requestedDomain}</p>
+            <p className="text-xs text-white/50">We&apos;ve received your request. Point your domain&apos;s DNS to us (or we&apos;ll connect it), and your site and booking will go live at this domain.</p>
+          </div>
+        ) : (
+          <>
+            <p className="text-xs text-white/50 mb-3">Top 3 suggested domains for your business:</p>
+            <div className="space-y-2 mb-4">
+              {domainSuggestions.map((domain) => (
+                <div
+                  key={domain}
+                  className="flex items-center gap-3 rounded-lg p-2.5 cursor-pointer transition-colors"
+                  style={{
+                    background: selectedDomainSuggestion === domain ? "hsla(217,91%,60%,0.12)" : "hsla(0,0%,100%,0.04)",
+                    border: `1px solid ${selectedDomainSuggestion === domain ? "hsla(217,91%,60%,0.35)" : "hsla(0,0%,100%,0.08)"}`,
+                  }}
+                  onClick={() => setSelectedDomainSuggestion(domain)}
+                >
+                  <div
+                    className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ border: `2px solid ${selectedDomainSuggestion === domain ? "hsl(217,91%,60%)" : "hsla(0,0%,100%,0.3)"}` }}
+                  >
+                    {selectedDomainSuggestion === domain && <div className="w-2 h-2 rounded-full" style={{ background: "hsl(217,91%,60%)" }} />}
+                  </div>
+                  <span className="text-sm text-white/90 font-medium flex-1">{domain}</span>
+                </div>
+              ))}
+            </div>
+            <Button
+              onClick={handleRequestDomain}
+              disabled={savingDomainRequest || !selectedDomainSuggestion}
+              className="w-full h-11 gap-2"
+              style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}
+            >
+              {savingDomainRequest ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />}
+              Request domain
+            </Button>
+            <p className="text-center mt-3">
+              <button
+                type="button"
+                onClick={() => setExistingDomainOpen(true)}
+                className="text-sm text-white/80 underline underline-offset-2 hover:text-white transition-colors"
+              >
+                Already Have A Domain
+              </button>
+            </p>
+          </>
+        )}
+
+        {!customDomain && !requestedDomain && (
+          <label className="flex items-center gap-3 cursor-pointer mt-4 pt-4 border-t border-white/10">
+            <button
+              onClick={toggleCustomDomain}
+              className="relative w-10 h-5 rounded-full transition-colors"
+              style={{ background: wantsCustomDomain ? "hsl(217,91%,60%)" : "hsla(0,0%,100%,0.15)" }}
+            >
+              <span
+                className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform"
+                style={{ transform: wantsCustomDomain ? "translateX(20px)" : "translateX(0)" }}
+              />
+            </button>
+            <span className="text-sm text-white/70">Notify me when custom domains launch (no request)</span>
+          </label>
+        )}
       </div>
+
+      {/* Already Have A Domain — connect existing domain */}
+      <Dialog open={existingDomainOpen} onOpenChange={setExistingDomainOpen}>
+        <DialogContent className="bg-[hsl(215,50%,12%)] border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-white">Connect your domain</DialogTitle>
+            <DialogDescription className="text-white/60">
+              Enter the domain you already own. We&apos;ll give you simple steps to point it to your website and booking pages.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label className="text-white/80">Your domain</Label>
+              <Input
+                value={existingDomainInput}
+                onChange={(e) => setExistingDomainInput(e.target.value)}
+                placeholder="example.com"
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/30"
+                onKeyDown={(e) => e.key === "Enter" && handleSaveExistingDomain()}
+              />
+              <p className="text-xs text-white/50">Enter without www or https — we&apos;ll use it for your site and booking.</p>
+            </div>
+            <div className="rounded-lg bg-white/5 border border-white/10 p-4 space-y-2">
+              <p className="text-sm font-medium text-white/90">Setup steps (after you save):</p>
+              <ol className="text-sm text-white/70 list-decimal list-inside space-y-1">
+                <li>In your domain registrar, add a CNAME record pointing to us (we&apos;ll show the exact target).</li>
+                <li>Once DNS updates, we verify and your site and booking go live on your domain.</li>
+              </ol>
+            </div>
+          </div>
+          <DialogFooter className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-2 [&>button]:w-full sm:[&>button]:w-auto [&>button]:min-h-[44px]">
+            <Button variant="outline" className="border-white/20 text-white" onClick={() => setExistingDomainOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveExistingDomain}
+              disabled={savingExistingDomain || !existingDomainInput.trim()}
+              style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}
+            >
+              {savingExistingDomain ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+              Save & get setup steps
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Coming Soon Features */}
       {!flagsLoading && comingSoonFlags.length > 0 && (

@@ -62,8 +62,20 @@ const Book = () => {
 
         if (services.length === 0) {
           return (
-            <div className="text-center py-20" style={{ fontSize: 14, color: "hsl(215,16%,55%)" }}>
-              No services available yet.
+            <div className="text-center py-16 px-4">
+              <p className="font-medium mb-1" style={{ fontSize: 18, color: "hsl(222,47%,11%)" }}>
+                No services available yet
+              </p>
+              <p style={{ fontSize: 14, color: "hsl(215,16%,55%)", marginBottom: 24, maxWidth: 320, marginLeft: "auto", marginRight: "auto" }}>
+                This business is still setting up their booking menu. Check back soon or visit their site.
+              </p>
+              <a
+                href={slug ? `/site/${slug}` : "#"}
+                className="inline-flex items-center justify-center gap-2 font-semibold rounded-full px-6 py-3 transition-all"
+                style={{ background: "var(--site-primary, hsl(217,91%,55%))", color: "white", fontSize: 14 }}
+              >
+                Back to {businessData.profile?.business_name || "site"}
+              </a>
             </div>
           );
         }
@@ -168,7 +180,7 @@ const Book = () => {
                   transition: "opacity 0.15s, box-shadow 0.15s, transform 0.15s",
                   ...(selectedService
                     ? {
-                        background: "linear-gradient(135deg, hsl(217,91%,55%), hsl(224,91%,48%))",
+                        background: "linear-gradient(135deg, var(--site-primary, hsl(217,91%,55%)), var(--site-secondary, hsl(224,91%,48%)))",
                         color: "white",
                         boxShadow: "0 4px 16px hsla(217,91%,55%,0.35)",
                         animation: "ctaBounce 0.25s ease",

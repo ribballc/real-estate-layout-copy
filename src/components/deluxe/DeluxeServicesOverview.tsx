@@ -3,12 +3,13 @@ import stock1 from '@/assets/deluxe/stock-1.jpg';
 import stock2 from '@/assets/deluxe/stock-2.jpg';
 import stock5 from '@/assets/deluxe/stock-5.jpg';
 import stock7 from '@/assets/deluxe/stock-7.jpg';
-import type { BusinessService } from '@/hooks/useBusinessData';
+import type { BusinessService, WebsiteCopy } from '@/hooks/useBusinessData';
+import { getSectionTitle } from '@/lib/siteSectionCopy';
 import SiteFadeIn from './SiteFadeIn';
 
 const serviceIcons = [Droplets, Shield, Paintbrush, Car];
 const serviceAccents = [
-  'hsl(217,91%,60%)',
+  'var(--site-primary, hsl(217,91%,60%))',
   'hsl(142,71%,45%)',
   'hsl(45,93%,58%)',
   'hsl(280,60%,60%)',
@@ -26,9 +27,10 @@ const defaultImages = [stock2, stock5, stock1, stock7];
 interface Props {
   services?: BusinessService[];
   slug?: string;
+  websiteCopy?: WebsiteCopy | null;
 }
 
-const DeluxeServicesOverview = ({ services, slug }: Props) => {
+const DeluxeServicesOverview = ({ services, slug, websiteCopy }: Props) => {
   const displayServices = services && services.length > 0
     ? services.map((s, i) => ({
         image: s.image_url || defaultImages[i % defaultImages.length],
@@ -40,17 +42,17 @@ const DeluxeServicesOverview = ({ services, slug }: Props) => {
 
   return (
     <section id="services" className="site-section">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="site-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SiteFadeIn>
           <div className="max-w-2xl mb-14">
             <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Services</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-3"
+            <h2 className="site-heading-2 font-bold text-white mb-3"
               style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
             >
-              What we do best
+              {getSectionTitle(websiteCopy, 'section_services')}
             </h2>
             <p className="text-white/50 text-base leading-relaxed line-clamp-2" style={{ overflowWrap: 'break-word' }}>
-              From quick refreshes to complete transformations.
+              {getSectionTitle(websiteCopy, 'section_services_sub')}
             </p>
           </div>
         </SiteFadeIn>

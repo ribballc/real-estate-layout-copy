@@ -100,7 +100,7 @@ const CancelFlowModal = ({ open, onClose, onProceedToStripe }: CancelFlowModalPr
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="sm:max-w-md bg-[hsl(215,50%,10%)] border-[hsla(0,0%,100%,0.1)] text-white">
+      <DialogContent className="sm:max-w-md max-h-[90dvh] overflow-y-auto bg-[hsl(215,50%,10%)] border-[hsla(0,0%,100%,0.1)] text-white">
         <DialogHeader>
           <DialogTitle className="text-white text-lg">
             {step === 1 ? "Before you go…" : "We'd love to help"}

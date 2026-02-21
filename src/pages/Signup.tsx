@@ -83,7 +83,7 @@ const Signup = () => {
     background: "hsla(0,0%,100%,0.05)",
     border: "1px solid hsla(0,0%,100%,0.10)",
     color: "white",
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 500,
     cursor: "pointer",
   };
@@ -124,7 +124,7 @@ const Signup = () => {
               <Label htmlFor="email" className="text-white/70 text-sm">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsla(0,0%,100%,0.35)" }} />
-                <input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full h-12 text-sm" style={inputStyle} onFocus={focusHandler} onBlur={blurHandler} />
+                <input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full h-12 text-base" style={inputStyle} onFocus={focusHandler} onBlur={blurHandler} />
               </div>
             </div>
 
@@ -132,8 +132,8 @@ const Signup = () => {
               <Label htmlFor="password" className="text-white/70 text-sm">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsla(0,0%,100%,0.35)" }} />
-                <input id="password" type={showPassword ? "text" : "password"} placeholder="Create a password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="w-full h-12 text-sm" style={{ ...inputStyle, paddingRight: 40 }} onFocus={focusHandler} onBlur={blurHandler} />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: "hsla(0,0%,100%,0.3)" }}>
+                <input id="password" type={showPassword ? "text" : "password"} placeholder="Create a password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} className="w-full h-12 text-base" style={{ ...inputStyle, paddingRight: 40 }} onFocus={focusHandler} onBlur={blurHandler} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center min-w-[44px] min-h-[44px]" style={{ color: "hsla(0,0%,100%,0.3)" }} aria-label={showPassword ? "Hide password" : "Show password"}>
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>

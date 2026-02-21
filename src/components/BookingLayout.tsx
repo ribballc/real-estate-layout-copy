@@ -6,6 +6,7 @@ import SEOHead from "@/components/SEOHead";
 import darkerLogo from "@/assets/darker-logo.png";
 import { ShieldCheck } from "lucide-react";
 import { useBusinessDataBySlug, type BusinessData } from "@/hooks/useBusinessData";
+import { getSiteThemeStyle } from "@/lib/siteTheme";
 
 interface BookingLayoutProps {
   activeStep: number;
@@ -31,6 +32,7 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
   }, [location.pathname]);
 
   const businessName = businessData.profile?.business_name || "";
+  const themeStyle = getSiteThemeStyle(businessData.profile);
   const ogImage = businessData.photos?.length
     ? businessData.photos[0].url
     : "https://darkerdigital.com/og-default.jpg";
@@ -39,7 +41,7 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
   return (
     <div
       className="min-h-[100dvh] overflow-x-hidden"
-      style={{ background: "hsl(210,40%,97%)" }}
+      style={{ background: "hsl(210,40%,97%)", ...themeStyle } as React.CSSProperties}
     >
       <SEOHead
         title={businessName ? `Book with ${businessName}` : "Book Online"}

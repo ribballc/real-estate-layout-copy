@@ -42,7 +42,7 @@ serve(async (req) => {
     // Get all profiles
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("user_id, business_name, email, subscription_status, subscription_plan, trial_active, trial_ends_at, subscription_ends_at, onboarding_complete, created_at, stripe_customer_id");
+      .select("user_id, business_name, email, subscription_status, subscription_plan, trial_active, trial_ends_at, subscription_ends_at, onboarding_complete, created_at, stripe_customer_id, requested_domain, domain_requested_at, custom_domain");
 
     const profileMap = new Map<string, any>();
     for (const p of profiles ?? []) profileMap.set(p.user_id, p);
@@ -99,6 +99,9 @@ serve(async (req) => {
         trialEndsAt: p?.trial_ends_at || null,
         activated: p?.trial_active || false,
         onboardingComplete: p?.onboarding_complete || false,
+        requestedDomain: p?.requested_domain || null,
+        domainRequestedAt: p?.domain_requested_at || null,
+        customDomain: p?.custom_domain || null,
       });
     }
 

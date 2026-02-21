@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import {
   Building2, Wrench, Camera, Star, Settings, LogOut,
   CalendarDays, Users, LayoutDashboard, Lock,
-  Globe, ChevronLeft, ChevronRight, KanbanSquare, ClipboardList, FlaskConical, Zap,
+  Globe, ChevronLeft, ChevronRight, KanbanSquare, ClipboardList, FlaskConical, Zap, CreditCard,
 } from "lucide-react";
 import { NavLink as RouterNavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -32,6 +32,7 @@ const NAV_ITEMS: NavItem[] = [
   { title: "Photos", url: "/dashboard/photos", icon: Camera },
   { title: "Testimonials", url: "/dashboard/testimonials", icon: Star },
   { title: "The Lab", url: "/dashboard/the-lab", icon: FlaskConical },
+  { title: "Billing", url: "/dashboard/billing", icon: CreditCard },
 ];
 
 interface DashboardSidebarProps {

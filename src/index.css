@@ -1571,13 +1571,39 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 .site-page {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Fluid type scale */
+  --site-text-xs: clamp(0.6875rem, 0.65rem + 0.15vw, 0.75rem);
+  --site-text-sm: clamp(0.8125rem, 0.75rem + 0.25vw, 0.875rem);
+  --site-text-base: clamp(0.9375rem, 0.85rem + 0.35vw, 1rem);
+  --site-text-lg: clamp(1.0625rem, 0.95rem + 0.45vw, 1.125rem);
+  --site-text-xl: clamp(1.25rem, 1.05rem + 0.75vw, 1.5rem);
+  --site-text-2xl: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  --site-text-3xl: clamp(1.875rem, 1.4rem + 1.8vw, 2.25rem);
+  --site-text-4xl: clamp(2.25rem, 1.7rem + 2.2vw, 3rem);
+  --site-text-5xl: clamp(2.75rem, 2rem + 2.5vw, 3.75rem);
+  --site-text-6xl: clamp(3rem, 2.2rem + 3vw, 4.5rem);
+  --site-text-7xl: clamp(3.5rem, 2.5rem + 3.5vw, 5rem);
+  /* Vertical rhythm */
+  --site-section-padding: clamp(4rem, 8vw, 6rem);
+  --site-content-gap: clamp(1rem, 2vw, 1.5rem);
+  /* Borders and shadows (hand-tuned) */
+  --site-border: 1px solid rgba(255, 255, 255, 0.08);
+  --site-card-shadow: 0 4px 24px -8px rgba(0, 0, 0, 0.4);
+  --site-card-shadow-hover: 0 12px 40px -12px rgba(0, 0, 0, 0.5);
 }
 .site-section {
-  padding: 6rem 0;
+  padding: var(--site-section-padding) 0;
+}
+.site-section .site-container {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1rem, 4vw, 2rem);
+  padding-right: clamp(1rem, 4vw, 2rem);
 }
 @media (min-width: 768px) {
   .site-section {
-    padding: 8rem 0;
+    padding: clamp(5rem, 10vw, 8rem) 0;
   }
 }
 .site-btn-primary {
@@ -1587,6 +1613,40 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
 }
 .site-btn-primary:hover {
   background: hsl(0, 0%, 92%);
+}
+.site-heading-1 {
+  font-size: var(--site-text-5xl);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 640px) {
+  .site-heading-1 { font-size: var(--site-text-6xl); }
+}
+@media (min-width: 1024px) {
+  .site-heading-1 { font-size: var(--site-text-7xl); }
+}
+.site-heading-2 {
+  font-size: var(--site-text-3xl);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 768px) {
+  .site-heading-2 { font-size: var(--site-text-4xl); }
+}
+@media (min-width: 1024px) {
+  .site-heading-2 { font-size: var(--site-text-5xl); }
+}
+.site-body {
+  font-size: var(--site-text-base);
+  line-height: 1.6;
+}
+.site-body-lg {
+  font-size: var(--site-text-lg);
+  line-height: 1.55;
+}
+.site-tap-target {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 /* Site page animations */

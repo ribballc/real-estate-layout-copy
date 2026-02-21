@@ -6,7 +6,8 @@ import stock4 from '@/assets/deluxe/stock-4.jpg';
 import stock5 from '@/assets/deluxe/stock-5.jpg';
 import stock6 from '@/assets/deluxe/stock-6.jpg';
 import stock7 from '@/assets/deluxe/stock-7.jpg';
-import type { BusinessPhoto } from '@/hooks/useBusinessData';
+import type { BusinessPhoto, WebsiteCopy } from '@/hooks/useBusinessData';
+import { getSectionTitle } from '@/lib/siteSectionCopy';
 import { useIsMobile } from '@/hooks/use-mobile';
 import SiteFadeIn from './SiteFadeIn';
 
@@ -23,6 +24,7 @@ const defaultGalleryItems = [
 
 interface Props {
   photos?: BusinessPhoto[];
+  websiteCopy?: WebsiteCopy | null;
 }
 
 const ease = (t: number) =>
@@ -54,7 +56,7 @@ const GalleryCard = ({
   </div>
 );
 
-const DeluxeGallery = ({ photos }: Props) => {
+const DeluxeGallery = ({ photos, websiteCopy }: Props) => {
   const hasCms = photos && photos.length > 0;
   const galleryItems = hasCms
     ? photos.map((p) => ({ image: p.url, caption: p.caption || '' }))
@@ -99,11 +101,11 @@ const DeluxeGallery = ({ photos }: Props) => {
 
   return (
     <section id="gallery" className="site-section overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="site-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section tag */}
         <SiteFadeIn>
           <div className="mb-10">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium">Our Work</p>
+            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium">{getSectionTitle(websiteCopy, 'section_gallery')}</p>
           </div>
         </SiteFadeIn>
 
@@ -128,9 +130,7 @@ const DeluxeGallery = ({ photos }: Props) => {
           >
             <div className="text-center px-4">
               <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight">
-                Results speak
-                <br />
-                <span style={{ color: 'hsl(217,91%,60%)' }}>for themselves</span>
+                {getSectionTitle(websiteCopy, 'section_gallery_sub')}
               </h2>
               <p className="text-white/35 text-sm mt-2 hidden sm:block">Swipe-worthy results, every single time.</p>
             </div>

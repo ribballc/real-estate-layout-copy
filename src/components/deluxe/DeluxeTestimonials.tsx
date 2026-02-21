@@ -1,5 +1,6 @@
 import { Star, Quote } from 'lucide-react';
-import type { BusinessTestimonial } from '@/hooks/useBusinessData';
+import type { BusinessTestimonial, WebsiteCopy } from '@/hooks/useBusinessData';
+import { getSectionTitle } from '@/lib/siteSectionCopy';
 import SiteFadeIn from './SiteFadeIn';
 
 const defaultTestimonials = [
@@ -11,9 +12,10 @@ const defaultTestimonials = [
 
 interface Props {
   testimonials?: BusinessTestimonial[];
+  websiteCopy?: WebsiteCopy | null;
 }
 
-const DeluxeTestimonials = ({ testimonials }: Props) => {
+const DeluxeTestimonials = ({ testimonials, websiteCopy }: Props) => {
   const hasCms = testimonials && testimonials.length > 0;
 
   const displayTestimonials = hasCms
@@ -27,12 +29,12 @@ const DeluxeTestimonials = ({ testimonials }: Props) => {
 
   return (
     <section id="testimonials" className="site-section">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="site-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SiteFadeIn>
           <div className="text-center max-w-2xl mx-auto mb-14">
             <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Reviews</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
-              The word on the street
+            <h2 className="site-heading-2 font-bold text-white">
+              {getSectionTitle(websiteCopy, 'section_testimonials')}
             </h2>
           </div>
         </SiteFadeIn>
