@@ -11,10 +11,10 @@ interface Props {
 const DeluxeHero = ({ profile, slug, websiteCopy }: Props) => {
   const businessName = profile?.business_name || 'Your Detailing Studio';
   const city = profile?.address?.split(',')[0]?.trim() || '';
-  const headline = websiteCopy?.hero_headline || businessName;
+  const headline = businessName;
   const subheadline = websiteCopy?.hero_subheadline
     || profile?.tagline
-    || 'Premium detailing. Online booking. Instant confirmation.';
+    || 'Premium auto detailing. Book online instantly.';
 
   return (
     <section id="home" className="relative min-h-[85vh] md:min-h-[90vh] flex items-end overflow-hidden">
@@ -48,7 +48,7 @@ const DeluxeHero = ({ profile, slug, websiteCopy }: Props) => {
         </div>
 
         <h1
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] tracking-tight mb-5 max-w-3xl"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] tracking-tight mb-5 max-w-3xl line-clamp-2"
           style={{
             animation: 'siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both',
             overflowWrap: 'break-word',
@@ -59,7 +59,7 @@ const DeluxeHero = ({ profile, slug, websiteCopy }: Props) => {
         </h1>
 
         <p
-          className="text-base sm:text-lg text-white/45 max-w-lg mb-8 leading-relaxed line-clamp-2"
+          className="text-base sm:text-lg text-white/45 max-w-md mb-8 leading-relaxed line-clamp-2"
           style={{
             animation: 'siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both',
             overflowWrap: 'break-word',
