@@ -4,10 +4,9 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, Lock, Eye, EyeOff, User, Phone } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import darkerLogo from "@/assets/darker-logo.png";
 import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
@@ -15,19 +14,10 @@ import { trackEvent, setPixelUserData, captureAndStoreFbCookies } from "@/lib/tr
 
 const Signup = () => {
   const { toast } = useToast();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const formatPhone = (value: string) => {
-    const digits = value.replace(/\D/g, "").slice(0, 10);
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,38 +26,28 @@ const Signup = () => {
       email,
       password,
       options: {
-        data: { first_name: name, full_name: name },
         emailRedirectTo: `${window.location.origin}/onboarding`,
       },
     });
     setLoading(false);
     if (error) {
       toast({ title: "Signup failed", description: error.message, variant: "destructive" });
-    } else if (data.session) {
-      // Store phone on profile if provided
-      if (phone && data.user) {
-        await supabase.from('profiles').update({ phone: phone.replace(/\D/g, '') }).eq('user_id', data.user.id);
-      }
+    } else {
       // Capture FB cookies at first touch
       if (data.user) captureAndStoreFbCookies(data.user.id);
       // Fire CompleteRegistration event
-      setPixelUserData({ email, firstName: name, phone });
+      setPixelUserData({ email });
       trackEvent({
         eventName: 'CompleteRegistration',
         customData: { content_name: 'Account Created', status: true, currency: 'USD', value: 0 },
-        userData: { email, firstName: name, phone: phone || undefined },
+        userData: { email },
       });
-      window.location.href = "/onboarding";
-    } else {
-      // Fire CompleteRegistration event
-      setPixelUserData({ email, firstName: name, phone });
-      trackEvent({
-        eventName: 'CompleteRegistration',
-        customData: { content_name: 'Account Created', status: true, currency: 'USD', value: 0 },
-        userData: { email, firstName: name, phone: phone || undefined },
-      });
-      toast({ title: "Account created!", description: "Taking you to set up your business…" });
-      window.location.href = "/onboarding";
+      if (data.session) {
+        window.location.href = "/onboarding";
+      } else {
+        toast({ title: "Account created!", description: "Taking you to set up your business…" });
+        window.location.href = "/onboarding";
+      }
     }
   };
 
@@ -102,7 +82,7 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 py-12">
-      <SEOHead title="Create Your Account" description="Get your detailing website and booking system set up in 5 minutes. See your live site free — no card needed to get started." canonicalUrl="https://darkerdigital.com/signup" />
+      <SEOHead title="Start Your Free Trial" description="Get your detailing website and booking system set up in 5 minutes. See your live site free — no card needed to get started." canonicalUrl="https://darkerdigital.com/signup" />
       {/* Background image + overlay */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -138,9 +118,9 @@ const Signup = () => {
           </div>
 
           {/* Heading */}
-          <h1 className="text-center text-white font-bold text-2xl mb-1">Create your account</h1>
+          <h1 className="text-center text-white font-bold text-2xl mb-1">Start your free trial</h1>
           <p className="text-center mb-8" style={{ color: "hsla(0,0%,100%,0.5)", fontSize: 14 }}>
-            Start managing bookings in minutes
+            No credit card required
           </p>
 
           {/* Google */}
@@ -168,25 +148,6 @@ const Signup = () => {
           {/* Form */}
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-white/70 text-sm">Full Name</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsla(0,0%,100%,0.35)" }} />
-                <input
-                  id="name"
-                  type="text"
-                  placeholder="Full name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="w-full h-12 text-sm"
-                  style={{ ...inputStyle, ["--tw-placeholder-color" as string]: "hsla(0,0%,100%,0.35)" }}
-                  onFocus={focusHandler}
-                  onBlur={blurHandler}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
               <Label htmlFor="email" className="text-white/70 text-sm">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsla(0,0%,100%,0.35)" }} />
@@ -197,24 +158,6 @@ const Signup = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full h-12 text-sm"
-                  style={inputStyle}
-                  onFocus={focusHandler}
-                  onBlur={blurHandler}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="phone" className="text-white/70 text-sm">Phone <span style={{ color: "hsla(0,0%,100%,0.3)" }}>(optional)</span></Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style={{ color: "hsla(0,0%,100%,0.35)" }} />
-                <input
-                  id="phone"
-                  type="tel"
-                  placeholder="(555) 123-4567"
-                  value={phone}
-                  onChange={(e) => setPhone(formatPhone(e.target.value))}
                   className="w-full h-12 text-sm"
                   style={inputStyle}
                   onFocus={focusHandler}
@@ -271,7 +214,7 @@ const Signup = () => {
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
-              {loading ? "Creating account…" : "Create Account"}
+              {loading ? "Creating account…" : "Start Free Trial"}
             </button>
           </form>
 
