@@ -14,7 +14,7 @@ import { CSS } from "@dnd-kit/utilities";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
 import {
   Loader2, Plus, Clock, User, Mail, Phone, DollarSign, FileText, X,
-  ChevronLeft, ChevronRight, PhoneCall, CheckCircle2, Calendar as CalendarIcon,
+  ChevronLeft, ChevronRight, PhoneCall, CheckCircle2, Calendar as CalendarIcon, MessageSquare,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -323,9 +323,33 @@ const JobsManager = () => {
           </div>
           {vehicle && <p className="text-xs truncate" style={{ color: th.textMuted }}>{vehicle}</p>}
           <p className="text-xs" style={{ color: th.textMuted2 }}>{booking.service_title}</p>
-          <div className="flex items-center gap-2 text-xs" style={{ color: th.textMuted }}>
-            <CalendarIcon className="w-3 h-3" />
-            {format(new Date(booking.booking_date + "T00:00"), "MMM d")} · {formatTimeShort(booking.booking_time)}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs" style={{ color: th.textMuted }}>
+              <CalendarIcon className="w-3 h-3" />
+              {format(new Date(booking.booking_date + "T00:00"), "MMM d")} · {formatTimeShort(booking.booking_time)}
+            </div>
+            {booking.customer_phone && (
+              <div className="flex items-center gap-1">
+                <a
+                  href={`tel:${booking.customer_phone}`}
+                  onClick={e => e.stopPropagation()}
+                  className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+                  style={{ background: isDark ? "hsla(142, 71%, 45%, 0.12)" : "hsla(142, 71%, 45%, 0.1)", color: "hsl(142, 71%, 45%)" }}
+                  title="Call"
+                >
+                  <PhoneCall className="w-3.5 h-3.5" />
+                </a>
+                <a
+                  href={`sms:${booking.customer_phone}`}
+                  onClick={e => e.stopPropagation()}
+                  className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+                  style={{ background: isDark ? "hsla(217, 91%, 60%, 0.12)" : "hsla(217, 91%, 60%, 0.1)", color: "hsl(217, 91%, 60%)" }}
+                  title="SMS"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
