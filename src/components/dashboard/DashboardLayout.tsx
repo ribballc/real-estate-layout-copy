@@ -38,7 +38,7 @@ const pageTitles: Record<string, { title: string; description: string; icon: any
   "/dashboard/services": { title: "Services", description: "Manage your service offerings and pricing", icon: Wrench },
   "/dashboard/photos": { title: "Photos", description: "Upload your portfolio and gallery", icon: Camera },
   "/dashboard/testimonials": { title: "Testimonials", description: "Manage customer reviews", icon: Star },
-  "/dashboard/offer-lab": { title: "Offer Lab", description: "Proven strategies to 3x your bookings and revenue", icon: FlaskConical },
+  "/dashboard/the-lab": { title: "The Lab", description: "Growth strategies and QR code tools", icon: FlaskConical },
   "/dashboard/account": { title: "Account", description: "Manage your account settings", icon: Settings },
 };
 

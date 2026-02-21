@@ -9,7 +9,7 @@ const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/dashboard/services": "your service menu, pricing, and add-ons",
   "/dashboard/photos": "your portfolio gallery and before/after photos",
   "/dashboard/testimonials": "automated review collection and management",
-  "/dashboard/offer-lab": "proven revenue growth strategies and templates",
+  "/dashboard/the-lab": "proven revenue growth strategies and QR code tools",
   "/dashboard/website": "your live website and booking page customization",
 };
 
@@ -21,7 +21,7 @@ const PAGE_BENEFITS: Record<string, string[]> = {
   "/dashboard/services": ["Service menu builder", "Custom pricing", "Add-ons & packages"],
   "/dashboard/photos": ["Before/after gallery", "Portfolio showcase", "Auto-display on site"],
   "/dashboard/testimonials": ["Automated review requests", "Display on your site", "Build customer trust"],
-  "/dashboard/offer-lab": ["Revenue growth strategies", "Proven templates", "Seasonal promotions"],
+  "/dashboard/the-lab": ["Revenue growth strategies", "Proven templates", "QR code generator"],
   "/dashboard/website": ["Live website editor", "Custom branding", "SEO optimization"],
 };
 
@@ -35,7 +35,7 @@ function getPageName(path: string): string {
     services: "Services",
     photos: "Photos",
     testimonials: "Testimonials",
-    "offer-lab": "Offer Lab",
+    "the-lab": "The Lab",
     website: "Website",
   };
   return names[seg] || "This page";

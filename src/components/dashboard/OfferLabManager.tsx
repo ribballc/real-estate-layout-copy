@@ -707,7 +707,7 @@ const OfferLabManager = () => {
       <div className="mb-8">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-[22px] font-bold tracking-tight text-white/90">Offer Lab</h1>
+            <h1 className="text-[22px] font-bold tracking-tight text-white/90">Offers</h1>
             <p className="dash-subtitle mt-0.5">
               Proven strategies to 3x your bookings and revenue
             </p>
