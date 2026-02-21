@@ -1,4 +1,4 @@
-import { Check, ArrowRight, Crown } from 'lucide-react';
+import { Check, ArrowRight, Crown, Zap } from 'lucide-react';
 import type { BusinessService } from '@/hooks/useBusinessData';
 import SiteFadeIn from './SiteFadeIn';
 
@@ -15,20 +15,20 @@ const defaultPackages: Package[] = [
     title: 'Express Wash',
     price: '$60',
     description: 'Quick exterior refresh',
-    features: ['Hand wash & dry', 'Ceramic wax application', 'Door jambs', 'Tire shine', 'Bug & tar removal'],
+    features: ['Hand wash & dry', 'Ceramic wax', 'Door jambs', 'Tire shine', 'Bug & tar removal'],
   },
   {
     title: 'Interior Detail',
     price: '$95',
     description: 'Complete interior transformation',
-    features: ['Full vacuum & blow out', 'Steam cleaning', 'Shampoo seats & mats', 'Leather conditioning', 'Dashboard & console detail', 'Vent & cupholder cleaning'],
+    features: ['Full vacuum & blow out', 'Steam cleaning', 'Shampoo seats & mats', 'Leather conditioning', 'Dashboard detail', 'Vent cleaning'],
     popular: true,
   },
   {
     title: 'Full Detail',
     price: '$180',
-    description: 'Inside and out, showroom ready',
-    features: ['Everything in Interior', 'Hand wash & clay bar', 'Paint decontamination', 'Ceramic sealant', 'Trim restoration', 'Engine bay cleaning'],
+    description: 'Showroom ready, inside & out',
+    features: ['Everything in Interior', 'Hand wash & clay bar', 'Paint decontamination', 'Ceramic sealant', 'Trim restoration', 'Engine bay detail'],
   },
 ];
 
@@ -54,84 +54,97 @@ const DeluxePackages = ({ services, slug }: Props) => {
     <section id="packages" className="site-section">
       <div className="max-w-7xl mx-auto px-6">
         <SiteFadeIn>
-          <div className="text-center max-w-2xl mx-auto mb-16">
+          <div className="text-center max-w-2xl mx-auto mb-14">
             <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Pricing</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
-              Simple, transparent pricing
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-3">
+              Pick your package
             </h2>
-            <p className="text-white/40 text-lg">
-              No hidden fees. Pick a package and book in under 60 seconds.
+            <p className="text-white/35 text-base">
+              No hidden fees. Book in under 60 seconds.
             </p>
           </div>
         </SiteFadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-          {packages.map((pkg, index) => (
-            <SiteFadeIn key={index} delay={index * 120}>
-              <div
-                className={`relative rounded-2xl p-6 transition-all duration-500 group ${
-                  pkg.popular
-                    ? 'bg-white text-[hsl(0,0%,4%)] ring-1 ring-white shadow-[0_0_60px_-12px_rgba(255,255,255,0.15)]'
-                    : 'bg-white/[0.03] border border-white/[0.08] hover:border-white/[0.15] hover:bg-white/[0.05]'
-                }`}
-              >
-                {pkg.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="text-[11px] uppercase tracking-widest font-semibold bg-[hsl(0,0%,4%)] text-white px-4 py-1 rounded-full flex items-center gap-1.5">
-                      <Crown className="w-3 h-3" />
-                      Most Popular
-                    </span>
-                  </div>
-                )}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-5xl mx-auto">
+          {packages.map((pkg, index) => {
+            const popular = pkg.popular;
+            return (
+              <SiteFadeIn key={index} delay={index * 100}>
+                <div
+                  className={`relative rounded-2xl p-6 transition-all duration-500 group overflow-hidden ${
+                    popular
+                      ? 'ring-1 ring-[hsl(217,91%,60%)] shadow-[0_0_40px_-12px_hsla(217,91%,60%,0.2)]'
+                      : 'bg-white/[0.03] border border-white/[0.08] hover:border-white/[0.15]'
+                  }`}
+                  style={popular ? {
+                    background: 'linear-gradient(180deg, hsla(217,91%,60%,0.06) 0%, hsla(0,0%,100%,0.02) 100%)',
+                  } : undefined}
+                >
+                  {/* Popular glow */}
+                  {popular && (
+                    <div className="absolute inset-0 pointer-events-none" style={{
+                      background: 'radial-gradient(ellipse at 50% 0%, hsla(217,91%,60%,0.08) 0%, transparent 60%)',
+                    }} />
+                  )}
 
-                <div className="mb-6">
-                  <h3 className={`text-lg font-semibold mb-1 truncate ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white'}`}>
-                    {pkg.title}
-                  </h3>
-                  <p className={`text-[13px] line-clamp-2 ${pkg.popular ? 'text-[hsl(0,0%,4%)]/50' : 'text-white/40'}`}
-                    style={{ overflowWrap: 'break-word' }}
-                  >
-                    {pkg.description}
-                  </p>
-                </div>
-
-                <div className="mb-6">
-                  <span className={`text-4xl font-bold tracking-tight ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white'}`}>
-                    {pkg.price}
-                  </span>
-                  <span className={`text-sm ml-1 ${pkg.popular ? 'text-[hsl(0,0%,4%)]/40' : 'text-white/30'}`}>
-                    starting
-                  </span>
-                </div>
-
-                <a href={slug ? `/site/${slug}/book` : "#contact"} className={slug ? "book-now-link block mb-6" : "block mb-6"}>
-                  <button className={`w-full py-3.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 group/btn ${
-                    pkg.popular
-                      ? 'bg-[hsl(0,0%,4%)] text-white hover:bg-[hsl(0,0%,15%)] hover:shadow-lg'
-                      : 'bg-white/[0.08] text-white hover:bg-white/[0.14] border border-white/[0.1]'
-                  }`}>
-                    Book Now
-                    <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
-                  </button>
-                </a>
-
-                <ul className="space-y-3">
-                  {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3 text-[13px]">
-                      <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                        pkg.popular ? 'bg-[hsl(0,0%,4%)]/10' : 'bg-white/[0.08]'
-                      }`}>
-                        <Check className={`w-2.5 h-2.5 ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white/60'}`} />
-                      </div>
-                      <span className={pkg.popular ? 'text-[hsl(0,0%,4%)]/70' : 'text-white/50'}>
-                        {feature}
+                  {popular && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                      <span className="text-[11px] uppercase tracking-widest font-semibold px-4 py-1 rounded-full flex items-center gap-1.5"
+                        style={{
+                          background: 'linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,91%,52%) 100%)',
+                          color: 'white',
+                          boxShadow: '0 4px 12px -2px hsla(217,91%,60%,0.3)',
+                        }}
+                      >
+                        <Zap className="w-3 h-3" />
+                        Most Popular
                       </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </SiteFadeIn>
-          ))}
+                    </div>
+                  )}
+
+                  <div className="relative z-10">
+                    <div className="mb-5 pt-2">
+                      <h3 className="text-white font-semibold text-lg mb-0.5 truncate">{pkg.title}</h3>
+                      <p className="text-white/35 text-[13px] line-clamp-1" style={{ overflowWrap: 'break-word' }}>{pkg.description}</p>
+                    </div>
+
+                    <div className="mb-5">
+                      <span className="text-3xl font-bold text-white tracking-tight">{pkg.price}</span>
+                      <span className="text-white/25 text-sm ml-1">starting</span>
+                    </div>
+
+                    <a href={slug ? `/site/${slug}/book` : "#contact"} className={slug ? "book-now-link block mb-5" : "block mb-5"}>
+                      <button className={`w-full py-3 rounded-full text-[13px] font-semibold transition-all duration-300 flex items-center justify-center gap-2 group/btn ${
+                        popular
+                          ? 'text-white hover:shadow-[0_4px_20px_-4px_hsla(217,91%,60%,0.3)]'
+                          : 'bg-white/[0.08] text-white hover:bg-white/[0.14] border border-white/[0.1]'
+                      }`}
+                        style={popular ? {
+                          background: 'linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,91%,52%) 100%)',
+                        } : undefined}
+                      >
+                        Book Now
+                        <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
+                      </button>
+                    </a>
+
+                    <ul className="space-y-2.5">
+                      {pkg.features.map((feature, i) => (
+                        <li key={i} className="flex items-start gap-2.5 text-[13px]">
+                          <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                            popular ? 'bg-[hsla(217,91%,60%,0.12)]' : 'bg-white/[0.06]'
+                          }`}>
+                            <Check className={`w-2.5 h-2.5 ${popular ? 'text-[hsl(217,91%,60%)]' : 'text-white/50'}`} />
+                          </div>
+                          <span className="text-white/45">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </SiteFadeIn>
+            );
+          })}
         </div>
       </div>
     </section>

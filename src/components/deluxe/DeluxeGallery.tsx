@@ -37,7 +37,11 @@ const GalleryCard = ({
 }) => (
   <div
     className="group relative aspect-[4/3] overflow-hidden rounded-xl"
-    style={{ transform: `translateY(${offsetY}px)`, willChange: 'transform' }}
+    style={{
+      transform: `translateY(${offsetY}px)`,
+      willChange: 'transform',
+      boxShadow: '0 4px 24px -8px hsla(0,0%,0%,0.5)',
+    }}
   >
     <img
       src={typeof item.image === 'string' ? item.image : String(item.image)}
@@ -45,7 +49,7 @@ const GalleryCard = ({
       loading="lazy"
       className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
     />
-    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500" />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
     {item.caption && (
       <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out">
         <span className="text-white text-sm font-medium drop-shadow-lg">{item.caption}</span>
@@ -93,26 +97,16 @@ const DeluxeGallery = ({ photos }: Props) => {
   const bottomRow = items.slice(4, 8);
 
   const eased = ease(progress);
-  const gap = isMobile ? eased * 56 : eased * 72;
-  const textOpacity = Math.max(0, (eased - 0.25) / 0.75);
-  const textScale = 0.9 + 0.1 * Math.min(1, Math.max(0, (eased - 0.15) / 0.6));
+  const gap = isMobile ? eased * 60 : eased * 80;
+  const textOpacity = Math.max(0, (eased - 0.2) / 0.8);
+  const textScale = 0.92 + 0.08 * Math.min(1, Math.max(0, (eased - 0.1) / 0.6));
 
   return (
     <section id="gallery" className="site-section overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Desktop header */}
+        {/* Section tag */}
         <SiteFadeIn>
-          <div className="max-w-2xl mb-16 hidden md:block">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Our Work</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
-              Results speak<br />for themselves
-            </h2>
-          </div>
-        </SiteFadeIn>
-
-        {/* Mobile label only */}
-        <SiteFadeIn>
-          <div className="md:hidden mb-8">
+          <div className="mb-10">
             <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium">Our Work</p>
           </div>
         </SiteFadeIn>
@@ -127,7 +121,7 @@ const DeluxeGallery = ({ photos }: Props) => {
             ))}
           </div>
 
-          {/* Split reveal zone */}
+          {/* Split reveal zone — "Results speak for themselves" inside */}
           <div
             className="flex items-center justify-center pointer-events-none select-none"
             style={{
@@ -138,17 +132,13 @@ const DeluxeGallery = ({ photos }: Props) => {
               overflow: 'hidden',
             }}
           >
-            {/* Mobile: headline reveal */}
-            <div className="md:hidden text-center px-4">
-              <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight tracking-tight">
-                Results speak<br />for themselves
+            <div className="text-center px-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight">
+                Results speak
+                <br />
+                <span style={{ color: 'hsl(217,91%,60%)' }}>for themselves</span>
               </h2>
-            </div>
-            {/* Desktop: subtle accent line */}
-            <div className="hidden md:flex items-center w-full max-w-sm mx-auto gap-4">
-              <div className="flex-1 h-px bg-gradient-to-r from-transparent to-white/20" style={{ transform: `scaleX(${eased})`, transformOrigin: 'left' }} />
-              <span className="text-white/30 text-xs uppercase tracking-[0.25em] whitespace-nowrap font-medium">Our Work</span>
-              <div className="flex-1 h-px bg-gradient-to-l from-transparent to-white/20" style={{ transform: `scaleX(${eased})`, transformOrigin: 'right' }} />
+              <p className="text-white/25 text-sm mt-2 hidden sm:block">Swipe-worthy results, every single time.</p>
             </div>
           </div>
 

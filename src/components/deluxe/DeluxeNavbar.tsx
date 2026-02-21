@@ -17,7 +17,6 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -35,23 +34,31 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
   const logoSrc = profile?.logo_url;
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-[hsl(0,0%,4%)]/90 backdrop-blur-xl border-b border-white/[0.06]' : 'bg-transparent'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      isScrolled ? 'border-b border-white/[0.06]' : 'bg-transparent'
+    }`}
+      style={isScrolled ? {
+        background: 'hsla(0,0%,4%,0.8)',
+        backdropFilter: 'blur(24px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+      } : undefined}
+    >
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
           <a href="#home" className="flex items-center gap-3">
             {logoSrc ? (
-              <img src={logoSrc} alt={businessName} className="h-8 w-auto" />
+              <img src={logoSrc} alt={businessName} className="h-7 w-auto" />
             ) : (
-              <span className="text-white font-semibold text-lg tracking-tight truncate max-w-[200px]">{businessName}</span>
+              <span className="text-white font-semibold text-base tracking-tight truncate max-w-[180px]">{businessName}</span>
             )}
           </a>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-7">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-[13px] text-white/60 hover:text-white transition-colors duration-300 tracking-wide uppercase font-medium"
+                className="text-[12px] text-white/50 hover:text-white transition-colors duration-300 tracking-wide uppercase font-medium"
               >
                 {link.label}
               </a>
@@ -61,16 +68,21 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
           <div className="hidden md:flex items-center">
             {slug && (
               <a href={`/site/${slug}/book`} className="book-now-link">
-                <button className="site-btn-primary text-[13px] px-5 py-2.5 rounded-full font-medium flex items-center gap-2 group">
+                <button className="text-[12px] px-5 py-2 rounded-full font-semibold flex items-center gap-2 group text-white transition-all duration-300"
+                  style={{
+                    background: 'linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,91%,52%) 100%)',
+                    boxShadow: '0 2px 12px -2px hsla(217,91%,60%,0.3)',
+                  }}
+                >
                   Book Now
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                 </button>
               </a>
             )}
           </div>
 
           <button
-            className="md:hidden text-white/80 p-2 -mr-2"
+            className="md:hidden text-white/70 p-2 -mr-2"
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? 'Close menu' : 'Open menu'}
           >
@@ -78,19 +90,23 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
           </button>
         </div>
 
-        {/* Mobile menu — full-height overlay */}
+        {/* Mobile menu */}
         {isOpen && (
           <div
-            className="md:hidden fixed inset-0 top-16 bg-[hsl(0,0%,4%)]/98 backdrop-blur-2xl z-40"
-            style={{ animation: 'siteFadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}
+            className="md:hidden fixed inset-0 top-14 z-40"
+            style={{
+              background: 'hsla(0,0%,4%,0.97)',
+              backdropFilter: 'blur(24px)',
+              animation: 'siteFadeUp 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
           >
-            <div className="flex flex-col px-6 pt-8 gap-1">
+            <div className="flex flex-col px-6 pt-6 gap-0.5">
               {navLinks.map((link, i) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="py-3.5 text-white/80 hover:text-white transition-colors text-lg font-medium border-b border-white/[0.04]"
-                  style={{ animation: `siteFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${i * 50}ms both` }}
+                  className="py-3 text-white/70 hover:text-white transition-colors text-lg font-medium border-b border-white/[0.04]"
+                  style={{ animation: `siteFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) ${i * 40}ms both` }}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}
@@ -99,11 +115,15 @@ const DeluxeNavbar = ({ profile, slug }: Props) => {
               {slug && (
                 <a
                   href={`/site/${slug}/book`}
-                  className="book-now-link mt-6"
+                  className="book-now-link mt-5"
                   onClick={() => setIsOpen(false)}
-                  style={{ animation: `siteFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) ${navLinks.length * 50}ms both` }}
+                  style={{ animation: `siteFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) ${navLinks.length * 40}ms both` }}
                 >
-                  <button className="site-btn-primary w-full text-base px-5 py-4 rounded-full font-semibold flex items-center justify-center gap-2">
+                  <button className="w-full text-base px-5 py-3.5 rounded-full font-semibold flex items-center justify-center gap-2 text-white"
+                    style={{
+                      background: 'linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,91%,52%) 100%)',
+                    }}
+                  >
                     <Sparkles className="w-4 h-4" />
                     Book Now
                   </button>
