@@ -30,16 +30,12 @@ const ease = (t: number) =>
 
 const GalleryCard = ({
   item,
-  offsetY,
 }: {
   item: { image: string; caption: string };
-  offsetY: number;
 }) => (
   <div
     className="group relative aspect-[4/3] overflow-hidden rounded-xl"
     style={{
-      transform: `translateY(${offsetY}px)`,
-      willChange: 'transform',
       boxShadow: '0 4px 24px -8px hsla(0,0%,0%,0.5)',
     }}
   >
@@ -116,20 +112,18 @@ const DeluxeGallery = ({ photos }: Props) => {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             {topRow.map((item, index) => (
               <SiteFadeIn key={index} delay={index * 60} distance={24}>
-                <GalleryCard item={item} offsetY={-gap} />
+                <GalleryCard item={item} />
               </SiteFadeIn>
             ))}
           </div>
 
           {/* Split reveal zone — "Results speak for themselves" inside */}
           <div
-            className="flex items-center justify-center pointer-events-none select-none"
+            className="flex items-center justify-center pointer-events-none select-none py-8 sm:py-12"
             style={{
-              height: `${gap * 2}px`,
               opacity: textOpacity,
               transform: `scale(${textScale})`,
               willChange: 'opacity, transform',
-              overflow: 'hidden',
             }}
           >
             <div className="text-center px-4">
@@ -146,7 +140,7 @@ const DeluxeGallery = ({ photos }: Props) => {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
             {bottomRow.map((item, index) => (
               <SiteFadeIn key={index + 4} delay={(index + 4) * 60} distance={24}>
-                <GalleryCard item={item} offsetY={gap} />
+                <GalleryCard item={item} />
               </SiteFadeIn>
             ))}
           </div>
