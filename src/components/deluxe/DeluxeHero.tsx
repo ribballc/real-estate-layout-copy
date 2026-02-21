@@ -1,4 +1,4 @@
-import { ArrowRight, Play } from 'lucide-react';
+import { ArrowRight, Play, Star, CalendarCheck, Zap } from 'lucide-react';
 import heroBg from '@/assets/deluxe/hero-bg.jpg';
 import type { BusinessProfile } from '@/hooks/useBusinessData';
 
@@ -19,6 +19,12 @@ const DeluxeHero = ({ profile, slug }: Props) => {
         <img src={heroBg} alt="" className="w-full h-full object-cover" style={{ animation: 'siteHeroZoom 20s ease-out forwards' }} />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[hsl(0,0%,4%)]" />
       </div>
+
+      {/* Subtle grid overlay for tech feel */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{
+        backgroundImage: 'linear-gradient(hsla(0,0%,100%,0.1) 1px, transparent 1px), linear-gradient(90deg, hsla(0,0%,100%,0.1) 1px, transparent 1px)',
+        backgroundSize: '60px 60px',
+      }} />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center pt-20">
         {/* Pill badge */}
@@ -52,6 +58,7 @@ const DeluxeHero = ({ profile, slug }: Props) => {
         >
           <a href={slug ? `/site/${slug}/book` : "#contact"} className="book-now-link">
             <button className="site-btn-primary px-8 py-4 rounded-full text-[15px] font-semibold flex items-center gap-2.5 group hover:shadow-[0_4px_24px_-4px_rgba(255,255,255,0.2)] transition-all duration-300">
+              <CalendarCheck className="w-4 h-4" />
               Book Your Detail
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
@@ -64,25 +71,29 @@ const DeluxeHero = ({ profile, slug }: Props) => {
           </a>
         </div>
 
-        {/* Trust indicators */}
+        {/* Trust indicators with icons */}
         <div
-          className="flex items-center justify-center gap-6 mt-16"
+          className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-16"
           style={{ animation: 'siteFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both' }}
         >
           <div className="flex items-center gap-2">
             <div className="flex -space-x-1">
               {[...Array(5)].map((_, i) => (
-                <svg key={i} className="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
+                <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               ))}
             </div>
-            <span className="text-[13px] text-white/40">5.0 rated</span>
+            <span className="text-[13px] text-white/40 font-medium">5.0 rated</span>
           </div>
-          <div className="w-px h-4 bg-white/10" />
-          <span className="text-[13px] text-white/40">Online booking</span>
-          <div className="w-px h-4 bg-white/10" />
-          <span className="text-[13px] text-white/40">Instant confirmation</span>
+          <div className="w-px h-4 bg-white/10 hidden sm:block" />
+          <div className="flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5 text-white/30" />
+            <span className="text-[13px] text-white/40">Instant booking</span>
+          </div>
+          <div className="w-px h-4 bg-white/10 hidden sm:block" />
+          <div className="flex items-center gap-1.5">
+            <CalendarCheck className="w-3.5 h-3.5 text-white/30" />
+            <span className="text-[13px] text-white/40">Online 24/7</span>
+          </div>
         </div>
       </div>
 

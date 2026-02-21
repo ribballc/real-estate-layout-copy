@@ -47,7 +47,7 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
         ogImage={ogImage.startsWith("http") ? ogImage : `https://darkerdigital.com${ogImage.startsWith("/") ? "" : "/"}${ogImage}`}
         canonicalUrl={canonicalUrl}
       />
-      {/* ── Booksy-style sticky header ── */}
+      {/* ── Booksy-style sticky header with brand continuity ── */}
       <header
         className="sticky top-0 z-30"
         style={{
@@ -60,18 +60,30 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
         <div className="max-w-[780px] mx-auto px-4 h-full flex items-center justify-between">
           {/* Left: logo + name */}
           <a href={`/site/${slug}`} className="flex items-center gap-2.5 min-w-0">
-            <img
-              src={businessData.profile?.logo_url || darkerLogo}
-              alt={businessName || "Business"}
-              className="h-7 w-auto flex-shrink-0"
-            />
-            {businessName && (
-              <span
-                className="font-semibold truncate hidden sm:inline"
-                style={{ fontSize: 15, color: "hsl(222,47%,11%)" }}
-              >
-                {businessName}
-              </span>
+            {businessData.profile?.logo_url ? (
+              <img
+                src={businessData.profile.logo_url}
+                alt={businessName || "Business"}
+                className="h-8 w-auto flex-shrink-0"
+              />
+            ) : businessName ? (
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "hsl(222,47%,11%)" }}>
+                  <span className="text-white font-bold text-sm">{businessName.charAt(0)}</span>
+                </div>
+                <span
+                  className="font-semibold truncate hidden sm:inline"
+                  style={{ fontSize: 15, color: "hsl(222,47%,11%)" }}
+                >
+                  {businessName}
+                </span>
+              </div>
+            ) : (
+              <img
+                src={darkerLogo}
+                alt="Business"
+                className="h-7 w-auto flex-shrink-0"
+              />
             )}
           </a>
 

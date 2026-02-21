@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Plus } from 'lucide-react';
 import type { BusinessAddOn } from '@/hooks/useBusinessData';
 import SiteFadeIn from './SiteFadeIn';
 
@@ -42,9 +42,14 @@ const DeluxeAddOnServices = ({ addOns, slug }: Props) => {
           {displayAddons.map((addon, index) => (
             <SiteFadeIn key={index} delay={index * 70} distance={20}>
               <div className="flex items-center justify-between gap-4 bg-white/[0.03] border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.14] hover:bg-white/[0.05] transition-all duration-400 group">
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-white font-medium text-[15px] mb-0.5 group-hover:text-white transition-colors">{addon.title}</h3>
-                  <p className="text-white/30 text-[13px] truncate">{addon.description}</p>
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="w-8 h-8 rounded-lg bg-white/[0.06] flex items-center justify-center flex-shrink-0 group-hover:bg-white/[0.1] transition-colors duration-300">
+                    <Plus className="w-3.5 h-3.5 text-white/40 group-hover:text-white/60 transition-colors" />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="text-white font-medium text-[15px] mb-0.5 group-hover:text-white transition-colors">{addon.title}</h3>
+                    <p className="text-white/30 text-[13px] truncate">{addon.description}</p>
+                  </div>
                 </div>
                 <span className="text-white font-semibold text-[15px] flex-shrink-0">
                   ${addon.price}

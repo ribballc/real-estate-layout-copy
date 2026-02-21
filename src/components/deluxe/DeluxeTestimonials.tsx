@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react';
+import { Star, Quote } from 'lucide-react';
 import type { BusinessTestimonial } from '@/hooks/useBusinessData';
 import SiteFadeIn from './SiteFadeIn';
 
@@ -40,24 +40,32 @@ const DeluxeTestimonials = ({ testimonials }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
           {displayTestimonials.map((testimonial, index) => (
             <SiteFadeIn key={index} delay={index * 100}>
-              <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 hover:border-white/[0.14] hover:bg-white/[0.05] transition-all duration-500 h-full">
-                <div className="flex items-center gap-0.5 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <p className="text-white/70 text-[15px] leading-relaxed mb-6">
-                  &ldquo;{testimonial.text}&rdquo;
-                </p>
-                <div className="flex items-center gap-3 pt-4 border-t border-white/[0.06]">
-                  {testimonial.photo_url ? (
-                    <img src={testimonial.photo_url} alt={testimonial.name} className="w-9 h-9 rounded-full object-cover ring-2 ring-white/[0.08]" />
-                  ) : (
-                    <div className="w-9 h-9 rounded-full bg-white/[0.08] flex items-center justify-center text-white/40 text-xs font-semibold">
-                      {testimonial.name.charAt(0)}
+              <div className="relative bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 hover:border-white/[0.14] hover:bg-white/[0.05] transition-all duration-500 h-full group overflow-hidden">
+                {/* Quote icon accent */}
+                <Quote className="absolute top-5 right-5 w-8 h-8 text-white/[0.04] group-hover:text-white/[0.08] transition-colors duration-500" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center gap-0.5 mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-white/70 text-[15px] leading-relaxed mb-6">
+                    &ldquo;{testimonial.text}&rdquo;
+                  </p>
+                  <div className="flex items-center gap-3 pt-4 border-t border-white/[0.06]">
+                    {testimonial.photo_url ? (
+                      <img src={testimonial.photo_url} alt={testimonial.name} className="w-9 h-9 rounded-full object-cover ring-2 ring-white/[0.08]" />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-white/[0.08] flex items-center justify-center text-white/40 text-xs font-semibold">
+                        {testimonial.name.charAt(0)}
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-white/60 text-sm font-medium block">{testimonial.name}</span>
+                      <span className="text-white/25 text-[11px]">Verified Customer</span>
                     </div>
-                  )}
-                  <span className="text-white/50 text-sm font-medium">{testimonial.name}</span>
+                  </div>
                 </div>
               </div>
             </SiteFadeIn>

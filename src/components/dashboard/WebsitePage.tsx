@@ -231,20 +231,28 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
         </div>
       )}
 
-      {/* ═══ Welcome Banner (first visit only) ═══ */}
+      {/* ═══ Welcome Banner — Grand Reveal (first visit only) ═══ */}
       {showWelcome && (
         <div
-          className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          className="relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           style={{
             background: isDark ? "hsla(142,71%,45%,0.08)" : "hsla(142,71%,45%,0.06)",
             border: `1px solid hsla(142,71%,45%,0.2)`,
-            padding: "20px 24px",
-            borderRadius: 12,
+            padding: "24px 24px",
+            borderRadius: 14,
+            animation: "welcomeReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
         >
-          <div>
-            <p className="font-bold" style={{ color: headingText, fontSize: 18 }}>
-              🎉 Your website is ready{firstName ? `, ${firstName}` : ""}!
+          {/* Shimmer sweep */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            background: 'linear-gradient(105deg, transparent 40%, hsla(142,71%,45%,0.08) 45%, hsla(142,71%,45%,0.15) 50%, hsla(142,71%,45%,0.08) 55%, transparent 60%)',
+            animation: 'welcomeShimmer 2s ease-in-out 0.4s both',
+            backgroundSize: '200% 100%',
+          }} />
+          <div className="relative z-10">
+            <p className="font-bold flex items-center gap-2" style={{ color: headingText, fontSize: 18 }}>
+              <span style={{ fontSize: 22 }}>🎉</span>
+              Your website is ready{firstName ? `, ${firstName}` : ""}!
             </p>
             <p style={{ color: mutedText, fontSize: 14, marginTop: 4 }}>
               Everything below is your live site. Share it with customers or customize it from your dashboard.
@@ -584,6 +592,7 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
           className="fixed inset-0 z-[9999] flex flex-col"
           style={{
             background: isDark ? "hsl(215,50%,8%)" : "hsl(0,0%,100%)",
+            animation: "fullscreenRevealIn 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
           }}
         >
           {/* Fullscreen header */}
@@ -634,6 +643,21 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
           />
         </div>
       )}
+
+      <style>{`
+        @keyframes fullscreenRevealIn {
+          0% { opacity: 0; transform: scale(0.96); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes welcomeReveal {
+          0% { opacity: 0; transform: translateY(8px) scale(0.98); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes welcomeShimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
     </div>
   );
 };
