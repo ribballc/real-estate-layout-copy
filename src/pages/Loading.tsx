@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-const STEPS = [
+const ONBOARDING_STEPS = [
   { label: "Analyzing your business...", duration: 1200 },
   { label: "Generating custom layout...", duration: 1400 },
   { label: "Building booking engine...", duration: 1200 },
@@ -10,7 +10,12 @@ const STEPS = [
   { label: "Your site is ready!", duration: 600 },
 ];
 
-const TOTAL_DURATION = STEPS.reduce((s, step) => s + step.duration, 0);
+const LOGIN_STEPS = [
+  { label: "Connecting to your account...", duration: 800 },
+  { label: "Syncing latest bookings...", duration: 900 },
+  { label: "Loading your dashboard...", duration: 700 },
+  { label: "Welcome back!", duration: 400 },
+];
 
 const Loading = () => {
   const navigate = useNavigate();
@@ -20,13 +25,24 @@ const Loading = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>();
 
+  // Determine flow: onboarding vs returning login
+  const loginName = sessionStorage.getItem("loginTransition");
+  const isLoginFlow = !!loginName;
+  const STEPS = isLoginFlow ? LOGIN_STEPS : ONBOARDING_STEPS;
+  const TOTAL_DURATION = STEPS.reduce((s, step) => s + step.duration, 0);
+
   useEffect(() => {
-    try {
-      const data = JSON.parse(localStorage.getItem("leadData") || "{}");
-      if (data.businessName) setBusinessName(data.businessName);
-      if (!data.businessName) { navigate("/dashboard"); return; }
-    } catch { navigate("/"); return; }
-  }, [navigate]);
+    if (isLoginFlow) {
+      setBusinessName(loginName || "Your Dashboard");
+      sessionStorage.removeItem("loginTransition");
+    } else {
+      try {
+        const data = JSON.parse(localStorage.getItem("leadData") || "{}");
+        if (data.businessName) setBusinessName(data.businessName);
+        if (!data.businessName) { navigate("/dashboard"); return; }
+      } catch { navigate("/"); return; }
+    }
+  }, [navigate, isLoginFlow, loginName]);
 
   // Progress + step tracking
   useEffect(() => {
@@ -151,7 +167,7 @@ const Loading = () => {
 
         {/* Business name */}
         <h1 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#fff' }}>
-          Building{' '}
+          {isLoginFlow ? 'Welcome back,' : 'Building'}{' '}
           <span style={{ color: '#10b981', textShadow: '0 0 20px rgba(16,185,129,0.3)' }}>
             {businessName}
           </span>
