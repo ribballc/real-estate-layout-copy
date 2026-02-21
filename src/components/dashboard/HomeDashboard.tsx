@@ -716,8 +716,8 @@ const HomeDashboard = () => {
           <MetricCard
             icon={<DollarSign className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Revenue"
-            value={ghost.isIntro ? formatCurrency(gRevenue) : (currentRevenue > 0 ? formatCurrency(currentRevenue) : "—")}
-            mobileValue={ghost.isIntro ? formatCurrencyCompact(gRevenue) : (currentRevenue > 0 ? formatCurrencyCompact(currentRevenue) : undefined)}
+            value={ghost.isIntro ? formatCurrency(gRevenue) : (currentCompleted.length > 0 ? formatCurrency(currentRevenue) : "—")}
+            mobileValue={ghost.isIntro ? formatCurrencyCompact(gRevenue) : (currentCompleted.length > 0 ? formatCurrencyCompact(currentRevenue) : undefined)}
             pct={ghost.isIntro ? 18 : revenuePct}
             subtext={periodLabel}
             sparklineData={ghost.isIntro ? GHOST_SPARKLINE : revenueSparkline}
@@ -737,7 +737,7 @@ const HomeDashboard = () => {
           <MetricCard
             icon={<TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Avg. Ticket"
-            value={ghost.isIntro ? formatCurrency(gAvg) : (avgTicket > 0 ? formatCurrency(avgTicket) : "—")}
+            value={ghost.isIntro ? formatCurrency(gAvg) : (currentCompleted.length > 0 ? formatCurrency(avgTicket) : "—")}
             pct={ghost.isIntro ? 8 : avgTicketPct}
             subtext={periodLabel}
             sparklineData={ghost.isIntro ? GHOST_AVG_SPARKLINE : avgTicketSparkline}
