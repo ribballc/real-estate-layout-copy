@@ -30,7 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { title: "Business Info", url: "/dashboard/business", icon: Building2, alwaysUnlocked: true },
   { title: "Photos", url: "/dashboard/photos", icon: Camera },
   { title: "Testimonials", url: "/dashboard/testimonials", icon: Star },
-  { title: "Offer Lab", url: "/dashboard/offer-lab", icon: FlaskConical },
+  { title: "The Lab", url: "/dashboard/the-lab", icon: FlaskConical },
 ];
 
 interface DashboardSidebarProps {

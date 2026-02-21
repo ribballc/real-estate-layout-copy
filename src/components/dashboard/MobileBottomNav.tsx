@@ -24,7 +24,7 @@ const MENU_ITEMS = [
   { label: "Business Info", icon: Building2, path: "/dashboard/business" },
   { label: "Photos", icon: Camera, path: "/dashboard/photos" },
   { label: "Testimonials", icon: Star, path: "/dashboard/testimonials" },
-  { label: "Offer Lab", icon: FlaskConical, path: "/dashboard/offer-lab" },
+  { label: "The Lab", icon: FlaskConical, path: "/dashboard/the-lab" },
   { label: "Settings", icon: Settings, path: "/dashboard/account" },
 ];
 

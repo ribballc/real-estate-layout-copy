@@ -22,8 +22,8 @@ const PAGE_INTRO_COPY: Record<string, string> = {
     "Upload your best work here — these photos appear in your website gallery automatically.",
   "/dashboard/testimonials":
     "Collect and display customer reviews — social proof helps convert more visitors into bookings.",
-  "/dashboard/offer-lab":
-    "Proven strategies and templates to help you 3x your bookings and revenue.",
+  "/dashboard/the-lab":
+    "Growth strategies, QR codes, and tools to help you 3x your bookings and revenue.",
   "/dashboard/account":
     "Manage your account, subscription, and login settings here.",
 };

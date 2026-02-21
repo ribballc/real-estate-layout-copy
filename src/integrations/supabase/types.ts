@@ -440,6 +440,7 @@ export type Database = {
           onboarding_complete: boolean
           phone: string
           primary_color: string | null
+          qr_code_url: string | null
           secondary_color: string | null
           service_areas: string[] | null
           slug: string | null
@@ -482,6 +483,7 @@ export type Database = {
           onboarding_complete?: boolean
           phone?: string
           primary_color?: string | null
+          qr_code_url?: string | null
           secondary_color?: string | null
           service_areas?: string[] | null
           slug?: string | null
@@ -524,6 +526,7 @@ export type Database = {
           onboarding_complete?: boolean
           phone?: string
           primary_color?: string | null
+          qr_code_url?: string | null
           secondary_color?: string | null
           service_areas?: string[] | null
           slug?: string | null
