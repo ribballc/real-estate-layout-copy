@@ -210,8 +210,13 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                   {active && (
                     <motion.span
                       layoutId="mobile-nav-indicator"
-                      className="absolute top-1.5 left-1/2 -translate-x-1/2 w-5 h-[3px] rounded-full"
-                      style={{ background: "hsl(217,91%,60%)" }}
+                      className="absolute top-1.5 h-[3px] rounded-full"
+                      style={{
+                        background: "hsl(217,91%,60%)",
+                        width: 20,
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                      }}
                       transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
                   )}
