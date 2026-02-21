@@ -94,7 +94,7 @@ const HeroSection = () => {
         <div className="max-w-[1400px] mx-auto w-full" style={{
           opacity: 0, animation: 'heroFadeScale 0.5s ease-out 0s forwards',
         }}>
-          <img src={darkerLogo} alt="Darker" className="h-10 md:h-12" width={163} height={70} />
+          <img src={darkerLogo} alt="Darker" className="h-8 md:h-10 w-auto" />
         </div>
 
         {/* Two-column grid */}
