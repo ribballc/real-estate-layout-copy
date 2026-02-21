@@ -65,6 +65,12 @@ function formatCurrency(val: number) {
 }
 
 function formatCurrencyCompact(val: number) {
+  if (val >= 1_000_000) {
+    const m = val / 1_000_000;
+    // Show up to 2 decimals, strip trailing zeros: $2.01M, $1.5M, $3M
+    const formatted = m.toFixed(2).replace(/\.?0+$/, "");
+    return `$${formatted}M`;
+  }
   if (val >= 1000) {
     const k = val / 1000;
     return `$${k % 1 === 0 ? k.toFixed(0) : k.toFixed(1)}k`;
@@ -746,6 +752,7 @@ const HomeDashboard = () => {
             icon={<TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: "hsl(217,91%,60%)" }} strokeWidth={1.5} />}
             label="Avg. Ticket"
             value={ghost.isIntro ? formatCurrency(gAvg) : formatCurrency(avgTicket)}
+            mobileValue={ghost.isIntro ? formatCurrencyCompact(gAvg) : formatCurrencyCompact(avgTicket)}
             pct={ghost.isIntro ? 8 : avgTicketPct}
             subtext={periodLabel}
             sparklineData={ghost.isIntro ? GHOST_AVG_SPARKLINE : avgTicketSparkline}
