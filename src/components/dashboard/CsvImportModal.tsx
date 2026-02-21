@@ -139,7 +139,7 @@ const CsvImportModal = ({ open, onClose, onImport, targetFields, title }: CsvImp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[55] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className="w-full max-w-lg dash-card p-6 space-y-4 max-h-[85vh] overflow-y-auto" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
         <div className="flex items-center justify-between">
           <h3 className="text-white font-semibold text-lg">{title}</h3>

@@ -577,7 +577,7 @@ const DetailPanel = ({
 }) => {
   const Content = DETAIL_CONTENT[strategy.id];
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6">
+    <div className="fixed inset-0 z-[55] flex items-end sm:items-center justify-center p-0 sm:p-6">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
