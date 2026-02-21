@@ -162,7 +162,7 @@ const AccountSettings = () => {
       {/* Manage Subscription */}
       <div className="dash-card">
         <h3 className="dash-card-title text-white mb-2">Subscription & Billing</h3>
-        <p className="text-white/50 text-sm mb-4">Manage your plan, payment method, and invoices.</p>
+        <p className="text-white/50 text-sm mb-4">Manage your payment info and invoices.</p>
         <div className="flex items-center gap-3">
           <Button
             onClick={handleManageSubscription}
