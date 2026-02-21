@@ -1,31 +1,53 @@
 
 
-# Premium Apple Glass Hamburger Button
+# Bury "Delete Account" 3 Clicks Deep
 
-## Overview
-Upgrade the hamburger/menu button in the mobile bottom nav to feel like a macOS Dock icon with frosted glass, lift animation, inner glow, and smooth transitions.
+## What changes
 
-## Changes (single file)
+**Single file:** `src/components/dashboard/AccountSettings.tsx`
 
-**File: `src/components/dashboard/MobileBottomNav.tsx`**
+No logic changes -- `handleDeleteAccount`, the Supabase call, `deleteConfirm === "DELETE"` guard, and all state around `deleting` remain identical.
 
-1. Add `menuHovered` state for hover-driven styling
-2. Convert the hamburger `<button>` to `<motion.button>` with spring-based `whileHover` (scale 1.07, y -1) and `whileTap` (scale 0.93)
-3. Restyle inline `background`, `boxShadow`, `border`, and `transition` for both dark and light modes using the exact HSLA values specified -- much more translucent bases with brighter hover glows
-4. Drive icon color from `menuHovered` state for a brighter icon on hover
+## The three layers
 
-No new files, no new dependencies, no database changes.
+### Layer 1 -- Footnote link (always visible)
+A barely-visible button at the very bottom of the settings list, below the Setup Guide card:
+- Text: `account & data preferences ->`
+- Styled `text-white/25 text-xs` -- no border, no background, no icon
+- Toggles new `showDataPrefs` state
 
-## Technical Details
+### Layer 2 -- "Data Management" card (visible when `showDataPrefs` is true)
+A plain `dash-card` with no alarming styling. Three rows:
 
-| Property | Dark base | Dark hover | Light base | Light hover |
-|----------|-----------|------------|------------|-------------|
-| background | `hsla(215,35%,20%,0.45)` | `hsla(215,35%,30%,0.65)` | `hsla(0,0%,100%,0.50)` | `hsla(0,0%,100%,0.72)` |
-| border | `hsla(0,0%,100%,0.10)` | `hsla(0,0%,100%,0.22)` | `hsla(0,0%,0%,0.08)` | `hsla(0,0%,0%,0.14)` |
-| boxShadow | inset highlight + depth | + blue glow halo | inset highlight + depth | + blue glow halo |
-| icon color | `hsla(0,0%,100%,0.45)` | `hsla(0,0%,100%,0.85)` | `hsl(215,14%,41%)` | `hsl(215,14%,20%)` |
+| Left label | Right value |
+|---|---|
+| Account created | `user?.created_at` formatted via `new Date().toLocaleDateString(...)` (e.g. "Jan 5, 2025") |
+| Account status | "Active" in dim text |
+| Account closure | A small `Manage ->` link (`text-white/40 text-xs hover:text-white/60`) that toggles new `showDeleteFlow` state |
 
-Motion config: `whileHover={{ scale: 1.07, y: -1 }}`, `whileTap={{ scale: 0.93 }}`, spring stiffness 500 / damping 28.
+### Layer 3 -- Inline delete flow (visible when both states are true)
+Expands inside the same Data Management card (no new card, no red border):
+- Warning paragraph styled `text-white/50 text-sm` (same copy, no icon)
+- Existing type-DELETE `Input` field (restyled without red border -- uses `border-white/10` instead)
+- "Close Account" ghost `Button` at low contrast, only becoming visually active when `deleteConfirm === "DELETE"` -- wired to existing `handleDeleteAccount`
 
-When menu is open, existing blue accent styling is preserved and takes priority over hover states.
+## Other changes
+- Remove the entire red-bordered Delete Account card (lines 319-350)
+- Remove `AlertTriangle` and `Trash2` from the lucide-react import (no longer used)
+- Add two new boolean states: `showDataPrefs`, `showDeleteFlow`
+
+## Technical detail
+
+New state declarations (next to existing state):
+```tsx
+const [showDataPrefs, setShowDataPrefs] = useState(false);
+const [showDeleteFlow, setShowDeleteFlow] = useState(false);
+```
+
+The formatted date uses:
+```tsx
+new Date(user?.created_at ?? "").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+```
+
+The "Close Account" button uses the same conditional styling pattern as the old delete button but with ghost/muted colors instead of red, only activating when the user types DELETE.
 
