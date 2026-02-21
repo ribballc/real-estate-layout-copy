@@ -20,7 +20,6 @@ const GhostCar = ({ className }: { className?: string }) => (
 
 /* ── Imagin Studio URL builder with multiple fallback keys ── */
 const IMAGIN_CUSTOMERS = [
-  "hrjavascript-masede",
   "img",
   "javascript-masede",
 ];
