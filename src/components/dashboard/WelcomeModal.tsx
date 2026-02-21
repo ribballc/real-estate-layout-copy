@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Sparkles, Globe, Settings, CreditCard, X } from "lucide-react";
+import { Globe, Settings, CreditCard, X } from "lucide-react";
+import mascotPenguin from "@/assets/mascot-penguin.png";
 import { useNavigate } from "react-router-dom";
 
 const WELCOME_FLAG = "darker_welcome_modal_seen";
@@ -78,7 +79,7 @@ const WelcomeModal = ({ firstName, isDark }: WelcomeModalProps) => {
         </button>
 
         {/* Icon */}
-        <Sparkles className="w-7 h-7 mb-4" style={{ color: "hsl(217,91%,60%)" }} />
+        <img src={mascotPenguin} alt="Darker mascot" className="w-12 h-12 mb-4 object-contain" />
 
         {/* Heading */}
         <h2
