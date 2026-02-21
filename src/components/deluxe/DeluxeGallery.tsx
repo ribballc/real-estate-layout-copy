@@ -16,6 +16,7 @@ const defaultGalleryItems = [
   { image: stock5, caption: 'Ferrari F8 Tributo' },
   { image: stock6, caption: 'Huracán Taillight' },
   { image: stock7, caption: 'Huracán Performante' },
+  { image: stock1, caption: 'Detail Close-Up' },
 ];
 
 interface Props {
@@ -41,31 +42,25 @@ const DeluxeGallery = ({ photos }: Props) => {
           </div>
         </SiteFadeIn>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          {galleryItems.map((item, index) => {
-            // Alternating aspect ratios for collage feel, but all grid-aligned
-            const tall = index % 3 === 0;
-            return (
-              <SiteFadeIn key={index} delay={index * 60} distance={24}>
-                <div className={`group ${tall ? 'row-span-2' : ''}`}>
-                  <div className={`relative overflow-hidden rounded-xl ${tall ? 'aspect-[3/4]' : 'aspect-square'}`}>
-                    <img
-                      src={typeof item.image === 'string' ? item.image : String(item.image)}
-                      alt={item.caption || 'Gallery photo'}
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-500" />
-                    {item.caption && (
-                      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out">
-                        <span className="text-white text-sm font-medium drop-shadow-lg">{item.caption}</span>
-                      </div>
-                    )}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+          {galleryItems.slice(0, 8).map((item, index) => (
+            <SiteFadeIn key={index} delay={index * 60} distance={24}>
+              <div className="group relative aspect-[4/3] overflow-hidden rounded-xl">
+                <img
+                  src={typeof item.image === 'string' ? item.image : String(item.image)}
+                  alt={item.caption || 'Gallery photo'}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-105 group-hover:brightness-110"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500" />
+                {item.caption && (
+                  <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out">
+                    <span className="text-white text-sm font-medium drop-shadow-lg">{item.caption}</span>
                   </div>
-                </div>
-              </SiteFadeIn>
-            );
-          })}
+                )}
+              </div>
+            </SiteFadeIn>
+          ))}
         </div>
       </div>
     </section>
