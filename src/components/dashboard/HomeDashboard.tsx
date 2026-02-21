@@ -326,7 +326,7 @@ const HomeDashboard = () => {
     return "Good evening";
   }, []);
 
-  useEffect(() => {
+  const fetchBookingsAndStats = useCallback(() => {
     if (!user) return;
     Promise.all([
       supabase.from("bookings").select("id, booking_date, booking_time, customer_name, service_title, service_price, status, notes").eq("user_id", user.id).limit(500),
@@ -357,6 +357,22 @@ const HomeDashboard = () => {
       setLoading(false);
     });
   }, [user]);
+
+  useEffect(() => { fetchBookingsAndStats(); }, [fetchBookingsAndStats]);
+
+  // Realtime: auto-refresh KPIs when bookings change (status update, insert, delete)
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel('dashboard-bookings-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'bookings', filter: `user_id=eq.${user.id}` },
+        () => { fetchBookingsAndStats(); }
+      )
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user, fetchBookingsAndStats]);
 
   const { start, end } = getDateRange(dateRange);
   const prev = getPreviousPeriod(start, end);
