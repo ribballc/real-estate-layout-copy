@@ -18,44 +18,19 @@ const GhostCar = ({ className }: { className?: string }) => (
   </svg>
 );
 
-/* ── Imagin Studio URL builder ── */
-function buildImaginUrl(make: string, model: string, year: string) {
-  return `https://cdn.imagin.studio/getimage?customer=hrjavascript-masede&make=${encodeURIComponent(make)}&modelFamily=${encodeURIComponent(model).replace(/%20/g, "+")}&modelYear=${year}&angle=01&width=600&paintId=imagindarkgrey`;
-}
+/* ── Imagin Studio URL builder with multiple fallback keys ── */
+const IMAGIN_CUSTOMERS = [
+  "hrjavascript-masede",
+  "img",
+  "javascript-masede",
+];
 
-/**
- * Detect tarp images via canvas pixel sampling.
- * Returns true if the image is predominantly red (covered car).
- */
-function detectTarp(imgSrc: string): Promise<boolean> {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      try {
-        const canvas = document.createElement("canvas");
-        const size = 64;
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) { resolve(false); return; }
-        ctx.drawImage(img, 0, 0, size, size);
-        const data = ctx.getImageData(0, 0, size, size).data;
-        let redPx = 0, total = 0;
-        for (let i = 0; i < data.length; i += 16) {
-          const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
-          if (a < 50) continue;
-          total++;
-          if (r > 140 && r > g * 1.6 && r > b * 1.6) redPx++;
-        }
-        resolve(total > 0 && (redPx / total) > 0.25);
-      } catch {
-        resolve(false); // CORS blocked — can't detect, allow the image
-      }
-    };
-    img.onerror = () => resolve(false);
-    img.src = imgSrc;
-  });
+function buildImaginUrls(make: string, model: string, year: string): string[] {
+  const m = encodeURIComponent(make);
+  const md = encodeURIComponent(model).replace(/%20/g, "+");
+  return IMAGIN_CUSTOMERS.map(
+    (c) => `https://cdn.imagin.studio/getimage?customer=${c}&make=${m}&modelFamily=${md}&modelYear=${year}&angle=01&width=800`
+  );
 }
 
 const BookVehicle = () => {
@@ -71,7 +46,7 @@ const BookVehicle = () => {
   const availableModels = useMemo(() => (!make ? [] : vehicleModels[make] || []), [make]);
   const canContinue = !!(year && make && model);
 
-  // Try loading vehicle images with fallback keys + tarp detection
+  // Try loading vehicle images with multiple fallback customer keys
   useEffect(() => {
     if (!year || !make || !model) {
       setImageUrl(null);
@@ -82,30 +57,30 @@ const BookVehicle = () => {
     setImageStatus("loading");
     setImageUrl(null);
     const currentAttempt = ++attemptRef.current;
+    const urls = buildImaginUrls(make, model, year);
+    let idx = 0;
 
-    const url = buildImaginUrl(make, model, year);
-    const img = new Image();
-    img.onload = async () => {
-      if (currentAttempt !== attemptRef.current) return;
-      if (img.naturalWidth < 100 || img.naturalHeight < 50) {
-        setImageStatus("failed");
+    const tryNext = () => {
+      if (idx >= urls.length || currentAttempt !== attemptRef.current) {
+        if (currentAttempt === attemptRef.current) setImageStatus("failed");
         return;
       }
-      // Try tarp detection (may fail due to CORS — that's OK, we allow the image)
-      const isTarp = await detectTarp(url);
-      if (currentAttempt !== attemptRef.current) return;
-      if (isTarp) {
-        setImageStatus("failed");
-        return;
-      }
-      setImageUrl(url);
-      setImageStatus("success");
+      const url = urls[idx++];
+      const img = new Image();
+      img.onload = () => {
+        if (currentAttempt !== attemptRef.current) return;
+        // Accept any image that isn't a 1x1 placeholder
+        if (img.naturalWidth < 50) { tryNext(); return; }
+        setImageUrl(url);
+        setImageStatus("success");
+      };
+      img.onerror = () => {
+        if (currentAttempt !== attemptRef.current) return;
+        tryNext();
+      };
+      img.src = url;
     };
-    img.onerror = () => {
-      if (currentAttempt !== attemptRef.current) return;
-      setImageStatus("failed");
-    };
-    img.src = url;
+    tryNext();
   }, [year, make, model]);
 
   const handleContinue = () => {
