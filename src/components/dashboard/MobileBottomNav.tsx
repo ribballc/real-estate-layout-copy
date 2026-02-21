@@ -188,10 +188,10 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
             style={{
               background: isDark
                 ? "hsla(215,30%,12%,0.55)"
-                : "hsla(0,0%,100%,0.55)",
+                : "hsla(0,0%,100%,0.35)",
               backdropFilter: "blur(40px) saturate(180%)",
               WebkitBackdropFilter: "blur(40px) saturate(180%)",
-              border: `1px solid ${isDark ? "hsla(0,0%,100%,0.08)" : "hsla(0,0%,100%,0.7)"}`,
+              border: `1px solid ${isDark ? "hsla(0,0%,100%,0.08)" : "hsla(0,0%,100%,0.45)"}`,
               boxShadow: isDark
                 ? "0 8px 40px hsla(0,0%,0%,0.45), inset 0 1px 0 hsla(0,0%,100%,0.05)"
                 : "0 8px 40px hsla(220,14%,50%,0.12), inset 0 1px 0 hsla(0,0%,100%,0.6), 0 1px 3px hsla(0,0%,0%,0.06)",
@@ -267,10 +267,10 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
             style={{
               background: isDark
                 ? menuOpen ? "hsla(217,91%,60%,0.12)" : "hsla(215,30%,12%,0.55)"
-                : menuOpen ? "hsla(217,91%,60%,0.06)" : "hsla(0,0%,100%,0.55)",
+                : menuOpen ? "hsla(217,91%,60%,0.06)" : "hsla(0,0%,100%,0.35)",
               backdropFilter: "blur(40px) saturate(180%)",
               WebkitBackdropFilter: "blur(40px) saturate(180%)",
-              border: `1px solid ${isDark ? "hsla(0,0%,100%,0.08)" : "hsla(0,0%,100%,0.7)"}`,
+              border: `1px solid ${isDark ? "hsla(0,0%,100%,0.08)" : "hsla(0,0%,100%,0.45)"}`,
               boxShadow: isDark
                 ? `0 8px 40px hsla(0,0%,0%,0.45), inset 0 1px 0 hsla(0,0%,100%,0.05)${menuOpen ? ", 0 0 20px hsla(217,91%,60%,0.15)" : ""}`
                 : `0 8px 40px hsla(220,14%,50%,0.12), inset 0 1px 0 hsla(0,0%,100%,0.6)${menuOpen ? ", 0 0 20px hsla(217,91%,60%,0.1)" : ""}`,
