@@ -1567,6 +1567,28 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
   left: 100%;
 }
 
+/* ---- Site page (generated detailer sites) ---- */
+.site-page {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.site-section {
+  padding: 6rem 0;
+}
+@media (min-width: 768px) {
+  .site-section {
+    padding: 8rem 0;
+  }
+}
+.site-btn-primary {
+  background: hsl(0, 0%, 100%);
+  color: hsl(0, 0%, 4%);
+  transition: all 0.2s ease;
+}
+.site-btn-primary:hover {
+  background: hsl(0, 0%, 90%);
+}
+
 /* Onboarding input shake */
 @keyframes dashboardShimmer {
   0% { background-position: 200% 0; }

@@ -1,17 +1,14 @@
-import { Lightbulb, Shield, Wrench, CircleDot, Dog, AlertTriangle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 import type { BusinessAddOn } from '@/hooks/useBusinessData';
 
 const defaultAddons = [
-  { icon: Lightbulb, title: 'Headlight Restoration', price: '$85', description: 'Headlights, Taillights & Fog Lights' },
-  { icon: Shield, title: 'Ceramic Coating', price: '$875', description: 'Long-lasting protection and shine' },
-  { icon: Wrench, title: 'Buffing Services', price: '$140', description: 'Scratches, Paint Correction' },
-  { icon: CircleDot, title: 'Dent Removal', price: 'Starting at $100', description: 'Price depends on size' },
-  { icon: Dog, title: 'Pet Hair Removal', price: 'Check Upon Arrival', description: 'Lvl 1: $10 • Lvl 2: $20 • Lvl 3: $35 • Lvl 4: $50 • Lvl 5: $80+' },
-  { icon: AlertTriangle, title: 'Mold, Blood, Urine & Body Fluids', price: 'Contact for Quote', description: 'Specialized cleaning service' },
+  { title: 'Headlight Restoration', price: 85, description: 'Restore clarity and improve nighttime visibility' },
+  { title: 'Ceramic Coating', price: 875, description: 'Multi-year hydrophobic protection for your paint' },
+  { title: 'Paint Correction', price: 140, description: 'Remove swirls, scratches, and oxidation' },
+  { title: 'Engine Bay Detail', price: 75, description: 'Degrease, detail, and dress your engine bay' },
+  { title: 'Pet Hair Removal', price: 35, description: 'Thorough removal from seats, carpet, and crevices' },
+  { title: 'Odor Elimination', price: 50, description: 'Ozone treatment for stubborn smells' },
 ];
-
-const defaultIcons = [Lightbulb, Shield, Wrench, CircleDot, Dog, AlertTriangle];
 
 interface Props {
   addOns?: BusinessAddOn[];
@@ -22,43 +19,45 @@ const DeluxeAddOnServices = ({ addOns, slug }: Props) => {
   const hasCms = addOns && addOns.length > 0;
 
   const displayAddons = hasCms
-    ? addOns.map((a, i) => ({
-        icon: defaultIcons[i % defaultIcons.length],
-        title: a.title,
-        price: `$${a.price}`,
-        description: a.description,
-      }))
+    ? addOns.map((a) => ({ title: a.title, price: a.price, description: a.description }))
     : defaultAddons;
 
   return (
-    <section className="py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <p className="text-primary font-semibold tracking-[0.2em] uppercase mb-4">Enhance Your Detail</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4"><span className="gold-gradient-text">Add-On</span> Services</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">Take your detail to the next level with our premium add-on services</p>
+    <section className="site-section">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="max-w-2xl mb-16">
+          <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Add-ons</p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
+            Customize your detail
+          </h2>
+          <p className="text-white/40 text-lg">
+            Enhance any package with specialized services.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {displayAddons.map((addon, index) => (
-            <div key={index} className="bg-card p-6 rounded-xl border border-border hover:border-primary/50 transition-all duration-300 group card-shine">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0 group-hover:gold-gradient transition-all duration-300">
-                  <addon.icon className="w-6 h-6 text-primary group-hover:text-primary-foreground transition-colors" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold mb-1 text-foreground">{addon.title}</h3>
-                  <p className="text-xl font-black gold-gradient-text mb-2">{addon.price}</p>
-                  <p className="text-sm text-muted-foreground">{addon.description}</p>
-                </div>
+            <div
+              key={index}
+              className="flex items-center justify-between gap-4 bg-white/[0.03] border border-white/[0.06] rounded-xl p-5 hover:border-white/[0.12] transition-all duration-300"
+            >
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-medium text-[15px] mb-0.5">{addon.title}</h3>
+                <p className="text-white/30 text-[13px] truncate">{addon.description}</p>
               </div>
+              <span className="text-white font-semibold text-[15px] flex-shrink-0">
+                ${addon.price}
+              </span>
             </div>
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <a href={slug ? `/site/${slug}/book` : "#contact"} className={slug ? "book-now-link" : undefined}>
-            <Button variant="gold" size="xl">{slug ? "Book Now" : "Get a Quote"}</Button>
+        <div className="mt-10 text-center">
+          <a href={slug ? `/site/${slug}/book` : "#contact"} className={slug ? "book-now-link inline-block" : "inline-block"}>
+            <button className="site-btn-primary px-8 py-3.5 rounded-full text-sm font-medium flex items-center gap-2 group">
+              Book with Add-ons
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </button>
           </a>
         </div>
       </div>

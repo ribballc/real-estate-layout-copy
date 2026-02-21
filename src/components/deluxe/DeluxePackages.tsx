@@ -1,38 +1,35 @@
-import { Check, Flame, Zap, Sparkles, Car, Truck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { Check, ArrowRight } from 'lucide-react';
 import type { BusinessService } from '@/hooks/useBusinessData';
 
 interface Package {
-  icon: typeof Flame;
-  badge?: string;
   title: string;
   price: string;
-  time: string;
+  description: string;
   features: string[];
   popular?: boolean;
 }
 
-type VehicleType = 'sedan' | 'truck';
-
-const defaultSedanPackages: Package[] = [
-  { icon: Flame, badge: 'TOP SELLER', title: 'Full Thorough Deluxe Interior', price: 'Starting at $95', time: '1 hr 30 mins', features: ['Vacuum', 'Blow out crevices', 'Shampoo seats & floor mats', 'Steamer (kills germs)', 'Plastic conditioner', 'Cupholder cleaning', 'Vent cleaning', 'Leather conditioner', 'Trunk cleaning'], popular: true },
-  { icon: Zap, badge: '2nd Best Seller', title: 'Rapid Deluxe Interior', price: 'Starting at $65', time: '40 mins', features: ['Vacuum', 'Seats & door cleaning', 'Vent cleaning', 'Cupholder cleaning', 'Console & dashboard cleaning'] },
-  { icon: Sparkles, title: 'Deluxe Express Wash', price: 'Starting at $60', time: '35 mins', features: ['Hand wash & dry', 'Ceramic wax', 'Door jambs', 'Bug & tar removal', 'Tire shine (gloss effect)'] },
+const defaultPackages: Package[] = [
+  {
+    title: 'Express Wash',
+    price: '$60',
+    description: 'Quick exterior refresh',
+    features: ['Hand wash & dry', 'Ceramic wax application', 'Door jambs', 'Tire shine', 'Bug & tar removal'],
+  },
+  {
+    title: 'Interior Detail',
+    price: '$95',
+    description: 'Complete interior transformation',
+    features: ['Full vacuum & blow out', 'Steam cleaning', 'Shampoo seats & mats', 'Leather conditioning', 'Dashboard & console detail', 'Vent & cupholder cleaning'],
+    popular: true,
+  },
+  {
+    title: 'Full Detail',
+    price: '$180',
+    description: 'Inside and out, showroom ready',
+    features: ['Everything in Interior', 'Hand wash & clay bar', 'Paint decontamination', 'Ceramic sealant', 'Trim restoration', 'Engine bay cleaning'],
+  },
 ];
-
-const defaultTruckPackages: Package[] = [
-  { icon: Flame, badge: 'TOP SELLER', title: 'Full Thorough Deluxe Interior', price: 'Starting at $120', time: '1 hr 30 mins', features: ['Vacuum', 'Blow out crevices', 'Shampoo seats & floor mats', 'Steamer (kills germs)', 'Plastic conditioner', 'Cupholder cleaning', 'Vent cleaning', 'Leather conditioner'], popular: true },
-  { icon: Zap, badge: '2nd Best Seller', title: 'Rapid Deluxe Interior', price: '$105', time: '40 mins', features: ['Vacuum', 'Seat & door cleaning', 'Vent cleaning', 'Cupholder cleaning', 'Console & dashboard cleaning'] },
-  { icon: Sparkles, title: 'Deluxe Express Wash', price: 'Starting at $70', time: '35 mins', features: ['Hand wash & dry', 'Ceramic wax', 'Bug & tar removal', 'Tire shine (gloss effect)', 'Door jambs'] },
-];
-
-const vehicleTabs = [
-  { id: 'sedan' as VehicleType, label: 'Sedans & Coupes', icon: Car },
-  { id: 'truck' as VehicleType, label: 'Trucks & SUVs', icon: Truck },
-];
-
-const icons = [Flame, Zap, Sparkles];
 
 interface Props {
   services?: BusinessService[];
@@ -40,79 +37,88 @@ interface Props {
 }
 
 const DeluxePackages = ({ services, slug }: Props) => {
-  const [activeTab, setActiveTab] = useState<VehicleType>('sedan');
+  const hasCms = services && services.length > 0;
 
-  const hasCmsServices = services && services.length > 0;
-
-  // If CMS services exist, show them as a flat list (no vehicle tabs)
-  const cmsPackages: Package[] = hasCmsServices
-    ? services.map((s, i) => ({
-        icon: icons[i % icons.length],
-        badge: s.popular ? 'POPULAR' : undefined,
+  const packages: Package[] = hasCms
+    ? services.map((s) => ({
         title: s.title,
-        price: `Starting at $${s.price}`,
-        time: '',
+        price: `$${s.price}`,
+        description: s.description?.split('\n')[0] || '',
         features: s.description ? s.description.split('\n').filter(Boolean) : [],
         popular: s.popular,
       }))
-    : [];
-
-  const packages = hasCmsServices
-    ? cmsPackages
-    : activeTab === 'sedan' ? defaultSedanPackages : defaultTruckPackages;
+    : defaultPackages;
 
   return (
-    <section id="packages" className="py-20 bg-secondary">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <p className="text-primary font-semibold tracking-[0.2em] uppercase mb-4">Detailing Packages</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-8"><span className="gold-gradient-text">Detailing Packages</span></h2>
-          {!hasCmsServices && (
-            <div className="flex justify-center gap-2 mb-4">
-              {vehicleTabs.map((tab) => (
-                <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-6 py-3 font-semibold text-sm uppercase tracking-wider transition-all duration-300 border-2 ${activeTab === tab.id ? 'bg-primary text-primary-foreground border-primary' : 'bg-transparent text-muted-foreground border-border hover:border-primary/50 hover:text-foreground'}`}>
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          )}
+    <section id="packages" className="site-section">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Pricing</p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
+            Simple, transparent pricing
+          </h2>
+          <p className="text-white/40 text-lg">
+            No hidden fees. Pick a package and book in under 60 seconds.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
           {packages.map((pkg, index) => (
-            <div key={`${activeTab}-${index}`} className={`relative bg-card rounded-xl border ${pkg.popular ? 'border-primary' : 'border-border'} overflow-hidden hover:border-primary/50 transition-all duration-300 card-shine`}>
-              {pkg.badge && (
-                <div className="absolute top-4 right-4">
-                  <span className="gold-gradient text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">{pkg.badge}</span>
+            <div
+              key={index}
+              className={`relative rounded-2xl p-6 transition-all duration-300 ${
+                pkg.popular
+                  ? 'bg-white text-[hsl(0,0%,4%)] ring-1 ring-white'
+                  : 'bg-white/[0.03] border border-white/[0.08] hover:border-white/[0.15]'
+              }`}
+            >
+              {pkg.popular && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="text-[11px] uppercase tracking-widest font-semibold bg-[hsl(0,0%,4%)] text-white px-4 py-1 rounded-full">
+                    Most Popular
+                  </span>
                 </div>
               )}
-              <div className="p-8">
-                <div className="w-12 h-12 rounded-lg gold-gradient flex items-center justify-center mb-6">
-                  <pkg.icon className="w-6 h-6 text-primary-foreground" />
-                </div>
-                <h3 className="text-xl font-bold mb-2 text-foreground">{pkg.title}</h3>
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-3xl font-black gold-gradient-text">{pkg.price}</span>
-                </div>
-                {pkg.time && <p className="text-muted-foreground text-sm mb-6">Time: {pkg.time}</p>}
-                {pkg.features.length > 0 && (
-                  <div className="border-t border-border pt-6 mb-6">
-                    <p className="text-sm font-semibold text-foreground mb-4">Includes:</p>
-                    <ul className="space-y-3">
-                      {pkg.features.map((feature, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
-                          <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                <a href={slug ? `/site/${slug}/book` : "#contact"} className={slug ? "book-now-link" : undefined}>
-                  <Button variant={pkg.popular ? 'gold' : 'goldOutline'} className="w-full">Book Now</Button>
-                </a>
+
+              <div className="mb-6">
+                <h3 className={`text-lg font-semibold mb-1 ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white'}`}>
+                  {pkg.title}
+                </h3>
+                <p className={`text-[13px] ${pkg.popular ? 'text-[hsl(0,0%,4%)]/50' : 'text-white/40'}`}>
+                  {pkg.description}
+                </p>
               </div>
+
+              <div className="mb-6">
+                <span className={`text-4xl font-bold ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white'}`}>
+                  {pkg.price}
+                </span>
+                <span className={`text-sm ml-1 ${pkg.popular ? 'text-[hsl(0,0%,4%)]/40' : 'text-white/30'}`}>
+                  starting
+                </span>
+              </div>
+
+              <a href={slug ? `/site/${slug}/book` : "#contact"} className={slug ? "book-now-link block mb-6" : "block mb-6"}>
+                <button className={`w-full py-3 rounded-full text-sm font-medium transition-all flex items-center justify-center gap-2 group ${
+                  pkg.popular
+                    ? 'bg-[hsl(0,0%,4%)] text-white hover:bg-[hsl(0,0%,12%)]'
+                    : 'bg-white/[0.08] text-white hover:bg-white/[0.12] border border-white/[0.1]'
+                }`}>
+                  Book Now
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </a>
+
+              <ul className="space-y-3">
+                {pkg.features.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-3 text-[13px]">
+                    <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${pkg.popular ? 'text-[hsl(0,0%,4%)]' : 'text-white/50'}`} />
+                    <span className={pkg.popular ? 'text-[hsl(0,0%,4%)]/70' : 'text-white/50'}>
+                      {feature}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
