@@ -1586,7 +1586,23 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
   transition: all 0.2s ease;
 }
 .site-btn-primary:hover {
-  background: hsl(0, 0%, 90%);
+  background: hsl(0, 0%, 92%);
+}
+
+/* Site page animations */
+@keyframes siteFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes siteHeroZoom {
+  from { transform: scale(1.08); }
+  to   { transform: scale(1); }
 }
 
 /* Onboarding input shake */
