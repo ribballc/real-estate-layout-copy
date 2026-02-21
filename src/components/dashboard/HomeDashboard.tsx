@@ -16,13 +16,19 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   ChartContainer, ChartTooltip, ChartTooltipContent,
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { format, subDays, startOfDay, endOfDay, startOfYear, eachDayOfInterval, isWithinInterval, parseISO, getDay } from "date-fns";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import EmptyState from "@/components/EmptyState";
+
+type ComparisonMode = "previous" | "custom";
 
 type DateRange = "7d" | "14d" | "30d" | "90d" | "ytd";
 
@@ -313,6 +319,9 @@ const HomeDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [dateRange, setDateRange] = useState<DateRange>("30d");
+  const [comparisonMode, setComparisonMode] = useState<ComparisonMode>("previous");
+  const [customCompareStart, setCustomCompareStart] = useState("");
+  const [customCompareEnd, setCustomCompareEnd] = useState("");
   const [bookings, setBookings] = useState<any[]>([]);
   const [stats, setStats] = useState({ services: 0, photos: 0, testimonials: 0 });
   const [loading, setLoading] = useState(true);
@@ -397,11 +406,26 @@ const HomeDashboard = () => {
       return isWithinInterval(d, { start, end });
     }), [bookings, start, end]);
 
+  // Determine comparison period based on mode
+  const comparisonPeriod = useMemo(() => {
+    if (comparisonMode === "custom" && customCompareStart && customCompareEnd) {
+      return { start: startOfDay(parseISO(customCompareStart)), end: endOfDay(parseISO(customCompareEnd)) };
+    }
+    return prev;
+  }, [comparisonMode, customCompareStart, customCompareEnd, prev]);
+
+  const comparisonLabel = useMemo(() => {
+    if (comparisonMode === "custom" && customCompareStart && customCompareEnd) {
+      return `vs ${format(parseISO(customCompareStart), "MMM d")} – ${format(parseISO(customCompareEnd), "MMM d")}`;
+    }
+    return `vs prev. period`;
+  }, [comparisonMode, customCompareStart, customCompareEnd]);
+
   const previousBookings = useMemo(() =>
     bookings.filter(b => {
       const d = parseISO(b.booking_date);
-      return isWithinInterval(d, { start: prev.start, end: prev.end });
-    }), [bookings, prev]);
+      return isWithinInterval(d, { start: comparisonPeriod.start, end: comparisonPeriod.end });
+    }), [bookings, comparisonPeriod]);
 
   // KPI computations — revenue = completed jobs only
   const currentRevenue = currentBookings.filter(b => b.status === "completed").reduce((sum, b) => sum + (Number(b.service_price) || 0), 0);
@@ -712,16 +736,66 @@ const HomeDashboard = () => {
           </h2>
           <p className="dash-subtitle text-xs lg:text-sm mt-0.5">Here's how your business is doing</p>
         </div>
-        <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}>
-          <SelectTrigger className="h-9 w-[150px] dash-select text-xs rounded-lg">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {DATE_OPTIONS.map(o => (
-              <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-3">
+          <Select value={dateRange} onValueChange={(v) => setDateRange(v as DateRange)}>
+            <SelectTrigger className="h-9 w-[150px] dash-select text-xs rounded-lg">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {DATE_OPTIONS.map(o => (
+                <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Comparison selector */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="text-[11px] sm:text-xs dash-card-sublabel underline underline-offset-2 decoration-dotted hover:text-foreground transition-colors flex items-center gap-1 whitespace-nowrap">
+                Comparison
+                <ChevronDown className="w-3 h-3" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-2" align="end">
+              <div className="space-y-1">
+                <button
+                  onClick={() => { setComparisonMode("previous"); setCustomCompareStart(""); setCustomCompareEnd(""); }}
+                  className={`w-full text-left text-xs px-3 py-2 rounded-md transition-colors ${comparisonMode === "previous" ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted"}`}
+                >
+                  Previous period
+                </button>
+                <button
+                  onClick={() => setComparisonMode("custom")}
+                  className={`w-full text-left text-xs px-3 py-2 rounded-md transition-colors ${comparisonMode === "custom" ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted"}`}
+                >
+                  Custom dates
+                </button>
+              </div>
+              {comparisonMode === "custom" && (
+                <div className="mt-2 pt-2 border-t border-border space-y-2">
+                  <div>
+                    <label className="text-[10px] text-muted-foreground mb-1 block">Start</label>
+                    <input
+                      type="date"
+                      value={customCompareStart}
+                      onChange={e => setCustomCompareStart(e.target.value)}
+                      className="w-full h-8 px-2 text-xs rounded-md border border-border bg-background text-foreground"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-muted-foreground mb-1 block">End</label>
+                    <input
+                      type="date"
+                      value={customCompareEnd}
+                      onChange={e => setCustomCompareEnd(e.target.value)}
+                      className="w-full h-8 px-2 text-xs rounded-md border border-border bg-background text-foreground"
+                    />
+                  </div>
+                </div>
+              )}
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
 
       {/* ═══ KPI Cards — 2x2 mobile, 4-col desktop ═══ */}
@@ -733,7 +807,7 @@ const HomeDashboard = () => {
             value={ghost.isIntro ? formatCurrency(gRevenue) : formatCurrency(currentRevenue)}
             mobileValue={ghost.isIntro ? formatCurrencyCompact(gRevenue) : formatCurrencyCompact(currentRevenue)}
             pct={ghost.isIntro ? 18 : revenuePct}
-            subtext={periodLabel}
+            subtext={comparisonLabel}
             sparklineData={ghost.isIntro ? GHOST_SPARKLINE : revenueSparkline}
           />
         </div>
@@ -743,7 +817,7 @@ const HomeDashboard = () => {
             label="Jobs Completed"
             value={ghost.isIntro ? String(gJobs) : String(currentCompleted.length)}
             pct={ghost.isIntro ? 12 : completedPct}
-            subtext={periodLabel}
+            subtext={comparisonLabel}
             sparklineData={ghost.isIntro ? GHOST_JOBS_SPARKLINE : jobsSparkline}
           />
         </div>
@@ -754,7 +828,7 @@ const HomeDashboard = () => {
             value={ghost.isIntro ? formatCurrency(gAvg) : formatCurrency(avgTicket)}
             mobileValue={ghost.isIntro ? formatCurrencyCompact(gAvg) : formatCurrencyCompact(avgTicket)}
             pct={ghost.isIntro ? 8 : avgTicketPct}
-            subtext={periodLabel}
+            subtext={comparisonLabel}
             sparklineData={ghost.isIntro ? GHOST_AVG_SPARKLINE : avgTicketSparkline}
           />
         </div>
@@ -764,7 +838,7 @@ const HomeDashboard = () => {
             label="Vehicles Serviced"
             value={ghost.isIntro ? String(gVehicles) : String(vehiclesCurrent)}
             pct={ghost.isIntro ? 15 : vehiclesPct}
-            subtext={periodLabel}
+            subtext={comparisonLabel}
             sparklineData={ghost.isIntro ? GHOST_VEHICLES_SPARKLINE : vehiclesSparkline}
           />
         </div>
