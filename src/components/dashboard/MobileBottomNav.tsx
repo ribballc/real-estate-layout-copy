@@ -208,17 +208,14 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                   aria-label={tab.label}
                 >
                   {active && (
-                    <motion.span
-                      layoutId="mobile-nav-indicator"
-                      className="absolute top-1.5 h-[3px] rounded-full"
-                      style={{
-                        background: "hsl(217,91%,60%)",
-                        width: 20,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                      }}
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                    />
+                    <div className="absolute top-1.5 inset-x-0 flex justify-center pointer-events-none">
+                      <motion.span
+                        layoutId="mobile-nav-indicator"
+                        className="h-[3px] w-5 rounded-full"
+                        style={{ background: "hsl(217,91%,60%)" }}
+                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                      />
+                    </div>
                   )}
                   <tab.icon
                     className={cn(
