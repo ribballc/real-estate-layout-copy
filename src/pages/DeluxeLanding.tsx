@@ -19,7 +19,7 @@ import DeluxeLandingSkeleton from '@/components/deluxe/DeluxeLandingSkeleton';
 
 const DeluxeLanding = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { profile, services, hours, testimonials, photos, addOns, loading, error } = useBusinessDataBySlug(slug || null);
+  const { profile, services, hours, testimonials, photos, addOns, websiteCopy, loading, error } = useBusinessDataBySlug(slug || null);
 
   // When rendered inside the dashboard iframe, intercept "Book Now" clicks
   useEffect(() => {
@@ -133,14 +133,14 @@ const DeluxeLanding = () => {
         extraMeta={geoMeta}
       />
       <DeluxeNavbar profile={profile} slug={slug} />
-      <DeluxeHero profile={profile} slug={slug} />
+      <DeluxeHero profile={profile} slug={slug} websiteCopy={websiteCopy} />
       <DeluxeServicesOverview services={services} slug={slug} />
       <DeluxePackages services={services} slug={slug} />
       <DeluxeGallery photos={photos} />
       <DeluxeTestimonials testimonials={testimonials} />
-      <DeluxeWhyChooseUs profile={profile} />
+      <DeluxeWhyChooseUs profile={profile} websiteCopy={websiteCopy} />
       <DeluxeAddOnServices addOns={addOns} slug={slug} />
-      <DeluxeCTASection profile={profile} slug={slug} />
+      <DeluxeCTASection profile={profile} slug={slug} websiteCopy={websiteCopy} />
       <DeluxeFAQ profile={profile} />
       <DeluxeContactForm profile={profile} services={services} addOns={addOns} hours={hours} slug={slug} />
       <DeluxeFooter profile={profile} hours={hours} />

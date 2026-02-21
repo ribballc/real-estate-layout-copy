@@ -144,6 +144,17 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
     }, 3000);
   }, [activeTab]);
 
+  // Listen for "Book Now" clicks inside the website iframe
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      if (e.data === 'dd-book-now' && activeTab !== 'booking') {
+        handleTabSwitch('booking');
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [activeTab, handleTabSwitch]);
+
   /* ─── Shared style helpers ─── */
   const cardBg = isDark ? "hsla(0,0%,100%,0.04)" : "hsl(0,0%,98%)";
   const cardBorder = isDark ? "hsla(0,0%,100%,0.08)" : "hsl(214,20%,88%)";

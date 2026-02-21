@@ -59,6 +59,15 @@ export interface BusinessAddOn {
   image_url: string | null;
 }
 
+export interface WebsiteCopy {
+  hero_headline: string;
+  hero_subheadline: string;
+  about_paragraph: string;
+  cta_tagline: string;
+  seo_meta_description: string;
+  services_descriptions: Record<string, string> | null;
+}
+
 export interface BusinessData {
   profile: BusinessProfile | null;
   services: BusinessService[];
@@ -66,6 +75,7 @@ export interface BusinessData {
   testimonials: BusinessTestimonial[];
   photos: BusinessPhoto[];
   addOns: BusinessAddOn[];
+  websiteCopy: WebsiteCopy | null;
   loading: boolean;
   error: string | null;
 }
@@ -77,15 +87,16 @@ export function useBusinessData(userId: string | null): BusinessData {
   const [testimonials, setTestimonials] = useState<BusinessTestimonial[]>([]);
   const [photos, setPhotos] = useState<BusinessPhoto[]>([]);
   const [addOns, setAddOns] = useState<BusinessAddOn[]>([]);
+  const [websiteCopy, setWebsiteCopy] = useState<WebsiteCopy | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userId) { setLoading(false); return; }
-    fetchBusinessData(userId, setProfile, setServices, setHours, setTestimonials, setPhotos, setAddOns, setLoading, setError);
+    fetchBusinessData(userId, setProfile, setServices, setHours, setTestimonials, setPhotos, setAddOns, setWebsiteCopy, setLoading, setError);
   }, [userId]);
 
-  return { profile, services, hours, testimonials, photos, addOns, loading, error };
+  return { profile, services, hours, testimonials, photos, addOns, websiteCopy, loading, error };
 }
 
 export function useBusinessDataBySlug(slug: string | null): BusinessData {
@@ -95,6 +106,7 @@ export function useBusinessDataBySlug(slug: string | null): BusinessData {
   const [testimonials, setTestimonials] = useState<BusinessTestimonial[]>([]);
   const [photos, setPhotos] = useState<BusinessPhoto[]>([]);
   const [addOns, setAddOns] = useState<BusinessAddOn[]>([]);
+  const [websiteCopy, setWebsiteCopy] = useState<WebsiteCopy | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -115,7 +127,7 @@ export function useBusinessDataBySlug(slug: string | null): BusinessData {
           setLoading(false);
           return;
         }
-        fetchBusinessData(data.user_id, setProfile, setServices, setHours, setTestimonials, setPhotos, setAddOns, setLoading, setError);
+        fetchBusinessData(data.user_id, setProfile, setServices, setHours, setTestimonials, setPhotos, setAddOns, setWebsiteCopy, setLoading, setError);
       } catch (e) {
         setError("Something went wrong");
         setLoading(false);
@@ -124,7 +136,7 @@ export function useBusinessDataBySlug(slug: string | null): BusinessData {
     resolve();
   }, [slug]);
 
-  return { profile, services, hours, testimonials, photos, addOns, loading, error };
+  return { profile, services, hours, testimonials, photos, addOns, websiteCopy, loading, error };
 }
 
 function fetchBusinessData(
@@ -135,18 +147,20 @@ function fetchBusinessData(
   setTestimonials: (v: BusinessTestimonial[]) => void,
   setPhotos: (v: BusinessPhoto[]) => void,
   setAddOns: (v: BusinessAddOn[]) => void,
+  setWebsiteCopy: (v: WebsiteCopy | null) => void,
   setLoading: (v: boolean) => void,
   setError: (v: string | null) => void,
 ) {
   const fetchData = async () => {
     try {
-      const [profileRes, servicesRes, hoursRes, testimonialsRes, photosRes, addOnsRes] = await Promise.all([
+      const [profileRes, servicesRes, hoursRes, testimonialsRes, photosRes, addOnsRes, copyRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", userId).single(),
         supabase.from("services").select("*").eq("user_id", userId).order("sort_order"),
         supabase.from("business_hours").select("*").eq("user_id", userId).order("day_of_week"),
         supabase.from("testimonials").select("*").eq("user_id", userId).order("created_at"),
         supabase.from("photos").select("*").eq("user_id", userId).order("sort_order"),
         supabase.from("add_ons").select("*").eq("user_id", userId).order("sort_order"),
+        supabase.from("website_copy").select("hero_headline, hero_subheadline, about_paragraph, cta_tagline, seo_meta_description, services_descriptions").eq("user_id", userId).single(),
       ]);
 
       if (profileRes.data) setProfile(profileRes.data as unknown as BusinessProfile);
@@ -154,6 +168,7 @@ function fetchBusinessData(
       if (testimonialsRes.data) setTestimonials(testimonialsRes.data as unknown as BusinessTestimonial[]);
       if (photosRes.data) setPhotos(photosRes.data as unknown as BusinessPhoto[]);
       if (addOnsRes.data) setAddOns(addOnsRes.data as unknown as BusinessAddOn[]);
+      if (copyRes.data) setWebsiteCopy(copyRes.data as unknown as WebsiteCopy);
 
       if (hoursRes.data && hoursRes.data.length > 0) {
         const formatted = hoursRes.data.map((h: { day_of_week: number; is_closed: boolean; open_time: string; close_time: string }) => {

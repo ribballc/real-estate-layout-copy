@@ -36,10 +36,12 @@ const DeluxeServicesOverview = ({ services, slug }: Props) => {
         <SiteFadeIn>
           <div className="max-w-2xl mb-16">
             <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Services</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4"
+              style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
+            >
               Every detail,<br />handled with precision
             </h2>
-            <p className="text-white/40 text-lg leading-relaxed">
+            <p className="text-white/40 text-lg leading-relaxed line-clamp-3" style={{ overflowWrap: 'break-word' }}>
               From quick refreshes to complete transformations — choose the level of care your vehicle deserves.
             </p>
           </div>
