@@ -1,17 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import HeroSection from "@/components/HeroSection";
-import ValueBreakdown from "@/components/ValueBreakdown";
 import LogoTicker from "@/components/LogoTicker";
-import HowItWorksSection from "@/components/HowItWorksSection";
-import WhySection from "@/components/WhySection";
-import TestimonialSection from "@/components/TestimonialSection";
-import PricingSection from "@/components/PricingSection";
-import FaqSection from "@/components/FaqSection";
-import CtaFooter from "@/components/CtaFooter";
-import SurveyFunnelModal from "@/components/SurveyFunnelModal";
 import StickyNav from "@/components/StickyNav";
 
-import ExitIntentPopup from "@/components/ExitIntentPopup";
+// Lazy load below-fold sections to reduce initial JS bundle
+const ValueBreakdown = lazy(() => import("@/components/ValueBreakdown"));
+const HowItWorksSection = lazy(() => import("@/components/HowItWorksSection"));
+const WhySection = lazy(() => import("@/components/WhySection"));
+const TestimonialSection = lazy(() => import("@/components/TestimonialSection"));
+const PricingSection = lazy(() => import("@/components/PricingSection"));
+const FaqSection = lazy(() => import("@/components/FaqSection"));
+const CtaFooter = lazy(() => import("@/components/CtaFooter"));
+const SurveyFunnelModal = lazy(() => import("@/components/SurveyFunnelModal"));
+const ExitIntentPopup = lazy(() => import("@/components/ExitIntentPopup"));
+
 import { SurveyFunnelProvider } from "@/components/SurveyFunnelContext";
 import { trackEvent, generateEventId } from "@/lib/tracking";
 import SEOHead from "@/components/SEOHead";
@@ -143,16 +145,17 @@ const Index = () => {
         <SpringBanner />
         <HeroSection />
         <LogoTicker />
-        <HowItWorksSection />
-        <ValueBreakdown />
-        <TestimonialSection />
-        <WhySection />
-        <PricingSection />
-        <FaqSection />
-        <CtaFooter />
-        <SurveyFunnelModal />
-        
-        <ExitIntentPopup />
+        <Suspense fallback={null}>
+          <HowItWorksSection />
+          <ValueBreakdown />
+          <TestimonialSection />
+          <WhySection />
+          <PricingSection />
+          <FaqSection />
+          <CtaFooter />
+          <SurveyFunnelModal />
+          <ExitIntentPopup />
+        </Suspense>
       </div>
     </SurveyFunnelProvider>
   );
