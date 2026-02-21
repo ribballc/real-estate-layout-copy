@@ -1,55 +1,31 @@
 
 
-# Fix: Car Image Not Displaying on Vehicle Selector
+# Premium Apple Glass Hamburger Button
 
-## Problem
-The car image from Imagin Studio never renders -- users only see the ghost car outline on all devices. Two bugs are causing this:
+## Overview
+Upgrade the hamburger/menu button in the mobile bottom nav to feel like a macOS Dock icon with frosted glass, lift animation, inner glow, and smooth transitions.
 
-1. **CORS failure**: The hidden preload `<img>` tag has `crossOrigin="anonymous"`, which requires the Imagin Studio CDN to send `Access-Control-Allow-Origin` headers. It likely does not, causing the image to fail loading entirely on most browsers.
+## Changes (single file)
 
-2. **Fragile canvas pixel-check**: Even if the image loads, the code draws it to a canvas and calls `getImageData()` to detect placeholder images. With `crossOrigin` set, this taints the canvas and throws a security error. The empty `catch {}` silently swallows the error, but `setImageLoaded(true)` is never reached in the error path.
+**File: `src/components/dashboard/MobileBottomNav.tsx`**
 
-## Solution
+1. Add `menuHovered` state for hover-driven styling
+2. Convert the hamburger `<button>` to `<motion.button>` with spring-based `whileHover` (scale 1.07, y -1) and `whileTap` (scale 0.93)
+3. Restyle inline `background`, `boxShadow`, `border`, and `transition` for both dark and light modes using the exact HSLA values specified -- much more translucent bases with brighter hover glows
+4. Drive icon color from `menuHovered` state for a brighter icon on hover
 
-### File: `src/pages/BookVehicle.tsx`
-
-**Step 1 -- Remove `crossOrigin` and the canvas pixel-check entirely**
-- Remove `crossOrigin="anonymous"` from the hidden preload image
-- Replace the canvas-based placeholder detection with a simpler `naturalWidth`/`naturalHeight` check (placeholder images from the API are typically very small, like 1x1)
-- This eliminates all CORS issues
-
-**Step 2 -- Simplify the image load handler**
-```tsx
-const handleImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-  const img = e.currentTarget;
-  // Imagin Studio returns a tiny placeholder when no image exists
-  if (img.naturalWidth < 50 || img.naturalHeight < 50) {
-    setImageError(true);
-    return;
-  }
-  setImageLoaded(true);
-  requestAnimationFrame(() => setShowImage(true));
-}, []);
-```
-
-**Step 3 -- Remove `crossOrigin` from the preload img tag (line 86)**
-Change:
-```tsx
-<img key={imageKey.current} src={carImageUrl} alt="" crossOrigin="anonymous" onLoad={handleImageLoad} onError={() => setImageError(true)} className="hidden" />
-```
-To:
-```tsx
-<img key={imageKey.current} src={carImageUrl} alt="" onLoad={handleImageLoad} onError={() => setImageError(true)} className="hidden" />
-```
-
-These two changes fix the image on all devices -- desktop, mobile, and embedded previews.
+No new files, no new dependencies, no database changes.
 
 ## Technical Details
 
-| What | Before | After |
-|------|--------|-------|
-| `crossOrigin` attr | `"anonymous"` (causes CORS block) | Removed |
-| Placeholder detection | Canvas pixel sampling (CORS-dependent) | `naturalWidth`/`naturalHeight` size check |
-| Error handling | Silent `catch {}` swallows failures | Clean boolean check, no canvas needed |
-| Device compatibility | Broken on all devices | Works everywhere |
+| Property | Dark base | Dark hover | Light base | Light hover |
+|----------|-----------|------------|------------|-------------|
+| background | `hsla(215,35%,20%,0.45)` | `hsla(215,35%,30%,0.65)` | `hsla(0,0%,100%,0.50)` | `hsla(0,0%,100%,0.72)` |
+| border | `hsla(0,0%,100%,0.10)` | `hsla(0,0%,100%,0.22)` | `hsla(0,0%,0%,0.08)` | `hsla(0,0%,0%,0.14)` |
+| boxShadow | inset highlight + depth | + blue glow halo | inset highlight + depth | + blue glow halo |
+| icon color | `hsla(0,0%,100%,0.45)` | `hsla(0,0%,100%,0.85)` | `hsl(215,14%,41%)` | `hsl(215,14%,20%)` |
+
+Motion config: `whileHover={{ scale: 1.07, y: -1 }}`, `whileTap={{ scale: 0.93 }}`, spring stiffness 500 / damping 28.
+
+When menu is open, existing blue accent styling is preserved and takes priority over hover states.
 
