@@ -10,6 +10,7 @@ import WelcomeModal from "./WelcomeModal";
 import NotificationBell from "./NotificationBell";
 import PageIntroBanner from "./PageIntroBanner";
 import UpgradeModal from "./UpgradeModal";
+import PostPurchaseCelebration from "./PostPurchaseCelebration";
 import PastDueBanner from "./PastDueBanner";
 import { UpgradeModalProvider } from "@/contexts/UpgradeModalContext";
 import { useSubscription } from "@/hooks/useSubscription";
@@ -76,6 +77,7 @@ const DashboardLayout = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [firstName, setFirstName] = useState("");
   const subscription = useSubscription();
+  const [showCelebration, setShowCelebration] = useState(false);
 
   // Entry animation — only on very first visit
   const [showEntryAnim] = useState(() => !localStorage.getItem("darker_dashboard_intro_seen"));
@@ -119,10 +121,7 @@ const DashboardLayout = () => {
         if (!error && data?.subscribed) {
           setTrialActive(true);
           if (isPostCheckout) {
-            toast({
-              title: "You're live! Your free trial has started.",
-              description: "Your site is now active. Start taking bookings.",
-            });
+            setShowCelebration(true);
           }
         }
       } catch (e) {
@@ -131,6 +130,22 @@ const DashboardLayout = () => {
     };
     checkSubscription();
   }, [user, location.search, navigate]);
+
+  // Also detect subscription activation on window focus (returning from Stripe tab)
+  useEffect(() => {
+    const onFocus = async () => {
+      if (trialActive || !user) return;
+      try {
+        const { data, error } = await supabase.functions.invoke("check-subscription");
+        if (!error && data?.subscribed) {
+          setTrialActive(true);
+          setShowCelebration(true);
+        }
+      } catch {}
+    };
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [trialActive, user]);
 
   useEffect(() => {
     if (onboardingComplete === false) navigate("/onboarding", { replace: true });
@@ -349,6 +364,13 @@ const DashboardLayout = () => {
       {/* First-visit welcome modal */}
       {showEntryAnim && <WelcomeModal firstName={firstName} isDark={isDark} />}
       <UpgradeModal />
+      {showCelebration && (
+        <PostPurchaseCelebration
+          firstName={firstName}
+          isDark={isDark}
+          onDismiss={() => setShowCelebration(false)}
+        />
+      )}
     </>
     </UpgradeModalProvider>
   );
