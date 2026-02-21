@@ -1,11 +1,11 @@
-import { Star, Quote } from 'lucide-react';
+import { Star } from 'lucide-react';
 import type { BusinessTestimonial } from '@/hooks/useBusinessData';
 
 const defaultTestimonials = [
-  { name: 'Michael Johnson', rating: 5, text: 'Absolutely incredible work! My car looks better than when I bought it. The attention to detail is unmatched.', vehicle: '2022 BMW 3 Series' },
-  { name: 'Sarah Williams', rating: 5, text: 'I was blown away by the results. The interior cleaning was thorough and my SUV smells brand new!', vehicle: '2021 Toyota Highlander' },
-  { name: 'David Martinez', rating: 5, text: 'Best detailing service I have ever used. Professional, punctual, and the results speak for themselves.', vehicle: '2023 Ford F-150' },
-  { name: 'Jennifer Brown', rating: 5, text: 'They removed stains I thought were permanent. Highly recommend their full interior package!', vehicle: '2020 Honda Accord' },
+  { name: 'Michael J.', rating: 5, text: 'Absolutely incredible work. My car looks better than when I bought it. The attention to detail is unmatched.' },
+  { name: 'Sarah W.', rating: 5, text: 'I was blown away by the results. The interior cleaning was thorough and my SUV smells brand new.' },
+  { name: 'David M.', rating: 5, text: 'Best detailing service I have ever used. Professional, punctual, and the results speak for themselves.' },
+  { name: 'Jennifer B.', rating: 5, text: 'They removed stains I thought were permanent. Highly recommend their full interior package.' },
 ];
 
 interface Props {
@@ -20,38 +20,43 @@ const DeluxeTestimonials = ({ testimonials }: Props) => {
         name: t.author,
         rating: t.rating,
         text: t.content,
-        vehicle: '',
         photo_url: t.photo_url,
       }))
     : defaultTestimonials.map((t) => ({ ...t, photo_url: null as string | null }));
 
   return (
-    <section id="testimonials" className="py-20 bg-secondary">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <p className="text-primary font-semibold tracking-[0.2em] uppercase mb-4">Customer Reviews</p>
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">What Our <span className="gold-gradient-text">Clients</span> Say</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">Do not just take our word for it - hear from our satisfied customers</p>
+    <section id="testimonials" className="site-section">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <p className="text-[13px] uppercase tracking-[0.2em] text-white/40 font-medium mb-4">Reviews</p>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight mb-4">
+            Trusted by car owners everywhere
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
           {displayTestimonials.map((testimonial, index) => (
-            <div key={index} className="bg-card p-8 rounded-xl border border-border hover:border-primary/50 transition-all duration-300 relative card-shine">
-              <Quote className="absolute top-6 right-6 w-10 h-10 text-primary/20" />
-              <div className="flex items-center gap-1 mb-4">
+            <div
+              key={index}
+              className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 hover:border-white/[0.12] transition-all duration-300"
+            >
+              <div className="flex items-center gap-0.5 mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-primary text-primary" />
+                  <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <p className="text-foreground mb-6 text-lg leading-relaxed">"{testimonial.text}"</p>
-              <div className="border-t border-border pt-4 flex items-center gap-3">
-                {testimonial.photo_url && (
-                  <img src={testimonial.photo_url} alt={testimonial.name} className="w-10 h-10 rounded-full object-cover" />
+              <p className="text-white/70 text-[15px] leading-relaxed mb-6">
+                &ldquo;{testimonial.text}&rdquo;
+              </p>
+              <div className="flex items-center gap-3 pt-4 border-t border-white/[0.06]">
+                {testimonial.photo_url ? (
+                  <img src={testimonial.photo_url} alt={testimonial.name} className="w-8 h-8 rounded-full object-cover" />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-white/[0.08] flex items-center justify-center text-white/40 text-xs font-semibold">
+                    {testimonial.name.charAt(0)}
+                  </div>
                 )}
-                <div>
-                  <p className="font-bold text-foreground">{testimonial.name}</p>
-                  {testimonial.vehicle && <p className="text-sm text-muted-foreground">{testimonial.vehicle}</p>}
-                </div>
+                <span className="text-white/50 text-sm font-medium">{testimonial.name}</span>
               </div>
             </div>
           ))}

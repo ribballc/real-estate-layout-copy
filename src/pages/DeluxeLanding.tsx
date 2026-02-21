@@ -35,8 +35,6 @@ const DeluxeLanding = () => {
     return () => document.removeEventListener('click', handler, true);
   }, []);
 
-  const isDark = profile?.secondary_color !== "#FFFFFF";
-
   // Build dynamic SEO data
   const businessName = profile?.business_name || 'Auto Detailing';
   const city = profile?.address?.split(',')[0]?.trim() || '';
@@ -44,8 +42,8 @@ const DeluxeLanding = () => {
   const avgRating = testimonials.length > 0
     ? (testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length).toFixed(1)
     : null;
-  const ogImage = photos.length > 0 ? photos[0].url : 'https://darkerdigital.com/og-default.jpg';
-  const canonicalUrl = `https://darkerdigital.com/site/${slug}`;
+  const ogImage = photos.length > 0 ? photos[0].url : 'https://darker-digital.lovable.app/og-default.jpg';
+  const canonicalUrl = `https://darker-digital.lovable.app/site/${slug}`;
 
   const structuredData = useMemo(() => {
     const schemas: object[] = [
@@ -94,7 +92,7 @@ const DeluxeLanding = () => {
         url: canonicalUrl,
         potentialAction: {
           '@type': 'ReserveAction',
-          target: `https://darkerdigital.com/site/${slug}/book`,
+          target: `https://darker-digital.lovable.app/site/${slug}/book`,
           name: 'Book a Detail',
         },
       },
@@ -102,23 +100,21 @@ const DeluxeLanding = () => {
     return schemas;
   }, [businessName, canonicalUrl, profile, services, hours, testimonials, avgRating, city, slug]);
 
-  const geoMeta = city ? [
-    { name: 'geo.placename', content: city },
-  ] : [];
+  const geoMeta = city ? [{ name: 'geo.placename', content: city }] : [];
 
   if (loading) return <DeluxeLandingSkeleton />;
 
   if (error || !slug) {
     return (
-      <main className="min-h-screen bg-background font-montserrat flex items-center justify-center px-4">
+      <main className="min-h-screen bg-[hsl(0,0%,4%)] flex items-center justify-center px-6">
         <div className="text-center max-w-md">
-          <h1 className="text-xl font-semibold text-foreground mb-2">
+          <h1 className="text-xl font-semibold text-white mb-2">
             {error || "Page not found"}
           </h1>
-          <p className="text-muted-foreground mb-6">
+          <p className="text-white/40 mb-6">
             We couldn&apos;t load this page. Check the link or try again later.
           </p>
-          <a href="/" className="inline-flex items-center justify-center px-6 py-3 rounded-lg font-medium text-white bg-accent hover:opacity-90 transition-opacity">
+          <a href="/" className="inline-flex items-center justify-center px-6 py-3 rounded-full font-medium text-white bg-white/10 hover:bg-white/15 transition-colors">
             Go home
           </a>
         </div>
@@ -127,7 +123,7 @@ const DeluxeLanding = () => {
   }
 
   return (
-    <main className={`min-h-screen bg-background font-montserrat ${isDark ? "site-dark" : ""}`}>
+    <main className="min-h-screen bg-[hsl(0,0%,4%)] site-page" style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" }}>
       <SEOHead
         title={`${businessName} — Auto Detailing${city ? ` in ${city}` : ''} | Book Online`}
         description={`${businessName} offers professional ${servicesList || 'auto detailing'}${city ? ` in ${city}` : ''}. Book online 24/7. Deposits accepted, instant confirmation, SMS reminders.`}
@@ -140,11 +136,11 @@ const DeluxeLanding = () => {
       <DeluxeHero profile={profile} slug={slug} />
       <DeluxeServicesOverview services={services} slug={slug} />
       <DeluxePackages services={services} slug={slug} />
-      <DeluxeTestimonials testimonials={testimonials} />
-      <DeluxeAddOnServices addOns={addOns} slug={slug} />
       <DeluxeGallery photos={photos} />
-      <DeluxeCTASection profile={profile} slug={slug} />
+      <DeluxeTestimonials testimonials={testimonials} />
       <DeluxeWhyChooseUs profile={profile} />
+      <DeluxeAddOnServices addOns={addOns} slug={slug} />
+      <DeluxeCTASection profile={profile} slug={slug} />
       <DeluxeFAQ profile={profile} />
       <DeluxeContactForm profile={profile} services={services} addOns={addOns} hours={hours} slug={slug} />
       <DeluxeFooter profile={profile} hours={hours} />
