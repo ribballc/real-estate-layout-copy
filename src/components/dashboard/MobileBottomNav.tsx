@@ -37,6 +37,7 @@ interface MobileBottomNavProps {
 const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [menuHovered, setMenuHovered] = useState(false);
 
   // Close menu on route change
   useEffect(() => {
@@ -254,8 +255,8 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
             })}
           </div>
 
-          {/* Separated hamburger button — glass */}
-          <button
+          {/* Separated hamburger button — premium Apple glass */}
+          <motion.button
             onClick={() => {
               if (navigator.vibrate) navigator.vibrate(8);
               setMenuOpen((prev) => {
@@ -263,17 +264,38 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                 return !prev;
               });
             }}
-            className="group flex items-center justify-center w-[56px] h-[56px] rounded-[22px] flex-shrink-0 transition-all duration-200 active:scale-90"
+            onMouseEnter={() => setMenuHovered(true)}
+            onMouseLeave={() => setMenuHovered(false)}
+            whileHover={{ scale: 1.07, y: -1 }}
+            whileTap={{ scale: 0.93 }}
+            transition={{ type: "spring", stiffness: 500, damping: 28 }}
+            className="flex items-center justify-center w-[56px] h-[56px] rounded-[22px] flex-shrink-0"
             style={{
-              background: isDark
-                ? menuOpen ? "hsla(217,91%,60%,0.12)" : "hsla(215,30%,12%,0.55)"
-                : menuOpen ? "hsla(217,91%,60%,0.06)" : "hsla(0,0%,100%,0.35)",
+              background: menuOpen
+                ? isDark ? "hsla(217,91%,60%,0.12)" : "hsla(217,91%,60%,0.06)"
+                : isDark
+                  ? menuHovered ? "hsla(215,35%,30%,0.65)" : "hsla(215,35%,20%,0.45)"
+                  : menuHovered ? "hsla(0,0%,100%,0.72)" : "hsla(0,0%,100%,0.50)",
               backdropFilter: "blur(40px) saturate(180%)",
               WebkitBackdropFilter: "blur(40px) saturate(180%)",
-              border: `1px solid ${isDark ? "hsla(0,0%,100%,0.08)" : "hsla(0,0%,100%,0.45)"}`,
-              boxShadow: isDark
-                ? `0 8px 40px hsla(0,0%,0%,0.45), inset 0 1px 0 hsla(0,0%,100%,0.05)${menuOpen ? ", 0 0 20px hsla(217,91%,60%,0.15)" : ""}`
-                : `0 8px 40px hsla(220,14%,50%,0.12), inset 0 1px 0 hsla(0,0%,100%,0.6)${menuOpen ? ", 0 0 20px hsla(217,91%,60%,0.1)" : ""}`,
+              border: menuOpen
+                ? `1px solid ${isDark ? "hsla(217,91%,60%,0.3)" : "hsla(217,91%,60%,0.2)"}`
+                : `1px solid ${isDark
+                    ? menuHovered ? "hsla(0,0%,100%,0.22)" : "hsla(0,0%,100%,0.10)"
+                    : menuHovered ? "hsla(0,0%,0%,0.14)" : "hsla(0,0%,0%,0.08)"
+                  }`,
+              boxShadow: menuOpen
+                ? isDark
+                  ? "inset 0 1px 0 hsla(0,0%,100%,0.08), 0 8px 32px hsla(0,0%,0%,0.4), 0 0 20px hsla(217,91%,60%,0.15)"
+                  : "inset 0 1px 0 hsla(0,0%,100%,0.9), 0 8px 32px hsla(220,14%,50%,0.12), 0 0 16px hsla(217,91%,60%,0.08)"
+                : isDark
+                  ? menuHovered
+                    ? "inset 0 1px 0 hsla(0,0%,100%,0.18), 0 0 0 1px hsla(217,91%,65%,0.15), 0 8px 32px hsla(0,0%,0%,0.45), 0 0 20px hsla(217,91%,60%,0.12)"
+                    : "inset 0 1px 0 hsla(0,0%,100%,0.08), 0 8px 32px hsla(0,0%,0%,0.4)"
+                  : menuHovered
+                    ? "inset 0 1px 0 hsla(0,0%,100%,1), 0 0 0 1px hsla(217,91%,60%,0.12), 0 8px 32px hsla(220,14%,50%,0.2), 0 0 16px hsla(217,91%,60%,0.08)"
+                    : "inset 0 1px 0 hsla(0,0%,100%,0.9), 0 8px 32px hsla(220,14%,50%,0.12)",
+              transition: "background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
             }}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
           >
@@ -285,16 +307,17 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
               />
             ) : (
               <Menu
-                className={cn(
-                  "w-[22px] h-[22px] transition-colors duration-200",
-                  isDark
-                    ? "text-[hsla(0,0%,100%,0.4)] group-hover:text-[hsla(0,0%,100%,0.7)]"
-                    : "text-[hsl(215,14%,41%)] group-hover:text-[hsl(215,14%,25%)]"
-                )}
+                className="w-[22px] h-[22px]"
+                style={{
+                  color: isDark
+                    ? menuHovered ? "hsla(0,0%,100%,0.85)" : "hsla(0,0%,100%,0.45)"
+                    : menuHovered ? "hsl(215,14%,20%)" : "hsl(215,14%,41%)",
+                  transition: "color 0.25s ease",
+                }}
                 strokeWidth={1.8}
               />
             )}
-          </button>
+          </motion.button>
         </div>
       </nav>
     </>
