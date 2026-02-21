@@ -188,59 +188,6 @@ const WebsitePage = ({ chatbotRef, isDark = false }: WebsitePageProps) => {
   return (
     <div className="space-y-5">
 
-      {/* ═══ Sticky Trial Banner ═══ */}
-      {showTrialCTAs && (
-        <div
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
-          style={{
-            background: "linear-gradient(135deg, hsla(217,91%,60%,0.12) 0%, hsla(217,91%,60%,0.06) 100%)",
-            border: "1px solid hsla(217,91%,60%,0.2)",
-            padding: "16px 20px",
-            borderRadius: 12,
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="shrink-0 flex items-center justify-center"
-              style={{
-                width: 36, height: 36, borderRadius: 10,
-                background: "hsla(217,91%,60%,0.15)",
-              }}
-            >
-              <Zap className="w-4 h-4" style={{ color: "hsl(217,91%,60%)" }} />
-            </div>
-            <div>
-              <p className="font-bold" style={{ color: headingText, fontSize: 14 }}>
-                Your site is live — for 14 days free.
-              </p>
-              <p style={{ color: mutedText, fontSize: 13, marginTop: 2 }}>
-                Subscribe to keep it online, accept bookings, and collect payments.
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={openUpgradeModal}
-            className="shrink-0 font-semibold text-white transition-all duration-200"
-            style={{
-              background: "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(224,91%,54%) 100%)",
-              height: 38,
-              borderRadius: 8,
-              fontSize: 13,
-              padding: "0 18px",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.filter = "brightness(1.08)";
-              e.currentTarget.style.boxShadow = "0 4px 16px hsla(217,91%,60%,0.4)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.filter = "none";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-          >
-            Activate Free Trial →
-          </button>
-        </div>
-      )}
 
       {/* ═══ Welcome Banner — Grand Reveal (first visit only) ═══ */}
       {showWelcome && (
