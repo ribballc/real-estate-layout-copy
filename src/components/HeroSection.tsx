@@ -58,7 +58,7 @@ const HeroSection = () => {
         <div className="max-w-[1400px] mx-auto w-full" style={{
           opacity: 0, animation: 'heroFadeScale 0.5s ease-out 0s forwards',
         }}>
-          <img src={darkerLogo} alt="Darker" className="h-10 md:h-12" />
+          <img src={darkerLogo} alt="Darker" className="h-10 md:h-12" width={163} height={70} />
         </div>
 
         {/* Two-column grid */}
@@ -250,6 +250,9 @@ const HeroSection = () => {
         src={mascotPenguin}
         alt=""
         aria-hidden="true"
+        width={100}
+        height={100}
+        loading="lazy"
         className="hidden lg:block absolute bottom-6 left-6 w-[100px] pointer-events-none select-none opacity-40"
         style={{ zIndex: 1 }}
       />

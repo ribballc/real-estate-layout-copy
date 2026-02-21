@@ -71,6 +71,9 @@ const CtaFooter = () => {
           src={mascotPenguin}
           alt=""
           aria-hidden="true"
+          width={120}
+          height={120}
+          loading="lazy"
           className="absolute bottom-0 left-0 pointer-events-none select-none w-[90px] md:w-[120px]"
           style={{ height: "auto", zIndex: 1 }}
         />
@@ -83,7 +86,7 @@ const CtaFooter = () => {
 
           <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-6" style={{ borderTop: "1px solid hsla(0, 0%, 100%, 0.1)" }}>
             <div className="flex flex-col items-center md:items-start gap-1">
-              <img src={darkerLogo} alt="Darker" className="h-7" />
+              <img src={darkerLogo} alt="Darker" className="h-7" width={65} height={28} />
             </div>
             <div className="flex flex-wrap justify-center gap-6 text-sm" style={{ color: "hsl(215, 20%, 65%)" }}>
               <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>

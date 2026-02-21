@@ -17,8 +17,11 @@ const LogoItem = ({ name, src }: { name: string; src: string }) => (
     <img
       src={src}
       alt={name}
+      width={98}
+      height={56}
       className="h-14 md:h-16 w-auto object-contain opacity-50 grayscale"
       draggable={false}
+      loading="lazy"
     />
   </div>
 );
