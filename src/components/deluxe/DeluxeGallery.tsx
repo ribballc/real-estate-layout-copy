@@ -1,23 +1,21 @@
-import gallery1 from '@/assets/deluxe/gallery-1.png';
-import gallery2 from '@/assets/deluxe/gallery-2.png';
-import gallery3 from '@/assets/deluxe/gallery-3.png';
-import gallery4 from '@/assets/deluxe/gallery-4.png';
-import gallery5 from '@/assets/deluxe/gallery-5.png';
-import gallery6 from '@/assets/deluxe/gallery-6.png';
-import gallery7 from '@/assets/deluxe/gallery-7.png';
-import gallery8 from '@/assets/deluxe/gallery-8.png';
+import stock1 from '@/assets/deluxe/stock-1.jpg';
+import stock2 from '@/assets/deluxe/stock-2.jpg';
+import stock3 from '@/assets/deluxe/stock-3.jpg';
+import stock4 from '@/assets/deluxe/stock-4.jpg';
+import stock5 from '@/assets/deluxe/stock-5.jpg';
+import stock6 from '@/assets/deluxe/stock-6.jpg';
+import stock7 from '@/assets/deluxe/stock-7.jpg';
 import type { BusinessPhoto } from '@/hooks/useBusinessData';
 import SiteFadeIn from './SiteFadeIn';
 
 const defaultGalleryItems = [
-  { image: gallery1, caption: 'Interior Detail' },
-  { image: gallery2, caption: 'Cadillac CT5' },
-  { image: gallery3, caption: 'SRT Interior' },
-  { image: gallery4, caption: 'Dodge Challenger' },
-  { image: gallery5, caption: 'Mercedes AMG' },
-  { image: gallery6, caption: 'Mercedes GLC' },
-  { image: gallery7, caption: 'Cadillac Lyriq' },
-  { image: gallery8, caption: 'Lyriq Interior' },
+  { image: stock1, caption: 'Lamborghini Huracán' },
+  { image: stock2, caption: 'Toyota GR Supra' },
+  { image: stock3, caption: 'Bentley Interior' },
+  { image: stock4, caption: 'Lamborghini Huracán EVO' },
+  { image: stock5, caption: 'Ferrari F8 Tributo' },
+  { image: stock6, caption: 'Huracán Taillight' },
+  { image: stock7, caption: 'Huracán Performante' },
 ];
 
 interface Props {

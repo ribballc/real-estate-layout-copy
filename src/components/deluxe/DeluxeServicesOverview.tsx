@@ -1,19 +1,19 @@
 import { ArrowRight } from 'lucide-react';
-import service1 from '@/assets/deluxe/service-1.jpg';
-import service2 from '@/assets/deluxe/service-2.jpg';
-import service3 from '@/assets/deluxe/service-3.jpg';
-import service4 from '@/assets/deluxe/service-4.jpg';
+import stock1 from '@/assets/deluxe/stock-1.jpg';
+import stock2 from '@/assets/deluxe/stock-2.jpg';
+import stock5 from '@/assets/deluxe/stock-5.jpg';
+import stock7 from '@/assets/deluxe/stock-7.jpg';
 import type { BusinessService } from '@/hooks/useBusinessData';
 import SiteFadeIn from './SiteFadeIn';
 
 const defaultServices = [
-  { image: service1, title: 'Interior Detail', description: 'Full vacuum, shampoo, leather conditioning, and deep steam cleaning', price: 95 },
-  { image: service2, title: 'Ceramic Coating', description: 'Long-lasting hydrophobic protection for your paint', price: 875 },
-  { image: service3, title: 'Paint Correction', description: 'Remove swirls, scratches, and oxidation for a flawless finish', price: 250 },
-  { image: service4, title: 'Exterior Wash', description: 'Hand wash, clay bar, wax, tire shine, and door jambs', price: 60 },
+  { image: stock2, title: 'Interior Detail', description: 'Full vacuum, shampoo, leather conditioning, and deep steam cleaning', price: 95 },
+  { image: stock5, title: 'Ceramic Coating', description: 'Long-lasting hydrophobic protection for your paint', price: 875 },
+  { image: stock1, title: 'Paint Correction', description: 'Remove swirls, scratches, and oxidation for a flawless finish', price: 250 },
+  { image: stock7, title: 'Exterior Wash', description: 'Hand wash, clay bar, wax, tire shine, and door jambs', price: 60 },
 ];
 
-const defaultImages = [service1, service2, service3, service4];
+const defaultImages = [stock2, stock5, stock1, stock7];
 
 interface Props {
   services?: BusinessService[];
