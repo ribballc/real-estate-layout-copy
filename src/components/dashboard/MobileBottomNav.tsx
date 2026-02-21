@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   LayoutDashboard, CalendarDays, KanbanSquare, Users, Menu, X,
   Wrench, Building2, Camera, Star, Settings, Globe, ClipboardList, FlaskConical, Search,
@@ -37,6 +37,12 @@ interface MobileBottomNavProps {
 const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState("");
+
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+    setSearch("");
+  }, [currentPath]);
 
   const isActive = (path: string) => {
     if (path === "/dashboard") return currentPath === "/dashboard";
@@ -103,7 +109,7 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search pages..."
-                    autoFocus
+                    autoFocus={false}
                     className={cn(
                       "flex-1 bg-transparent border-none outline-none text-sm placeholder:opacity-40",
                       isDark ? "text-white placeholder:text-white" : "text-[hsl(218,24%,23%)] placeholder:text-[hsl(215,14%,51%)]"
