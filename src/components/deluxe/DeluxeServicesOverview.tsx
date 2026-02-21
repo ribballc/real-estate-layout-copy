@@ -1,4 +1,4 @@
-import { ArrowRight, Droplets, Shield, Paintbrush, Car } from 'lucide-react';
+import { Droplets, Shield, Paintbrush, Car } from 'lucide-react';
 import stock1 from '@/assets/deluxe/stock-1.jpg';
 import stock2 from '@/assets/deluxe/stock-2.jpg';
 import stock5 from '@/assets/deluxe/stock-5.jpg';
@@ -71,49 +71,39 @@ const DeluxeServicesOverview = ({ services, slug }: Props) => {
                       boxShadow: '0 8px 32px -12px hsla(0,0%,0%,0.5)',
                     }}
                   >
-                    {/* Image */}
-                    <div className="relative w-full aspect-[16/9] overflow-hidden">
+                    {/* Image with strong bottom fade */}
+                    <div className="relative w-full aspect-[16/10] overflow-hidden">
                       <img
                         src={typeof service.image === "string" ? service.image : String(service.image)}
                         alt={service.title}
                         loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[hsl(0,0%,7%)] via-transparent to-transparent opacity-60" />
+                      {/* Strong fade: image bleeds into card bg */}
+                      <div className="absolute inset-0" style={{
+                        background: 'linear-gradient(to top, hsl(0,0%,7%) 0%, hsl(0,0%,7%) 5%, hsla(0,0%,7%,0.85) 25%, hsla(0,0%,7%,0.3) 55%, transparent 100%)',
+                      }} />
                     </div>
 
-                    {/* Content */}
-                    <div className="p-5 sm:p-6">
-                      {/* Icon + Title row */}
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                          style={{
-                            background: `${accent}18`,
-                            border: `1px solid ${accent}25`,
-                          }}
-                        >
-                          <Icon className="w-4 h-4" style={{ color: accent }} />
-                        </div>
-                        <h3 className="text-white font-semibold text-lg truncate">{service.title}</h3>
+                    {/* Content — overlaps fade zone */}
+                    <div className="relative px-5 sm:px-6 pb-6 -mt-4">
+                      {/* Icon badge */}
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                        style={{
+                          background: `${accent}15`,
+                          border: `1px solid ${accent}22`,
+                        }}
+                      >
+                        <Icon className="w-[18px] h-[18px]" style={{ color: accent }} />
                       </div>
+
+                      {/* Title */}
+                      <h3 className="text-white font-semibold text-lg mb-2.5 truncate">{service.title}</h3>
 
                       {/* Description */}
-                      <p className="text-white/45 text-sm leading-relaxed line-clamp-3 mb-4" style={{ overflowWrap: 'break-word' }}>
+                      <p className="text-white/45 text-[14px] leading-[1.7] line-clamp-4" style={{ overflowWrap: 'break-word' }}>
                         {service.description}
                       </p>
-
-                      {/* Price */}
-                      <div className="flex items-center justify-between pt-3 border-t border-white/[0.06]">
-                        <div>
-                          <span className="text-white/40 text-xs">Starting at </span>
-                          <span className="text-white font-semibold text-base">${service.price}</span>
-                        </div>
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300"
-                          style={{ background: `${accent}20` }}
-                        >
-                          <ArrowRight className="w-3.5 h-3.5 text-white" />
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </a>
