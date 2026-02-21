@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CreditCard, XCircle, Trash2, AlertTriangle, Globe, Bell, ListChecks, Sun, Moon, Bug } from "lucide-react";
+import { Loader2, CreditCard, XCircle, Globe, Bell, ListChecks, Sun, Moon, Bug } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import CancelFlowModal from "./CancelFlowModal";
 import { useAllFeatureFlags } from "@/hooks/useFeatureFlag";
@@ -23,6 +23,8 @@ const AccountSettings = () => {
   const [deleteConfirm, setDeleteConfirm] = useState("");
   const [deleting, setDeleting] = useState(false);
   const [wantsCustomDomain, setWantsCustomDomain] = useState(false);
+  const [showDataPrefs, setShowDataPrefs] = useState(false);
+  const [showDeleteFlow, setShowDeleteFlow] = useState(false);
   const { flags, loading: flagsLoading } = useAllFeatureFlags();
   const [waitlistToggles, setWaitlistToggles] = useState<Record<string, boolean>>({});
 
@@ -316,38 +318,69 @@ const AccountSettings = () => {
         </div>
       </div>
 
-      {/* Delete Account */}
-      <div className="dash-card" style={{ borderColor: "hsla(0, 84%, 60%, 0.2)", background: "hsla(0, 84%, 60%, 0.05)" }}>
-        <div className="flex items-center gap-2 mb-3">
-          <AlertTriangle className="w-5 h-5 text-red-400" />
-          <h3 className="dash-card-title text-red-400">Delete My Account</h3>
-        </div>
-        <p className="text-white/50 text-sm mb-4">
-          This will cancel your subscription, anonymize your data, and sign you out. Your data will be permanently purged after 30 days. This action cannot be undone.
-        </p>
-        <div className="space-y-3">
-          <div className="space-y-2">
-            <Label className="text-sm font-medium text-white/75">Type DELETE to confirm</Label>
-            <Input
-              value={deleteConfirm}
-              onChange={(e) => setDeleteConfirm(e.target.value)}
-              placeholder="DELETE"
-              className="h-11 bg-white/5 border-red-500/20 text-white placeholder:text-white/20 focus-visible:ring-red-500"
-            />
+      {/* Layer 1 — Faint breadcrumb link */}
+      <button
+        onClick={() => setShowDataPrefs(prev => !prev)}
+        className="text-white/25 text-xs hover:text-white/40 transition-colors self-start mt-2"
+      >
+        account &amp; data preferences →
+      </button>
+
+      {/* Layer 2 — Data Management card */}
+      {showDataPrefs && (
+        <div className="dash-card space-y-3">
+          <h3 className="dash-card-title text-white">Data Management</h3>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-white/50">Account created</span>
+            <span className="text-sm text-white/40">
+              {new Date(user?.created_at ?? "").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            </span>
           </div>
-          <Button
-            onClick={handleDeleteAccount}
-            disabled={deleteConfirm !== "DELETE" || deleting}
-            className="h-11 gap-2"
-            style={{
-              background: deleteConfirm === "DELETE" ? "hsl(0,84%,60%)" : "hsla(0,0%,100%,0.06)",
-              color: deleteConfirm === "DELETE" ? "white" : "hsla(0,0%,100%,0.3)",
-            }}
-          >
-            {deleting ? <><Loader2 className="w-4 h-4 animate-spin" /> Deleting…</> : <><Trash2 className="w-4 h-4" /> Delete My Account</>}
-          </Button>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-white/50">Account status</span>
+            <span className="text-sm text-white/40">Active</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-white/50">Account closure</span>
+            <button
+              onClick={() => setShowDeleteFlow(prev => !prev)}
+              className="text-white/40 text-xs hover:text-white/60 transition-colors"
+            >
+              Manage →
+            </button>
+          </div>
+
+          {/* Layer 3 — Inline delete flow */}
+          {showDeleteFlow && (
+            <div className="space-y-3 pt-3 border-t border-white/5">
+              <p className="text-white/50 text-sm">
+                This will cancel your subscription, anonymize your data, and sign you out. Your data will be permanently purged after 30 days. This action cannot be undone.
+              </p>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-white/75">Type DELETE to confirm</Label>
+                <Input
+                  value={deleteConfirm}
+                  onChange={(e) => setDeleteConfirm(e.target.value)}
+                  placeholder="DELETE"
+                  className="h-11 bg-white/5 border-white/10 text-white placeholder:text-white/20 focus-visible:ring-accent"
+                />
+              </div>
+              <Button
+                onClick={handleDeleteAccount}
+                disabled={deleteConfirm !== "DELETE" || deleting}
+                variant="ghost"
+                className="h-11 gap-2"
+                style={{
+                  color: deleteConfirm === "DELETE" ? "hsl(0,84%,60%)" : "hsla(0,0%,100%,0.3)",
+                }}
+              >
+                {deleting ? <><Loader2 className="w-4 h-4 animate-spin" /> Closing…</> : "Close Account"}
+              </Button>
+            </div>
+          )}
         </div>
-      </div>
+      )}
+
       </div> {/* end flex flex-col gap-4 */}
     </div>
   );
