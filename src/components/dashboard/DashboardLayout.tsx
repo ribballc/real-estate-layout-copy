@@ -188,7 +188,7 @@ const DashboardLayout = () => {
     <>
       <SEOHead title={page.title} noIndex />
       <div
-        className={`min-h-screen flex w-full overflow-x-hidden ${isDark ? "dashboard-dark" : "dashboard-light"} ${showEntryAnim ? "animate-dashboard-entry" : ""}`}
+        className={`min-h-screen flex w-full ${isDark ? "dashboard-dark" : "dashboard-light"} ${showEntryAnim ? "animate-dashboard-entry" : ""}`}
         style={{
           background: isDark
             ? "linear-gradient(145deg, hsl(215 50% 9%) 0%, hsl(217 33% 13%) 60%, hsl(215 40% 11%) 100%)"
@@ -209,7 +209,7 @@ const DashboardLayout = () => {
             });
           }}
         />
-        <main className="flex-1 flex flex-col min-w-0 overflow-x-hidden">
+        <main className="flex-1 flex flex-col min-w-0 overflow-x-hidden max-h-screen overflow-y-auto">
           {/* Header bar */}
           <header
             className={`shrink-0 border-b ${isDark ? "border-white/10" : "border-[hsl(214,32%,91%)]"}`}
