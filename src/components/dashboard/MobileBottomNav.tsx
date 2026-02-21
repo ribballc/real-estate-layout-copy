@@ -179,20 +179,22 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
         )}
       </AnimatePresence>
 
-      {/* Floating bottom nav bar */}
+      {/* Floating bottom nav bar — frosted glass */}
       <nav className="fixed bottom-4 left-4 right-4 z-50 md:hidden safe-area-pb">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {/* Icon tabs pill */}
           <div
-            className="flex items-center flex-1 rounded-2xl overflow-hidden"
+            className="flex items-center flex-1 rounded-[22px] overflow-hidden"
             style={{
-              background: isDark ? "hsla(215,40%,13%,0.92)" : "hsla(0,0%,100%,0.95)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              border: `1px solid ${isDark ? "hsla(215,25%,25%,0.6)" : "hsl(0,0%,90%)"}`,
+              background: isDark
+                ? "hsla(215,30%,12%,0.55)"
+                : "hsla(0,0%,100%,0.55)",
+              backdropFilter: "blur(40px) saturate(180%)",
+              WebkitBackdropFilter: "blur(40px) saturate(180%)",
+              border: `1px solid ${isDark ? "hsla(0,0%,100%,0.08)" : "hsla(0,0%,100%,0.7)"}`,
               boxShadow: isDark
-                ? "0 8px 32px hsla(0,0%,0%,0.4)"
-                : "0 8px 32px hsla(220,14%,50%,0.12)",
+                ? "0 8px 40px hsla(0,0%,0%,0.45), inset 0 1px 0 hsla(0,0%,100%,0.05)"
+                : "0 8px 40px hsla(220,14%,50%,0.12), inset 0 1px 0 hsla(0,0%,100%,0.6), 0 1px 3px hsla(0,0%,0%,0.06)",
             }}
           >
             {TABS.map((tab) => {
@@ -204,36 +206,55 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                     if (navigator.vibrate) navigator.vibrate(8);
                     onNavigate(tab.path);
                   }}
-                  className="relative flex items-center justify-center min-h-[52px] flex-1 transition-colors duration-150"
+                  className={cn(
+                    "relative flex items-center justify-center min-h-[56px] flex-1 transition-all duration-200 group",
+                    "active:scale-90"
+                  )}
                   aria-label={tab.label}
                 >
+                  {/* Glow behind active icon */}
                   {active && (
-                    <div className="absolute top-1.5 inset-x-0 flex justify-center pointer-events-none">
-                      <motion.span
-                        layoutId="mobile-nav-indicator"
-                        className="h-[3px] w-5 rounded-full"
-                        style={{ background: "hsl(217,91%,60%)" }}
-                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                      />
-                    </div>
+                    <motion.div
+                      layoutId="mobile-nav-glow"
+                      className="absolute inset-2 rounded-2xl pointer-events-none"
+                      style={{
+                        background: isDark
+                          ? "hsla(217,91%,60%,0.1)"
+                          : "hsla(217,91%,60%,0.08)",
+                        boxShadow: "0 0 20px hsla(217,91%,60%,0.15)",
+                      }}
+                      transition={{ type: "spring", stiffness: 400, damping: 28 }}
+                    />
                   )}
+                  {/* Hover glow */}
+                  <div
+                    className={cn(
+                      "absolute inset-2 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300",
+                      active && "hidden"
+                    )}
+                    style={{
+                      background: isDark
+                        ? "hsla(0,0%,100%,0.04)"
+                        : "hsla(217,91%,60%,0.04)",
+                    }}
+                  />
                   <tab.icon
                     className={cn(
-                      "w-[22px] h-[22px] transition-colors duration-150",
+                      "relative z-10 w-[22px] h-[22px] transition-all duration-200",
                       active
                         ? "text-[hsl(217,91%,60%)]"
                         : isDark
-                          ? "text-[hsla(0,0%,100%,0.35)]"
-                          : "text-[hsl(215,14%,51%)]"
+                          ? "text-[hsla(0,0%,100%,0.35)] group-hover:text-[hsla(0,0%,100%,0.6)]"
+                          : "text-[hsl(215,14%,51%)] group-hover:text-[hsl(215,14%,30%)]"
                     )}
-                    strokeWidth={active ? 2.2 : 1.5}
+                    strokeWidth={active ? 2.2 : 1.6}
                   />
                 </button>
               );
             })}
           </div>
 
-          {/* Separated hamburger button */}
+          {/* Separated hamburger button — glass */}
           <button
             onClick={() => {
               if (navigator.vibrate) navigator.vibrate(8);
@@ -242,17 +263,17 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
                 return !prev;
               });
             }}
-            className="flex items-center justify-center w-[52px] h-[52px] rounded-2xl flex-shrink-0 transition-colors duration-150"
+            className="group flex items-center justify-center w-[56px] h-[56px] rounded-[22px] flex-shrink-0 transition-all duration-200 active:scale-90"
             style={{
               background: isDark
-                ? menuOpen ? "hsla(217,91%,60%,0.15)" : "hsla(215,40%,13%,0.92)"
-                : menuOpen ? "hsla(217,91%,60%,0.08)" : "hsla(0,0%,100%,0.95)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              border: `1px solid ${isDark ? "hsla(215,25%,25%,0.6)" : "hsl(0,0%,90%)"}`,
+                ? menuOpen ? "hsla(217,91%,60%,0.12)" : "hsla(215,30%,12%,0.55)"
+                : menuOpen ? "hsla(217,91%,60%,0.06)" : "hsla(0,0%,100%,0.55)",
+              backdropFilter: "blur(40px) saturate(180%)",
+              WebkitBackdropFilter: "blur(40px) saturate(180%)",
+              border: `1px solid ${isDark ? "hsla(0,0%,100%,0.08)" : "hsla(0,0%,100%,0.7)"}`,
               boxShadow: isDark
-                ? "0 8px 32px hsla(0,0%,0%,0.4)"
-                : "0 8px 32px hsla(220,14%,50%,0.12)",
+                ? `0 8px 40px hsla(0,0%,0%,0.45), inset 0 1px 0 hsla(0,0%,100%,0.05)${menuOpen ? ", 0 0 20px hsla(217,91%,60%,0.15)" : ""}`
+                : `0 8px 40px hsla(220,14%,50%,0.12), inset 0 1px 0 hsla(0,0%,100%,0.6)${menuOpen ? ", 0 0 20px hsla(217,91%,60%,0.1)" : ""}`,
             }}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
           >
@@ -265,8 +286,10 @@ const MobileBottomNav = ({ isDark, currentPath, onNavigate }: MobileBottomNavPro
             ) : (
               <Menu
                 className={cn(
-                  "w-[22px] h-[22px]",
-                  isDark ? "text-[hsla(0,0%,100%,0.5)]" : "text-[hsl(215,14%,41%)]"
+                  "w-[22px] h-[22px] transition-colors duration-200",
+                  isDark
+                    ? "text-[hsla(0,0%,100%,0.4)] group-hover:text-[hsla(0,0%,100%,0.7)]"
+                    : "text-[hsl(215,14%,41%)] group-hover:text-[hsl(215,14%,25%)]"
                 )}
                 strokeWidth={1.8}
               />
