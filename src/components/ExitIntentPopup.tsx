@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import mascotPenguin from "@/assets/mascot-penguin.png";
 
 const ExitIntentPopup = () => {
   const [visible, setVisible] = useState(false);
@@ -48,9 +49,17 @@ const ExitIntentPopup = () => {
         onClick={() => setVisible(false)}
       />
 
-      {/* Modal */}
+      {/* Modal wrapper */}
+      <div className="relative w-[90%] max-w-[520px] flex flex-col items-center animate-scale-in">
+        {/* Penguin peek — sits above the card */}
+        <img
+          src={mascotPenguin}
+          alt=""
+          aria-hidden="true"
+          className="w-16 h-16 object-contain -mb-4 relative z-10 drop-shadow-lg"
+        />
       <div
-        className="relative w-[90%] max-w-[520px] rounded-2xl p-8 md:p-10 text-center animate-scale-in"
+        className="relative w-full rounded-2xl p-8 md:p-10 text-center"
         style={{
           background: "linear-gradient(160deg, hsl(215, 50%, 10%) 0%, hsl(217, 33%, 15%) 100%)",
           border: "1px solid hsla(217, 91%, 60%, 0.25)",
@@ -137,6 +146,7 @@ const ExitIntentPopup = () => {
             No thanks, I'll keep losing bookings to competitors
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import darkerLogo from "@/assets/darker-logo.png";
+import mascotPenguin from "@/assets/mascot-penguin.png";
 import { ChevronRight, ChevronDown, Zap, Shield, Mail } from "lucide-react";
 import { lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
@@ -244,6 +245,14 @@ const HeroSection = () => {
           </Suspense>
         </div>
       </div>
+      {/* Decorative penguin mascot — desktop only, bottom-left */}
+      <img
+        src={mascotPenguin}
+        alt=""
+        aria-hidden="true"
+        className="hidden lg:block absolute bottom-6 left-6 w-[100px] pointer-events-none select-none opacity-40"
+        style={{ zIndex: 1 }}
+      />
     </section>
   );
 };

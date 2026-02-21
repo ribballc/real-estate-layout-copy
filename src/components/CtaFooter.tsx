@@ -71,8 +71,8 @@ const CtaFooter = () => {
           src={mascotPenguin}
           alt=""
           aria-hidden="true"
-          className="block md:hidden absolute bottom-0 left-0 pointer-events-none select-none"
-          style={{ width: 90, height: "auto", zIndex: 1 }}
+          className="absolute bottom-0 left-0 pointer-events-none select-none w-[90px] md:w-[120px]"
+          style={{ height: "auto", zIndex: 1 }}
         />
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-center gap-6 mb-8 text-xs" style={{ color: "hsl(215, 20%, 65%)" }}>
