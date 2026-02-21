@@ -6,10 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   DollarSign, Users, TrendingUp, RefreshCw, Search,
   ArrowUpRight, Activity, UserCheck, CreditCard, X, Download, Trash2,
+  MessageSquare, BarChart3,
 } from "lucide-react";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
 } from "recharts";
+import RetentionSmsPanel from "@/components/admin/RetentionSmsPanel";
 
 // ━━━ Types ━━━
 interface AdminData {
@@ -70,6 +72,7 @@ const AdminDashboard = () => {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState<UserRow | null>(null);
+  const [activeTab, setActiveTab] = useState<"overview" | "retention">("overview");
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -198,6 +201,39 @@ const AdminDashboard = () => {
         </div>
       </header>
 
+      {/* Tab switcher */}
+      <div className="max-w-7xl mx-auto px-6 pt-4">
+        <div className="flex gap-1 p-1 rounded-lg w-fit" style={{ background: "hsla(0,0%,100%,0.04)" }}>
+          <button
+            onClick={() => setActiveTab("overview")}
+            className="flex items-center gap-1.5 text-sm px-4 py-2 rounded-md transition-colors"
+            style={{
+              background: activeTab === "overview" ? "hsla(0,0%,100%,0.08)" : "transparent",
+              color: activeTab === "overview" ? "white" : "hsla(0,0%,100%,0.5)",
+            }}
+          >
+            <BarChart3 className="w-3.5 h-3.5" />
+            Overview
+          </button>
+          <button
+            onClick={() => setActiveTab("retention")}
+            className="flex items-center gap-1.5 text-sm px-4 py-2 rounded-md transition-colors"
+            style={{
+              background: activeTab === "retention" ? "hsla(0,0%,100%,0.08)" : "transparent",
+              color: activeTab === "retention" ? "white" : "hsla(0,0%,100%,0.5)",
+            }}
+          >
+            <MessageSquare className="w-3.5 h-3.5" />
+            Retention SMS
+          </button>
+        </div>
+      </div>
+
+      {activeTab === "retention" ? (
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <RetentionSmsPanel />
+        </div>
+      ) : (
       <div className="max-w-7xl mx-auto px-6 py-6 space-y-6">
 
         {/* Row 1: Headline metrics */}
@@ -290,6 +326,7 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+      )}
 
       {/* User detail panel */}
       {selectedUser && (
