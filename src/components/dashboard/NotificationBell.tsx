@@ -169,6 +169,8 @@ const NotificationBell = ({ isDark }: NotificationBellProps) => {
   const count = visibleAlerts.length;
 
   const handleAction = (alert: Alert) => {
+    dismissAlert(alert.id);
+    setDismissed(getDismissed());
     setOpen(false);
     navigate(alert.actionRoute);
   };
