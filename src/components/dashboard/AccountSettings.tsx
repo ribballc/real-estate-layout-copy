@@ -41,18 +41,8 @@ const AccountSettings = () => {
       });
   });
 
-  const handleManageSubscription = async () => {
-    setOpeningPortal(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("customer-portal");
-      if (error) throw error;
-      if (data?.url) window.open(data.url, "_blank");
-      else throw new Error("No portal URL returned");
-    } catch (e: any) {
-      toast({ title: "Error", description: e.message || "Could not open billing portal.", variant: "destructive" });
-    } finally {
-      setOpeningPortal(false);
-    }
+  const handleManageSubscription = () => {
+    navigate("/dashboard/billing");
   };
 
   const handleChangeEmail = async (e: React.FormEvent) => {
@@ -166,11 +156,10 @@ const AccountSettings = () => {
         <div className="flex items-center gap-3">
           <Button
             onClick={handleManageSubscription}
-            disabled={openingPortal}
             className="h-11 gap-2"
             style={{ background: "linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)" }}
           >
-            {openingPortal ? <><Loader2 className="w-4 h-4 animate-spin" /> Opening…</> : <><CreditCard className="w-4 h-4" /> Manage Subscription</>}
+            <CreditCard className="w-4 h-4" /> Manage Subscription
           </Button>
         </div>
       </div>
