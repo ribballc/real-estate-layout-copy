@@ -6,6 +6,11 @@ export interface VehicleModels {
   [make: string]: string[];
 }
 
+/** Optional: model available only in [start, end] (inclusive). Omitted = all years. */
+export interface VehicleModelYearRanges {
+  [make: string]: { [model: string]: { start: number; end: number } };
+}
+
 const currentYear = new Date().getFullYear();
 
 export const vehicleYears: number[] = Array.from(
@@ -83,3 +88,45 @@ export const vehicleModels: VehicleModels = {
   "Volkswagen": ["Arteon", "Atlas", "Atlas Cross Sport", "Golf", "Golf GTI", "Golf R", "ID.4", "ID.Buzz", "Jetta", "Taos", "Tiguan"],
   "Volvo": ["C40 Recharge", "S60", "S90", "V60", "V90", "XC40", "XC60", "XC90"],
 };
+
+/** Year ranges for models; when absent, model is shown for all years. */
+export const vehicleModelYearRanges: VehicleModelYearRanges = (() => {
+  const y = new Date().getFullYear();
+  return {
+    "Honda": { "Insight": { start: 1999, end: 2022 }, "Prologue": { start: 2024, end: y } },
+    "Toyota": { "bZ4X": { start: 2023, end: y }, "Crown": { start: 2023, end: y }, "GR Supra": { start: 2020, end: y }, "Prius": { start: 1997, end: y } },
+    "Ford": { "Bronco": { start: 2021, end: y }, "Bronco Sport": { start: 2021, end: y }, "E-Transit": { start: 2022, end: y }, "F-150 Lightning": { start: 2022, end: y }, "Mustang Mach-E": { start: 2021, end: y }, "Maverick": { start: 2022, end: y } },
+    "Chevrolet": { "Bolt": { start: 2017, end: y }, "Blazer": { start: 2019, end: y } },
+    "Tesla": { "Cybertruck": { start: 2024, end: y }, "Model 3": { start: 2017, end: y }, "Model Y": { start: 2020, end: y } },
+    "Nissan": { "Leaf": { start: 2011, end: y }, "Z": { start: 2023, end: y } },
+    "Polestar": { "Polestar 2": { start: 2021, end: y }, "Polestar 3": { start: 2024, end: y } },
+    "Rivian": { "R1S": { start: 2022, end: y }, "R1T": { start: 2022, end: y } },
+    "Lucid": { "Air": { start: 2022, end: y } },
+    "Porsche": { "Taycan": { start: 2020, end: y } },
+    "Hyundai": { "Ioniq 5": { start: 2022, end: y }, "Ioniq 6": { start: 2023, end: y } },
+    "Kia": { "EV6": { start: 2022, end: y }, "EV9": { start: 2024, end: y } },
+    "Genesis": { "Electrified G80": { start: 2022, end: y }, "Electrified GV70": { start: 2022, end: y }, "GV60": { start: 2023, end: y } },
+    "Volkswagen": { "ID.4": { start: 2021, end: y }, "ID.Buzz": { start: 2024, end: y } },
+    "Subaru": { "Solterra": { start: 2023, end: y } },
+    "Mazda": { "MX-30": { start: 2021, end: 2023 } },
+    "Mercedes-Benz": { "EQB": { start: 2022, end: y }, "EQE": { start: 2023, end: y }, "EQS": { start: 2022, end: y }, "CLE": { start: 2024, end: y } },
+    "BMW": { "i4": { start: 2022, end: y }, "i5": { start: 2024, end: y }, "i7": { start: 2023, end: y }, "iX": { start: 2022, end: y }, "XM": { start: 2023, end: y } },
+    "Audi": { "e-tron": { start: 2019, end: y }, "e-tron GT": { start: 2022, end: y }, "Q4 e-tron": { start: 2022, end: y } },
+    "Lexus": { "RZ": { start: 2023, end: y }, "TX": { start: 2024, end: y } },
+    "Jeep": { "Grand Cherokee L": { start: 2021, end: y }, "Wagoneer": { start: 2022, end: y }, "Grand Wagoneer": { start: 2021, end: y } },
+    "Dodge": { "Hornet": { start: 2023, end: y } },
+  };
+})();
+
+/** Filter models by year; when no range is defined, include model. */
+export function getModelsForYear(make: string, year: number): string[] {
+  const models = vehicleModels[make];
+  if (!models) return [];
+  const ranges = vehicleModelYearRanges[make];
+  if (!ranges) return models;
+  return models.filter((model) => {
+    const r = ranges[model];
+    if (!r) return true;
+    return year >= r.start && year <= r.end;
+  });
+}

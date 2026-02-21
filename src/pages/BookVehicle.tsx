@@ -1,29 +1,14 @@
-import { useState, useMemo, useEffect, useCallback, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { Calendar, Car, Truck, ArrowLeft, ArrowRight, CheckCircle2, ChevronDown, Check } from "lucide-react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { Calendar, Car, Truck, ArrowLeft, ArrowRight, CheckCircle2, ChevronDown, Check, Plus, X } from "lucide-react";
 import BookingLayout from "@/components/BookingLayout";
 import FadeIn from "@/components/FadeIn";
 import StickyBookingCTA from "@/components/StickyBookingCTA";
+import VehicleIllustration from "@/components/VehicleIllustration";
 import { useBooking } from "@/contexts/BookingContext";
-import { vehicleYears, vehicleMakes, vehicleModels } from "@/data/vehicles";
+import { vehicleYears, vehicleMakes, getModelsForYear } from "@/data/vehicles";
 
-/* ── Ghost car SVG placeholder ── */
-const GhostCar = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 400 160" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M40 120 C40 120 50 60 120 50 C160 44 200 40 240 44 C300 50 340 70 360 90 L380 100 C390 104 390 116 380 118 L360 120 L340 120 C340 106 328 94 314 94 C300 94 288 106 288 120 L140 120 C140 106 128 94 114 94 C100 94 88 106 88 120 Z" fill="hsl(210,40%,85%)" />
-    <circle cx="114" cy="120" r="18" fill="hsl(210,40%,85%)" />
-    <circle cx="114" cy="120" r="10" fill="hsl(210,40%,97%)" />
-    <circle cx="314" cy="120" r="18" fill="hsl(210,40%,85%)" />
-    <circle cx="314" cy="120" r="10" fill="hsl(210,40%,97%)" />
-  </svg>
-);
-
-/* ── Imagin Studio URL builder with multiple fallback keys ── */
-const IMAGIN_CUSTOMERS = [
-  "img",
-  "javascript-masede",
-];
-
+const IMAGIN_CUSTOMERS = ["img", "javascript-masede"];
 function buildImaginUrls(make: string, model: string, year: string): string[] {
   const m = encodeURIComponent(make);
   const md = encodeURIComponent(model).replace(/%20/g, "+");
@@ -34,7 +19,7 @@ function buildImaginUrls(make: string, model: string, year: string): string[] {
 
 const BookVehicle = () => {
   const navigate = useNavigate();
-  const { slug, service, vehicle, setVehicle } = useBooking();
+  const { slug, vehicle, vehicles, setVehicle, addVehicle, removeVehicle, setVehicleImageUrl } = useBooking();
   const [year, setYear] = useState(vehicle?.year ?? "");
   const [make, setMake] = useState(vehicle?.make ?? "");
   const [model, setModel] = useState(vehicle?.model ?? "");
@@ -42,23 +27,25 @@ const BookVehicle = () => {
   const [imageStatus, setImageStatus] = useState<"idle" | "loading" | "success" | "failed">("idle");
   const attemptRef = useRef(0);
 
-  const availableModels = useMemo(() => (!make ? [] : vehicleModels[make] || []), [make]);
+  const yearNum = year ? parseInt(year, 10) : 0;
+  const availableModels = useMemo(
+    () => (!make || !yearNum || isNaN(yearNum) ? [] : getModelsForYear(make, yearNum)),
+    [make, yearNum]
+  );
   const canContinue = !!(year && make && model);
+  const canAddAnother = canContinue;
 
-  // Try loading vehicle images with multiple fallback customer keys
   useEffect(() => {
     if (!year || !make || !model) {
       setImageUrl(null);
       setImageStatus("idle");
       return;
     }
-
     setImageStatus("loading");
     setImageUrl(null);
     const currentAttempt = ++attemptRef.current;
     const urls = buildImaginUrls(make, model, year);
     let idx = 0;
-
     const tryNext = () => {
       if (idx >= urls.length || currentAttempt !== attemptRef.current) {
         if (currentAttempt === attemptRef.current) setImageStatus("failed");
@@ -68,7 +55,6 @@ const BookVehicle = () => {
       const img = new Image();
       img.onload = () => {
         if (currentAttempt !== attemptRef.current) return;
-        // Accept any image that isn't a 1x1 placeholder
         if (img.naturalWidth < 50) { tryNext(); return; }
         setImageUrl(url);
         setImageStatus("success");
@@ -83,12 +69,27 @@ const BookVehicle = () => {
   }, [year, make, model]);
 
   const handleContinue = () => {
-    setVehicle({ year, make, model });
+    if (!slug) return;
+    const v = { year, make, model };
+    const alreadyInList = vehicles.some((x) => x.year === v.year && x.make === v.make && x.model === v.model);
+    if (vehicles.length > 0 && !alreadyInList) addVehicle(v);
+    else if (vehicles.length === 0) setVehicle(v);
+    setVehicleImageUrl(imageUrl);
     navigate(`/site/${slug}/book/options`);
   };
 
+  const handleAddAnother = () => {
+    if (!canAddAnother) return;
+    addVehicle({ year, make, model });
+    setYear("");
+    setMake("");
+    setModel("");
+    setImageUrl(null);
+    setImageStatus("idle");
+  };
+
   const selStyle = (on: boolean): React.CSSProperties => ({
-    width: "100%", padding: "12px 14px 12px 40px", borderRadius: 10, fontSize: 14, minHeight: 48,
+    width: "100%", padding: "12px 14px 12px 40px", borderRadius: 10, fontSize: 16, minHeight: 48,
     appearance: "none" as const, outline: "none", transition: "border-color 0.15s",
     background: on ? "white" : "hsl(210,40%,96%)",
     border: `1px solid ${on ? "hsl(210,40%,86%)" : "hsl(210,40%,90%)"}`,
@@ -111,46 +112,47 @@ const BookVehicle = () => {
         </p>
       </FadeIn>
 
-      {/* Vehicle preview — full width above selects on desktop too */}
+      {/* Vehicle preview — real car image when available; fallback to illustration */}
       <FadeIn delay={100}>
         <div
-          className="flex flex-col items-center justify-center rounded-2xl mb-6"
+          className="flex flex-col items-center justify-center rounded-2xl mb-6 overflow-hidden"
           style={{
-            minHeight: canContinue ? 240 : 160,
+            minHeight: canContinue ? 220 : 160,
             background: "white",
             border: "1px solid hsl(210,40%,90%)",
             boxShadow: "0 2px 12px hsla(0,0%,0%,0.06)",
             transition: "min-height 0.3s ease",
           }}
         >
-          {canContinue && imageStatus === "success" && imageUrl ? (
+          {canContinue ? (
             <div className="flex flex-col items-center w-full p-6" style={{ animation: "vehicleFadeScale 300ms ease-out forwards" }}>
-              <img
-                src={imageUrl}
-                alt={`${year} ${make} ${model}`}
-                className="w-full max-w-[420px] object-contain"
-                style={{ maxHeight: 200 }}
-              />
+              {imageStatus === "success" && imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt={`${year} ${make} ${model}`}
+                  className="w-full max-w-[420px] object-contain"
+                  style={{ maxHeight: 180 }}
+                />
+              ) : imageStatus === "loading" ? (
+                <div className="w-full max-w-[380px] h-[140px] rounded-xl flex items-center justify-center" style={{ background: "hsl(210,40%,96%)" }}>
+                  <div className="w-8 h-8 rounded-full border-2 border-t-[hsl(217,91%,55%)] border-r-transparent border-b-transparent border-l-transparent animate-spin" />
+                </div>
+              ) : (
+                <div className="w-full max-w-[380px]" style={{ maxHeight: 160 }}>
+                  <VehicleIllustration className="w-full h-full object-contain" />
+                </div>
+              )}
               <span className="mt-3 px-4 py-1.5 rounded-full text-sm font-semibold" style={{ background: "hsl(217,91%,96%)", border: "1px solid hsl(217,91%,88%)", color: "hsl(222,47%,11%)" }}>
                 {year} {make} {model}
               </span>
-            </div>
-          ) : canContinue ? (
-            <div className="flex flex-col items-center p-6" style={{ animation: "vehicleFadeScale 300ms ease-out forwards" }}>
-              {imageStatus === "loading" ? (
-                <div className="w-full max-w-[260px] h-[120px] rounded-xl animate-pulse" style={{ background: "hsl(210,40%,92%)" }} />
-              ) : (
-                <GhostCar className="w-full max-w-[260px] opacity-30" />
-              )}
-              <p className="text-sm font-semibold mt-3" style={{ color: "hsl(222,47%,11%)" }}>{year} {make} {model}</p>
-              <span className="inline-flex items-center gap-1 mt-1 px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ background: "hsl(142,71%,94%)", color: "hsl(142,71%,35%)" }}>
+              <span className="inline-flex items-center gap-1 mt-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ background: "hsl(142,71%,94%)", color: "hsl(142,71%,35%)" }}>
                 <CheckCircle2 size={12} /> Selected
               </span>
             </div>
           ) : (
             <div className="flex flex-col items-center p-4">
-              <GhostCar className="w-full max-w-[220px] opacity-12" />
-              <p className="text-xs mt-3 text-center" style={{ color: "hsl(215,16%,60%)", maxWidth: 200 }}>Select your vehicle above</p>
+              <VehicleIllustration className="w-full max-w-[240px] opacity-40" />
+              <p className="text-sm mt-3 text-center" style={{ color: "hsl(215,16%,55%)", maxWidth: 220 }}>Select year, make, and model above</p>
             </div>
           )}
         </div>
@@ -162,7 +164,7 @@ const BookVehicle = () => {
           {[
             { icon: Calendar, val: year, set: (v: string) => { setYear(v); setMake(""); setModel(""); }, opts: vehicleYears, placeholder: "Year", enabled: true },
             { icon: Car, val: make, set: (v: string) => { setMake(v); setModel(""); }, opts: vehicleMakes, placeholder: year ? "Make" : "Select year first", enabled: !!year },
-            { icon: Truck, val: model, set: setModel, opts: availableModels, placeholder: make ? "Model" : "Select make first", enabled: !!make },
+            { icon: Truck, val: model, set: setModel, opts: availableModels, placeholder: make ? (availableModels.length === 0 ? "No models for this year" : "Model") : "Select make first", enabled: !!make },
           ].map(({ icon: Ic, val, set, opts, placeholder, enabled }, idx) => (
             <div key={idx} className="relative">
               <Ic size={15} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "hsl(215,16%,60%)", pointerEvents: "none", zIndex: 1 }} />
@@ -179,6 +181,26 @@ const BookVehicle = () => {
             <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-sm font-medium animate-in fade-in duration-300" style={{ background: "hsl(142,71%,94%)", border: "1px solid hsl(142,71%,80%)", color: "hsl(142,71%,30%)" }}>
               <CheckCircle2 size={14} /> Ready to continue
             </div>
+          )}
+
+          {/* Added vehicles list + Add another */}
+          {vehicles.length > 0 && (
+            <div className="space-y-2 pt-2" style={{ borderTop: "1px solid hsl(210,40%,92%)" }}>
+              <p style={{ fontSize: 12, fontWeight: 600, color: "hsl(215,16%,55%)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Vehicles ({vehicles.length})</p>
+              {vehicles.map((v, i) => (
+                <div key={i} className="flex items-center justify-between gap-2 rounded-lg px-3 py-2" style={{ background: "hsl(210,40%,97%)", border: "1px solid hsl(210,40%,90%)" }}>
+                  <span style={{ fontSize: 14, color: "hsl(222,47%,11%)" }}>🚗 {v.year} {v.make} {v.model}</span>
+                  <button type="button" onClick={() => removeVehicle(i)} className="public-touch-target p-1.5 rounded-md" style={{ color: "hsl(215,16%,55%)" }} aria-label={`Remove ${v.year} ${v.make} ${v.model}`}>
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          {canAddAnother && (
+            <button type="button" onClick={handleAddAnother} className="public-touch-target w-full inline-flex items-center justify-center gap-2 font-medium min-h-[44px] rounded-lg border border-dashed" style={{ fontSize: 14, borderColor: "hsl(217,91%,75%)", color: "hsl(217,91%,45%)", background: "hsl(217,91%,98%)" }}>
+              <Plus size={16} /> Add another vehicle
+            </button>
           )}
 
           <p style={{ fontSize: 13, color: "hsl(215,16%,55%)", paddingTop: 4 }}>

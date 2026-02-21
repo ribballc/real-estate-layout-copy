@@ -6,7 +6,8 @@ import SEOHead from "@/components/SEOHead";
 import darkerLogo from "@/assets/darker-logo.png";
 import { ShieldCheck } from "lucide-react";
 import { useBusinessDataBySlug, type BusinessData } from "@/hooks/useBusinessData";
-import { getSiteThemeStyle } from "@/lib/siteTheme";
+import { getBookingRootStyle } from "@/lib/bookingTheme";
+import PoweredByDarker from "@/components/PoweredByDarker";
 
 interface BookingLayoutProps {
   activeStep: number;
@@ -32,7 +33,7 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
   }, [location.pathname]);
 
   const businessName = businessData.profile?.business_name || "";
-  const themeStyle = getSiteThemeStyle(businessData.profile);
+  const bookingStyle = getBookingRootStyle();
   const ogImage = businessData.photos?.length
     ? businessData.photos[0].url
     : "https://darkerdigital.com/og-default.jpg";
@@ -40,8 +41,8 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
 
   return (
     <div
-      className="min-h-[100dvh] overflow-x-hidden"
-      style={{ background: "hsl(210,40%,97%)", ...themeStyle } as React.CSSProperties}
+      className="min-h-[100dvh] overflow-x-hidden flex flex-col"
+      style={bookingStyle as React.CSSProperties}
     >
       <SEOHead
         title={businessName ? `Book with ${businessName}` : "Book Online"}
@@ -54,8 +55,8 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
         className="sticky top-0 z-30"
         style={{
           height: 60,
-          background: "white",
-          borderBottom: "1px solid hsl(210,40%,92%)",
+          background: "var(--booking-surface, #fff)",
+          borderBottom: "1px solid var(--booking-border, hsl(210,40%,92%))",
           boxShadow: "0 1px 4px hsla(0,0%,0%,0.06)",
         }}
       >
@@ -105,8 +106,8 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
       {/* ── Progress bar ── */}
       <BookingBreadcrumb activeStep={activeStep} totalSteps={STEP_LABELS.length} label={STEP_LABELS[activeStep] || ""} />
 
-      {/* ── Content ── */}
-      <div className="max-w-[780px] mx-auto px-4 py-6 md:py-10">
+      {/* ── Content: minimal bottom padding on mobile; no excess ── */}
+      <div className="max-w-[780px] mx-auto px-4 py-6 pb-20 md:pb-10 md:py-10 flex-1">
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
           <main className="flex-1 min-w-0 order-1">
             {/* Step enter animation */}
@@ -123,6 +124,9 @@ const BookingLayout = ({ activeStep, children }: BookingLayoutProps) => {
           <BookingSidebar businessData={businessData} />
         </div>
       </div>
+
+      {/* Subtle footer — not very apparent */}
+      <PoweredByDarker variant="light" />
 
       {/* Step transition keyframes */}
       <style>{`

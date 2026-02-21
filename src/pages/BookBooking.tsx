@@ -57,7 +57,7 @@ const BookBooking = () => {
   const isToday = (d: Date) => isSameDay(d, today);
 
   const handleContinue = () => {
-    if (selectedDate && selectedTime) {
+    if (selectedDate && selectedTime && slug) {
       setDateTime({ date: format(selectedDate, "yyyy-MM-dd"), time: selectedTime });
       navigate(`/site/${slug}/book/checkout`);
     }

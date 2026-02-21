@@ -30,6 +30,9 @@ export interface BookingDateTime {
 export interface BookingState {
   service: BookingService | null;
   vehicle: BookingVehicle | null;
+  /** All vehicles for this booking (vehicle is vehicles[0] for backward compat) */
+  vehicles: BookingVehicle[];
+  vehicleImageUrl: string | null;
   addons: BookingAddon[];
   dateTime: BookingDateTime | null;
 }
@@ -37,6 +40,8 @@ export interface BookingState {
 const defaultState: BookingState = {
   service: null,
   vehicle: null,
+  vehicles: [],
+  vehicleImageUrl: null,
   addons: [],
   dateTime: null,
 };
@@ -60,6 +65,8 @@ function loadFromStorage(slug: string | null): BookingState {
 
   let service: BookingService | null = null;
   let vehicle: BookingVehicle | null = null;
+  let vehicles: BookingVehicle[] = [];
+  let vehicleImageUrl: string | null = null;
   let addons: BookingAddon[] = [];
   let dateTime: BookingDateTime | null = null;
 
@@ -67,19 +74,25 @@ function loadFromStorage(slug: string | null): BookingState {
     const parsed = parseJson<Partial<BookingState>>(raw, {});
     service = parsed.service && typeof parsed.service.id === "string" ? parsed.service : null;
     vehicle = parsed.vehicle && parsed.vehicle.year && parsed.vehicle.make && parsed.vehicle.model ? parsed.vehicle : null;
+    if (Array.isArray(parsed.vehicles) && parsed.vehicles.length > 0) {
+      vehicles = parsed.vehicles.filter((v) => v?.year && v?.make && v?.model);
+      if (vehicles.length > 0 && !vehicle) vehicle = vehicles[0];
+    }
+    vehicleImageUrl = typeof parsed.vehicleImageUrl === "string" && parsed.vehicleImageUrl ? parsed.vehicleImageUrl : null;
     addons = Array.isArray(parsed.addons) ? parsed.addons.filter((a) => a?.id && typeof a.title === "string" && typeof a.price === "number") : [];
     dateTime = parsed.dateTime && parsed.dateTime.date && parsed.dateTime.time ? parsed.dateTime : null;
   }
 
   if (!service && legacyService) service = parseJson(legacyService, null);
   if (!vehicle && legacyVehicle) vehicle = parseJson(legacyVehicle, null);
+  if (vehicles.length === 0 && vehicle) vehicles = [vehicle];
   if (addons.length === 0 && legacyAddons) addons = parseJson(legacyAddons, []);
   if (!dateTime && legacyDateTime) dateTime = parseJson(legacyDateTime, null);
 
   const storedSlug = sessionStorage.getItem(BOOKING_SLUG_KEY);
   if (slug && storedSlug && storedSlug !== slug) return defaultState;
 
-  return { service, vehicle, addons, dateTime };
+  return { service, vehicle, vehicles, vehicleImageUrl, addons, dateTime };
 }
 
 function saveToStorage(slug: string | null, state: BookingState) {
@@ -91,7 +104,7 @@ function saveToStorage(slug: string | null, state: BookingState) {
 function clearBookingStorage() {
   sessionStorage.removeItem(BOOKING_STORAGE_KEY);
   sessionStorage.removeItem(BOOKING_SLUG_KEY);
-  ["booking_service", "booking_vehicle", "booking_addons", "booking_datetime"].forEach((k) =>
+  ["booking_service", "booking_vehicle", "booking_vehicles", "booking_addons", "booking_datetime"].forEach((k) =>
     sessionStorage.removeItem(k)
   );
 }
@@ -100,6 +113,9 @@ interface BookingContextValue extends BookingState {
   slug: string | null;
   setService: (s: BookingService | null) => void;
   setVehicle: (v: BookingVehicle | null) => void;
+  addVehicle: (v: BookingVehicle) => void;
+  removeVehicle: (index: number) => void;
+  setVehicleImageUrl: (url: string | null) => void;
   setAddons: (a: BookingAddon[]) => void;
   setDateTime: (d: BookingDateTime | null) => void;
   clearBooking: () => void;
@@ -155,6 +171,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       else sessionStorage.removeItem("booking_service");
       if (next.vehicle) sessionStorage.setItem("booking_vehicle", JSON.stringify(next.vehicle));
       else sessionStorage.removeItem("booking_vehicle");
+      if (next.vehicles?.length) sessionStorage.setItem("booking_vehicles", JSON.stringify(next.vehicles));
       sessionStorage.setItem("booking_addons", JSON.stringify(next.addons));
       if (next.dateTime) sessionStorage.setItem("booking_datetime", JSON.stringify(next.dateTime));
       else sessionStorage.removeItem("booking_datetime");
@@ -167,7 +184,36 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     [state, persist]
   );
   const setVehicle = useCallback(
-    (v: BookingVehicle | null) => persist({ ...state, vehicle: v }),
+    (v: BookingVehicle | null) => persist({
+      ...state,
+      vehicle: v,
+      vehicles: v ? [v] : [],
+      ...(v ? {} : { vehicleImageUrl: null }),
+    }),
+    [state, persist]
+  );
+  const addVehicle = useCallback(
+    (v: BookingVehicle) => persist({
+      ...state,
+      vehicles: [...state.vehicles, v],
+      vehicle: state.vehicle ?? v,
+    }),
+    [state, persist]
+  );
+  const removeVehicle = useCallback(
+    (index: number) => {
+      const next = state.vehicles.filter((_, i) => i !== index);
+      persist({
+        ...state,
+        vehicles: next,
+        vehicle: next[0] ?? null,
+        vehicleImageUrl: next.length === 0 ? null : state.vehicleImageUrl,
+      });
+    },
+    [state, persist]
+  );
+  const setVehicleImageUrl = useCallback(
+    (url: string | null) => persist({ ...state, vehicleImageUrl: url }),
     [state, persist]
   );
   const setAddons = useCallback(
@@ -194,6 +240,9 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       slug,
       setService,
       setVehicle,
+      addVehicle,
+      removeVehicle,
+      setVehicleImageUrl,
       setAddons,
       setDateTime,
       clearBooking,
@@ -201,7 +250,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       servicePrice,
       addonsTotal,
     }),
-    [state, slug, setService, setVehicle, setAddons, setDateTime, clearBooking, totalPrice, servicePrice, addonsTotal]
+    [state, slug, setService, setVehicle, addVehicle, removeVehicle, setVehicleImageUrl, setAddons, setDateTime, clearBooking, totalPrice, servicePrice, addonsTotal]
   );
 
   useEffect(() => {

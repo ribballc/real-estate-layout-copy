@@ -8,6 +8,18 @@ import { useBooking } from "@/contexts/BookingContext";
 
 interface AddOn { id: string; title: string; description: string; price: number; popular?: boolean; }
 
+/** Map service title to add-on category so only relevant upsells show (no interior add-ons for tint, etc.) */
+function getAddOnCategoryForService(serviceTitle: string): string {
+  const t = serviceTitle.toLowerCase();
+  if (t.includes("interior") && !t.includes("exterior")) return "interior";
+  if (t.includes("exterior") || t.includes("wash") || t.includes("hand wash")) return "exterior";
+  if (t.includes("ceramic") || t.includes("coat") || t.includes("ppf") || t.includes("paint protection")) return "ceramic";
+  if (t.includes("tint") || t.includes("window")) return "tint";
+  if (t.includes("wrap") || t.includes("vinyl")) return "wrap";
+  if (t.includes("full") || t.includes("detail")) return "full";
+  return "full";
+}
+
 const addOnsByService: Record<string, AddOn[]> = {
   interior: [
     { id: "leather-conditioning", title: "Leather Conditioning", description: "Premium conditioner to restore & protect leather seats and trim.", price: 60, popular: true },
@@ -38,21 +50,33 @@ const addOnsByService: Record<string, AddOn[]> = {
     { id: "glass-ceramic", title: "Glass Ceramic Coat", description: "Ceramic coating for all glass surfaces.", price: 100 },
     { id: "trim-ceramic", title: "Trim Ceramic Coat", description: "Protect plastic and rubber trim.", price: 80 },
   ],
+  tint: [
+    { id: "tint-warranty", title: "Extended Warranty", description: "Extended coverage on tint work.", price: 25 },
+    { id: "tint-ceramic", title: "Ceramic Tint Upgrade", description: "Premium heat rejection and clarity.", price: 80, popular: true },
+  ],
+  wrap: [
+    { id: "wrap-ppf", title: "PPF on Hood & Bumper", description: "Paint protection on high-impact areas.", price: 150 },
+    { id: "wrap-ceramic", title: "Ceramic Over Wrap", description: "Protect and gloss your wrap.", price: 200, popular: true },
+  ],
 };
 const defaultAddOns: AddOn[] = addOnsByService.full;
 
 const BookAddOns = () => {
   const navigate = useNavigate();
   const { slug, service, addons: contextAddons, setAddons } = useBooking();
-  const serviceId = service?.id ?? "full";
-  const addOns = addOnsByService[serviceId] ?? defaultAddOns;
-  const [selected, setSelected] = useState<Set<string>>(() => new Set(contextAddons.map((a) => a.id)));
+  const category = service?.title ? getAddOnCategoryForService(service.title) : "full";
+  const addOns = addOnsByService[category] ?? defaultAddOns;
+  const [selected, setSelected] = useState<Set<string>>(() => {
+    const ids = (addOnsByService[category] ?? defaultAddOns).map((a) => a.id);
+    return new Set(contextAddons.map((a) => a.id).filter((id) => ids.includes(id)));
+  });
 
   const toggle = (id: string) => setSelected((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const total = addOns.filter((a) => selected.has(a.id)).reduce((s, a) => s + a.price, 0);
 
   const handleContinue = () => {
-    const sel = addOns.filter(a => selected.has(a.id)).map(a => ({ id: a.id, title: a.title, price: a.price }));
+    if (!slug) return;
+    const sel = addOns.filter((a) => selected.has(a.id)).map((a) => ({ id: a.id, title: a.title, price: a.price }));
     setAddons(sel);
     navigate(`/site/${slug}/book/booking`);
   };

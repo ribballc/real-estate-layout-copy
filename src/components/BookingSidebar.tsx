@@ -1,4 +1,5 @@
-import { Mail, Phone, Clock, MapPin, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { Mail, Phone, Clock, MapPin, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { BusinessData } from "@/hooks/useBusinessData";
@@ -9,6 +10,7 @@ interface BookingSidebarProps {
 
 const BookingSidebar = ({ businessData }: BookingSidebarProps) => {
   const { profile, services, hours, loading } = businessData;
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const name = profile?.business_name || "Business";
   const email = profile?.email || "";
@@ -31,10 +33,8 @@ const BookingSidebar = ({ businessData }: BookingSidebarProps) => {
     );
   }
 
-  return (
-    <aside className="w-full lg:w-[280px] flex-shrink-0 order-2">
-      <FadeIn>
-        <div className="rounded-[14px] p-5 space-y-5" style={{ background: "white", border: "1px solid hsl(210,40%,90%)", boxShadow: "0 2px 12px hsla(0,0%,0%,0.06)" }}>
+  const cardContent = (
+    <>
           {/* Business name */}
           <h2 className="font-bold" style={{ fontSize: 16, color: "hsl(222,47%,11%)" }}>{name}</h2>
 
@@ -107,6 +107,35 @@ const BookingSidebar = ({ businessData }: BookingSidebarProps) => {
                   </a>
                 </div>
               )}
+            </div>
+          )}
+  </>
+  );
+
+  return (
+    <aside className="w-full lg:w-[280px] flex-shrink-0 order-2">
+      <FadeIn>
+        {/* Desktop: full card. Mobile: collapsible "Contact & hours" */}
+        <div className="hidden lg:block rounded-[14px] p-5 space-y-5" style={{ background: "white", border: "1px solid hsl(210,40%,90%)", boxShadow: "0 2px 12px hsla(0,0%,0%,0.06)" }}>
+          {cardContent}
+        </div>
+        <div className="lg:hidden rounded-[14px] overflow-hidden" style={{ background: "white", border: "1px solid hsl(210,40%,90%)", boxShadow: "0 2px 12px hsla(0,0%,0%,0.06)" }}>
+          <button
+            type="button"
+            onClick={() => setMobileOpen((o) => !o)}
+            className="public-touch-target w-full flex items-center justify-between gap-3 px-4 py-3.5 min-h-[48px] text-left"
+            style={{ color: "hsl(222,47%,11%)" }}
+            aria-expanded={mobileOpen}
+          >
+            <span className="font-semibold" style={{ fontSize: 15 }}>{name}</span>
+            <span className="text-sm font-medium shrink-0" style={{ color: "hsl(215,16%,55%)" }}>
+              {mobileOpen ? "Hide" : "Contact & hours"}
+            </span>
+            {mobileOpen ? <ChevronUp size={18} style={{ color: "hsl(215,16%,55%)" }} /> : <ChevronDown size={18} style={{ color: "hsl(215,16%,55%)" }} />}
+          </button>
+          {mobileOpen && (
+            <div className="px-4 pb-4 pt-0 space-y-5 border-t" style={{ borderColor: "hsl(210,40%,92%)" }}>
+              {cardContent}
             </div>
           )}
         </div>

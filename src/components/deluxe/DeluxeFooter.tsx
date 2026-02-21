@@ -1,6 +1,7 @@
 import { Instagram, Facebook, Mail, Phone, ArrowUpRight } from 'lucide-react';
 import type { BusinessProfile, BusinessHour } from '@/hooks/useBusinessData';
 import SiteFadeIn from './SiteFadeIn';
+import PoweredByDarker from '@/components/PoweredByDarker';
 
 interface Props {
   profile?: BusinessProfile | null;
@@ -70,6 +71,8 @@ const DeluxeFooter = ({ profile }: Props) => {
               ))}
             </div>
           </div>
+
+          <PoweredByDarker variant="dark" className="mt-6" />
         </div>
       </SiteFadeIn>
     </footer>
