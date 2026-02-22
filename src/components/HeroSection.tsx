@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Link } from "react-router-dom";
 import darkerLogo from "@/assets/darker-logo.png";
 import mascotPenguin from "@/assets/mascot-penguin.png";
 import { ChevronRight, ChevronDown, Zap, Shield, Phone } from "lucide-react";
@@ -253,6 +254,19 @@ const HeroSection = () => {
               <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> Built in 5 minutes</span>
               <span className="text-primary-foreground/20">•</span>
               <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> Free for 14 days</span>
+            </div>
+
+            {/* Returning user login */}
+            <div className="mt-3" style={{ opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 1.9s forwards' }}>
+              <Link
+                to="/login"
+                className="text-sm font-medium transition-colors duration-200 hover:underline underline-offset-4"
+                style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'hsla(217, 91%, 70%, 0.9)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.45)')}
+              >
+                Already have an account? <span className="underline">Log in</span>
+              </Link>
             </div>
 
             {/* Social proof */}
