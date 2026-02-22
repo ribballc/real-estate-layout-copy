@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { DndContext, DragOverlay, useDraggable, useDroppable, PointerSensor, TouchSensor, useSensor, useSensors, type DragStartEvent, type DragEndEvent } from "@dnd-kit/core";
@@ -14,7 +13,7 @@ import { CSS } from "@dnd-kit/utilities";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
 import {
   Loader2, Plus, Clock, User, Mail, Phone, DollarSign, FileText, X,
-  ChevronLeft, ChevronRight, PhoneCall, CheckCircle2, Calendar as CalendarIcon, MessageSquare,
+  ChevronLeft, ChevronRight, PhoneCall, CheckCircle2, Calendar as CalendarIcon, MessageSquare, MoreHorizontal,
 } from "lucide-react";
 import { format } from "date-fns";
 
@@ -55,20 +54,11 @@ const COLUMNS: Column[] = [
   {
     id: "scheduled",
     label: "Scheduled",
-    statuses: ["confirmed"],
+    statuses: ["confirmed", "pending"],
     color: "hsl(217, 91%, 60%)",
     bg: "hsla(217, 91%, 60%, 0.08)",
     border: "hsla(217, 91%, 60%, 0.25)",
     strip: "hsl(217, 91%, 60%)",
-  },
-  {
-    id: "in_progress",
-    label: "In Progress",
-    statuses: ["pending"],
-    color: "hsl(38, 92%, 50%)",
-    bg: "hsla(38, 92%, 50%, 0.08)",
-    border: "hsla(38, 92%, 50%, 0.25)",
-    strip: "hsl(38, 92%, 50%)",
   },
   {
     id: "completed",
@@ -92,29 +82,9 @@ const COLUMNS: Column[] = [
 
 const STATUS_FOR_COLUMN: Record<string, string> = {
   scheduled: "confirmed",
-  in_progress: "pending",
   completed: "completed",
   invoiced: "invoiced",
 };
-
-/* ── Service step checklists ─────────────────────────── */
-
-const SERVICE_STEPS: Record<string, string[]> = {
-  "Full Detail": ["Wash", "Clay Bar", "Polish", "Wax", "Interior Clean", "Final Inspection"],
-  "Interior Detail": ["Vacuum", "Shampoo Carpets", "Clean Dashboard", "Condition Leather", "Final Inspection"],
-  "Exterior Detail": ["Pre-Wash", "Hand Wash", "Clay Bar", "Polish", "Wax", "Final Inspection"],
-  "Paint Correction": ["Wash", "Decontamination", "Compound", "Polish", "Sealant", "Final Inspection"],
-  "Ceramic Coating": ["Wash", "Clay Bar", "Paint Correction", "IPA Wipe", "Coating Application", "Cure Time", "Final Inspection"],
-  default: ["Prep", "Service", "Quality Check", "Final Inspection"],
-};
-
-function getSteps(serviceTitle: string): string[] {
-  for (const [key, steps] of Object.entries(SERVICE_STEPS)) {
-    if (key === "default") continue;
-    if (serviceTitle.toLowerCase().includes(key.toLowerCase())) return steps;
-  }
-  return SERVICE_STEPS.default;
-}
 
 const formatTimeShort = (time: string) => {
   const [h, m] = time.split(":");
@@ -174,8 +144,7 @@ const JobsManager = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [customerMap, setCustomerMap] = useState<Map<string, Customer>>(new Map());
   const [selectedJob, setSelectedJob] = useState<Booking | null>(null);
-  const [checkedSteps, setCheckedSteps] = useState<Set<string>>(new Set());
-  const [mobileCol, setMobileCol] = useState(0);
+  const [editingJob, setEditingJob] = useState<Booking | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -191,6 +160,7 @@ const JobsManager = () => {
     service_title: "", service_price: 0, booking_date: "",
     booking_time: "10:00", duration_minutes: 60, notes: "",
   });
+  const [editForm, setEditForm] = useState<Partial<Booking>>({});
 
   /* ── Data fetch ──────────────────────────────────── */
 
@@ -210,6 +180,10 @@ const JobsManager = () => {
   }, [user]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  useEffect(() => {
+    if (editingJob) setEditForm({ ...editingJob });
+  }, [editingJob]);
 
   /* ── Columns data ────────────────────────────────── */
 
@@ -279,15 +253,28 @@ const JobsManager = () => {
     }
   };
 
-  /* ── Mobile swipe ────────────────────────────────── */
-
-  const touchStart = useRef<number>(0);
-  const handleTouchStart = (e: React.TouchEvent) => { touchStart.current = e.touches[0].clientX; };
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const diff = e.changedTouches[0].clientX - touchStart.current;
-    if (Math.abs(diff) > 60) {
-      setMobileCol(prev => diff > 0 ? Math.max(0, prev - 1) : Math.min(COLUMNS.length - 1, prev + 1));
+  const handleSaveEditJob = async () => {
+    if (!editingJob?.id || !user) return;
+    const payload = {
+      customer_name: editForm.customer_name ?? editingJob.customer_name,
+      customer_email: editForm.customer_email ?? editingJob.customer_email,
+      customer_phone: editForm.customer_phone ?? editingJob.customer_phone,
+      service_title: editForm.service_title ?? editingJob.service_title,
+      service_price: editForm.service_price ?? editingJob.service_price,
+      booking_date: editForm.booking_date ?? editingJob.booking_date,
+      booking_time: editForm.booking_time ?? editingJob.booking_time,
+      duration_minutes: editForm.duration_minutes ?? editingJob.duration_minutes,
+      notes: editForm.notes ?? editingJob.notes,
+      status: editForm.status ?? editingJob.status,
+    };
+    const { error } = await supabase.from("bookings").update(payload).eq("id", editingJob.id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
     }
+    setBookings(prev => prev.map(b => b.id === editingJob.id ? { ...b, ...payload } : b));
+    setEditingJob(null);
+    toast({ title: "Job updated" });
   };
 
   /* ── Draggable Job card ───────────────────────────── */
@@ -306,7 +293,7 @@ const JobsManager = () => {
         ref={setNodeRef}
         {...listeners}
         {...attributes}
-        onClick={() => { if (!isDragging) { setSelectedJob(booking); setCheckedSteps(new Set()); } }}
+        onClick={() => { if (!isDragging) setSelectedJob(booking); }}
         className="relative rounded-lg border cursor-grab active:cursor-grabbing transition-all duration-150 hover:scale-[1.01] hover:shadow-lg overflow-hidden touch-none"
         style={style}
       >
@@ -351,6 +338,16 @@ const JobsManager = () => {
               </div>
             )}
           </div>
+          <div className="flex justify-end pt-1">
+            <button
+              onClick={e => { e.stopPropagation(); setEditingJob(booking); }}
+              className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors opacity-60 hover:opacity-100"
+              style={{ color: th.textMuted }}
+              aria-label="Edit job"
+            >
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -358,12 +355,14 @@ const JobsManager = () => {
 
   /* ── Droppable Column ───────────────────────────── */
 
-  const DroppableColumn = ({ col, children }: { col: Column; children: React.ReactNode }) => {
+  const DroppableColumn = ({ col, children, isMobile: mobile }: { col: Column; children: React.ReactNode; isMobile?: boolean }) => {
     const { setNodeRef, isOver } = useDroppable({ id: col.id });
     return (
           <div
         ref={setNodeRef}
-        className="flex flex-col rounded-[14px] border min-h-[400px] min-w-[240px] transition-colors duration-200"
+        className={`flex flex-col rounded-[14px] border min-h-[400px] transition-colors duration-200 ${
+          mobile ? "min-w-[280px] max-w-[280px] shrink-0 snap-center" : "min-w-[240px]"
+        }`}
         style={{
           borderColor: isOver ? col.border : th.columnBorder,
           background: isOver ? col.bg : th.columnBg,
@@ -417,61 +416,28 @@ const JobsManager = () => {
 
       {/* ── Kanban Board ─────────────────────────────── */}
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        {!isMobile ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-auto pb-2 -mx-1 px-1">
-            {COLUMNS.map(col => (
-              <DroppableColumn key={col.id} col={col}>
-                {columnBookings[col.id].length === 0 && (
-                  <p className="text-xs text-center py-6" style={{ color: th.textMuted }}>No jobs</p>
-                )}
-                {columnBookings[col.id].map(b => (
-                  <DraggableJobCard key={b.id} booking={b} column={col} />
-                ))}
-              </DroppableColumn>
-            ))}
-          </div>
-        ) : (
-          /* ── Mobile: tappable tabs + swipe ──────────── */
-          <div onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-            <div
-              className="flex rounded-xl p-1.5 mb-4 gap-1"
-              style={{ background: th.tabBarBg, border: `1px solid ${th.tabBarBorder}` }}
+        <div
+          className={
+            isMobile
+              ? "flex gap-4 overflow-x-auto overflow-y-visible pb-4 -mx-1 px-1 snap-x snap-mandatory scroll-smooth touch-pan-x"
+              : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-auto pb-2 -mx-1 px-1"
+          }
+        >
+          {COLUMNS.map(col => (
+            <DroppableColumn
+              key={col.id}
+              col={col}
+              isMobile={isMobile}
             >
-              {COLUMNS.map((col, i) => (
-                <button
-                  key={col.id}
-                  onClick={() => setMobileCol(i)}
-                  className="flex-1 flex flex-col items-center justify-center gap-0.5 min-h-[44px] py-2 rounded-lg transition-all duration-200"
-                  style={{
-                    background: i === mobileCol ? col.bg : "transparent",
-                    border: i === mobileCol ? `1px solid ${col.border}` : "1px solid transparent",
-                  }}
-                >
-                  <span
-                    className="text-[11px] font-semibold leading-tight"
-                    style={{ color: i === mobileCol ? col.color : th.tabInactive }}
-                  >
-                    {col.label}
-                  </span>
-                  <span
-                    className="text-[10px] font-bold leading-tight"
-                    style={{ color: i === mobileCol ? col.color : th.tabInactiveMuted }}
-                  >
-                    {columnBookings[col.id].length}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <div className="space-y-3 min-h-[300px]">
-              {columnBookings[COLUMNS[mobileCol].id].length === 0 && (
-                <p className="text-xs text-center py-10" style={{ color: th.tabInactiveMuted }}>No jobs</p>
+              {columnBookings[col.id].length === 0 && (
+                <p className="text-xs text-center py-6" style={{ color: th.textMuted }}>No jobs</p>
               )}
-              {columnBookings[COLUMNS[mobileCol].id].map(b => (
-                <DraggableJobCard key={b.id} booking={b} column={COLUMNS[mobileCol]} />
+              {columnBookings[col.id].map(b => (
+                <DraggableJobCard key={b.id} booking={b} column={col} />
               ))}
-            </div>
-          </div>
-        )}
+            </DroppableColumn>
+          ))}
+        </div>
 
         {/* Drag overlay */}
         <DragOverlay>
@@ -520,7 +486,6 @@ const JobsManager = () => {
           {selectedJob && (() => {
             const col = COLUMNS.find(c => c.statuses.includes(selectedJob.status)) || COLUMNS[0];
             const vehicle = customerMap.get(selectedJob.customer_email)?.vehicle || "";
-            const steps = getSteps(selectedJob.service_title);
             return (
               <div className="p-6 space-y-6">
                 {/* Header */}
@@ -554,54 +519,29 @@ const JobsManager = () => {
                     textMuted2={th.textMuted2}
                   />
                   <DetailRow icon={<Clock className="w-3.5 h-3.5" />} label={`${selectedJob.duration_minutes} min`} textMuted={th.textMuted} textMuted2={th.textMuted2} />
-                  <DetailRow icon={<DollarSign className="w-3.5 h-3.5" />} label={`$${selectedJob.service_price}`} textMuted={th.textMuted} textMuted2={th.textMuted2} />
+                  <DetailRow icon={<DollarSign className="w-3.5 h-3.5" />} label={String(selectedJob.service_price)} textMuted={th.textMuted} textMuted2={th.textMuted2} />
                   {selectedJob.customer_email && <DetailRow icon={<Mail className="w-3.5 h-3.5" />} label={selectedJob.customer_email} textMuted={th.textMuted} textMuted2={th.textMuted2} />}
                   {selectedJob.customer_phone && <DetailRow icon={<Phone className="w-3.5 h-3.5" />} label={selectedJob.customer_phone} textMuted={th.textMuted} textMuted2={th.textMuted2} />}
                   {selectedJob.notes && <DetailRow icon={<FileText className="w-3.5 h-3.5" />} label={selectedJob.notes} textMuted={th.textMuted} textMuted2={th.textMuted2} />}
                 </div>
 
                 {/* Contact buttons */}
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {selectedJob.customer_phone && (
-                    <a href={`tel:${selectedJob.customer_phone}`} className="dash-btn dash-btn-sm dash-btn-ghost flex-1">
-                      <PhoneCall className="w-3.5 h-3.5" /> Call
-                    </a>
+                    <>
+                      <a href={`tel:${selectedJob.customer_phone}`} className="dash-btn dash-btn-sm dash-btn-ghost flex-1 min-w-0">
+                        <PhoneCall className="w-3.5 h-3.5" /> Call
+                      </a>
+                      <a href={`sms:${selectedJob.customer_phone}`} className="dash-btn dash-btn-sm dash-btn-ghost flex-1 min-w-0">
+                        <MessageSquare className="w-3.5 h-3.5" /> Text
+                      </a>
+                    </>
                   )}
                   {selectedJob.customer_email && (
-                    <a href={`mailto:${selectedJob.customer_email}`} className="dash-btn dash-btn-sm dash-btn-ghost flex-1">
+                    <a href={`mailto:${selectedJob.customer_email}`} className="dash-btn dash-btn-sm dash-btn-ghost flex-1 min-w-0">
                       <Mail className="w-3.5 h-3.5" /> Email
                     </a>
                   )}
-                </div>
-
-                {/* Checklist */}
-                <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: th.textMuted2 }}>Service Steps</h4>
-                  <div className="space-y-2">
-                    {steps.map(step => {
-                      const checked = checkedSteps.has(step);
-                      return (
-                        <label key={step} className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
-                          <Checkbox
-                            checked={checked}
-                            onCheckedChange={() => {
-                              setCheckedSteps(prev => {
-                                const next = new Set(prev);
-                                checked ? next.delete(step) : next.add(step);
-                                return next;
-                              });
-                            }}
-                          />
-                          <span
-                            className={`text-sm transition-colors ${checked ? "line-through" : ""}`}
-                            style={{ color: checked ? th.tabInactiveMuted : th.textMuted2 }}
-                          >
-                            {step}
-                          </span>
-                        </label>
-                      );
-                    })}
-                  </div>
                 </div>
 
                 {/* Mark Complete */}
@@ -616,6 +556,75 @@ const JobsManager = () => {
               </div>
             );
           })()}
+        </SheetContent>
+      </Sheet>
+
+      {/* ── Edit Job (bottom sheet) ─────────────────── */}
+      <Sheet open={!!editingJob} onOpenChange={open => { if (!open) setEditingJob(null); }}>
+        <SheetContent
+          side="bottom"
+          className="rounded-t-2xl border-t border-white/10 p-0 max-h-[85vh] overflow-y-auto"
+          style={{ background: th.sheetGradient }}
+        >
+          <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[hsl(215,50%,10%)]">
+            <h3 className="text-white font-semibold text-lg">Edit Job</h3>
+            <button onClick={() => setEditingJob(null)} className={`min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg ${isDark ? "text-white/50 hover:text-white" : "text-[hsl(215,14%,51%)] hover:text-[hsl(218,24%,23%)]"}`} aria-label="Close"><X className="w-5 h-5" /></button>
+          </div>
+          {editingJob && (
+            <div className="p-4 space-y-4 pb-8">
+              <div className={`grid gap-3 ${isMobile ? "grid-cols-1" : "grid-cols-2"}`}>
+                <div className="col-span-2 space-y-1">
+                  <Label className="text-xs" style={{ color: th.textMuted }}>Customer Name *</Label>
+                  <Input value={editForm.customer_name ?? ""} onChange={e => setEditForm(f => ({ ...f, customer_name: e.target.value }))} placeholder="John Doe" className="h-10" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs" style={{ color: th.textMuted }}>Email</Label>
+                  <Input value={editForm.customer_email ?? ""} onChange={e => setEditForm(f => ({ ...f, customer_email: e.target.value }))} placeholder="john@email.com" className="h-10" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs" style={{ color: th.textMuted }}>Phone</Label>
+                  <Input value={editForm.customer_phone ?? ""} onChange={e => setEditForm(f => ({ ...f, customer_phone: e.target.value }))} placeholder="(555) 123-4567" className="h-10" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs" style={{ color: th.textMuted }}>Service</Label>
+                  <Input value={editForm.service_title ?? ""} onChange={e => setEditForm(f => ({ ...f, service_title: e.target.value }))} placeholder="Full Detail" className="h-10" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs" style={{ color: th.textMuted }}>Price ($)</Label>
+                  <Input type="number" value={editForm.service_price ?? 0} onChange={e => setEditForm(f => ({ ...f, service_price: parseFloat(e.target.value) || 0 }))} className="h-10" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs" style={{ color: th.textMuted }}>Status</Label>
+                  <select value={editForm.status ?? editingJob.status} onChange={e => setEditForm(f => ({ ...f, status: e.target.value }))} className="w-full h-10 rounded-md bg-white/5 border border-white/10 text-white text-sm px-3 focus:outline-none focus:ring-2 focus:ring-accent">
+                    <option value="confirmed" className="bg-[hsl(215,50%,10%)]">Confirmed</option>
+                    <option value="pending" className="bg-[hsl(215,50%,10%)]">Pending</option>
+                    <option value="completed" className="bg-[hsl(215,50%,10%)]">Completed</option>
+                    <option value="invoiced" className="bg-[hsl(215,50%,10%)]">Invoiced</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs" style={{ color: th.textMuted }}>Date *</Label>
+                  <Input type="date" value={editForm.booking_date ?? ""} onChange={e => setEditForm(f => ({ ...f, booking_date: e.target.value }))} className="h-10" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs" style={{ color: th.textMuted }}>Time</Label>
+                  <Input type="time" value={editForm.booking_time ?? "10:00"} onChange={e => setEditForm(f => ({ ...f, booking_time: e.target.value }))} className="h-10" />
+                </div>
+                <div className="col-span-2 space-y-1">
+                  <Label className="text-xs" style={{ color: th.textMuted }}>Duration (min)</Label>
+                  <Input type="number" value={editForm.duration_minutes ?? 60} onChange={e => setEditForm(f => ({ ...f, duration_minutes: parseInt(e.target.value, 10) || 60 }))} className="h-10" />
+                </div>
+                <div className="col-span-2 space-y-1">
+                  <Label className="text-xs" style={{ color: th.textMuted }}>Notes</Label>
+                  <Input value={editForm.notes ?? ""} onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))} placeholder="Any additional notes..." className="h-10" />
+                </div>
+              </div>
+              <div className="flex gap-2 pt-2">
+                <button onClick={() => setEditingJob(null)} className="dash-btn dash-btn-ghost flex-1">Exit</button>
+                <button onClick={handleSaveEditJob} className="dash-btn dash-btn-primary flex-1">Save changes</button>
+              </div>
+            </div>
+          )}
         </SheetContent>
       </Sheet>
 

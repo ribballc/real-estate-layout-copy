@@ -8,6 +8,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import {
   Loader2, Plus, Phone, Mail, Search, User, Car, DollarSign,
   FileText, X, ChevronDown, MoreHorizontal, Calendar, Upload, Building2,
@@ -115,6 +116,7 @@ const CustomersManager = () => {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
   const [showAdd, setShowAdd] = useState(false);
+  const [showEditSheet, setShowEditSheet] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showCsvImport, setShowCsvImport] = useState(false);
@@ -387,8 +389,8 @@ const CustomersManager = () => {
                     >
                       {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[hsl(215,50%,10%)]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
                     </select>
-                    <button onClick={() => startEdit(c)} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors" title="Edit">
-                      <FileText className="w-4 h-4" />
+                    <button onClick={() => { startEdit(c); setShowEditSheet(true); }} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors" title="Edit">
+                      <MoreHorizontal className="w-4 h-4" />
                     </button>
                     <button onClick={() => setDeleteId(c.id)} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-red-500/10 flex items-center justify-center text-white/40 hover:text-red-400 transition-colors" title="Delete">
                       <X className="w-4 h-4" />
@@ -401,6 +403,86 @@ const CustomersManager = () => {
           })}
         </div>
       )}
+
+      {/* Edit Customer (bottom sheet) */}
+      <Sheet open={showEditSheet && !!editingId} onOpenChange={open => { if (!open) { setShowEditSheet(false); resetForm(); } }}>
+        <SheetContent side="bottom" className="rounded-t-2xl border-t border-white/10 p-0 max-h-[85vh] overflow-y-auto" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+          <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[hsl(215,50%,12%)]">
+            <h3 className="text-white font-semibold text-lg">Edit Customer</h3>
+            <button onClick={() => { setShowEditSheet(false); resetForm(); }} className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-white/50 hover:text-white" aria-label="Close"><X className="w-5 h-5" /></button>
+          </div>
+          <div className="p-4 space-y-4 pb-8">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2 space-y-1">
+                <Label className="text-white/60 text-xs">Name *</Label>
+                <Input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="John Doe" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-white/60 text-xs">Email</Label>
+                <Input value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="john@email.com" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-white/60 text-xs">Phone</Label>
+                <Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="(555) 123-4567" />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-white/60 text-xs">Status</Label>
+                <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className="w-full h-10 rounded-md bg-white/5 border border-white/10 text-white text-sm px-3 focus:outline-none focus:ring-2 focus:ring-accent">
+                  {STATUS_OPTIONS.map(s => <option key={s} value={s} className="bg-[hsl(215,50%,10%)]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
+                </select>
+              </div>
+              <div className="col-span-2 space-y-1">
+                <Label className="text-white/60 text-xs">Notes</Label>
+                <Input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="Prefers weekday mornings..." />
+              </div>
+            </div>
+            <div className="space-y-3 pt-2">
+              <Label className="text-white/70 text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5"><Car className="w-3.5 h-3.5" /> Vehicles</Label>
+              {formVehicles.map((v, i) => (
+                <div key={i} className="rounded-xl border border-white/10 bg-white/[0.03] p-3 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-white/40 text-[11px] font-medium">Vehicle {i + 1}</span>
+                    {formVehicles.length > 1 && (
+                      <button type="button" onClick={() => removeVehicle(i)} aria-label="Remove vehicle" className="text-white/40 hover:text-red-400 transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-white/40 text-[10px]">Year</Label>
+                      <Input type="number" value={v.year} onChange={e => updateVehicle(i, "year", e.target.value)} className="h-9 text-sm bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="2024" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-white/40 text-[10px]">Make</Label>
+                      <Input value={v.make} onChange={e => updateVehicle(i, "make", e.target.value)} className="h-9 text-sm bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="BMW" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-white/40 text-[10px]">Model</Label>
+                      <Input value={v.model} onChange={e => updateVehicle(i, "model", e.target.value)} className="h-9 text-sm bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="X5" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-white/40 text-[10px]">Color (optional)</Label>
+                      <Input value={v.color} onChange={e => updateVehicle(i, "color", e.target.value)} className="h-9 text-sm bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="Black" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-white/40 text-[10px]">License Plate (optional)</Label>
+                      <Input value={v.plate} onChange={e => updateVehicle(i, "plate", e.target.value)} className="h-9 text-sm bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="ABC-1234" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button type="button" onClick={() => setFormVehicles(prev => [...prev, emptyVehicle()])} className="text-xs text-accent hover:text-accent/80 transition-colors flex items-center gap-1">
+                <Plus className="w-3 h-3" /> Add another vehicle
+              </button>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <button type="button" onClick={() => { setShowEditSheet(false); resetForm(); }} className="dash-btn dash-btn-ghost flex-1">Exit</button>
+              <button type="button" onClick={() => { handleSave(); setShowEditSheet(false); }} className="dash-btn dash-btn-primary flex-1">Save changes</button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Add/Edit Modal */}
       {showAdd && (

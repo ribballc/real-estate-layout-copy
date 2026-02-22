@@ -13,90 +13,10 @@ import {
 import {
   Loader2, ChevronLeft, ChevronRight, Plus, Clock, User, Mail, Phone,
   DollarSign, FileText, X, Calendar as CalendarIcon, Ban, RefreshCw,
-  Trash2, ChevronDown, PhoneCall, Play, Car, CheckSquare, Square,
+  Trash2, ChevronDown, PhoneCall, Play, Car, MessageSquare, MoreHorizontal,
 } from "lucide-react";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import CalendarSkeleton from "@/components/skeletons/CalendarSkeleton";
-
-const SERVICE_CHECKLISTS: Record<string, string[]> = {
-  detail: ["Exterior Wash", "Clay Bar", "Polish", "Wax/Sealant", "Wheel Detail", "Tire Dressing", "Interior Vacuum", "Wipe Down", "Windows", "Final Inspection"],
-  interior: ["Vacuum All Surfaces", "Carpet Shampoo", "Seat Clean", "Dashboard Wipe", "Console Clean", "Door Panels", "Windows", "Deodorize", "Final Check"],
-  ceramic: ["Wash & Decon", "Clay Bar", "Paint Correction", "Panel Wipe Down", "Ceramic Application", "Curing", "Final Inspection"],
-  tint: ["Window Clean", "Rubber Trim Prep", "Film Cut", "Application", "Heat Gun Cure", "Edge Seal", "Inspection"],
-  ppf: ["Wash & Decon", "Surface Prep", "Template/Cut", "Wet Application", "Squeegee", "Edge Wrap", "Cure", "Inspection"],
-  vinyl: ["Surface Wash", "Panel Wipe", "Film Alignment", "Heat Application", "Edge Tuck", "Trim Reinstall", "Final Inspection"],
-};
-
-function getChecklist(serviceTitle: string): string[] {
-  const t = (serviceTitle || "").toLowerCase();
-  if (t.includes("full detail") || t.includes("detail")) return SERVICE_CHECKLISTS.detail;
-  if (t.includes("interior")) return SERVICE_CHECKLISTS.interior;
-  if (t.includes("ceramic")) return SERVICE_CHECKLISTS.ceramic;
-  if (t.includes("tint")) return SERVICE_CHECKLISTS.tint;
-  if (t.includes("ppf") || t.includes("paint protection")) return SERVICE_CHECKLISTS.ppf;
-  if (t.includes("vinyl") || t.includes("wrap")) return SERVICE_CHECKLISTS.vinyl;
-  return ["Inspect Vehicle", "Complete Service", "Quality Check", "Customer Walkthrough"];
-}
-
-function getChecklistState(bookingId: string): boolean[] {
-  try {
-    const raw = localStorage.getItem(`checklist_${bookingId}`);
-    return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
-}
-
-function setChecklistState(bookingId: string, state: boolean[]) {
-  localStorage.setItem(`checklist_${bookingId}`, JSON.stringify(state));
-}
-
-const JobChecklist = ({ bookingId, serviceTitle }: { bookingId: string; serviceTitle: string }) => {
-  const items = getChecklist(serviceTitle);
-  const [checked, setChecked] = useState<boolean[]>(() => {
-    const saved = getChecklistState(bookingId);
-    return items.map((_, i) => saved[i] ?? false);
-  });
-
-  const toggle = useCallback((index: number) => {
-    setChecked(prev => {
-      const next = [...prev];
-      next[index] = !next[index];
-      setChecklistState(bookingId, next);
-      return next;
-    });
-  }, [bookingId]);
-
-  const done = checked.filter(Boolean).length;
-  const allDone = done === items.length;
-
-  return (
-    <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
-      <div className="flex items-center justify-between">
-        <span className={`text-xs font-semibold flex items-center gap-1.5 ${allDone ? "text-emerald-400" : "text-white/60"}`}>
-          {allDone ? <><CheckSquare className="w-3.5 h-3.5" /> Job Complete ✓</> : "Job Checklist"}
-        </span>
-        <span className={`text-[11px] ${allDone ? "text-emerald-400/70" : "text-white/40"}`}>{done}/{items.length} complete</span>
-      </div>
-      <div className="space-y-1">
-        {items.map((item, i) => (
-          <button
-            key={item}
-            onClick={() => toggle(i)}
-            className={`w-full flex items-center gap-2 text-left text-xs px-2 py-1.5 rounded-lg transition-colors ${
-              checked[i]
-                ? "text-white/30 line-through bg-white/[0.02]"
-                : "text-white/70 hover:bg-white/[0.05]"
-            }`}
-          >
-            {checked[i]
-              ? <CheckSquare className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              : <Square className="w-3.5 h-3.5 text-white/30 shrink-0" />
-            }
-            {item}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-};
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isToday, isSameDay } from "date-fns";
 
 interface Booking {
@@ -165,6 +85,8 @@ const CalendarManager = () => {
   const [deleteBookingId, setDeleteBookingId] = useState<string | null>(null);
   const [openStatusDropdown, setOpenStatusDropdown] = useState<string | null>(null);
   const [todayOpen, setTodayOpen] = useState(true);
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [editBookingForm, setEditBookingForm] = useState<Partial<Booking>>({});
   const [newBooking, setNewBooking] = useState({
     customer_name: "", customer_email: "", customer_phone: "",
     service_title: "", service_price: 0, booking_date: "",
@@ -187,6 +109,10 @@ const CalendarManager = () => {
   };
 
   useEffect(() => { fetchBookings(); }, [user, currentMonth]);
+
+  useEffect(() => {
+    if (editingBooking) setEditBookingForm({ ...editingBooking });
+  }, [editingBooking]);
 
   const days = useMemo(() => {
     const start = startOfMonth(currentMonth);
@@ -293,6 +219,30 @@ const CalendarManager = () => {
     await supabase.from("bookings").update({ status }).eq("id", id);
     setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
     setOpenStatusDropdown(null);
+  };
+
+  const handleSaveEditBooking = async () => {
+    if (!editingBooking?.id) return;
+    const payload = {
+      customer_name: editBookingForm.customer_name ?? editingBooking.customer_name,
+      customer_email: editBookingForm.customer_email ?? editingBooking.customer_email,
+      customer_phone: editBookingForm.customer_phone ?? editingBooking.customer_phone,
+      service_title: editBookingForm.service_title ?? editingBooking.service_title,
+      service_price: editBookingForm.service_price ?? editingBooking.service_price,
+      booking_date: editBookingForm.booking_date ?? editingBooking.booking_date,
+      booking_time: editBookingForm.booking_time ?? editingBooking.booking_time,
+      duration_minutes: editBookingForm.duration_minutes ?? editingBooking.duration_minutes,
+      notes: editBookingForm.notes ?? editingBooking.notes,
+      status: editBookingForm.status ?? editingBooking.status,
+    };
+    const { error } = await supabase.from("bookings").update(payload).eq("id", editingBooking.id);
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      return;
+    }
+    setBookings(prev => prev.map(b => b.id === editingBooking.id ? { ...b, ...payload } : b));
+    setEditingBooking(null);
+    toast({ title: "Booking updated" });
   };
 
   const handleDeleteBooking = async () => {
@@ -560,25 +510,35 @@ const CalendarManager = () => {
                         )}
                         {b.customer_email && <div className="flex items-center gap-2 text-white/50"><Mail className="w-3 h-3" /> {b.customer_email}</div>}
                         {b.customer_phone && <div className="flex items-center gap-2 text-white/50"><Phone className="w-3 h-3" /> {b.customer_phone}</div>}
-                        {b.service_price > 0 && <div className="flex items-center gap-2 text-white/50"><DollarSign className="w-3 h-3" /> ${b.service_price}</div>}
+                        {b.service_price > 0 && <div className="flex items-center gap-2 text-white/50"><DollarSign className="w-3 h-3" /> {b.service_price}</div>}
                         {b.notes && <div className="flex items-start gap-2 text-white/40"><FileText className="w-3 h-3 mt-0.5" /> {b.notes.startsWith("Vehicle:") ? b.notes.split("\n").slice(1).join("\n") : b.notes}</div>}
                       </div>
-                      <div className="flex gap-2 pt-1">
+                      <div className="flex flex-wrap gap-2 pt-1">
                         {b.customer_phone && (
-                          <a href={`tel:${b.customer_phone}`} className="flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/25 transition-colors">
-                            <PhoneCall className="w-3 h-3" /> Call
-                          </a>
+                          <>
+                            <a href={`tel:${b.customer_phone}`} className="flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/25 transition-colors min-h-[44px]">
+                              <PhoneCall className="w-3 h-3" /> Call
+                            </a>
+                            <a href={`sms:${b.customer_phone}`} className="flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/25 transition-colors min-h-[44px]">
+                              <MessageSquare className="w-3 h-3" /> Text
+                            </a>
+                          </>
                         )}
                         {b.customer_email && (
-                          <a href={`mailto:${b.customer_email}`} className="flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/20 hover:bg-blue-500/25 transition-colors">
+                          <a href={`mailto:${b.customer_email}`} className="flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/20 hover:bg-blue-500/25 transition-colors min-h-[44px]">
                             <Mail className="w-3 h-3" /> Email
                           </a>
                         )}
                       </div>
-                      {/* Job Checklist — only for confirmed/pending */}
-                      {(b.status === "confirmed" || b.status === "pending") && (
-                        <JobChecklist bookingId={b.id} serviceTitle={b.service_title} />
-                      )}
+                      <div className="flex justify-end pt-2">
+                        <button
+                          onClick={() => setEditingBooking(b)}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white transition-colors"
+                          aria-label="Edit booking"
+                        >
+                          <MoreHorizontal className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -672,6 +632,71 @@ const CalendarManager = () => {
           </div>
         </div>
       )}
+
+      {/* Edit Booking (bottom sheet) */}
+      <Sheet open={!!editingBooking} onOpenChange={open => { if (!open) setEditingBooking(null); }}>
+        <SheetContent side="bottom" className="rounded-t-2xl border-t border-white/10 p-0 max-h-[85vh] overflow-y-auto" style={{ background: "linear-gradient(180deg, hsl(215 50% 12%) 0%, hsl(217 33% 10%) 100%)" }}>
+          <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[hsl(215,50%,12%)]">
+            <h3 className="text-white font-semibold text-lg">Edit Booking</h3>
+            <button onClick={() => setEditingBooking(null)} className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg text-white/50 hover:text-white" aria-label="Close"><X className="w-5 h-5" /></button>
+          </div>
+          {editingBooking && (
+            <div className="p-4 space-y-4 pb-8">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="col-span-2 space-y-1">
+                  <Label className="text-white/60 text-xs">Customer Name *</Label>
+                  <Input value={editBookingForm.customer_name ?? ""} onChange={e => setEditBookingForm(f => ({ ...f, customer_name: e.target.value }))} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="John Doe" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-white/60 text-xs">Email</Label>
+                  <Input value={editBookingForm.customer_email ?? ""} onChange={e => setEditBookingForm(f => ({ ...f, customer_email: e.target.value }))} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="john@email.com" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-white/60 text-xs">Phone</Label>
+                  <Input value={editBookingForm.customer_phone ?? ""} onChange={e => setEditBookingForm(f => ({ ...f, customer_phone: e.target.value }))} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="(555) 123-4567" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-white/60 text-xs">Service</Label>
+                  <Input value={editBookingForm.service_title ?? ""} onChange={e => setEditBookingForm(f => ({ ...f, service_title: e.target.value }))} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="Full Detail" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-white/60 text-xs">Price</Label>
+                  <Input type="number" value={editBookingForm.service_price ?? 0} onChange={e => setEditBookingForm(f => ({ ...f, service_price: parseFloat(e.target.value) || 0 }))} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-white/60 text-xs">Status</Label>
+                  <select value={editBookingForm.status ?? editingBooking.status} onChange={e => setEditBookingForm(f => ({ ...f, status: e.target.value }))} className="w-full h-10 rounded-md bg-white/5 border border-white/10 text-white text-sm px-3 focus:outline-none focus:ring-2 focus:ring-accent">
+                    <option value="confirmed" className="bg-[hsl(215,50%,10%)]">Confirmed</option>
+                    <option value="pending" className="bg-[hsl(215,50%,10%)]">Pending</option>
+                    <option value="completed" className="bg-[hsl(215,50%,10%)]">Completed</option>
+                    <option value="cancelled" className="bg-[hsl(215,50%,10%)]">Cancelled</option>
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-white/60 text-xs">Date *</Label>
+                  <Input type="date" value={editBookingForm.booking_date ?? ""} onChange={e => setEditBookingForm(f => ({ ...f, booking_date: e.target.value }))} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-white/60 text-xs">Time</Label>
+                  <Input type="time" value={editBookingForm.booking_time ?? "10:00"} onChange={e => setEditBookingForm(f => ({ ...f, booking_time: e.target.value }))} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" />
+                </div>
+                <div className="col-span-2 space-y-1">
+                  <Label className="text-white/60 text-xs">Duration (min)</Label>
+                  <Input type="number" value={editBookingForm.duration_minutes ?? 60} onChange={e => setEditBookingForm(f => ({ ...f, duration_minutes: parseInt(e.target.value, 10) || 60 }))} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" />
+                </div>
+                <div className="col-span-2 space-y-1">
+                  <Label className="text-white/60 text-xs">Notes</Label>
+                  <Input value={editBookingForm.notes ?? ""} onChange={e => setEditBookingForm(f => ({ ...f, notes: e.target.value }))} className="h-10 bg-white/5 border-white/10 text-white focus-visible:ring-accent" placeholder="Any additional notes..." />
+                </div>
+              </div>
+              <div className="flex gap-2 pt-2">
+                <button type="button" onClick={() => setEditingBooking(null)} className="dash-btn dash-btn-ghost flex-1">Exit</button>
+                <button type="button" onClick={handleSaveEditBooking} className="dash-btn dash-btn-primary flex-1">Save changes</button>
+              </div>
+            </div>
+          )}
+        </SheetContent>
+      </Sheet>
 
       {/* Google Calendar Sync Modal */}
       {showSyncModal && (

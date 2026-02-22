@@ -15,7 +15,7 @@ const PAGE_DESCRIPTIONS: Record<string, string> = {
 
 const PAGE_BENEFITS: Record<string, string[]> = {
   "/dashboard/calendar": ["Online booking calendar", "Automated reminders", "Block off days"],
-  "/dashboard/jobs": ["Kanban job board", "Drag-and-drop workflow", "Service checklists"],
+  "/dashboard/jobs": ["Kanban job board", "Drag-and-drop workflow"],
   "/dashboard/estimates": ["Professional estimates", "One-tap send to customer", "Convert to booking"],
   "/dashboard/customers": ["Full customer list", "Vehicle history", "Import from CSV"],
   "/dashboard/services": ["Service menu builder", "Custom pricing", "Add-ons & packages"],
