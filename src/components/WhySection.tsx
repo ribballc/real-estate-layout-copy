@@ -1,6 +1,7 @@
 import FadeIn from "@/components/FadeIn";
 import { useRef, useCallback } from "react";
 import penguinCalendar from "@/assets/penguin-calendar.png";
+import penguinPayment from "@/assets/penguin-payment.jpeg";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span style={{ color: "hsl(217, 71%, 53%)", fontWeight: 700 }}>{children}</span>
@@ -92,54 +93,12 @@ const WebsiteVisual = () => (
 
 const PaymentVisual = () => (
   <div className="w-full h-[180px] flex items-center justify-center overflow-hidden rounded-t-xl" style={{ background: "hsl(210, 40%, 98%)" }}>
-    <svg width="200" height="160" viewBox="0 0 200 160" fill="none">
-      {/* Card */}
-      <rect x="30" y="25" width="140" height="90" rx="12" fill="linear-gradient(135deg, hsl(217,91%,55%), hsl(217,91%,45%))" />
-      <rect x="30" y="25" width="140" height="90" rx="12" fill="hsl(217,91%,55%)" />
-
-      {/* Card chip */}
-      <rect x="48" y="50" width="24" height="18" rx="4" fill="hsl(45,80%,65%)" opacity="0.8" />
-      <line x1="48" y1="56" x2="72" y2="56" stroke="hsl(45,60%,50%)" strokeWidth="0.5" />
-      <line x1="48" y1="62" x2="72" y2="62" stroke="hsl(45,60%,50%)" strokeWidth="0.5" />
-      <line x1="60" y1="50" x2="60" y2="68" stroke="hsl(45,60%,50%)" strokeWidth="0.5" />
-
-      {/* Card number dots */}
-      {[0,1,2,3].map(g => (
-        <g key={g}>
-          {[0,1,2,3].map(d => (
-            <circle key={d} cx={50 + g * 32 + d * 7} cy={82} r="2" fill="white" opacity="0.6" />
-          ))}
-        </g>
-      ))}
-      <text x="50" y="102" fontSize="9" fill="white" opacity="0.7" fontWeight="500">DARKER CUSTOMER</text>
-
-      {/* Contactless waves */}
-      <path d="M148 42 C152 38, 156 38, 160 42" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.4">
-        <animate attributeName="opacity" values="0.2;0.6;0.2" dur="2s" repeatCount="indefinite" />
-      </path>
-      <path d="M145 38 C151 33, 157 33, 163 38" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.3">
-        <animate attributeName="opacity" values="0.1;0.4;0.1" dur="2s" begin="0.3s" repeatCount="indefinite" />
-      </path>
-
-      {/* Transaction notification */}
-      <rect x="45" y="125" width="110" height="26" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,88%)" strokeWidth="1">
-        <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
-      </rect>
-      <circle cx="62" cy="138" r="6" fill="hsl(160,84%,92%)">
-        <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
-      </circle>
-      <path d="M59 138 L61 140 L65 136" stroke="hsl(160,84%,39%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
-      </path>
-      <text x="74" y="135" fontSize="7" fontWeight="600" fill="hsl(215,25%,12%)" opacity="0">
-        Payment received
-        <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
-      </text>
-      <text x="74" y="144" fontSize="7" fill="hsl(160,84%,39%)" opacity="0">
-        +$250.00
-        <animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" />
-      </text>
-    </svg>
+    <img
+      src={penguinPayment}
+      alt="Penguin mascot holding Darker Digital gold card"
+      className="w-full h-full object-cover object-center"
+      style={{ animation: "siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both" }}
+    />
   </div>
 );
 
