@@ -92,10 +92,19 @@ const HeroSection = () => {
       {/* Main content */}
       <div className="relative z-10 px-5 md:px-8 lg:px-20 pt-5 md:pt-4">
         {/* Logo */}
-        <div className="max-w-[1400px] mx-auto w-full" style={{
+        <div className="max-w-[1400px] mx-auto w-full flex items-center justify-between" style={{
           opacity: 0, animation: 'heroFadeScale 0.5s ease-out 0s forwards',
         }}>
           <img src={darkerLogo} alt="Darker" className="h-8 md:h-10 w-auto" />
+          <Link
+            to="/login"
+            className="text-sm font-medium transition-colors duration-200 hover:underline underline-offset-4"
+            style={{ color: 'hsla(0, 0%, 100%, 0.5)' }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'hsla(217, 91%, 70%, 0.9)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.5)')}
+          >
+            Log in →
+          </Link>
         </div>
 
         {/* Two-column grid */}
@@ -256,18 +265,6 @@ const HeroSection = () => {
               <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> Free for 14 days</span>
             </div>
 
-            {/* Returning user login */}
-            <div className="mt-3" style={{ opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 1.9s forwards' }}>
-              <Link
-                to="/login"
-                className="text-sm font-medium transition-colors duration-200 hover:underline underline-offset-4"
-                style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'hsla(217, 91%, 70%, 0.9)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.45)')}
-              >
-                Already have an account? <span className="underline">Log in</span>
-              </Link>
-            </div>
 
             {/* Social proof */}
             <div className="mt-4 inline-flex items-center gap-3 text-sm" style={{
