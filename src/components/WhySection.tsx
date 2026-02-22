@@ -2,6 +2,7 @@ import FadeIn from "@/components/FadeIn";
 import { useRef, useCallback } from "react";
 import penguinCalendar from "@/assets/penguin-calendar.png";
 import penguinPayment from "@/assets/penguin-payment.jpg";
+import penguinNoshow from "@/assets/penguin-noshow.png";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span style={{ color: "hsl(217, 71%, 53%)", fontWeight: 700 }}>{children}</span>
@@ -22,37 +23,12 @@ const CalendarVisual = () => (
 
 const ShieldVisual = () => (
   <div className="w-full h-[180px] flex items-center justify-center overflow-hidden rounded-t-xl" style={{ background: "hsl(210, 40%, 98%)" }}>
-    <svg width="200" height="160" viewBox="0 0 200 160" fill="none">
-      {/* Large shield */}
-      <path d="M100 12 L155 35 V80 C155 110 135 135 100 145 C65 135 45 110 45 80 V35 L100 12Z"
-        fill="hsl(0,0%,100%)" stroke="hsl(217,91%,80%)" strokeWidth="2" />
-      <path d="M100 22 L145 42 V78 C145 104 128 126 100 134 C72 126 55 104 55 78 V42 L100 22Z"
-        fill="hsl(217,91%,97%)" />
-
-      {/* Checkmark */}
-      <path d="M80 78 L93 91 L120 64" stroke="hsl(217,91%,60%)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"
-        strokeDasharray="60" strokeDashoffset="60">
-        <animate attributeName="stroke-dashoffset" values="60;0" dur="1.5s" repeatCount="indefinite" />
-      </path>
-
-      {/* Pulse rings */}
-      <circle cx="100" cy="78" r="25" fill="none" stroke="hsl(217,91%,60%)" strokeWidth="1" opacity="0.2">
-        <animate attributeName="r" values="25;40;25" dur="3s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.2;0;0.2" dur="3s" repeatCount="indefinite" />
-      </circle>
-      <circle cx="100" cy="78" r="30" fill="none" stroke="hsl(217,91%,60%)" strokeWidth="0.5" opacity="0.1">
-        <animate attributeName="r" values="30;50;30" dur="3s" begin="0.5s" repeatCount="indefinite" />
-        <animate attributeName="opacity" values="0.1;0;0.1" dur="3s" begin="0.5s" repeatCount="indefinite" />
-      </circle>
-
-      {/* Status dots */}
-      <circle cx="38" cy="55" r="4" fill="hsl(160,84%,39%)">
-        <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite" />
-      </circle>
-      <circle cx="162" cy="55" r="4" fill="hsl(160,84%,39%)">
-        <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" begin="0.5s" repeatCount="indefinite" />
-      </circle>
-    </svg>
+    <img
+      src={penguinNoshow}
+      alt="Penguin mascot detailing a car"
+      className="w-full h-full object-cover object-center"
+      style={{ animation: "siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both" }}
+    />
   </div>
 );
 
