@@ -1,12 +1,10 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import darkerLogo from "@/assets/darker-logo.png";
-import mascotPenguin from "@/assets/mascot-penguin.png";
+import heroPenguin from "@/assets/hero-penguin.png";
 import { ChevronRight, ChevronDown, Zap, Shield, Phone } from "lucide-react";
-import { lazy, Suspense } from "react";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 import { trackEvent } from "@/lib/tracking";
-const PhoneDashboard = lazy(() => import("@/components/PhoneDashboard"));
 
 /** Basic US phone validation — 10 digits after stripping formatting */
 function isValidPhone(raw: string): boolean {
@@ -299,13 +297,16 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* RIGHT: Phone mockup (Desktop) */}
-          <div className="hidden lg:block relative z-[1]" style={{
-            opacity: 0, animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards', clipPath: 'inset(0)',
+          {/* RIGHT: Penguin Hero (Desktop) */}
+          <div className="hidden lg:flex relative z-[1] items-end justify-center" style={{
+            opacity: 0, animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
           }}>
-            <Suspense fallback={<div className="w-full aspect-[360/700] max-w-[360px] mx-auto" />}>
-              <PhoneDashboard />
-            </Suspense>
+            <img
+              src={heroPenguin}
+              alt="Darker mascot penguin holding a phone with the dashboard"
+              className="w-full max-w-[520px] h-auto object-contain drop-shadow-2xl"
+              style={{ filter: 'drop-shadow(0 20px 40px hsla(217, 91%, 20%, 0.4))' }}
+            />
           </div>
         </div>
 
@@ -316,27 +317,17 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Mobile phone section */}
-      <div className="block lg:hidden relative z-[1] w-full px-5 pb-16 pt-8" style={{
+      {/* Mobile penguin hero */}
+      <div className="block lg:hidden relative z-[1] w-full px-6 pb-10 pt-4" style={{
         opacity: 0, animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
       }}>
-        <div className="w-full max-w-[360px] mx-auto">
-          <Suspense fallback={<div className="w-full aspect-[360/700]" />}>
-            <PhoneDashboard />
-          </Suspense>
-        </div>
+        <img
+          src={heroPenguin}
+          alt="Darker mascot penguin holding a phone with the dashboard"
+          className="w-full max-w-[320px] mx-auto h-auto object-contain"
+          style={{ filter: 'drop-shadow(0 16px 32px hsla(217, 91%, 20%, 0.35))' }}
+        />
       </div>
-      {/* Decorative penguin mascot — desktop only, bottom-left */}
-      <img
-        src={mascotPenguin}
-        alt=""
-        aria-hidden="true"
-        width={100}
-        height={100}
-        loading="lazy"
-        className="hidden lg:block absolute bottom-6 left-6 w-[100px] pointer-events-none select-none opacity-40"
-        style={{ zIndex: 1 }}
-      />
     </section>
   );
 };
