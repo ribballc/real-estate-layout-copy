@@ -58,23 +58,23 @@ const PaymentVisual = () => (
 const features = [
   {
     Visual: CalendarVisual,
-    title: "24/7 Smart Booking Calendar",
-    description: <>Customers book while you're detailing. Capture the <Highlight>$500-1,000/month</Highlight> you're losing to missed calls.</>,
+    title: "Your Booking Page Never Clocks Out",
+    description: <>While you're 3 hours deep into a ceramic coat, your calendar's out there locking in jobs. Capture the <Highlight>$500–$1,000/month</Highlight> you're losing every time a call goes to voicemail.</>,
   },
   {
     Visual: ShieldVisual,
-    title: "No-Show Protection That Works",
-    description: <>Automated reminders + <Highlight>$100</Highlight> deposits = <Highlight>40%</Highlight> fewer no-shows.</>,
+    title: "They Paid to Book. They'll Show Up.",
+    description: <>A <Highlight>$100 deposit</Highlight> at checkout turns tire-kickers into committed clients. Pair it with auto-reminders and you'll see <Highlight>40% fewer no-shows</Highlight> — starting week one.</>,
   },
   {
     Visual: WebsiteVisual,
-    title: "Professional Website in 48 Hours",
-    description: <>Mobile-optimized website that looks like you paid <Highlight>$3,000</Highlight>. Zero tech skills required.</>,
+    title: "A Site That Makes You Look Like the Premium Option",
+    description: <>Done for you in <Highlight>48 hours</Highlight>. Clients see it, assume you charge more — so you can. No tech skills. No designer. Just a clean, mobile-ready site that converts.</>,
   },
   {
     Visual: PaymentVisual,
-    title: "Payment Processing Built-In",
-    description: <>Accept cards, collect deposits, get paid next day. <Highlight>2.9% + 30¢</Highlight> per transaction.</>,
+    title: "Get Paid. Fast. Every Time.",
+    description: <>Cards, deposits, next-day payouts — all baked in. No Venmo chasing. No third-party apps. Just <Highlight>2.9% + 30¢</Highlight> and money in your account tomorrow.</>,
   },
 ];
 
@@ -161,10 +161,10 @@ const WhySection = () => {
               className="font-heading text-[32px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.15] mb-4"
               style={{ color: "hsl(222, 47%, 11%)" }}
             >
-              Why It Works
+              Built to Run While You're Under a Car
             </h2>
             <p className="text-base md:text-lg max-w-lg mx-auto" style={{ color: "hsl(215, 16%, 47%)" }}>
-              Why hundreds of detailers, installers, and shop owners swear by it.
+              Four features doing the heavy lifting — so you stay focused on the detail.
             </p>
           </div>
         </FadeIn>
