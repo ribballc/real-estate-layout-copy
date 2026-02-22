@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import darkerLogo from "@/assets/darker-logo.png";
 import heroPenguin from "@/assets/hero-penguin.png";
+import heroPenguinMobile from "@/assets/hero-penguin-mobile.png";
 import { ChevronRight, ChevronDown, Zap, Shield, Phone } from "lucide-react";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 import { trackEvent } from "@/lib/tracking";
@@ -317,15 +318,13 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Mobile penguin hero */}
-      <div className="block lg:hidden relative z-[1] w-full px-6 pb-10 pt-4" style={{
-        opacity: 0, animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
-      }}>
+      {/* Mobile penguin hero — full width, flush with section below */}
+      <div className="block lg:hidden relative z-[1] w-full -mb-px">
         <img
-          src={heroPenguin}
+          src={heroPenguinMobile}
           alt="Darker mascot penguin holding a phone with the dashboard"
-          className="w-full max-w-[320px] mx-auto h-auto object-contain"
-          style={{ filter: 'drop-shadow(0 16px 32px hsla(217, 91%, 20%, 0.35))' }}
+          className="w-full h-auto block"
+          style={{ display: 'block' }}
         />
       </div>
     </section>
