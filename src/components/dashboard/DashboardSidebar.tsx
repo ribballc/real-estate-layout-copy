@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSubscription } from "@/hooks/useSubscription";
 import {
   Building2, Wrench, Camera, Star, Settings, LogOut,
   CalendarDays, Users, LayoutDashboard, Lock,
@@ -54,14 +55,11 @@ const DashboardSidebar = ({
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const [trialActive, setTrialActive] = useState(false);
+  const subscription = useSubscription();
   const [newBookingsCount, setNewBookingsCount] = useState(0);
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("trial_active").eq("user_id", user.id).single().then(({ data }) => {
-      setTrialActive(data?.trial_active ?? false);
-    });
     const yesterday = new Date(Date.now() - 86400000).toISOString();
     supabase.from("bookings").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", yesterday).then(({ count }) => {
       setNewBookingsCount(count ?? 0);
@@ -135,7 +133,7 @@ const DashboardSidebar = ({
       <nav className="flex-1 overflow-y-auto px-2 pt-4">
         <ul className="space-y-0.5">
           {NAV_ITEMS.map((item) => {
-            const isItemLocked = !trialActive && !item.alwaysUnlocked;
+            const isItemLocked = !subscription.isActive && !item.alwaysUnlocked;
             const active = isActive(item.url);
             const badge = badgeMap[item.url] || 0;
             return (
@@ -202,7 +200,7 @@ const DashboardSidebar = ({
       </nav>
 
       {/* Sidebar upgrade pill — visible when no trial/subscription */}
-      {!trialActive && !collapsed && (
+      {!subscription.isActive && !collapsed && (
         <SidebarUpgradePill isDark={isDark} />
       )}
 
