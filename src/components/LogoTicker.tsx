@@ -1,27 +1,33 @@
-import ecmLa from "@/assets/logos/ecm-la.png";
-import accessLuxury from "@/assets/logos/access-luxury.png";
-import deluxeDetailing from "@/assets/logos/deluxe-detailing.png";
-import rExotics from "@/assets/logos/r-exotics.png";
-import blackLabel from "@/assets/logos/black-label.png";
+// Logo ticker: Deluxe, Access Luxury, R Exotics, ECM, Black Label (transparent SVGs) + 2 new SVGs
+const logoBase = "/logos";
+const deluxeDetailing = `${logoBase}/deluxe-detailing.png`;
+const accessLuxury = `${logoBase}/access-luxury.png`;
+// Use transparent SVGs for R Exotics, ECM, Black Label (PNGs have black backgrounds)
+const rExotics = `${logoBase}/logo-1.svg`;
+const ecmLa = `${logoBase}/logo-2.svg`;
+const blackLabel = `${logoBase}/logo-3.svg`;
+const logoNew1 = `${logoBase}/logo-new-1.svg`;
+const logoNew2 = `${logoBase}/logo-new-2.svg`;
 
 const logos = [
-  { name: "ECM Los Angeles", src: ecmLa },
-  { name: "Access Luxury", src: accessLuxury },
   { name: "Deluxe Detailing", src: deluxeDetailing },
+  { name: "Access Luxury", src: accessLuxury },
   { name: "R Exotics", src: rExotics },
+  { name: "ECM Los Angeles", src: ecmLa },
   { name: "Black Label Exotics", src: blackLabel },
+  { name: "Partner", src: logoNew1 },
+  { name: "Partner", src: logoNew2 },
 ];
 
 const LogoItem = ({ name, src }: { name: string; src: string }) => (
-  <div className="flex items-center justify-center mx-10 select-none" style={{ minWidth: "max-content" }}>
+  <div className="flex flex-shrink-0 items-center justify-center mx-4 select-none bg-transparent" style={{ minWidth: "max-content" }}>
     <img
       src={src}
       alt={name}
       width={98}
       height={56}
-      className="h-14 md:h-16 w-auto object-contain opacity-50 grayscale"
+      className="h-14 md:h-16 w-auto object-contain bg-transparent flex-shrink-0"
       draggable={false}
-      loading="lazy"
     />
   </div>
 );
@@ -51,7 +57,10 @@ const LogoTicker = () => {
           style={{ background: "linear-gradient(to left, hsl(210, 40%, 98%), transparent)" }}
         />
 
-        <div className="flex animate-logo-scroll">
+        <div
+          className="flex animate-logo-scroll will-change-transform"
+          style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" }}
+        >
           {doubled.map((logo, i) => (
             <LogoItem key={`${logo.name}-${i}`} {...logo} />
           ))}

@@ -102,7 +102,7 @@ export default {
         "scroll-right": "scroll-right 60s linear infinite",
         "scroll-left-mobile": "scroll-left 120s linear infinite",
         "scroll-right-mobile": "scroll-right 120s linear infinite",
-        "logo-scroll": "logo-scroll 30s linear infinite",
+        "logo-scroll": "logo-scroll 18s linear infinite",
         "public-fade-in": "public-fade-in 220ms ease-out both",
         "public-slide-up": "public-slide-up 220ms ease-out both",
         "public-step-enter": "public-step-enter 220ms ease-out both",

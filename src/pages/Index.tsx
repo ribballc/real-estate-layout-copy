@@ -8,7 +8,6 @@ const ValueBreakdown = lazy(() => import("@/components/ValueBreakdown"));
 const HowItWorksSection = lazy(() => import("@/components/HowItWorksSection"));
 const WhySection = lazy(() => import("@/components/WhySection"));
 const TestimonialSection = lazy(() => import("@/components/TestimonialSection"));
-const PricingSection = lazy(() => import("@/components/PricingSection"));
 const FaqSection = lazy(() => import("@/components/FaqSection"));
 const CtaFooter = lazy(() => import("@/components/CtaFooter"));
 const SurveyFunnelModal = lazy(() => import("@/components/SurveyFunnelModal"));
@@ -150,7 +149,6 @@ const Index = () => {
           <ValueBreakdown />
           <TestimonialSection />
           <WhySection />
-          <PricingSection />
           <FaqSection />
           <CtaFooter />
           <SurveyFunnelModal />

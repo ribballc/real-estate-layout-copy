@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import darkerLogo from "@/assets/darker-logo.png";
 import heroPenguin from "@/assets/hero-penguin.png";
 import heroPenguinMobile from "@/assets/hero-penguin-mobile.png";
-import { ChevronRight, ChevronDown, Zap, Shield, Phone } from "lucide-react";
+import { ChevronRight, ChevronDown, Shield, Phone } from "lucide-react";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 import { trackEvent } from "@/lib/tracking";
 
@@ -260,8 +260,6 @@ const HeroSection = () => {
             <div className="mt-5 flex items-center gap-4 flex-wrap" style={{
               color: 'hsla(0, 0%, 100%, 0.5)', opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 1.8s forwards',
             }}>
-              <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> Live in 5 minutes</span>
-              <span className="text-primary-foreground/20">•</span>
               <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> Free for 14 days</span>
             </div>
 
@@ -271,24 +269,26 @@ const HeroSection = () => {
               color: 'hsla(0, 0%, 100%, 0.6)', opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 2.0s forwards',
             }}>
               <div className="flex items-center">
-                {[
-                  { initials: 'TB', bg: '#3b82f6' },
-                  { initials: 'RG', bg: '#10b981' },
-                  { initials: 'MV', bg: '#f59e0b' },
-                  { initials: 'JD', bg: '#8b5cf6' },
-                  { initials: 'CS', bg: '#ef4444' },
-                ].map((a, i) => (
+                {[1, 2, 3, 4, 5].map((n, i) => (
                   <div
-                    key={a.initials}
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold ring-2 ring-[hsl(215,50%,10%)]"
+                    key={n}
+                    className="w-10 h-10 rounded-full flex-shrink-0 overflow-hidden bg-[hsl(215,50%,10%)] relative"
                     style={{
-                      backgroundColor: a.bg,
-                      color: 'white',
                       marginLeft: i === 0 ? 0 : '-0.5rem',
                       zIndex: 5 - i,
                     }}
                   >
-                    {a.initials}
+                    <img
+                      src={`/hero-pfp/hero-pfp-${n}.png`}
+                      alt=""
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                    {/* Border drawn on top so photo edge never shows above it */}
+                    <span
+                      className="absolute inset-0 rounded-full pointer-events-none"
+                      style={{ boxShadow: 'inset 0 0 0 2px hsl(215,50%,10%)' }}
+                      aria-hidden
+                    />
                   </div>
                 ))}
               </div>
@@ -299,7 +299,7 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* RIGHT: Penguin Hero (Desktop) */}
+          {/* RIGHT: Penguin Hero (Desktop). New image on desktop; mobile unchanged. */}
           <div className="hidden lg:flex relative z-[1] items-end justify-center" style={{
             opacity: 0, animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
           }}>
