@@ -318,7 +318,7 @@ const HeroSection = () => {
       </div>
 
       {/* Mobile penguin hero */}
-      <div className="block lg:hidden relative z-[1] w-full px-6 pb-10 pt-4" style={{
+      <div className="block lg:hidden relative z-[1] w-full px-6 pb-0 pt-4" style={{
         opacity: 0, animation: 'heroPhoneIn 0.8s ease-out 1.6s forwards',
       }}>
         <img
@@ -326,6 +326,23 @@ const HeroSection = () => {
           alt="Darker mascot penguin holding a phone with the dashboard"
           className="w-full max-w-[320px] mx-auto h-auto object-contain"
           style={{ filter: 'drop-shadow(0 16px 32px hsla(217, 91%, 20%, 0.35))' }}
+        />
+      </div>
+
+      {/* Ice-ground transition — spans full width, fades into white section below */}
+      <div className="relative w-full" style={{ marginTop: '-2px' }}>
+        <div
+          className="w-full h-24 md:h-36"
+          style={{
+            background: 'linear-gradient(180deg, hsla(200, 30%, 75%, 0) 0%, hsla(200, 40%, 82%, 0.5) 25%, hsla(200, 50%, 88%, 0.7) 50%, hsl(210, 40%, 95%) 75%, hsl(210, 40%, 98%) 100%)',
+          }}
+        />
+        {/* Icy shimmer overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'linear-gradient(90deg, transparent 0%, hsla(200, 60%, 90%, 0.3) 20%, hsla(200, 80%, 95%, 0.15) 50%, hsla(200, 60%, 90%, 0.3) 80%, transparent 100%)',
+          }}
         />
       </div>
     </section>
