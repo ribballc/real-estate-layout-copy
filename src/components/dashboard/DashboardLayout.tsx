@@ -71,7 +71,7 @@ const DashboardLayout = () => {
   const [commandBarOpen, setCommandBarOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const chatbotRef = useRef<SupportChatbotHandle>(null);
-  const [trialActive, setTrialActive] = useState<boolean | null>(null);
+  const [trialActive, setTrialActive] = useState<boolean | null>(null); // kept for celebration logic only
   const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
   const [onboardingIncomplete, setOnboardingIncomplete] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -174,8 +174,8 @@ const DashboardLayout = () => {
     };
   }, [dashboardTheme]);
 
-  const UNLOCKED_PATHS = ["/dashboard", "/dashboard/business", "/dashboard/account"];
-  const isLocked = !isAdmin && trialActive === false && !UNLOCKED_PATHS.includes(location.pathname);
+  const UNLOCKED_PATHS = ["/dashboard", "/dashboard/business", "/dashboard/account", "/dashboard/billing"];
+  const isLocked = !isAdmin && !subscription.isActive && !UNLOCKED_PATHS.includes(location.pathname);
 
   const toggleTheme = () => {
     setDashboardTheme(prev => {
