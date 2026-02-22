@@ -111,6 +111,25 @@ const HeroSection = () => {
 
           {/* LEFT: Text column */}
           <div className="relative z-10 text-left">
+            {/*
+              HERO COPY – BEFORE
+              H1:          "The Instant / Website & Booking / System For Auto Pros"
+              Subheadline: "Get a professional website with 24/7 booking. Customers book themselves
+                            while you're in the field. Automated reminders, deposits, and a calendar
+                            that fills itself."
+              CTA:         "Get My Free Demo" / "Get My Demo"
+              Helper:      "Enter your mobile number to start your free demo"
+              Trust:       "Built in 5 minutes • Free for 14 days"
+
+              HERO COPY – AFTER
+              H1:          "Stop Chasing Clients. / Get Booked. Get Paid. / Built For Auto Pros."
+              Subheadline: "Your own pro site, live in 5 minutes. Clients book online, pay a deposit
+                            upfront, and get auto-reminders — while you're already on the next job."
+              CTA:         "Claim My Free Website" / "Claim My Site"
+              Helper:      "Drop your number — we'll build your site around it. No card needed."
+              Trust:       "Live in 5 minutes • Free for 14 days"
+            */}
+
             {/* Badge */}
             <span
               className="text-sky text-[13px] font-medium tracking-[0.05em] uppercase px-3 py-1.5 rounded-lg inline-flex items-center gap-2 mb-5"
@@ -126,13 +145,13 @@ const HeroSection = () => {
             {/* Headline */}
             <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em]">
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
-                The Instant
+                Stop Chasing Clients.
               </span>
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.5s forwards' }}>
-                Website & Booking
+                Get Booked. Get Paid.
               </span>
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
-                System For{' '}
+                Built For{' '}
                 <span className="hidden md:inline-block relative font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
                   Auto Pros
                   <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.2s forwards' }}>
@@ -171,7 +190,7 @@ const HeroSection = () => {
               className="mt-5 text-[15px] md:text-xl leading-[1.6] max-w-[600px]"
               style={{ color: 'hsla(0, 0%, 100%, 0.7)', opacity: 0, animation: 'heroBlurIn 0.5s ease-out 1.0s forwards' }}
             >
-              Get a professional website with 24/7 booking. Customers book themselves while you're in the field. Automated reminders, deposits, and a calendar that fills itself.
+              Your own pro site, live in 5 minutes. Clients book online, pay a deposit upfront, and get auto-reminders — while you're already on the next job.
             </p>
 
             {/* Phone-first CTA */}
@@ -193,7 +212,7 @@ const HeroSection = () => {
                     opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
                   }}
                 >
-                  Get My Free Demo
+                  Claim My Free Website
                   <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
               ) : (
@@ -240,7 +259,7 @@ const HeroSection = () => {
                       boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
                     }}
                   >
-                    Get My Demo
+                    Claim My Site
                     <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
                 </form>
@@ -249,7 +268,7 @@ const HeroSection = () => {
               {/* Label or error */}
               {showPhoneInput && !error && (
                 <p className="text-xs mt-2 animate-in fade-in duration-200" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
-                  Enter your mobile number to start your free demo
+                  Drop your number — we'll build your site around it. No card needed.
                 </p>
               )}
               {error && <p className="text-sm text-destructive mt-2 animate-in fade-in duration-200">{error}</p>}
@@ -259,7 +278,7 @@ const HeroSection = () => {
             <div className="mt-5 flex items-center gap-4 flex-wrap" style={{
               color: 'hsla(0, 0%, 100%, 0.5)', opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 1.8s forwards',
             }}>
-              <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> Built in 5 minutes</span>
+              <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> Live in 5 minutes</span>
               <span className="text-primary-foreground/20">•</span>
               <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> Free for 14 days</span>
             </div>
