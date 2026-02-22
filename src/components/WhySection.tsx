@@ -68,8 +68,8 @@ const features = [
   },
   {
     Visual: WebsiteVisual,
-    title: "Your Work Is Premium. Your Site Should Say So.",
-    description: <>Built for your shop in <Highlight>48 hours</Highlight> — no templates, no DIY. When a client lands on it, they form a price expectation before they ever reach out. Make sure that number is high.</>,
+    title: "Your Professional Site. Live in 2 Minutes.",
+    description: <>No templates. No DIY. A stunning, mobile-ready website built for your shop and live in under <Highlight>2 minutes</Highlight> — clients who land on it expect to pay more. So charge more.</>,
   },
   {
     Visual: PaymentVisual,
@@ -144,27 +144,14 @@ const WhySection = () => {
       <div className="max-w-[1100px] mx-auto relative z-10">
         <FadeIn>
           <div className="text-center mb-12 md:mb-16">
-            {/* Blue pill tag */}
-            <div className="flex justify-center mb-5">
-              <span
-                className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide"
-                style={{
-                  background: "hsl(217, 91%, 96%)",
-                  color: "hsl(217, 91%, 50%)",
-                  border: "1px solid hsl(217, 91%, 88%)",
-                }}
-              >
-                Why It Works
-              </span>
-            </div>
             <h2
-              className="font-heading text-[32px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.15] mb-4"
+              className="font-heading text-[36px] md:text-[52px] lg:text-[64px] font-black tracking-[-0.03em] leading-[1.1] mb-4"
               style={{ color: "hsl(222, 47%, 11%)" }}
             >
-              Built for the Craft. Runs the Business.
+              Why You Need It
             </h2>
-            <p className="text-base md:text-lg max-w-lg mx-auto" style={{ color: "hsl(215, 16%, 47%)" }}>
-              Four systems working in the background — so every job is locked in, paid, and protected before you pick up a single tool.
+            <p className="text-base md:text-[17px] mx-auto" style={{ color: "hsl(215, 16%, 47%)" }}>
+              Hundreds of detailers, installers, and shop owners swear by it.
             </p>
           </div>
         </FadeIn>
