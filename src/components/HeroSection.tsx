@@ -130,7 +130,10 @@ const HeroSection = () => {
                 Stop Chasing Clients.
               </span>
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.5s forwards' }}>
-                Get Booked. Get Paid.
+                Get Booked.
+              </span>
+              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.55s forwards' }}>
+                Get Paid.
               </span>
               <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
                 Built For{' '}
