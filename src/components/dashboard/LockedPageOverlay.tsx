@@ -1,5 +1,13 @@
+import { useState, useEffect } from "react";
 import { ChevronRight, CheckCircle2 } from "lucide-react";
 import { useUpgradeModal } from "@/contexts/UpgradeModalContext";
+
+const LOCKED_PAGE_IMAGES: Record<string, { src: string; blend?: boolean }> = {
+  "/dashboard/calendar": { src: "/locked-page/calendar-activate.svg" },
+  "/dashboard/photos": { src: "/locked-page/photos-activate.svg" },
+  "/dashboard/the-lab": { src: "/locked-page/the-lab-activate.svg" },
+  "/dashboard/testimonials": { src: "/locked-page/testimonials-activate.svg" },
+};
 
 const PAGE_DESCRIPTIONS: Record<string, string> = {
   "/dashboard/calendar": "your online booking calendar and customer scheduling",
@@ -48,10 +56,34 @@ interface LockedPageOverlayProps {
 
 const LockedPageOverlay = ({ path, isDark }: LockedPageOverlayProps) => {
   const { openUpgradeModal } = useUpgradeModal();
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const pageName = getPageName(path);
   const description = PAGE_DESCRIPTIONS[path] || "this feature";
   const benefits = PAGE_BENEFITS[path] || ["Full access to this feature"];
+
+  const imageConfig = LOCKED_PAGE_IMAGES[path] ?? {
+    src: "/locked-page/penguin-rocket.png",
+    blend: true,
+  };
+
+  // Preload page-specific SVGs for fast switching and smooth transitions
+  useEffect(() => {
+    const links: HTMLLinkElement[] = [];
+    Object.values(LOCKED_PAGE_IMAGES).forEach(({ src }) => {
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.href = src;
+      document.head.appendChild(link);
+      links.push(link);
+    });
+    return () => links.forEach((link) => link.remove());
+  }, []);
+
+  useEffect(() => {
+    setImgLoaded(false);
+  }, [path]);
 
   return (
     <div
@@ -62,13 +94,22 @@ const LockedPageOverlay = ({ path, isDark }: LockedPageOverlayProps) => {
           : "hsl(210,40%,98%)",
       }}
     >
-      <img
-        src="/locked-page/penguin-rocket.png"
-        alt=""
-        aria-hidden
-        className="w-32 h-32 md:w-40 md:h-40 object-contain mb-6"
-        style={{ mixBlendMode: "lighten" }}
-      />
+      <div className="w-32 h-32 md:w-40 md:h-40 mb-6 flex items-center justify-center flex-shrink-0 min-h-[8rem] md:min-h-[10rem]">
+        <img
+          key={path}
+          src={imageConfig.src}
+          alt=""
+          aria-hidden
+          decoding="async"
+          fetchPriority="high"
+          onLoad={() => setImgLoaded(true)}
+          className="w-full h-full object-contain transition-opacity duration-200 ease-out"
+          style={{
+            opacity: imgLoaded ? 1 : 0,
+            mixBlendMode: imageConfig.blend ? "lighten" : undefined,
+          }}
+        />
+      </div>
 
       <h2
         className="font-bold tracking-tight"
