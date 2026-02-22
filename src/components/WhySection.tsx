@@ -3,6 +3,7 @@ import { useRef, useCallback } from "react";
 import penguinCalendar from "@/assets/penguin-calendar.png";
 import penguinPayment from "@/assets/penguin-payment.jpg";
 import penguinNoshow from "@/assets/penguin-noshow.png";
+import penguinWebsite from "@/assets/penguin-website.jpg";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span style={{ color: "hsl(217, 71%, 53%)", fontWeight: 700 }}>{children}</span>
@@ -34,36 +35,12 @@ const ShieldVisual = () => (
 
 const WebsiteVisual = () => (
   <div className="w-full h-[180px] flex items-center justify-center overflow-hidden rounded-t-xl" style={{ background: "hsl(210, 40%, 98%)" }}>
-    <svg width="220" height="160" viewBox="0 0 220 160" fill="none">
-      {/* Browser */}
-      <rect x="15" y="10" width="190" height="140" rx="10" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,88%)" strokeWidth="1.5" />
-      <rect x="15" y="10" width="190" height="24" rx="10" fill="hsl(214,20%,96%)" />
-      <circle cx="30" cy="22" r="3.5" fill="hsl(0,84%,70%)" />
-      <circle cx="42" cy="22" r="3.5" fill="hsl(45,93%,65%)" />
-      <circle cx="54" cy="22" r="3.5" fill="hsl(142,71%,55%)" />
-      <rect x="70" y="18" width="100" height="8" rx="4" fill="hsl(214,20%,90%)" />
-
-      {/* Hero section — static */}
-      <rect x="28" y="42" width="80" height="10" rx="3" fill="hsl(215,25%,12%)" opacity="0.8" />
-      <rect x="28" y="56" width="55" height="6" rx="3" fill="hsl(214,20%,88%)" />
-
-      {/* CTA button — flickers only */}
-      <rect x="28" y="70" width="60" height="14" rx="7" fill="hsl(217,91%,60%)">
-        <animate attributeName="opacity" values="1;0.35;1" dur="2.5s" repeatCount="indefinite" />
-      </rect>
-      <text x="58" y="80" textAnchor="middle" fontSize="7" fontWeight="600" fill="white">
-        Book Now
-        <animate attributeName="opacity" values="1;0.35;1" dur="2.5s" repeatCount="indefinite" />
-      </text>
-
-      {/* Image area — static */}
-      <rect x="120" y="42" width="72" height="50" rx="6" fill="hsl(217,91%,96%)" />
-
-      {/* Service cards — static */}
-      {[0,1,2].map(i => (
-        <rect key={i} x={28 + i * 58} y="100" width="50" height="38" rx="5" fill="hsl(214,20%,96%)" stroke="hsl(214,20%,92%)" strokeWidth="1" />
-      ))}
-    </svg>
+    <img
+      src={penguinWebsite}
+      alt="Penguin mascot working on a professional website"
+      className="w-full h-full object-cover object-center"
+      style={{ animation: "siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both" }}
+    />
   </div>
 );
 
