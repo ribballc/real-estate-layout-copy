@@ -3,13 +3,14 @@ import type { BusinessProfile, WebsiteCopy } from '@/hooks/useBusinessData';
 import { getSectionTitle } from '@/lib/siteSectionCopy';
 import SiteFadeIn from './SiteFadeIn';
 
+const featureIconClasses = ['text-accent', 'text-emerald-400', 'text-amber-400', 'text-violet-400', 'text-rose-400', 'text-cyan-400'];
 const features = [
-  { icon: Shield, title: 'Satisfaction Guaranteed', description: 'We stand behind every detail.', accent: 'var(--site-primary, hsl(217,91%,60%))' },
-  { icon: Clock, title: 'Flexible Scheduling', description: 'Book online 24/7.', accent: 'hsl(142,71%,45%)' },
-  { icon: Award, title: 'Certified Pros', description: 'Trained with premium products.', accent: 'hsl(45,93%,58%)' },
-  { icon: Sparkles, title: 'Premium Products', description: 'Professional-grade only.', accent: 'hsl(280,60%,60%)' },
-  { icon: ThumbsUp, title: 'Trusted Reviews', description: 'Five-star reputation.', accent: 'hsl(350,80%,60%)' },
-  { icon: Car, title: 'All Vehicles', description: 'Sedans to exotics.', accent: 'hsl(190,80%,50%)' },
+  { icon: Shield, title: 'Satisfaction Guaranteed', description: 'We stand behind every detail.' },
+  { icon: Clock, title: 'Flexible Scheduling', description: 'Book online 24/7.' },
+  { icon: Award, title: 'Certified Pros', description: 'Trained with premium products.' },
+  { icon: Sparkles, title: 'Premium Products', description: 'Professional-grade only.' },
+  { icon: ThumbsUp, title: 'Trusted Reviews', description: 'Five-star reputation.' },
+  { icon: Car, title: 'All Vehicles', description: 'Sedans to exotics.' },
 ];
 
 interface Props {
@@ -30,14 +31,15 @@ const DeluxeWhyChooseUs = ({ profile, websiteCopy }: Props) => {
 
   return (
     <section className="site-section relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none opacity-[0.04]" style={{
-        background: 'radial-gradient(ellipse at 50% 0%, var(--site-primary, hsl(217,91%,60%)) 0%, transparent 60%)',
+      <div className="absolute inset-0 pointer-events-none opacity-[0.04] bg-accent" style={{
+        maskImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, black 0%, transparent 60%)',
+        WebkitMaskImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, black 0%, transparent 60%)',
       }} />
       <div className="site-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SiteFadeIn>
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Why {businessName}</p>
-            <h2 className="site-heading-2 font-bold text-white mb-3"
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <p className="text-[11px] uppercase tracking-[0.25em] text-[var(--site-primary)] font-semibold mb-3">Why Choose Us</p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 tracking-tight"
               style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
             >
               {getSectionTitle(websiteCopy, 'section_why_choose_us')}
@@ -53,25 +55,21 @@ const DeluxeWhyChooseUs = ({ profile, websiteCopy }: Props) => {
         </SiteFadeIn>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 max-w-4xl mx-auto">
-          {displayFeatures.map((feature, index) => (
+          {displayFeatures.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
             <SiteFadeIn key={index} delay={index * 60}>
-              <div className="relative bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5 hover:border-white/[0.14] transition-all duration-500 group overflow-hidden text-center">
-                {/* Glow */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-                  style={{ background: `radial-gradient(circle at 50% 30%, ${feature.accent}08 0%, transparent 60%)` }}
-                />
+              <div className="relative bg-surface-2 border border-white/10 rounded-xl p-5 hover:border-white/15 transition-all duration-500 group overflow-hidden text-center shadow-glass">
                 <div className="relative z-10">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300"
-                    style={{ background: `${feature.accent}12` }}
-                  >
-                    <feature.icon className="w-4.5 h-4.5" style={{ color: feature.accent }} />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform duration-300 bg-white/10">
+                    <Icon className={`w-4.5 h-4.5 ${featureIconClasses[index % featureIconClasses.length]}`} />
                   </div>
-                  <h3 className="text-white font-semibold mb-1 text-[14px]">{feature.title}</h3>
-                  <p className="text-white/50 text-[12px] leading-relaxed">{feature.description}</p>
+                  <h3 className="text-white font-semibold mb-1 text-sm">{feature.title}</h3>
+                  <p className="text-white/50 text-xs leading-relaxed">{feature.description}</p>
                 </div>
               </div>
             </SiteFadeIn>
-          ))}
+          );})}
         </div>
       </div>
     </section>

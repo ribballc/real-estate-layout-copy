@@ -1,7 +1,8 @@
 import type { BusinessProfile } from "@/hooks/useBusinessData";
 
-const DEFAULT_PRIMARY = "hsl(217,91%,60%)";
-const DEFAULT_SECONDARY = "hsl(230,91%,52%)";
+/** Chemical Guys–style default (when user hasn’t set a color post-onboarding): yellow/gold + dark gold. */
+const DEFAULT_PRIMARY = "hsl(45,100%,52%)";
+const DEFAULT_SECONDARY = "hsl(42,100%,45%)";
 
 /** Normalize color to a valid CSS value; if invalid, return default. */
 function normalizeColor(value: string | null | undefined, fallback: string): string {
@@ -16,7 +17,7 @@ function normalizeColor(value: string | null | undefined, fallback: string): str
 
 /**
  * Get primary and secondary accent colors from profile for the generated site.
- * Falls back to default blue gradient when null.
+ * Falls back to Chemical Guys–style yellow/gold when null (post-onboarding, no color set).
  */
 export function getSiteAccentColors(profile: BusinessProfile | null | undefined): {
   primary: string;
@@ -29,11 +30,12 @@ export function getSiteAccentColors(profile: BusinessProfile | null | undefined)
 
 /**
  * CSS custom properties to inject on the site root (e.g. main.site-page)
- * so all deluxe components can use var(--site-primary) and var(--site-secondary).
+ * so all deluxe components can use var(--accent), var(--site-primary), var(--site-secondary).
  */
 export function getSiteThemeStyle(profile: BusinessProfile | null | undefined): Record<string, string> {
   const { primary, secondary } = getSiteAccentColors(profile);
   return {
+    "--accent": primary,
     "--site-primary": primary,
     "--site-secondary": secondary,
   };

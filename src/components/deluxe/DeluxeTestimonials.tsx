@@ -31,9 +31,9 @@ const DeluxeTestimonials = ({ testimonials, websiteCopy }: Props) => {
     <section id="testimonials" className="site-section">
       <div className="site-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SiteFadeIn>
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">Reviews</p>
-            <h2 className="site-heading-2 font-bold text-white">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <p className="text-[11px] uppercase tracking-[0.25em] text-[var(--site-primary)] font-semibold mb-3">What Our Clients Say</p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
               {getSectionTitle(websiteCopy, 'section_testimonials')}
             </h2>
           </div>
@@ -42,12 +42,12 @@ const DeluxeTestimonials = ({ testimonials, websiteCopy }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl mx-auto">
           {displayTestimonials.map((testimonial, index) => (
             <SiteFadeIn key={index} delay={index * 80}>
-              <div className="relative bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 hover:border-white/[0.14] transition-all duration-500 h-full group overflow-hidden">
-                {/* Glow on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"
-                  style={{ background: 'radial-gradient(circle at 50% 0%, hsla(45,93%,58%,0.03) 0%, transparent 60%)' }}
-                />
-                <Quote className="absolute top-5 right-5 w-7 h-7 text-white/[0.04] group-hover:text-white/[0.08] transition-colors duration-500" />
+              <div className="relative bg-surface-2 border border-white/10 rounded-xl p-6 hover:border-white/15 transition-all duration-500 h-full group overflow-hidden shadow-glass">
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-amber-400/5" style={{
+                  maskImage: 'radial-gradient(circle 60% at 50% 0%, black 0%, transparent 60%)',
+                  WebkitMaskImage: 'radial-gradient(circle 60% at 50% 0%, black 0%, transparent 60%)',
+                }} />
+                <Quote className="absolute top-5 right-5 w-7 h-7 text-white/5 group-hover:text-white/10 transition-colors duration-500" />
 
                 <div className="relative z-10">
                   <div className="flex items-center gap-0.5 mb-3">
@@ -55,16 +55,14 @@ const DeluxeTestimonials = ({ testimonials, websiteCopy }: Props) => {
                       <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <p className="text-white/70 text-[14px] leading-relaxed mb-5 line-clamp-3">
+                  <p className="text-white/70 text-sm leading-relaxed mb-5 line-clamp-3">
                     &ldquo;{testimonial.text}&rdquo;
                   </p>
-                  <div className="flex items-center gap-3 pt-3 border-t border-white/[0.06]">
+                  <div className="flex items-center gap-3 pt-3 border-t border-white/10">
                     {testimonial.photo_url ? (
-                      <img src={testimonial.photo_url} alt={testimonial.name} className="w-8 h-8 rounded-full object-cover ring-2 ring-white/[0.08]" />
+                      <img src={testimonial.photo_url} alt={testimonial.name} className="w-8 h-8 rounded-full object-cover ring-2 ring-white/10" />
                     ) : (
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold"
-                        style={{ background: 'hsla(217,91%,60%,0.12)', color: 'hsl(217,91%,70%)' }}
-                      >
+                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-semibold bg-accent/20 text-accent">
                         {testimonial.name.charAt(0)}
                       </div>
                     )}

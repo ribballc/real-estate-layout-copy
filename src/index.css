@@ -1714,9 +1714,13 @@ body[data-dashboard-theme="light"] [data-radix-popper-content-wrapper] [class*="
     transform: translateY(0) scale(1);
   }
 }
+/* Subtle hero image: zoom out (1.04 → 1) over 12s, desktop only; mobile no zoom to avoid overadjustment */
 @keyframes siteHeroZoom {
-  from { transform: scale(1.08); }
+  from { transform: scale(1.04); }
   to   { transform: scale(1); }
+}
+@media (max-width: 639px) {
+  .hero-bg-img { animation: none; transform: scale(1); }
 }
 
 /* Onboarding input shake */

@@ -183,7 +183,7 @@ const Onboarding = () => {
       .update({
         business_name: shopName.trim(),
         phone: phone.trim(),
-        tagline: allServices.join(", "),
+        tagline: null,
         service_areas: serviceAreas.length ? serviceAreas : null,
         onboarding_complete: true,
       })
@@ -191,6 +191,24 @@ const Onboarding = () => {
 
     if (dbErr) {
       toast({ title: "Error saving", description: dbErr.message, variant: "destructive" });
+      setSubmitting(false);
+      return;
+    }
+
+    const serviceRows = allServices.map((name, i) => ({
+      user_id: user.id,
+      title: name,
+      description: "",
+      price: null,
+      popular: i === 1,
+      sort_order: i,
+    }));
+    const { error: servicesErr } = await supabase
+      .from("services")
+      .upsert(serviceRows, { onConflict: "user_id,title" });
+
+    if (servicesErr) {
+      toast({ title: "Error saving services", description: servicesErr.message, variant: "destructive" });
       setSubmitting(false);
       return;
     }

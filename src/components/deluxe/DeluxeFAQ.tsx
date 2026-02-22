@@ -26,14 +26,15 @@ const DeluxeFAQ = ({ profile, websiteCopy }: Props) => {
 
   return (
     <section id="faq" className="site-section relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{
-        background: 'radial-gradient(ellipse at 50% 50%, var(--site-primary, hsl(217,91%,60%)) 0%, transparent 70%)',
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-accent" style={{
+        maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 70%)',
+        WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 70%)',
       }} />
       <div className="site-container max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <SiteFadeIn>
-          <div className="text-center mb-16">
-            <p className="text-[13px] uppercase tracking-[0.2em] text-white/50 font-medium mb-4">FAQ</p>
-            <h2 className="site-heading-2 font-bold text-white">
+          <div className="text-center mb-12">
+            <p className="text-[11px] uppercase tracking-[0.25em] text-[var(--site-primary)] font-semibold mb-3">FAQ</p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
               {getSectionTitle(websiteCopy, 'section_faq')}
             </h2>
           </div>
@@ -45,8 +46,8 @@ const DeluxeFAQ = ({ profile, websiteCopy }: Props) => {
               <div
                 className={`border rounded-xl overflow-hidden transition-all duration-400 ${
                   openIndex === index
-                    ? 'border-white/[0.12] bg-white/[0.04]'
-                    : 'border-white/[0.06] hover:border-white/[0.1]'
+                    ? 'border-white/15 bg-surface-2 shadow-glass'
+                    : 'border-white/10 hover:border-white/15 bg-surface-2/80 shadow-glass'
                 }`}
               >
                 <button
@@ -55,7 +56,7 @@ const DeluxeFAQ = ({ profile, websiteCopy }: Props) => {
                 >
                   <span className="font-medium text-white/80 text-[15px] pr-4">{faq.question}</span>
                   <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    openIndex === index ? 'bg-white/[0.12] rotate-0' : 'bg-white/[0.06]'
+                    openIndex === index ? 'bg-white/15 rotate-0' : 'bg-surface-3'
                   }`}>
                     {openIndex === index
                       ? <Minus className="w-3.5 h-3.5 text-white/60" />

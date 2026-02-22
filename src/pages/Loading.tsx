@@ -38,9 +38,15 @@ const Loading = () => {
     } else {
       try {
         const data = JSON.parse(localStorage.getItem("leadData") || "{}");
-        if (data.businessName) setBusinessName(data.businessName);
-        if (!data.businessName) { navigate("/dashboard"); return; }
-      } catch { navigate("/"); return; }
+        if (data.businessName) {
+          setBusinessName(data.businessName);
+          navigate("/generating", { replace: true });
+          return;
+        }
+        navigate("/dashboard", { replace: true });
+      } catch {
+        navigate("/", { replace: true });
+      }
     }
   }, [navigate, isLoginFlow, loginName]);
 

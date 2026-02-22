@@ -1,4 +1,4 @@
-import { ArrowRight, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import type { BusinessAddOn } from '@/hooks/useBusinessData';
 import SiteFadeIn from './SiteFadeIn';
 
@@ -11,14 +11,7 @@ const defaultAddons = [
   { title: 'Odor Elimination', price: 50, description: 'Ozone treatment' },
 ];
 
-const addOnAccents = [
-  'hsl(217,91%,60%)',
-  'hsl(142,71%,45%)',
-  'hsl(45,93%,58%)',
-  'hsl(280,60%,60%)',
-  'hsl(350,80%,60%)',
-  'hsl(190,80%,50%)',
-];
+const addOnIconClasses = ['text-accent', 'text-emerald-400', 'text-amber-400', 'text-violet-400', 'text-rose-400', 'text-cyan-400'];
 
 interface Props {
   addOns?: BusinessAddOn[];
@@ -33,9 +26,6 @@ const DeluxeAddOnServices = ({ addOns, slug }: Props) => {
 
   return (
     <section className="site-section relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" style={{
-        background: 'linear-gradient(180deg, transparent 0%, hsla(0,0%,100%,0.01) 50%, transparent 100%)',
-      }} />
       <div className="site-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SiteFadeIn>
           <div className="max-w-2xl mb-14">
@@ -50,41 +40,31 @@ const DeluxeAddOnServices = ({ addOns, slug }: Props) => {
         </SiteFadeIn>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-          {displayAddons.map((addon, index) => {
-            const accent = addOnAccents[index % addOnAccents.length];
-            return (
+          {displayAddons.map((addon, index) => (
               <SiteFadeIn key={index} delay={index * 60} distance={16}>
-                <div className="flex items-center justify-between gap-3 bg-white/[0.03] border border-white/[0.06] rounded-xl p-4 hover:border-white/[0.14] transition-all duration-400 group">
+                <div className="flex items-center justify-between gap-3 bg-surface-2 border border-white/10 rounded-xl p-4 hover:border-white/15 transition-all duration-400 group shadow-glass">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300"
-                      style={{ background: `${accent}12` }}
-                    >
-                      <Plus className="w-3.5 h-3.5" style={{ color: accent }} />
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300 bg-white/10">
+                      <Plus className={`w-3.5 h-3.5 ${addOnIconClasses[index % addOnIconClasses.length]}`} />
                     </div>
                     <div className="min-w-0">
                       <h3 className="text-white font-medium text-[14px] mb-0 truncate">{addon.title}</h3>
                       <p className="text-white/40 text-[12px] truncate">{addon.description}</p>
                     </div>
                   </div>
-                  <span className="text-white font-semibold text-[14px] flex-shrink-0">${addon.price}</span>
+                  <span className="text-white font-semibold text-sm flex-shrink-0 font-mono">${addon.price}</span>
                 </div>
               </SiteFadeIn>
-            );
-          })}
+          ))}
         </div>
 
         <SiteFadeIn delay={300}>
           <div className="mt-8 text-center">
-            <a href={slug ? `/site/${slug}/book` : "#contact"} className={slug ? "book-now-link inline-block" : "inline-block"}>
-              <button className="px-7 py-3 rounded-full text-[13px] font-semibold flex items-center gap-2 group transition-all duration-300 text-white"
-                style={{
-                  background: 'linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,91%,52%) 100%)',
-                  boxShadow: '0 4px 16px -4px hsla(217,91%,60%,0.3)',
-                }}
-              >
-                Book with Add-ons
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </button>
+            <a
+              href={slug ? `/site/${slug}/book` : "#contact"}
+              className={`block w-full sm:w-auto max-w-xs mx-auto h-14 px-8 rounded-xl bg-[var(--site-primary)] text-white text-[15px] font-semibold tracking-[-0.01em] hover:opacity-90 active:scale-[0.98] transition-all duration-150 flex items-center justify-center ${slug ? 'book-now-link' : ''}`}
+            >
+              Book with Add-ons
             </a>
           </div>
         </SiteFadeIn>

@@ -9,6 +9,8 @@ export interface BusinessProfile {
   email: string;
   phone: string;
   address: string;
+  /** Service areas (cities/regions) from onboarding; use for "Proudly Servicing X" etc. */
+  service_areas?: string[] | null;
   map_query: string;
   logo_url: string | null;
   primary_color: string | null;

@@ -16,7 +16,7 @@ import DeluxeFAQ from '@/components/deluxe/DeluxeFAQ';
 import DeluxeContactForm from '@/components/deluxe/DeluxeContactForm';
 import DeluxeFooter from '@/components/deluxe/DeluxeFooter';
 import DeluxeLandingSkeleton from '@/components/deluxe/DeluxeLandingSkeleton';
-import { getSiteThemeStyle } from '@/lib/siteTheme';
+import { getSiteThemeStyle, getSiteAccentColors } from '@/lib/siteTheme';
 
 const DeluxeLanding = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -38,7 +38,9 @@ const DeluxeLanding = () => {
 
   // Build dynamic SEO data
   const businessName = profile?.business_name || 'Auto Detailing';
-  const city = profile?.address?.split(',')[0]?.trim() || '';
+  const serviceArea = profile?.service_areas?.[0]?.trim();
+  const cityFromAddress = profile?.address?.split(',')[0]?.trim();
+  const city = serviceArea || cityFromAddress || '';
   const servicesList = services.slice(0, 3).map((s) => s.title).join(', ');
   const avgRating = testimonials.length > 0
     ? (testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length).toFixed(1)
@@ -102,6 +104,8 @@ const DeluxeLanding = () => {
   }, [businessName, canonicalUrl, profile, services, hours, testimonials, avgRating, city, slug]);
 
   const geoMeta = city ? [{ name: 'geo.placename', content: city }] : [];
+  const themeColor = profile ? getSiteAccentColors(profile).primary : undefined;
+  const extraMeta = [...geoMeta, ...(themeColor ? [{ name: 'theme-color', content: themeColor }] : [])];
 
   if (loading) return <DeluxeLandingSkeleton />;
 
@@ -127,21 +131,21 @@ const DeluxeLanding = () => {
 
   return (
     <main
-      className="min-h-screen bg-[hsl(0,0%,4%)] site-page"
-      style={{ ...themeStyle, fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" } as React.CSSProperties}
+      className="min-h-screen bg-surface-0 font-display site-page overflow-x-hidden"
+      style={themeStyle as React.CSSProperties}
     >
       <SEOHead
         title={`${businessName} — Auto Detailing${city ? ` in ${city}` : ''} | Book Online`}
-        description={`${businessName} offers professional ${servicesList || 'auto detailing'}${city ? ` in ${city}` : ''}. Book online 24/7. Deposits accepted, instant confirmation, SMS reminders.`}
+        description={websiteCopy?.seo_meta_description || `${businessName} offers professional ${servicesList || 'auto detailing'}${city ? ` in ${city}` : ''}. Book online 24/7. Deposits accepted, instant confirmation, SMS reminders.`}
         canonicalUrl={canonicalUrl}
         ogImage={ogImage}
         structuredData={structuredData}
-        extraMeta={geoMeta}
+        extraMeta={extraMeta}
       />
       <DeluxeNavbar profile={profile} slug={slug} />
       <DeluxeHero profile={profile} slug={slug} websiteCopy={websiteCopy} testimonials={testimonials} />
       <DeluxeServicesOverview services={services} slug={slug} websiteCopy={websiteCopy} />
-      <DeluxePackages services={services} slug={slug} websiteCopy={websiteCopy} />
+      <DeluxePackages profile={profile} services={services} slug={slug} websiteCopy={websiteCopy} />
       <DeluxeGallery photos={photos} websiteCopy={websiteCopy} />
       <DeluxeTestimonials testimonials={testimonials} websiteCopy={websiteCopy} />
       <DeluxeWhyChooseUs profile={profile} websiteCopy={websiteCopy} />

@@ -3,21 +3,22 @@
  * Components use websiteCopy?.section_titles?.[key] ?? DEFAULT_SECTION_TITLES[key]
  * so businesses can override via CMS when section_titles is populated.
  */
+/** Default section titles — aligned with leading detailer sites (Top Class, Auto Detailing Solutions, etc.). */
 export const DEFAULT_SECTION_TITLES: Record<string, string> = {
-  section_services: "What we do best",
-  section_services_sub: "From quick refreshes to complete transformations.",
-  section_packages: "Pick your package",
-  section_packages_sub: "No hidden fees. Book in under 60 seconds.",
+  section_services: "Our Services",
+  section_services_sub: "From exterior washes to ceramic coating and paint correction.",
+  section_packages: "Packages & Pricing",
+  section_packages_sub: "Transparent pricing. Book online in under a minute.",
   section_gallery: "Our Work",
-  section_gallery_sub: "Results speak for themselves",
-  section_testimonials: "The word on the street",
-  section_testimonials_sub: "What our customers say",
-  section_why_choose_us: "Built different",
-  section_why_choose_us_sub: "Why book with us",
-  section_cta: "Ready to see the difference?",
-  section_faq: "Common questions",
-  section_contact: "Get in touch",
-  section_contact_heading: "Get in touch",
+  section_gallery_sub: "Results that speak for themselves.",
+  section_testimonials: "What Our Clients Say",
+  section_testimonials_sub: "Real reviews from real customers.",
+  section_why_choose_us: "Why Choose Us",
+  section_why_choose_us_sub: "Professional care and attention to detail.",
+  section_cta: "Let's Get Started",
+  section_faq: "Frequently Asked Questions",
+  section_contact: "Contact Us",
+  section_contact_heading: "Get in Touch",
 };
 
 export function getSectionTitle(

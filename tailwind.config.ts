@@ -18,6 +18,10 @@ export default {
         heading: ["Inter", "system-ui", "sans-serif"],
         mono: ["JetBrains Mono", "Courier New", "monospace"],
         montserrat: ['Montserrat', 'sans-serif'],
+        /** Deluxe: display for headings/UI */
+        display: ["Inter", "system-ui", "sans-serif"],
+        /** Deluxe: mono for prices/numbers */
+        "deluxe-mono": ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -42,7 +46,7 @@ export default {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
+          DEFAULT: "var(--accent)",
           foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
@@ -55,11 +59,25 @@ export default {
         },
         slate: "hsl(var(--slate))",
         sky: "hsl(var(--sky))",
+        /** Deluxe site: dark surfaces (cards, modals, etc.) */
+        surface: {
+          0: "#0a0a0a",
+          1: "#111111",
+          2: "#1a1a1a",
+          3: "#222222",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        /** Deluxe: cards 12px, modals 16px, pills use rounded-full */
+        "deluxe-card": "12px",
+        "deluxe-modal": "16px",
+      },
+      boxShadow: {
+        /** Deluxe: dark card glass effect */
+        glass: "inset 0 1px 0 rgba(255,255,255,0.08), 0 4px 24px rgba(0,0,0,0.4)",
       },
       keyframes: {
         "accordion-down": {

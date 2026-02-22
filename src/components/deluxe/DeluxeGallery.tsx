@@ -35,12 +35,7 @@ const GalleryCard = ({
 }: {
   item: { image: string; caption: string };
 }) => (
-  <div
-    className="group relative aspect-[4/3] overflow-hidden rounded-xl"
-    style={{
-      boxShadow: '0 4px 24px -8px hsla(0,0%,0%,0.5)',
-    }}
-  >
+  <div className="group relative aspect-[4/3] overflow-hidden rounded-xl shadow-glass">
     <img
       src={typeof item.image === 'string' ? item.image : String(item.image)}
       alt={item.caption || 'Gallery photo'}

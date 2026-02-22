@@ -1,5 +1,5 @@
-import { ArrowRight, Star, CalendarCheck, Sparkles } from 'lucide-react';
-import heroBg from '@/assets/deluxe/hero-bg.jpg';
+import { Star } from 'lucide-react';
+import { getHeroImageUrl } from '@/lib/deluxeImages';
 import type { BusinessProfile, WebsiteCopy } from '@/hooks/useBusinessData';
 import type { BusinessTestimonial } from '@/hooks/useBusinessData';
 
@@ -12,114 +12,87 @@ interface Props {
 
 const DeluxeHero = ({ profile, slug, websiteCopy, testimonials = [] }: Props) => {
   const businessName = profile?.business_name || 'Your Detailing Studio';
-  const city = profile?.address?.split(',')[0]?.trim() || '';
+  const serviceArea = profile?.service_areas?.[0]?.trim();
+  const cityFromAddress = profile?.address?.split(',')[0]?.trim();
+  const city = serviceArea || cityFromAddress || '';
   const headline = websiteCopy?.hero_headline || businessName;
   const subheadline = websiteCopy?.hero_subheadline
-    || profile?.tagline
-    || 'Premium auto detailing. Book online instantly.';
+    || (city ? `Serving ${city} and surrounding areas.` : 'Professional auto detailing. Book online instantly.');
   const avgRating = testimonials.length > 0
     ? (testimonials.reduce((sum, t) => sum + t.rating, 0) / testimonials.length).toFixed(1)
     : null;
 
   return (
-    <section id="home" className="relative min-h-[85vh] md:min-h-[90vh] flex items-end overflow-hidden">
-      {/* Background */}
+    <section id="home" className="relative min-h-[75svh] sm:min-h-[85svh] lg:min-h-[100svh] flex items-center overflow-hidden">
+      {/* Background — no zoom on mobile to avoid overadjustment */}
       <div className="absolute inset-0">
         <img
-          src={profile?.hero_background_url && profile.hero_background_url.startsWith('http') ? profile.hero_background_url : heroBg}
+          src={getHeroImageUrl(slug, profile?.hero_background_url)}
           alt=""
-          className="w-full h-full object-cover object-center"
-          style={{ animation: 'siteHeroZoom 18s ease-out forwards' }}
+          className="hero-bg-img w-full h-full object-cover object-center sm:object-center"
+          style={{ animation: 'siteHeroZoom 12s ease-out forwards' }}
         />
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(180deg, hsla(0,0%,0%,0.3) 0%, hsla(0,0%,0%,0.5) 40%, hsl(0,0%,4%) 100%)',
-        }} />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none opacity-[0.06]" style={{
-          background: 'radial-gradient(ellipse, var(--site-primary, hsl(217,91%,60%)) 0%, transparent 70%)',
-        }} />
+        {/* Layer 1: vignette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/25 to-black/85" />
+        {/* Layer 2: subtle tint + accent glow bottom-left */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-transparent" />
+        <div className="absolute bottom-0 left-0 w-1/2 h-1/3 bg-[var(--site-primary)] opacity-[0.08] blur-3xl pointer-events-none" />
       </div>
 
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 pt-32">
-        <div
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
-          style={{
-            background: 'hsla(0,0%,100%,0.07)',
-            border: '1px solid hsla(0,0%,100%,0.1)',
-            backdropFilter: 'blur(12px)',
-            animation: 'siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both',
-          }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[12px] text-white/60 font-medium tracking-wide">
-            {city ? `Booking in ${city}` : 'Online booking available'}
-          </span>
-        </div>
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-5 sm:px-6 lg:px-8 pt-20 sm:pt-24 pb-20 sm:pb-28">
+        <div className="max-w-2xl">
+          <div className="flex flex-col gap-4 text-left border-l-2 border-[var(--site-primary)] pl-5 sm:pl-6">
+            <div className="inline-flex items-center gap-2">
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping" style={{ backgroundColor: 'var(--site-primary)' }} />
+                <span className="relative inline-flex h-2 w-2 rounded-full" style={{ backgroundColor: 'var(--site-primary)' }} />
+              </span>
+              <span className="text-[11px] sm:text-xs tracking-widest uppercase font-medium text-white/60">
+                {city ? `Proudly Servicing ${city}` : 'Proudly Servicing Our Area'}
+              </span>
+            </div>
 
-        <h1
-          className="site-heading-1 font-bold text-white mb-5 max-w-3xl"
-          style={{
-            animation: 'siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both',
-            overflowWrap: 'break-word',
-            wordBreak: 'break-word',
-          }}
-        >
-          {headline}
-        </h1>
+            <h1 className="text-[32px] sm:text-[48px] lg:text-[60px] font-bold leading-[1.05] tracking-[-0.03em] text-white">
+              {headline}
+            </h1>
 
-        <p
-          className="site-body-lg text-white/60 max-w-md mb-8 line-clamp-2"
-          style={{
-            animation: 'siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both',
-            overflowWrap: 'break-word',
-          }}
-        >
-          {subheadline}
-        </p>
+            <p className="text-[15px] sm:text-base leading-[1.55] text-white/70 max-w-[28ch]">
+              {subheadline}
+            </p>
 
-        <div
-          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
-          style={{ animation: 'siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both' }}
-        >
-          <a href={slug ? `/site/${slug}/book` : "#contact"} className="book-now-link w-full sm:w-auto">
-            <button
-              className="site-tap-target w-full sm:w-auto px-7 py-3.5 rounded-full text-[14px] font-semibold flex items-center justify-center gap-2.5 group transition-all duration-300 text-white"
-              style={{
-                background: 'linear-gradient(135deg, var(--site-primary, hsl(217,91%,60%)) 0%, var(--site-secondary, hsl(230,91%,52%)) 100%)',
-                boxShadow: '0 4px 20px -4px hsla(217,91%,60%,0.35)',
-              }}
-            >
-              <CalendarCheck className="w-4 h-4" />
-              Book Now
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </a>
-          <a href="#services" className="w-full sm:w-auto">
-            <button className="site-tap-target w-full sm:w-auto px-7 py-3.5 rounded-full text-[14px] font-medium text-white/70 border border-white/[0.12] hover:border-white/25 hover:bg-white/[0.05] transition-all duration-300 flex items-center justify-center gap-2">
-              View Services
-            </button>
-          </a>
-        </div>
+            <div className="flex flex-wrap gap-3 pt-2">
+              <a
+                href={slug ? `/site/${slug}/book` : '#contact'}
+                className="book-now-link inline-flex h-12 sm:h-14 px-6 sm:px-8 rounded-xl bg-[var(--site-primary)] text-white text-[14px] sm:text-[15px] font-semibold hover:opacity-90 active:scale-[0.98] transition-all duration-150 items-center justify-center"
+              >
+                Book Now
+              </a>
+              {profile?.phone && (
+                <a
+                  href={`tel:${profile.phone.replace(/[^\d+]/g, '')}`}
+                  className="inline-flex h-12 sm:h-14 px-5 sm:px-6 rounded-xl text-[14px] font-medium text-white/90 border border-white/30 hover:bg-white/10 transition-colors duration-150 items-center justify-center"
+                >
+                  Call Now
+                </a>
+              )}
+            </div>
 
-        <div
-          className="flex flex-wrap items-center gap-4 sm:gap-5 mt-10"
-          style={{ animation: 'siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both' }}
-        >
-          {avgRating != null && (
-            <>
-              <div className="flex items-center gap-1.5">
-                <div className="flex -space-x-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3 h-3 fill-amber-400 text-amber-400" />
-                  ))}
-                </div>
-                <span className="text-[12px] text-white/45 font-medium">{avgRating}</span>
-              </div>
-              <div className="w-px h-3 bg-white/10" />
-            </>
-          )}
-          <div className="flex items-center gap-1.5">
-            <Sparkles className="w-3 h-3" style={{ color: 'var(--site-primary, hsl(217,91%,60%))' }} />
-            <span className="text-[12px] text-white/45">Instant confirmation</span>
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 pt-3">
+              {avgRating != null && (
+                <>
+                  <div className="flex items-center gap-1.5">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-[var(--site-primary)] text-[var(--site-primary)]" />
+                      ))}
+                    </div>
+                    <span className="text-xs font-medium text-white/60">{avgRating}</span>
+                  </div>
+                  <span className="text-white/30 hidden sm:inline">·</span>
+                </>
+              )}
+              <span className="text-xs text-white/50">Instant confirmation</span>
+            </div>
           </div>
         </div>
       </div>
