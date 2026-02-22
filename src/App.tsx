@@ -6,6 +6,7 @@ import React, { Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useOutletContext, useLocation } from "react-router-dom";
 import BookingFlowLayout from "./components/BookingFlowLayout";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { AdminViewProvider } from "@/contexts/AdminViewContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import CookieConsent from "@/components/CookieConsent";
@@ -100,6 +101,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
+            <AdminViewProvider>
             <PageViewTracker />
             <Suspense fallback={<PageLoader />}>
               <Routes>
@@ -145,6 +147,7 @@ const App = () => (
               </Routes>
             </Suspense>
             <CookieConsent />
+            </AdminViewProvider>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
