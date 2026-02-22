@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useAdminView } from "@/contexts/AdminViewContext";
 
 interface SubscriptionState {
   status: "none" | "trialing" | "active" | "past_due" | "canceled" | "paused";
@@ -59,10 +60,19 @@ export function useSubscription() {
     return () => window.removeEventListener("focus", onFocus);
   }, [refresh]);
 
-  const isTrialing = state.status === "trialing";
-  const isActive = state.status === "active" || isTrialing;
-  const isPastDue = state.status === "past_due";
-  const isCanceled = state.status === "canceled";
+  const { viewMode, isAdmin } = useAdminView();
+
+  // Admin view override
+  const effectiveStatus = isAdmin && viewMode === "paid"
+    ? "active"
+    : isAdmin && viewMode === "unpaid"
+    ? "none"
+    : state.status;
+
+  const isTrialing = effectiveStatus === "trialing";
+  const isActive = effectiveStatus === "active" || isTrialing;
+  const isPastDue = effectiveStatus === "past_due";
+  const isCanceled = effectiveStatus === "canceled";
 
   const trialDaysLeft = (() => {
     if (!isTrialing || !state.trialEndsAt) return 0;

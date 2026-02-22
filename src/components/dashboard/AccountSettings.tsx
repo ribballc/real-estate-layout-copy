@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, CreditCard, XCircle, Globe, Bell, ListChecks, Sun, Moon, Bug, Check } from "lucide-react";
+import { Loader2, CreditCard, XCircle, Globe, Bell, ListChecks, Sun, Moon, Bug, Check, Shield } from "lucide-react";
+import { useAdminView } from "@/contexts/AdminViewContext";
 import { useNavigate } from "react-router-dom";
 import CancelFlowModal from "./CancelFlowModal";
 import { useAllFeatureFlags } from "@/hooks/useFeatureFlag";
@@ -23,6 +24,7 @@ const AccountSettings = () => {
   const { user, signOut } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { viewMode, setViewMode, isAdmin } = useAdminView();
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [savingEmail, setSavingEmail] = useState(false);
@@ -50,16 +52,16 @@ const AccountSettings = () => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("business_name, slug, wants_custom_domain, requested_domain, custom_domain")
+      .select("business_name, slug, wants_custom_domain")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
         if (data) {
-          setBusinessName((data.business_name as string) || "");
-          setProfileSlug((data.slug as string) || "");
-          setWantsCustomDomain((data.wants_custom_domain as boolean) ?? false);
-          setRequestedDomain((data.requested_domain as string) || null);
-          setCustomDomain((data.custom_domain as string) || null);
+          setBusinessName((data as any).business_name || "");
+          setProfileSlug((data as any).slug || "");
+          setWantsCustomDomain((data as any).wants_custom_domain ?? false);
+          setRequestedDomain((data as any).requested_domain || null);
+          setCustomDomain((data as any).custom_domain || null);
         }
       });
   }, [user]);
@@ -237,7 +239,42 @@ const AccountSettings = () => {
         </div>
       </div>
 
-      {/* Manage Subscription */}
+      {/* Admin View Toggle — only visible to admins */}
+      {isAdmin && (
+        <div className="dash-card space-y-3">
+          <div className="flex items-center gap-2.5 mb-1">
+            <Shield className="w-4 h-4" style={{ color: "hsl(45,93%,47%)" }} strokeWidth={1.5} />
+            <h3 className="dash-card-title text-white">Admin View Mode</h3>
+          </div>
+          <p className="text-white/50 text-xs">Simulate what paid or unpaid users see across the dashboard.</p>
+          <div className="flex gap-2">
+            {([
+              { value: "default" as const, label: "Default" },
+              { value: "paid" as const, label: "Paid User" },
+              { value: "unpaid" as const, label: "Free User" },
+            ]).map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setViewMode(opt.value)}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+                style={{
+                  background: viewMode === opt.value ? "hsla(45,93%,47%,0.15)" : "hsla(0,0%,100%,0.06)",
+                  color: viewMode === opt.value ? "hsl(45,93%,47%)" : "hsla(0,0%,100%,0.5)",
+                  border: `1px solid ${viewMode === opt.value ? "hsla(45,93%,47%,0.3)" : "hsla(0,0%,100%,0.08)"}`,
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+          {viewMode !== "default" && (
+            <p className="text-xs mt-1" style={{ color: "hsl(45,93%,47%)" }}>
+              ⚠ Viewing as: {viewMode === "paid" ? "Paid user" : "Free user"}
+            </p>
+          )}
+        </div>
+      )}
+
       <div className="dash-card">
         <h3 className="dash-card-title text-white mb-2">Subscription & Billing</h3>
         <p className="text-white/50 text-sm mb-4">Manage your payment info and invoices.</p>

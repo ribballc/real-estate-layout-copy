@@ -27,7 +27,7 @@ const DeluxeContactForm = ({ profile, hours, slug, websiteCopy }: Props) => {
     if (!slug || !leadName.trim() || !leadEmail.trim() || !leadMessage.trim()) return;
     setLeadError(null);
     setLeadSubmitting(true);
-    const { error } = await supabase.from('contact_leads').insert({
+    const { error } = await (supabase as any).from('contact_leads').insert({
       slug,
       name: leadName.trim().slice(0, 200),
       email: leadEmail.trim().slice(0, 254),
