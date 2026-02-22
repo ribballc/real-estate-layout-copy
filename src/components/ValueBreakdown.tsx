@@ -50,6 +50,7 @@ const ValueBreakdown = () => {
 
   return (
     <section
+      id="value"
       className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
       style={{ background: "hsl(210, 40%, 98%)" }}
     >

@@ -94,7 +94,7 @@ const HeroSection = () => {
         <div className="max-w-[1400px] mx-auto w-full flex items-center justify-between" style={{
           opacity: 0, animation: 'heroFadeScale 0.5s ease-out 0s forwards',
         }}>
-          <img src={darkerLogo} alt="Darker" className="h-8 md:h-10 w-auto" />
+          <img src={darkerLogo} alt="Darker" className="h-8 md:h-10 w-auto" width={120} height={40} decoding="async" fetchPriority="high" />
           <Link
             to="/login"
             className="text-sm font-medium transition-colors duration-200 hover:underline underline-offset-4"
@@ -281,7 +281,11 @@ const HeroSection = () => {
                     <img
                       src={`/hero-pfp/hero-pfp-${n}.png`}
                       alt=""
+                      width={40}
+                      height={40}
                       className="w-full h-full object-cover rounded-full"
+                      loading="lazy"
+                      decoding="async"
                     />
                     {/* Border drawn on top so photo edge never shows above it */}
                     <span
@@ -308,6 +312,10 @@ const HeroSection = () => {
               alt="Darker mascot penguin holding a phone with the dashboard"
               className="w-full max-w-[520px] h-auto object-contain drop-shadow-2xl"
               style={{ filter: 'drop-shadow(0 20px 40px hsla(217, 91%, 20%, 0.4))' }}
+              width={520}
+              height={400}
+              decoding="async"
+              fetchPriority="high"
             />
           </div>
         </div>
@@ -321,12 +329,16 @@ const HeroSection = () => {
 
       {/* Mobile penguin hero — full width, flush with section below */}
       <div className="block lg:hidden relative z-[1] w-full -mb-px">
-        <img
-          src={heroPenguinMobile}
-          alt="Darker mascot penguin holding a phone with the dashboard"
-          className="w-full h-auto block"
-          style={{ display: 'block' }}
-        />
+<img
+        src={heroPenguinMobile}
+        alt="Darker mascot penguin holding a phone with the dashboard"
+        className="w-full h-auto block"
+        style={{ display: 'block' }}
+        width={768}
+        height={400}
+        decoding="async"
+        fetchPriority="high"
+      />
       </div>
     </section>
   );

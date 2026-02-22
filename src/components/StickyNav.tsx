@@ -24,7 +24,7 @@ const StickyNav = () => {
         pointerEvents: isVisible ? "auto" : "none",
       }}
     >
-      <img src={darkerLogo} alt="Darker" className="h-6 w-auto" />
+      <img src={darkerLogo} alt="Darker" className="h-6 w-auto" width={90} height={24} decoding="async" />
       <Link
         to="/signup"
         className="bg-accent text-white px-4 py-2 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"

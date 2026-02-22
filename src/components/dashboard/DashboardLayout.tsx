@@ -174,8 +174,9 @@ const DashboardLayout = () => {
     };
   }, [dashboardTheme]);
 
-  const UNLOCKED_PATHS = ["/dashboard", "/dashboard/business", "/dashboard/account", "/dashboard/billing"];
-  const isLocked = !isAdmin && !subscription.isActive && !UNLOCKED_PATHS.includes(location.pathname);
+  const UNLOCKED_PATHS = ["/dashboard", "/dashboard/business", "/dashboard/account", "/dashboard/billing", "/dashboard/website"];
+  // Use subscription.isActive only (it's already "unpaid" when admin is in free user view), so admin sees locked overlay in free user view
+  const isLocked = !subscription.isActive && !UNLOCKED_PATHS.includes(location.pathname);
 
   const toggleTheme = () => {
     setDashboardTheme(prev => {

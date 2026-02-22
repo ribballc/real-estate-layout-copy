@@ -197,6 +197,7 @@ const HowItWorksSection = () => {
   return (
     <>
       <section
+        id="how-it-works"
         ref={sectionRef}
         className="relative py-20 md:py-28 px-5 md:px-10 overflow-hidden"
         style={{ background: "hsl(210, 40%, 98%)" }}

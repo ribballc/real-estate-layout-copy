@@ -28,17 +28,22 @@ const LogoItem = ({ name, src }: { name: string; src: string }) => (
       height={56}
       className="h-14 md:h-16 w-auto object-contain bg-transparent flex-shrink-0"
       draggable={false}
+      loading="lazy"
+      decoding="async"
     />
   </div>
 );
 
+const TICKER_BG = "hsl(210, 40%, 98%)";
+
 const LogoTicker = () => {
-  const doubled = [...logos, ...logos];
+  // Duplicate so 0% → -50% scroll shows identical content: seamless infinite loop
+  const trackLogos = [...logos, ...logos];
 
   return (
     <section
       className="relative py-10 md:py-14 overflow-hidden"
-      style={{ background: "hsl(210, 40%, 98%)" }}
+      style={{ background: TICKER_BG }}
     >
       <p
         className="text-center text-sm md:text-[15px] mb-8 font-medium"
@@ -47,21 +52,25 @@ const LogoTicker = () => {
         Trusted by 200+ auto detailing shops across the country
       </p>
 
-      <div className="relative">
+      <div className="relative overflow-hidden">
+        {/* Even edge fades: subtle on mobile, wide smooth gradient on desktop */}
         <div
-          className="absolute left-0 top-0 bottom-0 w-24 md:w-40 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to right, hsl(210, 40%, 98%), transparent)" }}
+          className="absolute left-0 top-0 bottom-0 z-10 pointer-events-none w-6 md:w-64"
+          style={{
+            background: `linear-gradient(to right, ${TICKER_BG} 0%, ${TICKER_BG} 20%, transparent 100%)`,
+          }}
+          aria-hidden
         />
         <div
-          className="absolute right-0 top-0 bottom-0 w-24 md:w-40 z-10 pointer-events-none"
-          style={{ background: "linear-gradient(to left, hsl(210, 40%, 98%), transparent)" }}
+          className="absolute right-0 top-0 bottom-0 z-10 pointer-events-none w-6 md:w-64"
+          style={{
+            background: `linear-gradient(to left, ${TICKER_BG} 0%, ${TICKER_BG} 20%, transparent 100%)`,
+          }}
+          aria-hidden
         />
 
-        <div
-          className="flex animate-logo-scroll will-change-transform"
-          style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" }}
-        >
-          {doubled.map((logo, i) => (
+        <div className="flex logo-ticker-track w-max">
+          {trackLogos.map((logo, i) => (
             <LogoItem key={`${logo.name}-${i}`} {...logo} />
           ))}
         </div>

@@ -1,4 +1,4 @@
-import { Rocket, ChevronRight, CheckCircle2 } from "lucide-react";
+import { ChevronRight, CheckCircle2 } from "lucide-react";
 import { useUpgradeModal } from "@/contexts/UpgradeModalContext";
 
 const PAGE_DESCRIPTIONS: Record<string, string> = {
@@ -62,15 +62,13 @@ const LockedPageOverlay = ({ path, isDark }: LockedPageOverlayProps) => {
           : "hsl(210,40%,98%)",
       }}
     >
-      <div
-        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
-        style={{
-          background: "linear-gradient(135deg, hsl(217,91%,60%) 0%, hsl(230,80%,55%) 100%)",
-          boxShadow: "0 8px 32px hsla(217,91%,60%,0.3)",
-        }}
-      >
-        <Rocket className="w-7 h-7 text-white" strokeWidth={1.5} />
-      </div>
+      <img
+        src="/locked-page/penguin-rocket.png"
+        alt=""
+        aria-hidden
+        className="w-32 h-32 md:w-40 md:h-40 object-contain mb-6"
+        style={{ mixBlendMode: "lighten" }}
+      />
 
       <h2
         className="font-bold tracking-tight"

@@ -15,8 +15,12 @@ const CalendarVisual = () => (
     <img
       src={penguinCalendar}
       alt="Penguin mascot holding phone with booking calendar"
+      width={400}
+      height={180}
       className="w-full h-full object-cover object-center"
       style={{ animation: "siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both" }}
+      loading="lazy"
+      decoding="async"
     />
   </div>
 );
@@ -26,8 +30,12 @@ const ShieldVisual = () => (
     <img
       src={penguinNoshow}
       alt="Penguin mascot detailing a car"
+      width={400}
+      height={180}
       className="w-full h-full object-cover object-center"
       style={{ animation: "siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both" }}
+      loading="lazy"
+      decoding="async"
     />
   </div>
 );
@@ -37,8 +45,12 @@ const WebsiteVisual = () => (
     <img
       src={penguinWebsite}
       alt="Penguin mascot working on a professional website"
+      width={400}
+      height={180}
       className="w-full h-full object-cover object-center"
       style={{ animation: "siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both" }}
+      loading="lazy"
+      decoding="async"
     />
   </div>
 );
@@ -149,7 +161,11 @@ const FeatureCard = ({
           <img
             src={feature.src}
             alt={feature.alt}
+            width={400}
+            height={220}
             className="w-full h-full object-cover object-center"
+            loading="lazy"
+            decoding="async"
           />
           <div
             className="absolute bottom-0 left-0 right-0 h-[50px] pointer-events-none z-[1]"

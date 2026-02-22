@@ -60,6 +60,22 @@
   }
 }
 
+/* Logo ticker: one seamless loop, responsive speed, no transform conflict */
+@keyframes logo-ticker-scroll {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+.logo-ticker-track {
+  animation: logo-ticker-scroll 14s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+@media (min-width: 768px) {
+  .logo-ticker-track {
+    animation-duration: 32s;
+  }
+}
+
 @layer base {
   :root {
     --background: 210 40% 98%;
