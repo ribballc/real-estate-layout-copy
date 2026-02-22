@@ -58,23 +58,23 @@ const PaymentVisual = () => (
 const features = [
   {
     Visual: CalendarVisual,
-    title: "Your Booking Page Never Clocks Out",
-    description: <>While you're 3 hours deep into a ceramic coat, your calendar's out there locking in jobs. Capture the <Highlight>$500–$1,000/month</Highlight> you're losing every time a call goes to voicemail.</>,
+    title: "Clients Book While Your Hands Are Full",
+    description: <>Pulling a wrap seam. Laying PPF. Running a machine polish. Your phone isn't an option — but your booking page never stops working. Stop losing <Highlight>$500–$1,000/month</Highlight> to voicemails that go unanswered.</>,
   },
   {
     Visual: ShieldVisual,
-    title: "They Paid to Book. They'll Show Up.",
-    description: <>A <Highlight>$100 deposit</Highlight> at checkout turns tire-kickers into committed clients. Pair it with auto-reminders and you'll see <Highlight>40% fewer no-shows</Highlight> — starting week one.</>,
+    title: "No Skin in the Game? No Spot on the Calendar.",
+    description: <>A <Highlight>$50–$100 deposit</Highlight> at checkout self-selects the serious ones from the ghosts. Add automated SMS reminders and most shops cut no-shows by <Highlight>40%</Highlight> — and stop losing full days to people who were never going to show.</>,
   },
   {
     Visual: WebsiteVisual,
-    title: "A Site That Makes You Look Like the Premium Option",
-    description: <>Done for you in <Highlight>48 hours</Highlight>. Clients see it, assume you charge more — so you can. No tech skills. No designer. Just a clean, mobile-ready site that converts.</>,
+    title: "Your Work Is Premium. Your Site Should Say So.",
+    description: <>Built for your shop in <Highlight>48 hours</Highlight> — no templates, no DIY. When a client lands on it, they form a price expectation before they ever reach out. Make sure that number is high.</>,
   },
   {
     Visual: PaymentVisual,
-    title: "Get Paid. Fast. Every Time.",
-    description: <>Cards, deposits, next-day payouts — all baked in. No Venmo chasing. No third-party apps. Just <Highlight>2.9% + 30¢</Highlight> and money in your account tomorrow.</>,
+    title: 'No More "I\'ll Pay When I Pick Up."',
+    description: <>Deposits locked at booking. Balance collected before keys drop. Funds in your account next business day. Just <Highlight>2.9% + 30¢</Highlight> — less than the cost of chasing one ghost invoice.</>,
   },
 ];
 
@@ -161,10 +161,10 @@ const WhySection = () => {
               className="font-heading text-[32px] md:text-[48px] lg:text-[56px] font-bold tracking-[-0.02em] leading-[1.15] mb-4"
               style={{ color: "hsl(222, 47%, 11%)" }}
             >
-              Built to Run While You're Under a Car
+              Built for the Craft. Runs the Business.
             </h2>
             <p className="text-base md:text-lg max-w-lg mx-auto" style={{ color: "hsl(215, 16%, 47%)" }}>
-              Four features doing the heavy lifting — so you stay focused on the detail.
+              Four systems working in the background — so every job is locked in, paid, and protected before you pick up a single tool.
             </p>
           </div>
         </FadeIn>
