@@ -1,5 +1,6 @@
 import FadeIn from "@/components/FadeIn";
 import { useRef, useCallback } from "react";
+import penguinCalendar from "@/assets/penguin-calendar.png";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span style={{ color: "hsl(217, 71%, 53%)", fontWeight: 700 }}>{children}</span>
