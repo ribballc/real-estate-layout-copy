@@ -126,16 +126,13 @@ const HeroSection = () => {
             {/* Headline */}
             {/* HERO COPY – BEFORE / AFTER */}
             <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em]">
-              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
+              <span className="block font-heading text-[32px] md:text-[48px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
                 Stop Chasing Clients.
               </span>
-              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.5s forwards' }}>
-                Get Booked.
+              <span className="block font-heading text-[32px] md:text-[48px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.5s forwards' }}>
+                Get Booked. Get Paid.
               </span>
-              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.55s forwards' }}>
-                Get Paid.
-              </span>
-              <span className="block font-heading text-[36px] md:text-[56px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
+              <span className="block font-heading text-[32px] md:text-[48px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
                 Built For{' '}
                 <span className="hidden md:inline-block relative font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
                   Auto Pros
@@ -152,7 +149,7 @@ const HeroSection = () => {
                   </svg>
                 </span>
               </span>
-              <span className="block md:hidden font-heading text-[36px] font-semibold italic relative" style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.7s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
+              <span className="block md:hidden font-heading text-[32px] font-semibold italic relative" style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.7s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
                 <span className="relative inline-block">
                   Auto Pros
                   <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.4s forwards' }}>
