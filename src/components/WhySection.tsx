@@ -10,49 +10,12 @@ const Highlight = ({ children }: { children: React.ReactNode }) => (
 
 const CalendarVisual = () => (
   <div className="w-full h-[180px] flex items-center justify-center overflow-hidden rounded-t-xl" style={{ background: "hsl(210, 40%, 98%)" }}>
-    <svg width="240" height="160" viewBox="0 0 240 160" fill="none">
-      {/* Mini dashboard mockup */}
-      <rect x="20" y="10" width="95" height="55" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,90%)" strokeWidth="1" />
-      <line x1="70" y1="14" x2="70" y2="60" stroke="hsl(214,20%,88%)" strokeWidth="0.5" />
-      <text x="32" y="20" fontSize="7" fontWeight="500" fill="hsl(215,16%,55%)">MRR</text>
-      <text x="32" y="33" fontSize="13" fontWeight="700" fill="hsl(215,25%,12%)">$12,150</text>
-      <text x="93" y="20" textAnchor="middle" fontSize="7" fontWeight="500" fill="hsl(215,16%,55%)">Bookings</text>
-      <text x="93" y="33" textAnchor="middle" fontSize="13" fontWeight="700" fill="hsl(215,25%,12%)">60</text>
-
-      {/* Revenue chart — shifted down to clear values */}
-      <polyline points="28,57 40,53 55,55 70,49 85,46 100,43 108,46" fill="none" stroke="hsl(217,91%,60%)" strokeWidth="1.5" strokeLinecap="round">
-        <animate attributeName="points" values="28,57 40,57 55,57 70,57 85,57 100,57 108,57;28,57 40,53 55,55 70,49 85,46 100,43 108,46" dur="1.5s" repeatCount="indefinite" />
-      </polyline>
-
-      {/* Calendar card */}
-      <rect x="125" y="10" width="95" height="65" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,90%)" strokeWidth="1" />
-      <rect x="125" y="10" width="95" height="18" rx="8" fill="hsl(217,91%,60%)" />
-      <text x="172" y="23" textAnchor="middle" fontSize="8" fontWeight="600" fill="white">Feb 2026</text>
-      {[0,1,2].map(r => [0,1,2,3,4].map(c => (
-        <rect key={`${r}-${c}`} x={133 + c * 16} y={34 + r * 12} width="10" height="8" rx="2"
-          fill={[1,7,11].includes(r*5+c) ? "hsl(217,91%,60%)" : "hsl(214,20%,94%)"}
-          opacity={[1,7,11].includes(r*5+c) ? 0.2 : 1}>
-          <animate attributeName="opacity" values="0;1" dur="0.8s" begin={`${(r*5+c)*0.2}s`} fill="freeze" repeatCount="indefinite" />
-        </rect>
-      )))}
-
-      {/* Notification bell */}
-      <circle cx="218" cy="18" r="6" fill="hsl(160,84%,39%)">
-        <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite" />
-      </circle>
-      <text x="218" y="21" textAnchor="middle" fontSize="8" fontWeight="700" fill="white">!</text>
-
-      {/* Bottom stats row */}
-      <rect x="20" y="80" width="200" height="65" rx="8" fill="hsl(0,0%,100%)" stroke="hsl(214,20%,90%)" strokeWidth="1" />
-      <line x1="120" y1="85" x2="120" y2="140" stroke="hsl(214,20%,90%)" strokeWidth="0.5" />
-      <text x="40" y="100" fontSize="8" fontWeight="500" fill="hsl(215,16%,55%)">Top month</text>
-      <text x="40" y="118" fontSize="13" fontWeight="700" fill="hsl(217,91%,55%)">January</text>
-      <text x="40" y="132" fontSize="8" fill="hsl(215,16%,55%)">2026</text>
-
-      <text x="130" y="100" fontSize="8" fontWeight="500" fill="hsl(215,16%,55%)">Top service</text>
-      <text x="130" y="118" fontSize="13" fontWeight="700" fill="hsl(215,25%,12%)">Full Detail</text>
-      <text x="130" y="132" fontSize="8" fill="hsl(215,16%,55%)">48 booked</text>
-    </svg>
+    <img
+      src={penguinCalendar}
+      alt="Penguin mascot holding phone with booking calendar"
+      className="w-full h-full object-cover object-center"
+      style={{ animation: "siteFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both" }}
+    />
   </div>
 );
 
