@@ -3,31 +3,59 @@ import { Link } from "react-router-dom";
 import darkerLogo from "@/assets/darker-logo.png";
 import heroPenguin from "@/assets/hero-penguin.png";
 import heroPenguinMobile from "@/assets/hero-penguin-mobile.png";
-import { ChevronRight, ChevronDown, Mail } from "lucide-react";
+import { ChevronRight, ChevronDown, Zap, Shield, Phone } from "lucide-react";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
 import { trackEvent } from "@/lib/tracking";
 
+/** Basic US phone validation — 10 digits after stripping formatting */
+function isValidPhone(raw: string): boolean {
+  const digits = raw.replace(/\D/g, "");
+  return digits.length >= 10 && digits.length <= 15;
+}
+
+/** Auto-format as user types: (555) 123-4567 */
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, "").slice(0, 10);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
 const HeroSection = () => {
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+  const [showPhoneInput, setShowPhoneInput] = useState(false);
   const { openFunnel } = useSurveyFunnel();
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleCtaClick = useCallback(() => {
+    trackEvent({
+      eventName: "hero_phone_step_started",
+      type: "trackCustom",
+      customData: { content_name: "Hero Phone Step" },
+    });
+    setShowPhoneInput(true);
+  }, []);
+
+  const handlePhoneSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const trimmed = email.trim();
-    if (!trimmed) { setError("Please enter your email"); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setError("Please enter a valid email"); return; }
+    const trimmed = phone.trim();
+    if (!trimmed) { setError("Please enter your phone number"); return; }
+    if (!isValidPhone(trimmed)) { setError("Please enter a valid phone number"); return; }
 
     trackEvent({
-      eventName: "hero_email_captured",
+      eventName: "hero_phone_step_completed",
       type: "trackCustom",
-      customData: { content_name: "Hero Email Captured", email: trimmed },
+      userData: { phone: trimmed },
+      customData: { content_name: "Hero Phone Captured" },
     });
 
+    // Open the multi-step funnel modal with the phone pre-filled
     openFunnel(trimmed);
-    setEmail("");
-  }, [email, openFunnel]);
+    // Reset local state for next time
+    setShowPhoneInput(false);
+    setPhone("");
+  }, [phone, openFunnel]);
 
   return (
     <section className="relative overflow-hidden" style={{
@@ -62,7 +90,7 @@ const HeroSection = () => {
 
       {/* Main content */}
       <div className="relative z-10 px-5 md:px-8 lg:px-20 pt-5 md:pt-4">
-        {/* Logo + Login */}
+        {/* Logo */}
         <div className="max-w-[1400px] mx-auto w-full flex items-center justify-between" style={{
           opacity: 0, animation: 'heroFadeScale 0.5s ease-out 0s forwards',
         }}>
@@ -70,9 +98,9 @@ const HeroSection = () => {
           <Link
             to="/login"
             className="text-sm font-medium transition-colors duration-200 hover:underline underline-offset-4"
-            style={{ color: 'hsla(0, 0%, 100%, 0.4)' }}
+            style={{ color: 'hsla(0, 0%, 100%, 0.5)' }}
             onMouseEnter={(e) => (e.currentTarget.style.color = 'hsla(217, 91%, 70%, 0.9)')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.4)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'hsla(0, 0%, 100%, 0.5)')}
           >
             Log in →
           </Link>
@@ -83,13 +111,12 @@ const HeroSection = () => {
 
           {/* LEFT: Text column */}
           <div className="relative z-10 text-left">
-            {/* Audience tag */}
+            {/* Badge */}
             <span
-              className="text-[13px] font-medium tracking-[0.08em] uppercase px-3 py-1.5 rounded-lg inline-flex items-center gap-2 mb-6"
+              className="text-sky text-[13px] font-medium tracking-[0.05em] uppercase px-3 py-1.5 rounded-lg inline-flex items-center gap-2 mb-5"
               style={{
                 background: 'hsla(217, 91%, 60%, 0.1)',
                 border: '1px solid hsla(217, 91%, 60%, 0.2)',
-                color: 'hsl(217, 91%, 70%)',
                 opacity: 0, animation: 'fadeSlideDown 0.4s ease-out 0.2s forwards',
               }}
             >
@@ -97,99 +124,178 @@ const HeroSection = () => {
             </span>
 
             {/* Headline */}
+            {/* HERO COPY – BEFORE / AFTER */}
             <h1 className="text-primary-foreground leading-[1.1] tracking-[-0.02em]">
-              <span className="block font-heading text-[30px] md:text-[44px] lg:text-[48px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
-                Stop chasing clients.
+              <span className="block font-heading text-[32px] md:text-[48px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.4s forwards' }}>
+                Stop Chasing Clients.
               </span>
-              <span className="block font-heading text-[30px] md:text-[44px] lg:text-[48px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.55s forwards' }}>
-                Start filling your calendar
+              <span className="block font-heading text-[32px] md:text-[48px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.5s forwards' }}>
+                Get Booked. Get Paid.
               </span>
-              <span className="block font-heading text-[30px] md:text-[44px] lg:text-[48px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.7s forwards' }}>
-                automatically.
+              <span className="block font-heading text-[32px] md:text-[48px] font-bold" style={{ opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 0.6s forwards' }}>
+                Built For{' '}
+                <span className="hidden md:inline-block relative font-semibold italic" style={{ color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
+                  Auto Pros
+                  <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.2s forwards' }}>
+                    <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#greenGlow)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.2s forwards' }} />
+                    <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.2s forwards' }} />
+                    <defs>
+                      <linearGradient id="greenGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#10B981" />
+                        <stop offset="50%" stopColor="#34D399" />
+                        <stop offset="100%" stopColor="#10B981" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </span>
+              </span>
+              <span className="block md:hidden font-heading text-[32px] font-semibold italic relative" style={{ opacity: 0, animation: 'fadeSlideUp 0.6s ease-out 0.7s forwards', color: '#10B981', textShadow: '0 0 20px rgba(16, 185, 129, 0.3)' }}>
+                <span className="relative inline-block">
+                  Auto Pros
+                  <svg className="absolute -bottom-2 left-0 w-full h-3 overflow-visible" viewBox="0 0 200 12" preserveAspectRatio="none" style={{ opacity: 0, animation: 'greenUnderlineIn 0.8s ease-out 1.4s forwards' }}>
+                    <path d="M0 9 Q100 2, 200 7" fill="none" stroke="url(#greenGlowMobile)" strokeWidth="3" strokeLinecap="round" style={{ strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.4s forwards' }} />
+                    <path d="M0 9 Q100 2, 200 7" fill="none" stroke="#10B981" strokeWidth="3" strokeLinecap="round" style={{ filter: 'blur(6px)', opacity: 0.5, strokeDasharray: 220, strokeDashoffset: 220, animation: 'underlineDraw 0.8s ease-out 1.4s forwards' }} />
+                    <defs>
+                      <linearGradient id="greenGlowMobile" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#10B981" />
+                        <stop offset="50%" stopColor="#34D399" />
+                        <stop offset="100%" stopColor="#10B981" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </span>
               </span>
             </h1>
 
-            {/* Subheadline */}
+            {/* Sub-headline */}
             <p
-              className="mt-5 text-[15px] md:text-lg leading-[1.65] max-w-[540px]"
-              style={{ color: 'hsla(0, 0%, 100%, 0.65)', opacity: 0, animation: 'heroBlurIn 0.5s ease-out 1.0s forwards' }}
+              className="mt-5 text-[15px] md:text-xl leading-[1.6] max-w-[600px]"
+              style={{ color: 'hsla(0, 0%, 100%, 0.7)', opacity: 0, animation: 'heroBlurIn 0.5s ease-out 1.0s forwards' }}
             >
-              Launch a pro booking site in 5 minutes that takes deposits, sends reminders, and keeps your schedule full while you're working on cars.
+              Your own pro site, live in 5 minutes. Clients book online, pay a deposit upfront, and get auto-reminders — while you're already on the next job.
             </p>
 
-            {/* Microcopy + Email CTA */}
+            {/* Phone-first CTA */}
             <div
               className="mt-7 max-w-lg"
               style={{ opacity: 0, animation: 'heroFormIn 0.5s ease-out 1.2s forwards' }}
             >
-              <p className="text-[15px] font-semibold mb-1" style={{ color: 'hsla(0, 0%, 100%, 0.85)' }}>
-                Get your free site + live demo
-              </p>
-              <p className="text-[13px] mb-3" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
-                Enter your email to see how it works in real time.
-              </p>
-
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col sm:flex-row gap-3"
-              >
-                <div className="relative w-full sm:flex-1">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'hsla(0, 0%, 100%, 0.3)' }} />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (error) setError("");
-                    }}
-                    placeholder="you@email.com"
-                    autoComplete="email"
-                    className="h-14 w-full rounded-xl pl-10 pr-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none transition-all duration-200"
-                    style={{
-                      background: 'hsla(0, 0%, 100%, 0.08)',
-                      border: '1px solid hsla(0, 0%, 100%, 0.15)',
-                    }}
-                    onFocus={(e) => {
-                      e.currentTarget.style.border = '2px solid hsl(217 91% 60%)';
-                      e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.12)';
-                      e.currentTarget.style.boxShadow = '0 0 0 4px hsla(217, 91%, 60%, 0.1)';
-                    }}
-                    onBlur={(e) => {
-                      e.currentTarget.style.border = '1px solid hsla(0, 0%, 100%, 0.15)';
-                      e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.08)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  />
-                </div>
+              {!showPhoneInput ? (
+                /* Initial CTA button */
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleCtaClick}
+                  data-event="hero_cta_click"
                   className="group h-14 px-8 text-base font-semibold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
                   style={{
                     background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
                     color: 'hsl(0 0% 100%)',
                     boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
+                    opacity: 0, animation: 'fadeSlideUp 0.5s ease-out 1.4s forwards',
                   }}
                 >
-                  Claim My Free Site
+                  Claim My Free Website
                   <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
-              </form>
+              ) : (
+                /* Inline phone capture */
+                <form
+                  onSubmit={handlePhoneSubmit}
+                  className="flex flex-col sm:flex-row gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                >
+                  <div className="relative w-full sm:flex-1">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary-foreground/30" />
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(formatPhone(e.target.value));
+                        if (error) setError("");
+                      }}
+                      placeholder="(555) 123-4567"
+                      maxLength={16}
+                      autoFocus
+                      className="h-14 w-full rounded-xl pl-10 pr-6 text-base text-primary-foreground placeholder:text-primary-foreground/40 min-h-[52px] focus:outline-none transition-all duration-200"
+                      style={{
+                        background: 'hsla(0, 0%, 100%, 0.08)',
+                        border: '1px solid hsla(0, 0%, 100%, 0.15)',
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.border = '2px solid hsl(217 91% 60%)';
+                        e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.12)';
+                        e.currentTarget.style.boxShadow = '0 0 0 4px hsla(217, 91%, 60%, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.border = '1px solid hsla(0, 0%, 100%, 0.15)';
+                        e.currentTarget.style.background = 'hsla(0, 0%, 100%, 0.08)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="group h-14 px-8 text-base font-semibold rounded-xl min-h-[48px] inline-flex items-center justify-center gap-2 whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300"
+                    style={{
+                      background: 'linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(217 91% 50%) 100%)',
+                      color: 'hsl(0 0% 100%)',
+                      boxShadow: '0 8px 24px hsla(217, 91%, 60%, 0.35)',
+                    }}
+                  >
+                    Claim My Site
+                    <ChevronRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+                  </button>
+                </form>
+              )}
 
+              {/* Label or error */}
+              {showPhoneInput && !error && (
+                <p className="text-xs mt-2 animate-in fade-in duration-200" style={{ color: 'hsla(0, 0%, 100%, 0.45)' }}>
+                  Drop your number — we'll build your site around it. No card needed.
+                </p>
+              )}
               {error && <p className="text-sm text-destructive mt-2 animate-in fade-in duration-200">{error}</p>}
-
-              {/* Reassurance */}
-              <p className="text-[12px] mt-3" style={{ color: 'hsla(0, 0%, 100%, 0.4)' }}>
-                No credit card needed. Go live in one day.
-              </p>
             </div>
 
-            {/* Social proof – single compact line */}
-            <div className="mt-5 inline-flex items-center gap-2 text-sm" style={{
-              color: 'hsla(0, 0%, 100%, 0.55)', opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 1.6s forwards',
+            {/* Trust line */}
+            <div className="mt-5 flex items-center gap-4 flex-wrap" style={{
+              color: 'hsla(0, 0%, 100%, 0.5)', opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 1.8s forwards',
             }}>
-              <span className="font-semibold" style={{ color: 'hsla(0, 0%, 100%, 0.75)' }}>4.9</span>
-              <span className="text-accent tracking-wide">★★★★★</span>
-              <span>used by 200+ auto detailers and shops.</span>
+              <span className="text-sm font-medium flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-accent" /> Live in 5 minutes</span>
+              <span className="text-primary-foreground/20">•</span>
+              <span className="text-sm font-medium flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-accent" /> Free for 14 days</span>
+            </div>
+
+
+            {/* Social proof */}
+            <div className="mt-4 inline-flex items-center gap-3 text-sm" style={{
+              color: 'hsla(0, 0%, 100%, 0.6)', opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 2.0s forwards',
+            }}>
+              <div className="flex items-center">
+                {[
+                  { initials: 'TB', bg: '#3b82f6' },
+                  { initials: 'RG', bg: '#10b981' },
+                  { initials: 'MV', bg: '#f59e0b' },
+                  { initials: 'JD', bg: '#8b5cf6' },
+                  { initials: 'CS', bg: '#ef4444' },
+                ].map((a, i) => (
+                  <div
+                    key={a.initials}
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold ring-2 ring-[hsl(215,50%,10%)]"
+                    style={{
+                      backgroundColor: a.bg,
+                      color: 'white',
+                      marginLeft: i === 0 ? 0 : '-0.5rem',
+                      zIndex: 5 - i,
+                    }}
+                  >
+                    {a.initials}
+                  </div>
+                ))}
+              </div>
+              <span className="text-accent text-sm tracking-wide">★★★★★</span>
+              <span className="font-semibold">
+                4.9 · <strong>200+</strong> Detailers & Shops
+              </span>
             </div>
           </div>
 
@@ -207,7 +313,7 @@ const HeroSection = () => {
         </div>
 
         {/* Scroll indicator */}
-        <div className="hidden md:flex flex-col items-center pb-8 pt-4" style={{ opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 2.0s forwards' }}>
+        <div className="hidden md:flex flex-col items-center pb-8 pt-4" style={{ opacity: 0, animation: 'fadeSlideUp 0.4s ease-out 2.2s forwards' }}>
           <span className="text-primary-foreground/40 text-[13px] font-medium tracking-[0.05em] uppercase mb-2">Scroll to explore</span>
           <ChevronDown className="w-5 h-5 text-primary-foreground/40" style={{ animation: 'scrollBounce 2s ease-in-out infinite' }} />
         </div>
