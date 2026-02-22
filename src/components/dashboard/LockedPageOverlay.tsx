@@ -4,6 +4,9 @@ import { useUpgradeModal } from "@/contexts/UpgradeModalContext";
 
 const LOCKED_PAGE_IMAGES: Record<string, { src: string; blend?: boolean }> = {
   "/dashboard/calendar": { src: "/locked-page/calendar-activate.svg" },
+  "/dashboard/jobs": { src: "/locked-page/jobs-activate.png", blend: true },
+  "/dashboard/estimates": { src: "/locked-page/estimates-activate.png", blend: true },
+  "/dashboard/services": { src: "/locked-page/services-activate.png", blend: true },
   "/dashboard/photos": { src: "/locked-page/photos-activate.svg" },
   "/dashboard/the-lab": { src: "/locked-page/the-lab-activate.svg" },
   "/dashboard/testimonials": { src: "/locked-page/testimonials-activate.svg" },

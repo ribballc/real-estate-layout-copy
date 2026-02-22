@@ -3,11 +3,11 @@ import SEOHead from "@/components/SEOHead";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import dashboardPreview from "@/assets/dashboard-preview-bg.jpg";
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 const STATUS_MESSAGES = [
   "Setting up your booking calendar...",
-  "Writing your website copy with AI...",
+  "Writing your website copy...",
   "Building your service pages...",
   "Configuring your location...",
   "Adding your contact info...",
@@ -15,9 +15,9 @@ const STATUS_MESSAGES = [
   "Almost there...",
 ];
 
-const CYCLE_MS = 1300;
-const MIN_NAV_DELAY = 3000;
-const PROGRESS_DURATION = 5400;
+const CYCLE_MS = 1400;
+const MIN_NAV_DELAY = 3200;
+const PROGRESS_DURATION = 5000;
 
 const Generating = () => {
   const navigate = useNavigate();
@@ -139,42 +139,48 @@ const Generating = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4">
-      <SEOHead title="Generating" noIndex />
-      {/* Background */}
+    <div
+      className="min-h-screen min-h-[100dvh] relative flex items-center justify-center px-5 sm:px-6"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 24px)" }}
+    >
+      <SEOHead title="Building Your Site" noIndex />
+      {/* Background — matches onboarding */}
       <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${dashboardPreview})` }} />
-      <div className="absolute inset-0" style={{ background: "hsla(215,50%,10%,0.85)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }} />
+      <div className="absolute inset-0" style={{ background: "hsla(215,50%,10%,0.88)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }} />
 
       <div
-        className="relative z-10 flex flex-col items-center text-center"
+        className="relative z-10 flex flex-col items-center text-center max-w-sm w-full"
         style={{
           opacity: navigating ? 0 : 1,
-          transform: navigating ? 'scale(0.95)' : 'scale(1)',
-          transition: 'opacity 0.4s ease, transform 0.4s ease',
+          transform: navigating ? "scale(0.96)" : "scale(1)",
+          transition: "opacity 0.35s ease, transform 0.35s ease",
         }}
       >
         {/* Shop name */}
-        <p className="text-white font-bold mb-1" style={{ fontSize: 22 }}>{shopName}</p>
-        <p style={{ color: "hsla(0,0%,100%,0.4)", fontSize: 14 }}>
-          {complete ? '' : 'is being built'}
+        <h1 className="text-white font-bold mb-0.5" style={{ fontSize: "clamp(20px, 5vw, 24px)" }}>
+          {shopName}
+        </h1>
+        <p style={{ color: "hsla(0,0%,100%,0.45)", fontSize: "clamp(13px, 3vw, 15px)" }}>
+          {complete ? "" : "is being built"}
         </p>
 
         {/* Loader / Success */}
-        <div className="my-6 relative" style={{ width: 96, height: 96 }}>
+        <div className="my-8 sm:my-10 relative flex items-center justify-center" style={{ width: 112, height: 112 }}>
           {/* Ring loader */}
           <div
+            className="absolute inset-0 flex items-center justify-center"
             style={{
-              filter: "drop-shadow(0 0 6px hsla(217,91%,60%,0.7))",
+              filter: "drop-shadow(0 0 12px hsla(217,91%,60%,0.4))",
               opacity: complete ? 0 : 1,
-              transform: complete ? 'scale(0.8)' : 'scale(1)',
-              transition: 'opacity 0.3s ease, transform 0.3s ease',
+              transform: complete ? "scale(0.85)" : "scale(1)",
+              transition: "opacity 0.35s ease, transform 0.35s ease",
             }}
           >
-            <svg width="96" height="96" viewBox="0 0 96 96">
-              <circle cx="48" cy="48" r="40" fill="none" stroke="hsla(0,0%,100%,0.07)" strokeWidth="4" strokeLinecap="round" />
-              <circle cx="48" cy="48" r="40" fill="none" stroke="hsl(217,91%,40%)" strokeWidth="3" strokeLinecap="round" strokeDasharray="60 244" opacity="0.4" style={{ transformOrigin: "center", animation: "generatingSpinReverse 1.6s linear infinite" }} />
-              <circle cx="48" cy="48" r="40" fill="none" stroke="hsl(217,91%,60%)" strokeWidth="4" strokeLinecap="round" strokeDasharray="164 88" style={{ transformOrigin: "center", animation: "generatingSpin 1s linear infinite" }} />
-              <circle cx="48" cy="48" r="4" fill="hsl(217,91%,60%)" style={{ animation: "generatingPulse 1.2s ease-in-out infinite" }} />
+            <svg width="112" height="112" viewBox="0 0 96 96" className="scale-[1.17]">
+              <circle cx="48" cy="48" r="40" fill="none" stroke="hsla(0,0%,100%,0.06)" strokeWidth="4" strokeLinecap="round" />
+              <circle cx="48" cy="48" r="40" fill="none" stroke="hsl(217,91%,35%)" strokeWidth="3" strokeLinecap="round" strokeDasharray="55 249" opacity="0.5" style={{ transformOrigin: "center", animation: "generatingSpinReverse 1.8s linear infinite" }} />
+              <circle cx="48" cy="48" r="40" fill="none" stroke="hsl(217,91%,60%)" strokeWidth="4" strokeLinecap="round" strokeDasharray="164 88" style={{ transformOrigin: "center", animation: "generatingSpin 1.1s linear infinite" }} />
+              <circle cx="48" cy="48" r="5" fill="hsl(217,91%,60%)" style={{ animation: "generatingPulse 1.2s ease-in-out infinite" }} />
             </svg>
           </div>
 
@@ -183,49 +189,61 @@ const Generating = () => {
             className="absolute inset-0 flex items-center justify-center"
             style={{
               opacity: complete ? 1 : 0,
-              transform: complete ? 'scale(1)' : 'scale(0.5)',
-              transition: 'opacity 0.4s ease 0.1s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s',
+              transform: complete ? "scale(1)" : "scale(0.6)",
+              transition: "opacity 0.4s ease 0.08s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.08s",
             }}
           >
-            <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{
-              background: 'hsla(142,71%,45%,0.15)',
-              border: '2px solid hsla(142,71%,45%,0.3)',
-            }}>
-              <CheckCircle2 className="w-10 h-10" style={{ color: 'hsl(142,71%,45%)' }} />
+            <div
+              className="w-24 h-24 rounded-full flex items-center justify-center"
+              style={{
+                background: "hsla(142,71%,45%,0.18)",
+                border: "2px solid hsla(142,71%,45%,0.4)",
+                boxShadow: "0 0 24px hsla(142,71%,45%,0.2)",
+              }}
+            >
+              <CheckCircle2 className="w-12 h-12" style={{ color: "hsl(142,71%,48%)" }} />
             </div>
           </div>
         </div>
 
         {/* Status text */}
-        <div style={{ minHeight: 24 }}>
+        <div className="min-h-[3rem] flex items-center justify-center">
           {complete ? (
-            <p className="font-semibold flex items-center gap-2" style={{
-              color: "hsl(142,71%,55%)",
-              fontSize: 16,
-              animation: "genCelebrateIn 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-            }}>
-              <Sparkles className="w-4 h-4" />
+            <p
+              className="font-semibold"
+              style={{
+                color: "hsl(142,71%,52%)",
+                fontSize: "clamp(15px, 3.5vw, 17px)",
+                animation: "genCelebrateIn 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              }}
+            >
               Your site is live!
             </p>
           ) : (
             <p
-              className="font-medium transition-opacity duration-[250ms]"
-              style={{ color: "white", fontSize: 15, opacity: msgVisible ? 1 : 0 }}
+              className="font-medium transition-opacity duration-300"
+              style={{
+                color: "hsla(0,0%,100%,0.95)",
+                fontSize: "clamp(14px, 3.2vw, 16px)",
+                opacity: msgVisible ? 1 : 0,
+                minHeight: "2.5rem",
+              }}
             >
               {STATUS_MESSAGES[msgIndex]}
             </p>
           )}
         </div>
 
-        {/* Progress bar */}
-        <div className="mt-10" style={{ width: 240, height: 3, borderRadius: 2, background: "hsla(0,0%,100%,0.08)" }}>
+        {/* Progress bar — full width on mobile, capped on desktop */}
+        <div
+          className="mt-8 sm:mt-10 w-full max-w-[280px] h-1.5 rounded-full overflow-hidden"
+          style={{ background: "hsla(0,0%,100%,0.1)" }}
+        >
           <div
+            className="h-full rounded-full transition-[width] duration-300 ease-out"
             style={{
-              height: "100%",
-              borderRadius: 2,
-              background: complete ? "hsl(142,71%,45%)" : "hsl(217,91%,60%)",
               width: `${progress}%`,
-              transition: complete ? "width 0.3s ease, background 0.3s ease" : "none",
+              background: complete ? "hsl(142,71%,45%)" : "linear-gradient(90deg, hsl(217,91%,60%), hsl(230,80%,55%))",
             }}
           />
         </div>
@@ -241,12 +259,12 @@ const Generating = () => {
           to { transform: rotate(0deg); }
         }
         @keyframes generatingPulse {
-          0%, 100% { opacity: 0.5; }
+          0%, 100% { opacity: 0.6; }
           50% { opacity: 1; }
         }
         @keyframes genCelebrateIn {
-          0% { opacity: 0; transform: translateY(8px); }
-          100% { opacity: 1; transform: translateY(0); }
+          0% { opacity: 0; transform: translateY(10px) scale(0.95); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
         }
       `}</style>
     </div>

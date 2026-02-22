@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Check, ChevronRight, ArrowLeft } from "lucide-react";
 import FadeIn from "@/components/FadeIn";
 import { FUNNEL_STEPS } from "@/components/SurveyFunnelModal";
-import { trackEvent } from "@/lib/tracking";
+import { trackEvent, generateEventId } from "@/lib/tracking";
 
 const FormFunnelSection = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -38,6 +38,7 @@ const FormFunnelSection = () => {
       trackEvent({
         eventName: 'Lead',
         type: 'track',
+        eventId: generateEventId(),
         userData: {
           phone: formData.phone as string,
           email: (formData.email as string) || undefined,
@@ -197,7 +198,7 @@ const FormFunnelSection = () => {
                 <ChevronRight className="w-5 h-5" />
               </>
             ) : (
-              "Build My Site Free →"
+              "Next"
             )}
           </button>
         </div>

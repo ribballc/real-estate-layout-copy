@@ -313,7 +313,9 @@ const DashboardLayout = () => {
           {subscription.isPastDue && <PastDueBanner isDark={isDark} />}
 
           <div className="dash-content">
-            <PageIntroBanner path={location.pathname} isDark={isDark} hideWhenOnboardingIncomplete={onboardingIncomplete} />
+            {subscription.isActive && (
+              <PageIntroBanner path={location.pathname} isDark={isDark} hideWhenOnboardingIncomplete={onboardingIncomplete} />
+            )}
             <TrialNudgeBanner path={location.pathname} isDark={isDark} isSubscribed={subscription.isActive} />
             {isLocked ? (
               <LockedPageOverlay path={location.pathname} isDark={isDark} />

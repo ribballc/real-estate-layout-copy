@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Check, ChevronRight, ArrowLeft, X } from "lucide-react";
 import { useSurveyFunnel } from "@/components/SurveyFunnelContext";
-import { trackEvent } from "@/lib/tracking";
+import { trackEvent, generateEventId } from "@/lib/tracking";
 
 export const FUNNEL_STEPS = [
   {
@@ -92,6 +92,7 @@ const SurveyFunnelModal = () => {
       trackEvent({
         eventName: 'Lead',
         type: 'track',
+        eventId: generateEventId(),
         userData: {
           phone: formData.phone as string,
           email: (formData.email as string) || undefined,
@@ -110,6 +111,7 @@ const SurveyFunnelModal = () => {
       trackEvent({
         eventName: 'hero_multistep_submitted',
         type: 'trackCustom',
+        eventId: generateEventId(),
         customData: { business_name: formData.businessName },
       });
       setSubmitted(true);
@@ -226,7 +228,7 @@ const SurveyFunnelModal = () => {
                   className={`ml-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl text-base font-semibold transition-all duration-200 shadow-md min-h-[48px] ${
                     canProceed() ? "bg-accent text-accent-foreground hover:shadow-lg active:scale-[0.98]" : "bg-muted text-muted-foreground cursor-not-allowed"
                   }`}>
-                  {currentStep < FUNNEL_STEPS.length - 1 ? (<>Next <ChevronRight className="w-5 h-5" /></>) : "Build My Site Free →"}
+                  {currentStep < FUNNEL_STEPS.length - 1 ? (<>Next <ChevronRight className="w-5 h-5" /></>) : "Next"}
                 </button>
               </div>
             </>
